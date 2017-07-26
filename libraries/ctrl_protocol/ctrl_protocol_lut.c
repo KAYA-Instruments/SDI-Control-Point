@@ -1,0 +1,599 @@
+
+/******************************************************************************
+ *
+ * Copyright 2016, Dream Chip Technologies GmbH. All rights reserved.
+ * No part of this work may be reproduced, modified, distributed, transmitted,
+ * transcribed, or translated into any language or computer format, in any form
+ * or by any means without written permission of:
+ * Dream Chip Technologies GmbH, Steinriede 10, 30827 Garbsen / Berenbostel,
+ * Germany
+ *
+ *****************************************************************************/
+/**
+ * @file    ctrl_protocol_gamma.c
+ *
+ * @brief   Implementation of generic gamma functions
+ *
+ *****************************************************************************/
+#include <stdio.h>
+#include <errno.h>
+
+#include <ctrl_channel/ctrl_channel.h>
+#include <ctrl_protocol/ctrl_protocol.h>
+
+#include "ctrl_protocol_priv.h"
+
+/******************************************************************************
+ * @brief Macro for type-casting to function driver 
+ *****************************************************************************/
+#define LUT_DRV( drv )      ((ctrl_protocol_lut_drv_t *)drv)
+
+/******************************************************************************
+ * ctrl_protocol_get_lut_enable
+ *****************************************************************************/
+int ctrl_protocol_get_lut_enable
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    int const                    no,
+    uint8_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), get_lut_enable );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( values );
+    return ( LUT_DRV(protocol->drv)->get_lut_enable( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lut_enable
+ *****************************************************************************/
+int ctrl_protocol_set_lut_enable
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    int const                    no,
+    uint8_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), set_lut_enable );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( values );
+    return ( LUT_DRV(protocol->drv)->set_lut_enable( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_lut_preset
+ *****************************************************************************/
+int ctrl_protocol_get_lut_preset
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    uint8_t * const              value
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), get_lut_preset );
+    CHECK_NOT_NULL( value );
+    return ( LUT_DRV(protocol->drv)->get_lut_preset( protocol->ctx, channel, value ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lut_preset
+ *****************************************************************************/
+int ctrl_protocol_set_lut_preset
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    uint8_t const                value
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), set_lut_preset );
+    return ( LUT_DRV(protocol->drv)->set_lut_preset( protocol->ctx, channel, value ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lut_write_index
+ *****************************************************************************/
+int ctrl_protocol_set_lut_write_index
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    uint16_t const               index 
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), set_lut_write_index );
+    return ( LUT_DRV(protocol->drv)->set_lut_write_index( protocol->ctx, channel, index ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_lut_write_index_red
+ *****************************************************************************/
+int ctrl_protocol_get_lut_write_index_red
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    uint16_t * const             index
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), get_lut_write_index_red );
+    CHECK_NOT_NULL( index );
+    return ( LUT_DRV(protocol->drv)->get_lut_write_index_red( protocol->ctx, channel, index ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lut_write_index_red
+ *****************************************************************************/
+int ctrl_protocol_set_lut_write_index_red
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    uint16_t const               index 
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), set_lut_write_index_red );
+    return ( LUT_DRV(protocol->drv)->set_lut_write_index_red( protocol->ctx, channel, index ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_lut_write_index_green
+ *****************************************************************************/
+int ctrl_protocol_get_lut_write_index_green
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    uint16_t * const             index
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), get_lut_write_index_green );
+    CHECK_NOT_NULL( index );
+    return ( LUT_DRV(protocol->drv)->get_lut_write_index_green( protocol->ctx, channel, index ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lut_write_index_green
+ *****************************************************************************/
+int ctrl_protocol_set_lut_write_index_green
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    uint16_t const               index 
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), set_lut_write_index_green );
+    return ( LUT_DRV(protocol->drv)->set_lut_write_index_green( protocol->ctx, channel, index ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_lut_write_index_blue
+ *****************************************************************************/
+int ctrl_protocol_get_lut_write_index_blue
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    uint16_t * const             index
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), get_lut_write_index_blue );
+    CHECK_NOT_NULL( index );
+    return ( LUT_DRV(protocol->drv)->get_lut_write_index_blue( protocol->ctx, channel, index ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lut_write_index_blue
+ *****************************************************************************/
+int ctrl_protocol_set_lut_write_index_blue
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    uint16_t const               index 
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), set_lut_write_index_blue );
+    return ( LUT_DRV(protocol->drv)->set_lut_write_index_blue( protocol->ctx, channel, index ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_lut_read_red
+ *****************************************************************************/
+int ctrl_protocol_get_lut_read_red
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    int const                    no,
+    uint16_t * const             values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), get_lut_read_red );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( values );
+    return ( LUT_DRV(protocol->drv)->get_lut_read_red( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_lut_read_green
+ *****************************************************************************/
+int ctrl_protocol_get_lut_read_green
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    int const                    no,
+    uint16_t * const             values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), get_lut_read_green );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( values );
+    return ( LUT_DRV(protocol->drv)->get_lut_read_green( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_lut_read_blue
+ *****************************************************************************/
+int ctrl_protocol_get_lut_read_blue
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    int const                    no,
+    uint16_t * const             values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), get_lut_read_blue );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( values );
+    return ( LUT_DRV(protocol->drv)->get_lut_read_blue( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lut_reset
+ *****************************************************************************/
+int ctrl_protocol_set_lut_reset
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), set_lut_reset );
+    return ( LUT_DRV(protocol->drv)->set_lut_reset( protocol->ctx, channel ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lut_reset_red
+ *****************************************************************************/
+int ctrl_protocol_set_lut_reset_red
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), set_lut_reset_red );
+    return ( LUT_DRV(protocol->drv)->set_lut_reset_red( protocol->ctx, channel ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lut_reset_green
+ *****************************************************************************/
+int ctrl_protocol_set_lut_reset_green
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), set_lut_reset_green );
+    return ( LUT_DRV(protocol->drv)->set_lut_reset_green( protocol->ctx, channel ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lut_reset_blue
+ *****************************************************************************/
+int ctrl_protocol_set_lut_reset_blue
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), set_lut_reset_blue );
+    return ( LUT_DRV(protocol->drv)->set_lut_reset_blue( protocol->ctx, channel ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lut_reset_master
+ *****************************************************************************/
+int ctrl_protocol_set_lut_reset_master
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), set_lut_reset_master );
+    return ( LUT_DRV(protocol->drv)->set_lut_reset_master( protocol->ctx, channel ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lut_sample
+ *****************************************************************************/
+int ctrl_protocol_set_lut_sample
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    int const                    no,
+    uint8_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), set_lut_sample );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( values );
+    return ( LUT_DRV(protocol->drv)->set_lut_sample( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_lut_sample_red
+ *****************************************************************************/
+int ctrl_protocol_get_lut_sample_red
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    int const                    no,
+    uint8_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), get_lut_sample_red );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( values );
+    return ( LUT_DRV(protocol->drv)->get_lut_sample_red( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lut_sample_red
+ *****************************************************************************/
+int ctrl_protocol_set_lut_sample_red
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    int const                    no,
+    uint8_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), set_lut_sample_red );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( values );
+    return ( LUT_DRV(protocol->drv)->set_lut_sample_red( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_lut_sample_green
+ *****************************************************************************/
+int ctrl_protocol_get_lut_sample_green
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    int const                    no,
+    uint8_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), get_lut_sample_green );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( values );
+    return ( LUT_DRV(protocol->drv)->get_lut_sample_green( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lut_sample_green
+ *****************************************************************************/
+int ctrl_protocol_set_lut_sample_green
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    int const                    no,
+    uint8_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), set_lut_sample_green );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( values );
+    return ( LUT_DRV(protocol->drv)->set_lut_sample_green( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_lut_sample_blue
+ *****************************************************************************/
+int ctrl_protocol_get_lut_sample_blue
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    int const                    no,
+    uint8_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), get_lut_sample_blue );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( values );
+    return ( LUT_DRV(protocol->drv)->get_lut_sample_blue( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lut_sample_blue
+ *****************************************************************************/
+int ctrl_protocol_set_lut_sample_blue
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    int const                    no,
+    uint8_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), set_lut_sample_blue );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( values );
+    return ( LUT_DRV(protocol->drv)->set_lut_sample_blue( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_lut_sample_master
+ *****************************************************************************/
+int ctrl_protocol_get_lut_sample_master
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    int const                    no,
+    uint8_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), get_lut_sample_master );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( values );
+    return ( LUT_DRV(protocol->drv)->get_lut_sample_master( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lut_sample_master
+ *****************************************************************************/
+int ctrl_protocol_set_lut_sample_master
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    int const                    no,
+    uint8_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), set_lut_sample_master );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( values );
+    return ( LUT_DRV(protocol->drv)->set_lut_sample_master( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lut_rec709
+ *****************************************************************************/
+int ctrl_protocol_set_lut_rec709
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    int const                    no,
+    uint8_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), set_lut_rec709 );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( values );
+    return ( LUT_DRV(protocol->drv)->set_lut_rec709( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lut_interpolate
+ *****************************************************************************/
+int ctrl_protocol_set_lut_interpolate
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), set_lut_interpolate );
+    return ( LUT_DRV(protocol->drv)->set_lut_interpolate( protocol->ctx, channel ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lut_interpolate_red
+ *****************************************************************************/
+int ctrl_protocol_set_lut_interpolate_red
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), set_lut_interpolate_red );
+    return ( LUT_DRV(protocol->drv)->set_lut_interpolate_red( protocol->ctx, channel ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lut_interpolate_green
+ *****************************************************************************/
+int ctrl_protocol_set_lut_interpolate_green
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), set_lut_interpolate_green );
+    return ( LUT_DRV(protocol->drv)->set_lut_interpolate_green( protocol->ctx, channel ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lut_interpolate_blue
+ *****************************************************************************/
+int ctrl_protocol_set_lut_interpolate_blue
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), set_lut_interpolate_blue );
+    return ( LUT_DRV(protocol->drv)->set_lut_interpolate_blue( protocol->ctx, channel ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_lut_register
+ *****************************************************************************/
+int ctrl_protocol_lut_register
+(
+    ctrl_protocol_handle_t const    handle,
+    void * const                    ctx,
+    ctrl_protocol_lut_drv_t * const drv
+)
+{
+    CHECK_HANDLE( handle );
+
+    handle->drv = (void *)drv;
+    handle->ctx = ctx;
+
+    return ( 0 );
+}
+
+/******************************************************************************
+ * ctrl_protocol_lut_unregister
+ *****************************************************************************/
+int ctrl_protocol_lut_unregister
+(
+    ctrl_protocol_handle_t const handle
+)
+{
+    CHECK_HANDLE( handle );
+
+    handle->drv = NULL;
+    handle->ctx = NULL;
+
+    return ( 0 );
+}
+

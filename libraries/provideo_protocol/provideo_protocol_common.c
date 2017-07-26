@@ -1,0 +1,457 @@
+/******************************************************************************
+ *
+ * Copyright 2016, Dream Chip Technologies GmbH. All rights reserved.
+ * No part of this work may be reproduced, modified, distributed, transmitted,
+ * transcribed, or translated into any language or computer format, in any form
+ * or by any means without written permission of:
+ * Dream Chip Technologies GmbH, Steinriede 10, 30827 Garbsen / Berenbostel,
+ * Germany
+ *
+ *****************************************************************************/
+/**
+ * @file    provideo_protocol_common.c
+ *
+ * @brief   Implementation of provideo protocol helper functions
+ *
+ *****************************************************************************/
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdarg.h>
+#include <string.h>
+#include <errno.h>
+#include <time.h>
+
+#include <ctrl_channel/ctrl_channel.h>
+
+#include "provideo_protocol_common.h"
+
+/******************************************************************************
+ * evaluate_error_response - evaluate error message from provideo device
+ *****************************************************************************/
+int evaluate_error_response
+(
+    char *  data,
+    int     res
+)
+{
+    if ( strstr( data, CMD_ERROR_OUT_OF_RANGE ) )
+    {
+        return ( -EINVAL );
+    }
+
+    if ( strstr( data, CMD_ERROR_INVALID_NUMBER_PARAMS ) )
+    {
+        return ( -ERANGE );
+    }
+
+    if ( strstr( data, CMD_ERROR_RESSOURCE_BUSY ) )
+    {
+        return ( -EBUSY );
+    }
+
+    if ( strstr( data, CMD_ERROR_OPERATION_NOT_SUPPORTED ) )
+    {
+        return ( -ENOSYS );
+    }
+
+    if ( strstr( data, CMD_ERROR_LICENSE_INVALID ) )
+    {
+        return ( -EACCES );
+    }
+
+    if ( strstr( data, CMD_ERROR_INVALID_CHAIN ) )
+    {
+        return ( -ENODEV );
+    }
+
+    if ( strstr( data, CMD_ERROR_GENLOCK ) )
+    {
+        return ( -ENOSYS );
+    }
+
+    return ( res );
+}
+
+/******************************************************************************
+ * evaluate_set_response - evaluate response of a provideo-device
+ *                         to a set command with the default timeout
+ *****************************************************************************/
+int evaluate_set_response
+(
+    ctrl_channel_handle_t const channel
+)
+{
+    return evaluate_set_response_with_tmo( channel, DEFAULT_CMD_TIMEOUT );
+}
+
+/******************************************************************************
+ * evaluate_set_response_with_tmo - evaluate response of a provideo-device 
+ * to a set command with a specific timeout
+ *****************************************************************************/
+int evaluate_set_response_with_tmo
+(
+    ctrl_channel_handle_t const channel,
+    int const                   tmo_ms
+)
+{
+    char buf[CMD_SINGLE_LINE_RESPONSE_SIZE];
+    char data[CMD_SINGLE_LINE_RESPONSE_SIZE*2];
+
+    struct timespec start, now;
+    int loop = 1;
+
+    // start timer
+    clock_gettime(CLOCK_MONOTONIC, &start);
+
+    // set received_string and buffer to zero
+    memset( data, 0u, sizeof(data) );
+
+    // wait for answer from COM-Port
+    while ( loop )
+    {
+        int n;
+        
+        // clear poll buffer
+        memset( buf, 0u, sizeof(buf) );
+
+        // poll for data data (NOTE: reserve last byte for '\0')
+        n = ctrl_channel_receive_response( channel, (uint8_t *)buf, (sizeof(buf) - 1u) );
+
+        // evaluate number of received data
+        if ( n > 0 )
+        {
+            // always put a "null" at the end of a string
+            buf[n] = '\0';
+
+            // append poll buffer to receive buffer
+            strcat( data, buf );
+
+            // check if string is complete and valid
+            if ( strstr( data, CMD_OK ) )
+            {
+                return ( 0 );
+            }
+
+            // check if string is complete and error-message
+            else if ( strstr( data, CMD_FAIL ) )
+            {
+                return ( evaluate_error_response( data, -EINVAL ) );
+            }
+
+            // else stay in loop
+            else
+            {
+                // do nothing
+            }
+        }
+        else
+        {
+            // timeout handling
+            clock_gettime(CLOCK_MONOTONIC, &now);
+            int diff_ms = (now.tv_sec - start.tv_sec) * 1000 + (now.tv_nsec - start.tv_nsec) / 1000000;
+            loop = (diff_ms > tmo_ms) ? 0 : 1;
+        }
+    }
+
+    return ( -EILSEQ );
+}
+
+/******************************************************************************
+ * evaluate_get_response - evaluate response of a provideo-device to a get command
+ *****************************************************************************/
+int evaluate_get_response
+(
+    ctrl_channel_handle_t const channel,
+    char *                      data,
+    int                         len
+)
+{
+    return evaluate_get_response_with_tmo( channel, data, len, DEFAULT_CMD_TIMEOUT );
+}
+
+/******************************************************************************
+ * evaluate_get_response - evaluate response of a provideo-device
+ * to a get command with a specific timeout in ms
+ *****************************************************************************/
+int evaluate_get_response_with_tmo
+(
+    ctrl_channel_handle_t const channel,
+    char *                      data,
+    int                         len,
+    int const                   tmo_ms
+)
+{
+    struct timespec start, now;
+    int loop = 1;
+    int i = 0;
+
+    // start timer
+    clock_gettime(CLOCK_MONOTONIC, &start);
+
+    // set received_string and buffer to zero
+    memset( data, 0u, len );
+
+    // wait for answer from COM-Port
+    while ( loop )
+    {
+        int n;
+
+        // poll for data data (NOTE: reserve last byte for '\0')
+        n = ctrl_channel_receive_response( channel, (uint8_t *)&data[i], (len - i - 1)  );
+
+        // evaluate number of received data
+        if ( n > 0 )
+        {
+            i += n;
+
+            // check data buffer size
+            if ( i >= len )
+            {
+                return ( -EINVAL );
+            }
+
+            // check if string is complete and valid
+            if ( strstr( data, CMD_OK ) )
+            {
+                return ( 0 );
+            }
+
+            // check if string is complete and error-message
+            else if ( strstr( data, CMD_FAIL ) )
+            {
+                return ( -EINVAL );
+            }
+
+            // else stay in loop
+            else
+            {
+                // do nothing
+            }
+        }
+        else
+        {
+            // timeout handling
+            clock_gettime(CLOCK_MONOTONIC, &now);
+            int diff_ms = (now.tv_sec - start.tv_sec) * 1000 + (now.tv_nsec - start.tv_nsec) / 1000000;
+            loop = (diff_ms > tmo_ms) ? 0 : 1;
+        }
+    }
+
+    return ( -EILSEQ );
+}
+
+/******************************************************************************
+ * set_param_0 - Send a parameterless command
+ *****************************************************************************/
+int set_param_0
+(
+    ctrl_channel_handle_t const  channel, 
+    char * const                 data
+)
+{
+    // send data buffer to control channel
+    ctrl_channel_send_request( channel, (uint8_t *)data, strlen( data ) );
+
+    // wait for response and evaluate it
+    return ( evaluate_set_response( channel ) );
+}
+
+/******************************************************************************
+ * set_param_0_with_tmo  - Send a parameterless command and use timeout
+ *****************************************************************************/
+int set_param_0_with_tmo
+(
+    ctrl_channel_handle_t const  channel, 
+    char * const                 data,
+    int const                    tmo_ms
+)
+{
+    // send data buffer to control channel
+    ctrl_channel_send_request( channel, (uint8_t *)data, strlen( data ) );
+
+    // wait for response and evaluate it
+    return ( evaluate_set_response_with_tmo( channel, tmo_ms ) );
+}
+
+/******************************************************************************
+ * get_param_int_X - Sends a given get-command to provideo device and parses
+ *                   device response for a variable number of integer values
+ *****************************************************************************/
+int get_param_int_X
+(
+    ctrl_channel_handle_t const  channel,
+    int const                    lines,
+    char * const                 cmd_get,
+    char * const                 cmd_sync,
+    char * const                 cmd_set,
+    ...
+)
+{
+    char data[(lines*CMD_SINGLE_LINE_RESPONSE_SIZE)];
+
+    va_list args;
+
+    int res;
+
+    // send get-command to control channel
+    ctrl_channel_send_request( channel, (uint8_t *)cmd_get, strlen(cmd_get) );
+
+    // read response from provideo device
+    res = evaluate_get_response( channel, data, sizeof(data) );
+    if ( !res )
+    {
+        // get start position of command
+        char * s = strstr( data, cmd_sync );
+        if ( s )
+        {
+            // parse command
+            va_start( args, cmd_set );
+            res = vsscanf( s, cmd_set, args );
+            va_end( args );
+           
+            return ( res );
+        }
+        else
+        {
+            // command not found in received data
+            return ( -EFAULT );
+        }
+    }
+    else
+    {
+        res = evaluate_error_response( data, res );
+    }
+
+    return ( res );
+}
+
+/******************************************************************************
+ * get_param_int_X - Sends a given get-command to provideo device and parses
+ *                   device response for a variable number of integer values
+ *                   with a specified timeout in ms
+ *****************************************************************************/
+int get_param_int_X_with_tmo
+(
+    ctrl_channel_handle_t const  channel,
+    int const                    lines,
+    char * const                 cmd_get,
+    char * const                 cmd_sync,
+    char * const                 cmd_set,
+    int const                    cmd_timeout_ms,
+    ...
+)
+{
+    char data[(lines*CMD_SINGLE_LINE_RESPONSE_SIZE)];
+
+    va_list args;
+
+    int res;
+
+    // send get-command to control channel
+    ctrl_channel_send_request( channel, (uint8_t *)cmd_get, strlen(cmd_get) );
+
+    // read response from provideo device
+    res = evaluate_get_response_with_tmo( channel, data, sizeof(data), cmd_timeout_ms );
+    if ( !res )
+    {
+        // get start position of command
+        char * s = strstr( data, cmd_sync );
+        if ( s )
+        {
+            // parse command
+            va_start( args, cmd_timeout_ms );
+            res = vsscanf( s, cmd_set, args );
+            va_end( args );
+
+            return ( res );
+        }
+        else
+        {
+            // command not found in received data
+            return ( -EFAULT );
+        }
+    }
+    else
+    {
+        res = evaluate_error_response( data, res );
+    }
+
+    return ( res );
+}
+
+/******************************************************************************
+ * set_param_int_X - Send a set command with X interger parameters
+ *****************************************************************************/
+int set_param_int_X
+(
+    ctrl_channel_handle_t const channel, 
+    char * const                cmd_set,
+    ...
+)
+{
+    char command[CMD_SINGLE_LINE_COMMAND_SIZE];
+
+    va_list args;
+
+    int res;
+    
+    // clear command buffer
+    memset( command, 0, sizeof(command) );
+
+    // create command to send
+    va_start( args, cmd_set );
+    res = vsnprintf( command, sizeof(command), cmd_set, args );
+    va_end( args );
+
+    // prevent buffer overrun
+    if ( res >= INT(sizeof(command)) )
+    {
+        return ( -EFAULT );
+    }
+    
+    // send command to COM port
+    ctrl_channel_send_request( channel, (uint8_t *)command, strlen(command) );
+
+    // wait for response and evaluate
+    return ( evaluate_set_response( channel ) );
+}
+
+/******************************************************************************
+ * set_param_int_X - Send a set command with X interger parameters
+ *                   with a specified timeout in ms
+ *****************************************************************************/
+int set_param_int_X_with_tmo
+(
+    ctrl_channel_handle_t const channel,
+    char * const                cmd_set,
+    int const                   cmd_timeout_ms,
+    ...
+)
+{
+    char command[CMD_SINGLE_LINE_COMMAND_SIZE];
+
+    va_list args;
+
+    int res;
+
+    // clear command buffer
+    memset( command, 0, sizeof(command) );
+
+    // create command to send
+    va_start( args, cmd_timeout_ms );
+    res = vsnprintf( command, sizeof(command), cmd_set, args );
+    va_end( args );
+
+    // prevent buffer overrun
+    if ( res >= INT(sizeof(command)) )
+    {
+        return ( -EFAULT );
+    }
+
+    // send command to COM port
+    ctrl_channel_send_request( channel, (uint8_t *)command, strlen(command) );
+
+    // wait for response and evaluate
+    return ( evaluate_set_response_with_tmo( channel, cmd_timeout_ms ) );
+}
+

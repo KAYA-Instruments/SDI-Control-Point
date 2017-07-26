@@ -1,0 +1,18 @@
+# Compiled source #
+###################
+*.o
+*.a
+*.exe
+
+# Dependency Makefiles #
+########################
+depends.mk
+
+# Qt user project files #
+#########################
+*.pro.user
+
+# Qt build folders #
+#########################
+build-application-*/
+build-dct_widgets-*/

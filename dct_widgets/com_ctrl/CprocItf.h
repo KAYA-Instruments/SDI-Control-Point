@@ -1,0 +1,73 @@
+/******************************************************************************
+ *
+ * Copyright 2015, Dream Chip Technologies GmbH. All rights reserved.
+ * No part of this work may be reproduced, modified, distributed, transmitted,
+ * transcribed, or translated into any language or computer format, in any form
+ * or by any means without written permission of:
+ * Dream Chip Technologies GmbH, Steinriede 10, 30827 Garbsen / Berenbostel,
+ * Germany
+ *
+ *****************************************************************************/
+/**
+ * @file    CprocItf.h
+ *
+ * @brief   Color Processing Interface
+ *
+ * @note    Multiple Inheritance of an QObject is not allowed.
+ *
+ *****************************************************************************/
+#ifndef _CPROC_INTERFACE_H_
+#define _CPROC_INTERFACE_H_
+
+#include <QObject>
+
+#include "ProVideoItf.h"
+
+class CprocItf : public ProVideoItf
+{
+    Q_OBJECT
+
+public:
+    explicit CprocItf( ComChannel * c, ComProtocol * p )
+        : ProVideoItf( c, p )
+    { }
+ 
+    // resync all settings
+    void resync() override;
+
+    // color processing
+    void GetBrightness();
+    void GetContrast();
+    void GetSaturation();
+    void GetHue();
+    void GetColorProcessing();
+
+signals:
+    // color processing
+    void BrightnessChanged( int value );
+    void ContrastChanged( int value );
+    void SaturationChanged( int value );
+    void HueChanged( int value );
+    void ColorProcessingChanged( int brightness, int contrast, int saturation, int hue );
+
+public slots:
+    // color processing
+    void onBrightnessChange( int value );
+    void onContrastChange( int value );
+    void onSaturationChange( int value );
+    void onHueChange( int value );
+    void onColorProcessingChange( int brightness, int contrast, int saturation, int hue );
+};
+
+#define CONNECT_CPROC_INTERFACE(x, y)                                                                                          \
+{                                                                                                                              \
+    QObject::connect( x, SIGNAL(BrightnessChanged(int)) , y, SLOT(onBrightnessChange(int)) );                                  \
+    QObject::connect( x, SIGNAL(ContrastChanged(int))   , y, SLOT(onContrastChange(int)) );                                    \
+    QObject::connect( x, SIGNAL(SaturationChanged(int)) , y, SLOT(onSaturationChange(int)) );                                  \
+    QObject::connect( x, SIGNAL(HueChanged(int))        , y, SLOT(onHueChange(int)) );                                         \
+    QObject::connect( x, SIGNAL(ColorProcessingChanged(int,int,int,int)), y, SLOT(onColorProcessingChange(int,int,int,int)) ); \
+}
+
+
+#endif // _CPROC_INTERFACE_H_
+

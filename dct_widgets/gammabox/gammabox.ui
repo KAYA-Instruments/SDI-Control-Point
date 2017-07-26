@@ -1,0 +1,636 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>UI_GammaBox</class>
+ <widget class="QWidget" name="UI_GammaBox">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>838</width>
+    <height>890</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QTabWidget" name="GammaSelect">
+     <property name="tabPosition">
+      <enum>QTabWidget::South</enum>
+     </property>
+     <property name="tabShape">
+      <enum>QTabWidget::Rounded</enum>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>12</width>
+       <height>12</height>
+      </size>
+     </property>
+     <widget class="QWidget" name="tabMaster">
+      <attribute name="icon">
+       <iconset resource="../../ressource/ressource.qrc">
+        <normaloff>:/images/tab/gray.png</normaloff>:/images/tab/gray.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Master</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QCustomPlot" name="GammaPlot">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>360</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="whatsThis">
+          <string/>
+         </property>
+         <property name="viewport">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>798</width>
+           <height>362</height>
+          </rect>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabRedChannel">
+      <attribute name="icon">
+       <iconset resource="../../ressource/ressource.qrc">
+        <normaloff>:/images/tab/red.png</normaloff>:/images/tab/red.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Red</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QCustomPlot" name="GammaPlotRed">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>360</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="whatsThis">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabGreenChannel">
+      <attribute name="icon">
+       <iconset resource="../../ressource/ressource.qrc">
+        <normaloff>:/images/tab/green.png</normaloff>:/images/tab/green.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Green</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QCustomPlot" name="GammaPlotGreen">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>360</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="whatsThis">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabBlueChannel">
+      <attribute name="icon">
+       <iconset resource="../../ressource/ressource.qrc">
+        <normaloff>:/images/tab/blue.png</normaloff>:/images/tab/blue.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Blue</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <widget class="QCustomPlot" name="GammaPlotBlue">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>360</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="whatsThis">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="linearLayout">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetMaximumSize</enum>
+     </property>
+     <item>
+      <spacer name="horizontalSpacer1">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="SingleChannelKnobBox" name="Threshold">
+       <property name="minimumSize">
+        <size>
+         <width>220</width>
+         <height>220</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>220</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="whatsThis">
+        <string/>
+       </property>
+       <property name="title">
+        <string>Threshold</string>
+       </property>
+       <property name="maxRounds">
+        <number>4</number>
+       </property>
+       <property name="maximum" stdset="0">
+        <number>1000</number>
+       </property>
+       <property name="base">
+        <number>10</number>
+       </property>
+       <property name="comma" stdset="0">
+        <number>3</number>
+       </property>
+       <property name="fmt">
+        <string>%1.3f</string>
+       </property>
+       <property name="maxAngle">
+        <number>180</number>
+       </property>
+       <property name="needleImage">
+        <pixmap resource="../../ressource/ressource.qrc">:/images/needle/dial-pointer.png</pixmap>
+       </property>
+       <property name="backgroundImage">
+        <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-gray.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="gpxPresets">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>220</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>220</height>
+        </size>
+       </property>
+       <property name="title">
+        <string/>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_6">
+        <item>
+         <widget class="QPushButton" name="btnEnable">
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
+          <property name="text">
+           <string>Enable</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnStraight">
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
+          <property name="text">
+           <string>STRAIGHT</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnRec709">
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
+          <property name="text">
+           <string>REC.709</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnBt601">
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
+          <property name="text">
+           <string>BT.601</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer0">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnApply">
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
+          <property name="text">
+           <string>Apply</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="SingleChannelKnobBox" name="Gamma">
+       <property name="minimumSize">
+        <size>
+         <width>220</width>
+         <height>220</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>220</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="whatsThis">
+        <string/>
+       </property>
+       <property name="title">
+        <string>Gamma</string>
+       </property>
+       <property name="maxRounds">
+        <number>4</number>
+       </property>
+       <property name="maximum" stdset="0">
+        <number>1000</number>
+       </property>
+       <property name="base">
+        <number>10</number>
+       </property>
+       <property name="comma" stdset="0">
+        <number>3</number>
+       </property>
+       <property name="fmt">
+        <string>%1.3f</string>
+       </property>
+       <property name="maxAngle">
+        <number>180</number>
+       </property>
+       <property name="needleImage">
+        <pixmap resource="../../ressource/ressource.qrc">:/images/needle/dial-pointer.png</pixmap>
+       </property>
+       <property name="backgroundImage">
+        <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-gray.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer0">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="gammaLayout">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetMaximumSize</enum>
+     </property>
+     <item>
+      <widget class="SingleChannelKnobBox" name="LinearContrast">
+       <property name="minimumSize">
+        <size>
+         <width>200</width>
+         <height>220</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>200</width>
+         <height>220</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="whatsThis">
+        <string/>
+       </property>
+       <property name="title">
+        <string>Linear Contrast</string>
+       </property>
+       <property name="maxRounds">
+        <number>4</number>
+       </property>
+       <property name="maximum" stdset="0">
+        <number>10000</number>
+       </property>
+       <property name="base">
+        <number>10</number>
+       </property>
+       <property name="comma" stdset="0">
+        <number>3</number>
+       </property>
+       <property name="fmt">
+        <string>%2.3f</string>
+       </property>
+       <property name="maxAngle">
+        <number>180</number>
+       </property>
+       <property name="needleImage">
+        <pixmap resource="../../ressource/ressource.qrc">:/images/needle/dial-pointer.png</pixmap>
+       </property>
+       <property name="backgroundImage">
+        <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-gray.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="SingleChannelKnobBox" name="LinearBrightness">
+       <property name="minimumSize">
+        <size>
+         <width>200</width>
+         <height>220</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>200</width>
+         <height>220</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="whatsThis">
+        <string/>
+       </property>
+       <property name="title">
+        <string>Linear Brightness</string>
+       </property>
+       <property name="maxRounds">
+        <number>2</number>
+       </property>
+       <property name="minimum" stdset="0">
+        <number>-1000</number>
+       </property>
+       <property name="maximum" stdset="0">
+        <number>1000</number>
+       </property>
+       <property name="base">
+        <number>10</number>
+       </property>
+       <property name="comma" stdset="0">
+        <number>3</number>
+       </property>
+       <property name="fmt">
+        <string>%1.3f</string>
+       </property>
+       <property name="maxAngle">
+        <number>180</number>
+       </property>
+       <property name="needleImage">
+        <pixmap resource="../../ressource/ressource.qrc">:/images/needle/dial-pointer.png</pixmap>
+       </property>
+       <property name="backgroundImage">
+        <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-gray.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="SingleChannelKnobBox" name="Contrast">
+       <property name="minimumSize">
+        <size>
+         <width>200</width>
+         <height>220</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>200</width>
+         <height>220</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="whatsThis">
+        <string/>
+       </property>
+       <property name="title">
+        <string>Contrast</string>
+       </property>
+       <property name="maxRounds">
+        <number>4</number>
+       </property>
+       <property name="maximum" stdset="0">
+        <number>10000</number>
+       </property>
+       <property name="base">
+        <number>10</number>
+       </property>
+       <property name="comma" stdset="0">
+        <number>3</number>
+       </property>
+       <property name="fmt">
+        <string>%2.3f</string>
+       </property>
+       <property name="maxAngle">
+        <number>180</number>
+       </property>
+       <property name="needleImage">
+        <pixmap resource="../../ressource/ressource.qrc">:/images/needle/dial-pointer.png</pixmap>
+       </property>
+       <property name="backgroundImage">
+        <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-gray.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="SingleChannelKnobBox" name="Brightness">
+       <property name="minimumSize">
+        <size>
+         <width>200</width>
+         <height>220</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>200</width>
+         <height>220</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="whatsThis">
+        <string/>
+       </property>
+       <property name="title">
+        <string>Brightness</string>
+       </property>
+       <property name="maxRounds">
+        <number>2</number>
+       </property>
+       <property name="minimum" stdset="0">
+        <number>-1000</number>
+       </property>
+       <property name="maximum" stdset="0">
+        <number>1000</number>
+       </property>
+       <property name="base">
+        <number>10</number>
+       </property>
+       <property name="comma" stdset="0">
+        <number>3</number>
+       </property>
+       <property name="fmt">
+        <string>%1.3f</string>
+       </property>
+       <property name="maxAngle">
+        <number>180</number>
+       </property>
+       <property name="needleImage">
+        <pixmap resource="../../ressource/ressource.qrc">:/images/needle/dial-pointer.png</pixmap>
+       </property>
+       <property name="backgroundImage">
+        <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-gray.png</pixmap>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>SingleChannelKnobBox</class>
+   <extends>QGroupBox</extends>
+   <header>singlechannelknobbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QCustomPlot</class>
+   <extends>QWidget</extends>
+   <header>qcustomplot.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../../ressource/ressource.qrc"/>
+ </resources>
+ <connections/>
+</ui>

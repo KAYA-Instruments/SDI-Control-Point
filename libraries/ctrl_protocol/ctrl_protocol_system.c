@@ -1,0 +1,607 @@
+/******************************************************************************
+ *
+ * Copyright 2016, Dream Chip Technologies GmbH. All rights reserved.
+ * No part of this work may be reproduced, modified, distributed, transmitted,
+ * transcribed, or translated into any language or computer format, in any form
+ * or by any means without written permission of:
+ * Dream Chip Technologies GmbH, Steinriede 10, 30827 Garbsen / Berenbostel,
+ * Germany
+ *
+ *****************************************************************************/
+/**
+ * @file    ctrl_protocol_system.c
+ *
+ * @brief   Implementation of generic system functions
+ *
+ *****************************************************************************/
+#include <stdio.h>
+#include <errno.h>
+
+#include <ctrl_channel/ctrl_channel.h>
+#include <ctrl_protocol/ctrl_protocol.h>
+
+#include "ctrl_protocol_priv.h"
+
+/******************************************************************************
+ * @brief Macro for type-casting to function driver 
+ *****************************************************************************/
+#define SYS_DRV( drv )      ((ctrl_protocol_sys_drv_t *)drv)
+
+/******************************************************************************
+ * ctrl_protocol_get_system_info
+ *****************************************************************************/
+int ctrl_protocol_get_system_info
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint8_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_system_info );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( values );
+    return ( SYS_DRV(protocol->drv)->get_system_info( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_system_platform
+ *****************************************************************************/
+int ctrl_protocol_get_system_platform
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    int const                    no,
+    uint8_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_system_platform );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( values );
+    return ( SYS_DRV(protocol->drv)->get_system_platform( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_device_name
+ *****************************************************************************/
+int ctrl_protocol_get_device_name
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint8_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_device_name );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( values );
+    return ( SYS_DRV(protocol->drv)->get_device_name( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_system_id
+ *****************************************************************************/
+int ctrl_protocol_get_system_id
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    int const                    no,
+    uint8_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_system_id );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( values );
+    return ( SYS_DRV(protocol->drv)->get_system_id( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_system_validity
+ *****************************************************************************/
+int ctrl_protocol_get_system_validity
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    int const                    no,
+    uint8_t * const              validity
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_system_validity );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( validity );
+    return ( SYS_DRV(protocol->drv)->get_system_validity( protocol->ctx, channel, no, validity ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_bitstream_version
+ *****************************************************************************/
+int ctrl_protocol_get_bitstream_version
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    uint32_t * const             version 
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_bitstream_version );
+    CHECK_NOT_NULL( version );
+    return ( SYS_DRV(protocol->drv)->get_bitstream_version( protocol->ctx, channel, version ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_bootloader_version
+ *****************************************************************************/
+int ctrl_protocol_get_bootloader_version
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    uint32_t * const             version 
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_bootloader_version );
+    CHECK_NOT_NULL( version );
+    return ( SYS_DRV(protocol->drv)->get_bootloader_version( protocol->ctx, channel, version ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_application_version
+ *****************************************************************************/
+int ctrl_protocol_get_application_version
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    int const                    no,
+    uint8_t * const              version
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_application_version );
+    CHECK_NOT_NULL( version );
+    return ( SYS_DRV(protocol->drv)->get_application_version( protocol->ctx, channel, no, version ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_application_release_date
+ *****************************************************************************/
+int ctrl_protocol_get_application_release_date
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint8_t * const              date
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_application_release_date );
+    CHECK_NOT_NULL( date );
+    return ( SYS_DRV(protocol->drv)->get_application_release_date( protocol->ctx, channel, no, date ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_application_build_date
+ *****************************************************************************/
+int ctrl_protocol_get_application_build_date
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint8_t * const              date
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_application_build_date );
+    CHECK_NOT_NULL( date );
+    return ( SYS_DRV(protocol->drv)->get_application_build_date( protocol->ctx, channel, no, date ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_feature_mask_hw
+ *****************************************************************************/
+int ctrl_protocol_get_feature_mask_hw
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    uint32_t * const             mask
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_feature_mask_hw );
+    CHECK_NOT_NULL( mask );
+    return ( SYS_DRV(protocol->drv)->get_feature_mask_hw( protocol->ctx, channel, mask ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_feature_mask_sw
+ *****************************************************************************/
+int ctrl_protocol_get_feature_mask_sw
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    uint32_t * const             mask
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_feature_mask_sw );
+    CHECK_NOT_NULL( mask );
+    return ( SYS_DRV(protocol->drv)->get_feature_mask_sw( protocol->ctx, channel, mask ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_resolution_mask
+ *****************************************************************************/
+int ctrl_protocol_get_resolution_mask
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    int const                    no,
+    uint8_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_resolution_mask );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( values );
+    return ( SYS_DRV(protocol->drv)->get_resolution_mask( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_rs232_baud
+ *****************************************************************************/
+int ctrl_protocol_get_rs232_baud
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    uint32_t * const             baudrate
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_rs232_baud );
+    CHECK_NOT_NULL( baudrate );
+    return ( SYS_DRV(protocol->drv)->get_rs232_baud( protocol->ctx, channel, baudrate ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_rs232_baud
+ *****************************************************************************/
+int ctrl_protocol_set_rs232_baud
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    uint32_t const               baudrate
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), set_rs232_baud );
+    return ( SYS_DRV(protocol->drv)->set_rs232_baud( protocol->ctx, channel, baudrate ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_rs485_baud
+ *****************************************************************************/
+int ctrl_protocol_get_rs485_baud
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    uint32_t * const             baudrate
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_rs485_baud );
+    CHECK_NOT_NULL( baudrate );
+    return ( SYS_DRV(protocol->drv)->get_rs485_baud( protocol->ctx, channel, baudrate ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_rs485_baud
+ *****************************************************************************/
+int ctrl_protocol_set_rs485_baud
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    uint32_t const               baudrate
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), set_rs485_baud );
+    return ( SYS_DRV(protocol->drv)->set_rs485_baud( protocol->ctx, channel, baudrate ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_rs485_addr
+ *****************************************************************************/
+int ctrl_protocol_get_rs485_addr
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    uint32_t * const             address 
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_rs485_addr );
+    CHECK_NOT_NULL( address );
+    return ( SYS_DRV(protocol->drv)->get_rs485_addr( protocol->ctx, channel, address ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_rs485_addr
+ *****************************************************************************/
+int ctrl_protocol_set_rs485_addr
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint32_t const               address
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), set_rs485_addr );
+    return ( SYS_DRV(protocol->drv)->set_rs485_addr( protocol->ctx, channel, address ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_rs485_bc_addr
+ *****************************************************************************/
+int ctrl_protocol_get_rs485_bc_addr
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint32_t * const             broadcast_address
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_rs485_bc_addr );
+    CHECK_NOT_NULL( broadcast_address );
+    return ( SYS_DRV(protocol->drv)->get_rs485_bc_addr( protocol->ctx, channel, broadcast_address ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_rs485_bc_addr
+ *****************************************************************************/
+int ctrl_protocol_set_rs485_bc_addr
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint32_t const               broadcast_address
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), set_rs485_bc_addr );
+    return ( SYS_DRV(protocol->drv)->set_rs485_bc_addr( protocol->ctx, channel, broadcast_address ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_rs485_bc_master
+ *****************************************************************************/
+int ctrl_protocol_get_rs485_bc_master
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t * const              is_master
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_rs485_bc_master );
+    CHECK_NOT_NULL( is_master );
+    return ( SYS_DRV(protocol->drv)->get_rs485_bc_master( protocol->ctx, channel, is_master ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_rs485_addr
+ *****************************************************************************/
+int ctrl_protocol_set_rs485_bc_master
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    int32_t const                master_address
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), set_rs485_bc_master );
+    return ( SYS_DRV(protocol->drv)->set_rs485_bc_master( protocol->ctx, channel, master_address ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_prompt
+ *****************************************************************************/
+int ctrl_protocol_get_prompt
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    uint8_t * const              flag
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_prompt );
+    CHECK_NOT_NULL( flag );
+    return ( SYS_DRV(protocol->drv)->get_prompt( protocol->ctx, channel, flag ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_prompt
+ *****************************************************************************/
+int ctrl_protocol_set_prompt
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    uint8_t const                flag
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), set_prompt );
+    return ( SYS_DRV(protocol->drv)->set_prompt( protocol->ctx, channel, flag ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_debug
+ *****************************************************************************/
+int ctrl_protocol_get_debug
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    uint8_t * const              level 
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_debug );
+    CHECK_NOT_NULL( level );
+    return ( SYS_DRV(protocol->drv)->get_debug( protocol->ctx, channel, level ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_debug
+ *****************************************************************************/
+int ctrl_protocol_set_debug
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    uint8_t const                level
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), set_debug );
+    return ( SYS_DRV(protocol->drv)->set_debug( protocol->ctx, channel, level ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_runtime
+ *****************************************************************************/
+int ctrl_protocol_get_runtime
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    uint32_t * const             cnt
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_runtime );
+    CHECK_NOT_NULL( cnt );
+    return ( SYS_DRV(protocol->drv)->get_runtime( protocol->ctx, channel, cnt ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_reboot
+ *****************************************************************************/
+int ctrl_protocol_reboot
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), reboot );
+    return ( SYS_DRV(protocol->drv)->reboot( protocol->ctx, channel ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_update
+ *****************************************************************************/
+int ctrl_protocol_update
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), update );
+    return ( SYS_DRV(protocol->drv)->update( protocol->ctx, channel ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_save_settings
+ *****************************************************************************/
+int ctrl_protocol_save_settings
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), save_settings );
+    return ( SYS_DRV(protocol->drv)->save_settings( protocol->ctx, channel ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_load_settings
+ *****************************************************************************/
+int ctrl_protocol_load_settings
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), load_settings );
+    return ( SYS_DRV(protocol->drv)->load_settings( protocol->ctx, channel ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_reset_settings
+ *****************************************************************************/
+int ctrl_protocol_reset_settings
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), reset_settings );
+    return ( SYS_DRV(protocol->drv)->reset_settings( protocol->ctx, channel ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_copy_settings
+ *****************************************************************************/
+int ctrl_protocol_copy_settings
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel, 
+    int const                    no,
+    uint8_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), copy_settings );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( values );
+    return ( SYS_DRV(protocol->drv)->copy_settings( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_sys_register
+ *****************************************************************************/
+int ctrl_protocol_sys_register
+(
+    ctrl_protocol_handle_t const    handle,
+    void * const                    ctx,
+    ctrl_protocol_sys_drv_t * const drv
+)
+{
+    CHECK_HANDLE( handle );
+
+    handle->drv = (void *)drv;
+    handle->ctx = ctx;
+
+    return ( 0 );
+}
+
+/******************************************************************************
+ * ctrl_protocol_sys_unregister
+ *****************************************************************************/
+int ctrl_protocol_sys_unregister
+(
+    ctrl_protocol_handle_t const handle
+)
+{
+    CHECK_HANDLE( handle );
+
+    handle->drv = NULL;
+    handle->ctx = NULL;
+
+    return ( 0 );
+}
+

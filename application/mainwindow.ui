@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>953</width>
+    <height>877</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>ProVideo Color Control</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../ressource/ressource.qrc">
+    <normaloff>:/images/tab/piesegmentselect.png</normaloff>:/images/tab/piesegmentselect.png</iconset>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="sizeConstraint">
+     <enum>QLayout::SetDefaultConstraint</enum>
+    </property>
+    <item>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="tabPosition">
+       <enum>QTabWidget::East</enum>
+      </property>
+      <property name="tabShape">
+       <enum>QTabWidget::Rounded</enum>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>40</width>
+        <height>40</height>
+       </size>
+      </property>
+      <property name="elideMode">
+       <enum>Qt::ElideNone</enum>
+      </property>
+      <widget class="QWidget" name="tabInOut">
+       <attribute name="icon">
+        <iconset resource="../ressource/ressource.qrc">
+         <normaloff>:/images/tab/inout.png</normaloff>:/images/tab/inout.png</iconset>
+       </attribute>
+       <attribute name="title">
+        <string/>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_7">
+        <item>
+         <widget class="InOutBox" name="inoutBox">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="whatsThis">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tabBlack">
+       <attribute name="icon">
+        <iconset resource="../ressource/ressource.qrc">
+         <normaloff>:/images/tab/black.png</normaloff>:/images/tab/black.png</iconset>
+       </attribute>
+       <attribute name="title">
+        <string/>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <widget class="BlackLevelBox" name="blackBox">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="whatsThis">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tabWb">
+       <attribute name="icon">
+        <iconset resource="../ressource/ressource.qrc">
+         <normaloff>:/images/tab/thermometer.png</normaloff>:/images/tab/thermometer.png</iconset>
+       </attribute>
+       <attribute name="title">
+        <string/>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item>
+         <widget class="WbBox" name="wbBox">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="whatsThis">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tabFlt">
+       <attribute name="icon">
+        <iconset resource="../ressource/ressource.qrc">
+         <normaloff>:/images/tab/filter.png</normaloff>:/images/tab/filter.png</iconset>
+       </attribute>
+       <attribute name="title">
+        <string/>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_9">
+        <item>
+         <widget class="FltBox" name="fltBox">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="whatsThis">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tabMcc">
+       <attribute name="icon">
+        <iconset resource="../ressource/ressource.qrc">
+         <normaloff>:/images/tab/piesegmentselect.png</normaloff>:/images/tab/piesegmentselect.png</iconset>
+       </attribute>
+       <attribute name="title">
+        <string/>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="MccEqBox" name="mccEqBox">
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="whatsThis">
+           <string>MccEqBox</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tabKnee">
+       <attribute name="icon">
+        <iconset resource="../ressource/ressource.qrc">
+         <normaloff>:/images/tab/knee.png</normaloff>:/images/tab/knee.png</iconset>
+       </attribute>
+       <attribute name="title">
+        <string/>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_10">
+        <item>
+         <widget class="KneeBox" name="kneeBox">
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="whatsThis">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tabGamma">
+       <attribute name="icon">
+        <iconset resource="../ressource/ressource.qrc">
+         <normaloff>:/images/tab/gamma.png</normaloff>:/images/tab/gamma.png</iconset>
+       </attribute>
+       <attribute name="title">
+        <string/>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_6">
+        <item>
+         <widget class="LutBox" name="lutBox">
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="whatsThis">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tabDpcc">
+       <attribute name="icon">
+        <iconset resource="../ressource/ressource.qrc">
+         <normaloff>:/images/tab/dpcc.png</normaloff>:/images/tab/dpcc.png</iconset>
+       </attribute>
+       <attribute name="title">
+        <string/>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_12">
+        <item>
+         <widget class="DpccBox" name="dpccBox">
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="whatsThis">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tabOut">
+       <attribute name="icon">
+        <iconset resource="../ressource/ressource.qrc">
+         <normaloff>:/images/tab/out.png</normaloff>:/images/tab/out.png</iconset>
+       </attribute>
+       <attribute name="title">
+        <string/>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_8">
+        <item>
+         <widget class="OutBox" name="outBox">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="whatsThis">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tabInfo">
+       <attribute name="icon">
+        <iconset resource="../ressource/ressource.qrc">
+         <normaloff>:/images/tab/info.png</normaloff>:/images/tab/info.png</iconset>
+       </attribute>
+       <attribute name="title">
+        <string/>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item>
+         <widget class="InfoBox" name="infoBox">
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="whatsThis">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tabUpdate">
+       <attribute name="icon">
+        <iconset resource="../ressource/ressource.qrc">
+         <normaloff>:/images/tab/update.png</normaloff>:/images/tab/update.png</iconset>
+       </attribute>
+       <attribute name="title">
+        <string/>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_11">
+        <item>
+         <widget class="UpdateBox" name="updBox">
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="whatsThis">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>0</width>
+     <height>35</height>
+    </size>
+   </property>
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionConnect"/>
+   <addaction name="separator"/>
+   <addaction name="actionSaveSettings"/>
+   <addaction name="actionLoadSettings"/>
+   <addaction name="separator"/>
+   <addaction name="actionSelectSdi1"/>
+   <addaction name="actionSelectSdi2"/>
+   <addaction name="separator"/>
+   <addaction name="actionCopyChain1To2"/>
+   <addaction name="actionCopyChain2To1"/>
+   <addaction name="separator"/>
+   <addaction name="actionSplitScreen"/>
+   <addaction name="separator"/>
+   <addaction name="actionSaveToFile"/>
+   <addaction name="actionLoadFromFile"/>
+   <addaction name="separator"/>
+   <addaction name="actionBroadcast"/>
+   <addaction name="actionSync"/>
+  </widget>
+  <action name="actionConnect">
+   <property name="icon">
+    <iconset resource="../ressource/ressource.qrc">
+     <normaloff>:/icons/connect_64x64.png</normaloff>:/icons/connect_64x64.png</iconset>
+   </property>
+   <property name="text">
+    <string>connect</string>
+   </property>
+   <property name="toolTip">
+    <string>Open Connect Dialog</string>
+   </property>
+  </action>
+  <action name="actionLoadSettings">
+   <property name="icon">
+    <iconset resource="../ressource/ressource.qrc">
+     <normaloff>:/icons/load.png</normaloff>:/icons/load.png</iconset>
+   </property>
+   <property name="text">
+    <string>loadSettings</string>
+   </property>
+   <property name="toolTip">
+    <string>Load Settings from Device-Internal Storage</string>
+   </property>
+  </action>
+  <action name="actionSaveSettings">
+   <property name="icon">
+    <iconset resource="../ressource/ressource.qrc">
+     <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
+   </property>
+   <property name="text">
+    <string>saveSettings</string>
+   </property>
+   <property name="toolTip">
+    <string>Save Settings to Device-Internal Storage</string>
+   </property>
+  </action>
+  <action name="actionSaveToFile">
+   <property name="icon">
+    <iconset resource="../ressource/ressource.qrc">
+     <normaloff>:/icons/save2.png</normaloff>:/icons/save2.png</iconset>
+   </property>
+   <property name="text">
+    <string>saveToFile</string>
+   </property>
+   <property name="toolTip">
+    <string>Save Settings to File</string>
+   </property>
+  </action>
+  <action name="actionLoadFromFile">
+   <property name="icon">
+    <iconset resource="../ressource/ressource.qrc">
+     <normaloff>:/icons/load2.png</normaloff>:/icons/load2.png</iconset>
+   </property>
+   <property name="text">
+    <string>LoadFromFile</string>
+   </property>
+   <property name="toolTip">
+    <string>Load Settings from File</string>
+   </property>
+  </action>
+  <action name="actionSelectSdi2">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>SDI-2</string>
+   </property>
+   <property name="toolTip">
+    <string>Configure Output SDI-2</string>
+   </property>
+  </action>
+  <action name="actionSelectSdi1">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>SDI-1</string>
+   </property>
+   <property name="toolTip">
+    <string>Configure Output SDI-1</string>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionCopyChain1To2">
+   <property name="text">
+    <string>1 &gt; 2</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy settings from SDI-1 to SDI-2</string>
+   </property>
+  </action>
+  <action name="actionCopyChain2To1">
+   <property name="text">
+    <string>2 &gt; 1</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy settings from SDI-2 to SDI-1</string>
+   </property>
+  </action>
+  <action name="actionSplitScreen">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Split-Screen</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle Split-Screen Processing of the Image</string>
+   </property>
+  </action>
+  <action name="actionBroadcast">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Broadcast-Mode</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggles the RS485 Broadcast-Mode on / off</string>
+   </property>
+  </action>
+  <action name="actionSync">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Synchronise</string>
+   </property>
+   <property name="toolTip">
+    <string>Applies the Settings of the currently selected Camera to all Cameras in the current Broadcast-Group</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>InfoBox</class>
+   <extends>QWidget</extends>
+   <header>infobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>BlackLevelBox</class>
+   <extends>QWidget</extends>
+   <header>blacklevelbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>WbBox</class>
+   <extends>QWidget</extends>
+   <header>wbbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>MccEqBox</class>
+   <extends>QWidget</extends>
+   <header>mcceqbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>LutBox</class>
+   <extends>QWidget</extends>
+   <header>lutbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>InOutBox</class>
+   <extends>QWidget</extends>
+   <header>inoutbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>OutBox</class>
+   <extends>QWidget</extends>
+   <header>outbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>FltBox</class>
+   <extends>QWidget</extends>
+   <header>fltbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>UpdateBox</class>
+   <extends>QWidget</extends>
+   <header>updatebox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KneeBox</class>
+   <extends>QWidget</extends>
+   <header>kneebox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DpccBox</class>
+   <extends>QWidget</extends>
+   <header>dpccbox.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../ressource/ressource.qrc"/>
+ </resources>
+ <connections/>
+</ui>

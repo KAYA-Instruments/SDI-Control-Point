@@ -1,0 +1,7 @@
+Module				   |	License	   |	Note
+-----------------------|---------------|---------------------------------------------------------------
+Qt Framework and Tools		(L)GPLv3		https://www.qt.io/licensing-comparison/
+QCustomPlot					GPLv3			./dct_widgets/qcustomplot/GPL.txt
+csvparser / csvwriter		None			Free to use including commercial use according to readme
+embUnit						MIT				Free to use according to header
+cygwin1.dll					GPLv3			https://cygwin.com/licensing.html

@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>UI_BlackLevelBox</class>
+ <widget class="QWidget" name="UI_BlackLevelBox">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>806</width>
+    <height>900</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="gpxSensorBlack">
+     <property name="title">
+      <string>Sensor Black</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="2">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="1" rowspan="2">
+       <widget class="SingleChannelKnobBox" name="SensorBlackMaster">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>240</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>240</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string/>
+        </property>
+        <property name="whatsThis">
+         <string/>
+        </property>
+        <property name="title">
+         <string>Master</string>
+        </property>
+        <property name="maxRounds">
+         <number>2</number>
+        </property>
+        <property name="value">
+         <number>0</number>
+        </property>
+        <property name="minimum" stdset="0">
+         <number>-4096</number>
+        </property>
+        <property name="maximum" stdset="0">
+         <number>4095</number>
+        </property>
+        <property name="comma" stdset="0">
+         <number>0</number>
+        </property>
+        <property name="maxAngle">
+         <number>180</number>
+        </property>
+        <property name="needleImage">
+         <pixmap resource="../../ressource/ressource.qrc">:/images/needle/dial-pointer.png</pixmap>
+        </property>
+        <property name="backgroundImage">
+         <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-gray.png</pixmap>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="4">
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="3">
+       <widget class="TrippleChannelKnobBox" name="SensorBlack">
+        <property name="minimumSize">
+         <size>
+          <width>540</width>
+          <height>200</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>200</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string/>
+        </property>
+        <property name="whatsThis">
+         <string/>
+        </property>
+        <property name="title">
+         <string/>
+        </property>
+        <property name="maxRounds">
+         <number>2</number>
+        </property>
+        <property name="value0">
+         <number>0</number>
+        </property>
+        <property name="value1">
+         <number>0</number>
+        </property>
+        <property name="value2">
+         <number>0</number>
+        </property>
+        <property name="minimum" stdset="0">
+         <number>-4096</number>
+        </property>
+        <property name="maximum" stdset="0">
+         <number>4095</number>
+        </property>
+        <property name="comma" stdset="0">
+         <number>0</number>
+        </property>
+        <property name="maxAngle">
+         <number>180</number>
+        </property>
+        <property name="needleImage">
+         <pixmap resource="../../ressource/ressource.qrc">:/images/needle/dial-pointer.png</pixmap>
+        </property>
+        <property name="backgroundImage0">
+         <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-red.png</pixmap>
+        </property>
+        <property name="backgroundImage1">
+         <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-green.png</pixmap>
+        </property>
+        <property name="backgroundImage2">
+         <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-blue.png</pixmap>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="gpxFlareLevel">
+     <property name="title">
+      <string>Flare Compensation</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="1" rowspan="2">
+       <widget class="SingleChannelKnobBox" name="FlareCompensationMaster">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>240</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>240</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string/>
+        </property>
+        <property name="whatsThis">
+         <string/>
+        </property>
+        <property name="title">
+         <string>Master</string>
+        </property>
+        <property name="maxRounds">
+         <number>4</number>
+        </property>
+        <property name="maximum" stdset="0">
+         <number>65535</number>
+        </property>
+        <property name="comma" stdset="0">
+         <number>16</number>
+        </property>
+        <property name="maxAngle">
+         <number>180</number>
+        </property>
+        <property name="needleImage">
+         <pixmap resource="../../ressource/ressource.qrc">:/images/needle/dial-pointer.png</pixmap>
+        </property>
+        <property name="backgroundImage">
+         <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-gray.png</pixmap>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="4">
+       <spacer name="horizontalSpacer_6">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="2">
+       <spacer name="horizontalSpacer_5">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="0">
+       <spacer name="horizontalSpacer_4">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="3">
+       <widget class="TrippleChannelKnobBox" name="FlareCompensation">
+        <property name="minimumSize">
+         <size>
+          <width>540</width>
+          <height>200</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>200</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string/>
+        </property>
+        <property name="whatsThis">
+         <string/>
+        </property>
+        <property name="title">
+         <string/>
+        </property>
+        <property name="maxRounds">
+         <number>4</number>
+        </property>
+        <property name="maximum" stdset="0">
+         <number>65535</number>
+        </property>
+        <property name="comma" stdset="0">
+         <number>16</number>
+        </property>
+        <property name="maxAngle">
+         <number>180</number>
+        </property>
+        <property name="needleImage">
+         <pixmap resource="../../ressource/ressource.qrc">:/images/needle/dial-pointer.png</pixmap>
+        </property>
+        <property name="backgroundImage0">
+         <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-red.png</pixmap>
+        </property>
+        <property name="backgroundImage1">
+         <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-green.png</pixmap>
+        </property>
+        <property name="backgroundImage2">
+         <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-blue.png</pixmap>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QPushButton" name="btnFlareLevelReset">
+        <property name="text">
+         <string>Reset to Defaults</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="gpxMasterBlack">
+     <property name="title">
+      <string>Master Black</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="2">
+       <spacer name="horizontalSpacer_8">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="4">
+       <spacer name="horizontalSpacer_9">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="0">
+       <spacer name="horizontalSpacer_7">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="1" rowspan="2">
+       <widget class="SingleChannelKnobBox" name="MasterBlackMaster">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>240</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>240</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string/>
+        </property>
+        <property name="whatsThis">
+         <string/>
+        </property>
+        <property name="title">
+         <string>Master</string>
+        </property>
+        <property name="minimum" stdset="0">
+         <number>-2047</number>
+        </property>
+        <property name="maximum" stdset="0">
+         <number>2048</number>
+        </property>
+        <property name="comma" stdset="0">
+         <number>0</number>
+        </property>
+        <property name="maxAngle">
+         <number>150</number>
+        </property>
+        <property name="needleImage">
+         <pixmap resource="../../ressource/ressource.qrc">:/images/needle/dial-pointer.png</pixmap>
+        </property>
+        <property name="backgroundImage">
+         <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-gray.png</pixmap>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="TrippleChannelKnobBox" name="MasterBlack">
+        <property name="minimumSize">
+         <size>
+          <width>540</width>
+          <height>200</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>200</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string/>
+        </property>
+        <property name="whatsThis">
+         <string/>
+        </property>
+        <property name="title">
+         <string/>
+        </property>
+        <property name="minimum" stdset="0">
+         <number>-2047</number>
+        </property>
+        <property name="maximum" stdset="0">
+         <number>2048</number>
+        </property>
+        <property name="comma" stdset="0">
+         <number>0</number>
+        </property>
+        <property name="maxAngle">
+         <number>150</number>
+        </property>
+        <property name="needleImage">
+         <pixmap resource="../../ressource/ressource.qrc">:/images/needle/dial-pointer.png</pixmap>
+        </property>
+        <property name="backgroundImage0">
+         <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-red.png</pixmap>
+        </property>
+        <property name="backgroundImage1">
+         <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-green.png</pixmap>
+        </property>
+        <property name="backgroundImage2">
+         <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-blue.png</pixmap>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QPushButton" name="btnMasterBlackReset">
+        <property name="text">
+         <string>Reset to Defaults</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer0">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>SingleChannelKnobBox</class>
+   <extends>QGroupBox</extends>
+   <header>singlechannelknobbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>TrippleChannelKnobBox</class>
+   <extends>QGroupBox</extends>
+   <header>tripplechannelknobbox.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../../ressource/ressource.qrc"/>
+ </resources>
+ <connections/>
+</ui>
