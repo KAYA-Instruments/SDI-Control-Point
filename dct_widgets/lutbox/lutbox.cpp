@@ -17,6 +17,11 @@
 #include <QtDebug>
 #include <QModelIndex>
 #include <QStandardItemModel>
+#include <QFileInfo>
+#include <QItemDelegate>
+#include <QLineEdit>
+#include <QDir>
+#include <QFileDialog>
 
 #include <csvwrapper.h>
 

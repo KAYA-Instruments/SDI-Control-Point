@@ -20,6 +20,9 @@
 #include <dct_widgets_base.h>
 #include <qcustomplot.h>
 
+#include <QAbstractButton>
+#include <QItemSelection>
+
 /******************************************************************************
  * Linear Contrast Definitions
  *****************************************************************************/

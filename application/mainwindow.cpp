@@ -15,9 +15,10 @@
  *
  *****************************************************************************/
 #include <QtDebug>
-
-#include <wbbox.h>
-#include <outbox.h>
+#include <QLabel>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QProgressDialog>
 
 #include <ProVideoDevice.h>
 
@@ -60,9 +61,6 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
     setConnectDlg(connectDialog);
     
     // add aditional operation modes
-//    m_ui->mccBox->addOperationMode( 0, 12 );
-//    m_ui->mccBox->addOperationMode( 1, 16 );
-//    m_ui->mccBox->addOperationMode( 3, 32 );
     m_ui->mccEqBox->addOperationMode( 0, 12 );
     m_ui->mccEqBox->addOperationMode( 1, 16 );
     m_ui->mccEqBox->addOperationMode( 3, 32 );
@@ -269,7 +267,6 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
     }
     if (deviceFeatures.hasMccItf)
     {
-//        m_activeWidgets.append(m_ui->mccBox);
         m_activeWidgets.append(m_ui->mccEqBox);
         m_ui->tabWidget->addTab(m_ui->tabMcc, QIcon(":/images/tab/piesegmentselect.png"), "");
     }
@@ -572,21 +569,6 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
     //////////////////////////
     if (deviceFeatures.hasMccItf)
     {
-        // OLD MCC WIDGET
-//        // connect enable
-//        connect( dev->GetMccItf(), SIGNAL(MccEnableChanged(int)), m_ui->mccBox, SLOT(onMccEnableChange(int)) );
-//        connect( m_ui->mccBox, SIGNAL(MccEnableChanged(int)), dev->GetMccItf(), SLOT(onMccEnableChange(int)) );
-
-//        // connect operation-mode
-//        connect( dev->GetMccItf(), SIGNAL(MccOperationModeChanged(int,int)), m_ui->mccBox, SLOT(onMccOperationModeChange(int,int)) );
-//        connect( m_ui->mccBox, SIGNAL(MccOperationModeChanged(int,int)), dev->GetMccItf(), SLOT(onMccOperationModeChange(int,int)) );
-
-//        // connect phase changes
-//        connect( dev->GetMccItf(), SIGNAL(MccPhaseChanged(int,int,int)), m_ui->mccBox, SLOT(onMccPhaseChange(int,int,int)) );
-//        connect( m_ui->mccBox, SIGNAL(MccPhaseChanged(int,int,int)), dev->GetMccItf(), SLOT(onMccPhaseChange(int,int,int)) );
-//        connect( m_ui->mccBox, SIGNAL(MccPhaseIndexChanged(int)), dev->GetMccItf(), SLOT(onMccPhaseSelectionChange(int)) );
-
-        // NEW MCC WIDGET
         // connect enable
         connect( dev->GetMccItf(), SIGNAL(MccEnableChanged(int)), m_ui->mccEqBox, SLOT(onMccEnableChange(int)) );
         connect( m_ui->mccEqBox, SIGNAL(MccEnableChanged(int)), dev->GetMccItf(), SLOT(onMccEnableChange(int)) );
@@ -1345,7 +1327,6 @@ void MainWindow::onEngineeringModeChange( bool value )
     m_ui->blackBox->setMode( m );
     m_ui->wbBox->setMode( m );
     m_ui->fltBox->setMode( m );
-//    m_ui->mccBox->setMode( m );
     m_ui->mccEqBox->setMode( m );
     m_ui->outBox->setMode( m );
     m_ui->infoBox->setMode( m );
