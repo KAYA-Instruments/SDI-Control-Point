@@ -9,7 +9,8 @@ Below is a short overview of the project files and a guide on how to start worki
 
 # Project Structure
 The project contains four folders with multiple sub-directories:
-* **application:** The Qt project file for the application as well as the main header, source and ui files
+
+* **application:** The Qt project file for the application as well as the main header, source and ui files  
 * **dct_widgets:** A base class for custom widgets and sub-directories for each of widgets used in the application, as well as a dedicated Qt project to [build the widgets stand-alone](#import-custom-widgets-to-the-qt-designer)
 * **libraries:** A collection of c libraries used throughout the project including [unit tests](#unit-tests-for-c-libraries)
 * **ressource:** Ressources like images and icons used in the application

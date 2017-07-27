@@ -20,14 +20,17 @@ Version **1.0.0** - Date 01.06.2017
 
 ## Previous Changes:
 
-09.05.2017  
+09.05.2017
+
 * Added device auto detection and device switcher
 * Added RS485 broadcast mode
 * Fixed Update tab
 
-10.04.2017  
+10.04.2017
+
 * New MCC control widget (MCC Equalizer)
 
-01.02.2017  
+01.02.2017
+
 * More options for AWB handling
 * New settings tab for defect pixel detection configuration
