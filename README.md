@@ -1,9 +1,11 @@
 # Introduction
 The ProVideo GUI is a graphical user interface used to setup Dream Chips ProVideo devices like cameras and color correctors.
 
-The master-branch of this project contains the most recent GUI version used for our current line of products. Branches may be created for special or legacy devices.
+The master-branch of this project contains the most recent GUI version used for our current line of products. Branches may be created for special or legacy devices.  
 
 The software is based on the Qt framework and provided as a Qt-Project, which can be opened using the Qt Creator.
+
+Below is a short overview of the project files and a guide on how to start working on this project. For more information about the usage and development of this software, take a look at the [wiki pages](https://gitlab.com/dreamchip/provideo-gui/wikis/home).
 
 # Project Structure
 The project contains four folders with multiple sub-directories:
@@ -11,8 +13,6 @@ The project contains four folders with multiple sub-directories:
 * **dct_widgets:** A base class for custom widgets and sub-directories for each of widgets used in the application, as well as a dedicated Qt project to [build the widgets stand-alone](#import-custom-widgets-to-the-qt-designer)
 * **libraries:** A collection of c libraries used throughout the project including [unit tests](#unit-tests-for-c-libraries)
 * **ressource:** Ressources like images and icons used in the application
-
-For more information about the functionality of the software take a look at the [development wiki pages](link-to-wiki-page)
 
 # Working on the Project
 ## Development Environment
