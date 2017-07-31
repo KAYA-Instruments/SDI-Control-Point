@@ -150,6 +150,7 @@
         <file>style/images/up_arrow.png</file>
         <file>style/images/Vmovetoolbar.png</file>
         <file>style/images/Vsepartoolbar.png</file>
-        <file>../third-party-licenses.txt</file>
+        <file alias="doc/third-party-licenses.txt">../third-party-licenses.txt</file>
+        <file alias="doc/license.txt">../LICENSE</file>
     </qresource>
 </RCC>

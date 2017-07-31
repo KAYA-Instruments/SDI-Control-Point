@@ -59,7 +59,8 @@ INCLUDEPATH += ../libraries/include ..              \
                ../dct_widgets/fltbox                \
                ../dct_widgets/updatebox             \
                ../dct_widgets/kneebox               \
-               ../dct_widgets/dpccbox
+               ../dct_widgets/dpccbox               \
+               ../dct_widgets/textviewer
 
 SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
            ../dct_widgets/wbbox/wbbox.cpp                                   \
@@ -114,6 +115,7 @@ SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
            ../dct_widgets/com_ctrl/Condor4kDevice.cpp                       \
            ../dct_widgets/com_ctrl/CondorZeissDevice.cpp                    \
            ../dct_widgets/csvwrapper/csvwrapper.cpp                         \
+           ../dct_widgets/textviewer/textviewer.cpp                         \
            ../libraries/ctrl_channel/ctrl_channel.c                         \
            ../libraries/ctrl_protocol/ctrl_protocol.c                       \
            ../libraries/ctrl_protocol/ctrl_protocol_isp.c                   \
@@ -169,6 +171,7 @@ HEADERS  += ../libraries/include                                                
             ../dct_widgets/fltbox/fltbox.h                                      \
             ../dct_widgets/updatebox/updatebox.h                                \
             ../dct_widgets/updatebox/flashloader.h                              \
+            ../dct_widgets/updatebox/id.h                                       \
             ../dct_widgets/kneebox/kneebox.h                                    \
             ../dct_widgets/kneebox/knee_interpolation.h                         \
             ../dct_widgets/dpccbox/dpccbox.h                                    \
@@ -208,9 +211,11 @@ HEADERS  += ../libraries/include                                                
             ../dct_widgets/com_ctrl/ComChannel.h                                \
             ../dct_widgets/com_ctrl/ComChannelRSxxx.h                           \
             ../dct_widgets/com_ctrl/ComProtocol.h                               \
+            ../dct_widgets/com_ctrl/ProVideoProtocol.h                          \
             ../dct_widgets/com_ctrl/common.h                                    \
             ../dct_widgets/com_ctrl/defines.h                                   \
             ../dct_widgets/csvwrapper/csvwrapper.h                              \
+            ../dct_widgets/textviewer/textviewer.h                              \
             ../dct_widgets/dct_widgets_base.h                                   \
             ../libraries/include/csv/csvparser.h                                \
             ../libraries/include/csv/csvwriter.h                                \
@@ -271,6 +276,9 @@ FORMS    += ../dct_widgets/mcceqbox/mcceqbox.ui                             \
             ../dct_widgets/singlechannelknobbox/singlechannelknobbox.ui     \
             ../dct_widgets/tripplechannelknobbox/tripplechannelknobbox.ui   \
             ../dct_widgets/connectdialog/connectdialog.ui                   \
+            ../dct_widgets/textviewer/textviewer.ui                         \
             mainwindow.ui
 
 RESOURCES = ../ressource/ressource.qrc
+
+DISTFILES += ../ressource/doc/third-party-licenses.txt

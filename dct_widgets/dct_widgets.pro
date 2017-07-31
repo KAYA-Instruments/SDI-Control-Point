@@ -26,6 +26,7 @@ DEFINES += FLASH_LOADER_APPLICATION=\\\"$$FLASH_LOADER_APPLICATION\\\"
 INCLUDEPATH += ../libraries/include     \
                com_ctrl                 \
                csvwrapper               \
+               textviewer               \
                fmtspinbox               \
                skinneddial              \
                switchbutton             \
@@ -84,6 +85,7 @@ HEADERS      = fmtspinbox/fmtspinbox.h                              \
                dpccbox/dpccbox.h                                    \
                com_ctrl/FpncData.h                                  \
                csvwrapper/csvwrapper.h                              \
+               textviewer/textviewer.h                              \
                dct_widgets_base.h                                   \
                dct_widgets.h
 
@@ -124,6 +126,7 @@ SOURCES      = fmtspinbox/fmtspinbox.cpp                            \
                com_ctrl/common.cpp                                  \
                com_ctrl/defines.cpp                                 \
                csvwrapper/csvwrapper.cpp                            \
+               textviewer/textviewer.cpp                            \
                dct_widgets.cpp
 
 FORMS       += singlechannelknobbox/singlechannelknobbox.ui         \
@@ -144,6 +147,7 @@ FORMS       += singlechannelknobbox/singlechannelknobbox.ui         \
                playbackbox/playbackbox.ui                           \
                fpncbox/fpncbox.ui                                   \
                kneebox/kneebox.ui                                   \
-               dpccbox/dpccbox.ui
+               dpccbox/dpccbox.ui                                   \
+               textviewer/textviewer.ui
 
 RESOURCES    = ../ressource/ressource.qrc \

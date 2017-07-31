@@ -1,7 +1,42 @@
-Module				   |	License	          |	Note
------------------------|----------------------|---------------------------------------------------------------
-Qt Framework and Tools		(L)GPLv3			https://www.qt.io/licensing-comparison/
-QCustomPlot					GPLv3				./dct_widgets/qcustomplot/GPL.txt
-csvparser / csvwriter		Custom Open Source	Free to use including commercial use according to readme
-embUnit						MIT					Free to use according to header
-cygwin1.dll					GPLv3				https://cygwin.com/licensing.html
+THIRD-PARTY SOFTWARE LICENSES
+
+-------- Qt Framework --------
+
+Qt is licensed under GPLv3, for more information view :
+https://www.qt.io/qt-licensing-terms/
+
+-------- QCustomPlot --------
+
+QCustomPlot is licensed under GPLv3, for more information view:
+http://qcustomplot.com/
+
+The license file can be found in:
+./dct_widgets/qcustomplot/GPL.txt
+
+This license applies to all files in the following folder:
+./det_widgets/qcustomplot/
+
+-------- csvparser / csvwriter --------
+
+The csvparser and csvwriter are available for free without any restrictions on sourceforge:
+https://sourceforge.net/projects/cccsvparser/
+https://sourceforge.net/projects/cccsvwriter/
+
+This applies to the following files:
+./libraries/include/csv/csvparser.h
+./libraries/csv/csvparser.c
+./libraries/include/csv/csvwriter.h
+./libraries/csv/csvwriter.c
+
+-------- embUnit --------
+
+embUnit is licensed under the MIT license, for more informatin view:
+https://sourceforge.net/projects/embunit/
+
+-------- Cygwin --------
+
+This program uses the cygwin1.dll which is licensed under GPLv3, for more information view:
+https://cygwin.com/licensing.html
+
+This aplies to the following file:
+./application/cygwin1.dll

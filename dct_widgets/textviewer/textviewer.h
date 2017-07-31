@@ -15,33 +15,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *****************************************************************************/
 /**
- * @file    provideo_protocol_playback.h
+ * @file    textviewer.h
  *
- * @brief   ProVideo playback protocol implementation
+ * @brief   Class definition of simple widget to view the content of txt files
  *
  *****************************************************************************/
-#ifndef __PROVIDEO_PROTOCOL_PLAYBACK_H__
-#define __PROVIDEO_PROTOCOL_PLAYBACK_H__
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#ifndef TEXTVIEWER_H
+#define TEXTVIEWER_H
 
-/**************************************************************************//**
- * @brief      Register the playback protocol implementation at control protocol layer
- *
- * @param[in]  handle    Instance handle of control protocol layer
- *
- * @return     0 on success, error-code otherwise
- *****************************************************************************/
-int provideo_protocol_playback_init
-(
-    ctrl_protocol_handle_t const handle
-);
+#include <QWidget>
+#include <QTextBrowser>
 
-#ifdef __cplusplus
+namespace Ui {
+class TextViewer;
 }
-#endif
 
-#endif /* __PROVIDEO_PROTOCOL_PLAYBACK_H__ */
+class TextViewer : public QWidget
+{
+    Q_OBJECT
 
+public:
+    explicit TextViewer( const QString &path, const QString &title, QWidget *parent = 0 );
+    ~TextViewer();
+
+private:
+    Ui::TextViewer *ui;
+    QTextBrowser *textBrowser;
+};
+
+#endif // TEXTVIEWER_H

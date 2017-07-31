@@ -1,12 +1,18 @@
 /******************************************************************************
+ * Copyright (C) 2017 Dream Chip Technologies GmbH
  *
- * Copyright 2016, Dream Chip Technologies GmbH. All rights reserved.
- * No part of this work may be reproduced, modified, distributed, transmitted,
- * transcribed, or translated into any language or computer format, in any form
- * or by any means without written permission of:
- * Dream Chip Technologies GmbH, Steinriede 10, 30827 Garbsen / Berenbostel,
- * Germany
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *****************************************************************************/
 /**
  * @file    infobox.cpp
@@ -16,7 +22,8 @@
  *****************************************************************************/
 #include <QtDebug>
 #include <QMessageBox>
-#include <QTextBrowser>
+
+#include <textviewer.h>
 
 #include <com_ctrl/ComChannelRSxxx.h>
 
@@ -96,6 +103,7 @@ InfoBox::InfoBox( QWidget * parent ) : DctWidgetBox( parent )
 
     // connect software license dialogs
     connect ( d_data->m_ui->btnShowLicense, SIGNAL(clicked(bool)), this, SLOT(onShowLicenseClicked()) );
+    connect ( d_data->m_ui->btnShowThirdPartyLicenses, SIGNAL(clicked(bool)), this, SLOT(onShowThirdPartyLicensesClicked()) );
 }
 
 /******************************************************************************
@@ -379,23 +387,8 @@ void InfoBox::onCbxEngineeringModeChange( int value )
  *****************************************************************************/
 void InfoBox::onShowLicenseClicked()
 {
-    // Open license file
-    QFile file(":/../third-party-licenses.txt");
-    if ( !file.open(QIODevice::ReadOnly) )
-    {
-        qDebug() << "Can not open license file.";
-        return;
-    }
-
-    // Load contents of file to string
-    QTextStream stream(&file);
-    QString content = stream.readAll();
-    file.close();
-
-    // Show content in text browser
-    QTextBrowser textBrowser;
-    textBrowser.setPlainText(content);
-    textBrowser.show();
+    TextViewer * licenseView = new TextViewer( ":/doc/license.txt", "License" );
+    licenseView->show();
 }
 
 /******************************************************************************
@@ -403,6 +396,7 @@ void InfoBox::onShowLicenseClicked()
  *****************************************************************************/
 void InfoBox::onShowThirdPartyLicensesClicked()
 {
-
+    TextViewer * licenseView = new TextViewer( ":/doc/third-party-licenses.txt", "Third-Party Licenses" );
+    licenseView->show();
 }
 
