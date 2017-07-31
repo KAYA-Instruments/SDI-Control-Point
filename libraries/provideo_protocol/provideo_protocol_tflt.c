@@ -24,8 +24,7 @@
 #include <ctrl_protocol/ctrl_protocol_tflt.h>
 
 #include <provideo_protocol/provideo_protocol.h>
-
-#include "provideo_protocol_common.h"
+#include <provideo_protocol/provideo_protocol_common.h>
 
 /******************************************************************************
  * @brief command "tflt" 

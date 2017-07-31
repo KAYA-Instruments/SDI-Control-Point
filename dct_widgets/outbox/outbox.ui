@@ -700,6 +700,9 @@
        <property name="title">
         <string>RGB to YCbCr</string>
        </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="0" column="0">
          <widget class="QPushButton" name="btnRec709">
@@ -901,7 +904,7 @@
         <string>SDI Output</string>
        </property>
        <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        <set>Qt::AlignCenter</set>
        </property>
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0">

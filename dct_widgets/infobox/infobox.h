@@ -73,6 +73,8 @@ private slots:
     void onBtnResetToDefaultsClicked();
     void onBtnApplySerialPortSettingsClicked();
     void onCbxEngineeringModeChange( int value );
+    void onShowLicenseClicked();
+    void onShowThirdPartyLicensesClicked();
 
 private:
     class PrivateData;

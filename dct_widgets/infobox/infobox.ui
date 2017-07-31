@@ -166,30 +166,6 @@
         </property>
        </widget>
       </item>
-      <item row="11" column="1" colspan="2">
-       <widget class="QListWidget" name="lstFeatureMaskHw">
-        <property name="minimumSize">
-         <size>
-          <width>160</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Courier 10 Pitch</family>
-          <pointsize>10</pointsize>
-          <weight>50</weight>
-          <bold>false</bold>
-         </font>
-        </property>
-        <property name="focusPolicy">
-         <enum>Qt::NoFocus</enum>
-        </property>
-        <property name="editTriggers">
-         <set>QAbstractItemView::NoEditTriggers</set>
-        </property>
-       </widget>
-      </item>
       <item row="3" column="1">
        <widget class="QLineEdit" name="letBitstreamId">
         <property name="minimumSize">
@@ -659,6 +635,36 @@
         </property>
        </widget>
       </item>
+      <item row="11" column="1" colspan="2">
+       <widget class="QListWidget" name="lstFeatureMaskHw">
+        <property name="minimumSize">
+         <size>
+          <width>160</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>Courier 10 Pitch</family>
+          <pointsize>10</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="editTriggers">
+         <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -772,38 +778,83 @@
           </property>
          </widget>
         </item>
+        <item>
+         <widget class="QLabel" name="lblOtherOptions">
+          <property name="text">
+           <string>Other Options:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QLabel" name="lblEngineeringMode">
+            <property name="minimumSize">
+             <size>
+              <width>120</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Engineering Mode</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cbxEngineeringMode">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
        </layout>
       </widget>
      </item>
      <item>
-      <widget class="QGroupBox" name="gpxOptions">
+      <widget class="QGroupBox" name="gpxLicenses">
        <property name="title">
-        <string>Control Options</string>
+        <string>Software Licenses</string>
        </property>
        <layout class="QFormLayout" name="formLayout">
         <item row="0" column="0">
-         <widget class="QLabel" name="lblEngineeringMode">
-          <property name="minimumSize">
-           <size>
-            <width>120</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>120</width>
-            <height>16777215</height>
-           </size>
-          </property>
+         <widget class="QLabel" name="label_2">
           <property name="text">
-           <string>Engineering Mode</string>
+           <string>This software is published under GPLv3, to view the license, click the following button.</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
-        <item row="0" column="1">
-         <widget class="QCheckBox" name="cbxEngineeringMode">
+        <item row="1" column="0">
+         <widget class="QPushButton" name="btnShowLicense">
           <property name="text">
-           <string/>
+           <string>Show Software License</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>This software uses the Qt Framework by the Qt Company. Click the following button to view all third-party software licenses.</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QPushButton" name="btnShowThirdPartyLicenses">
+          <property name="text">
+           <string>Show Third Party Licenses</string>
           </property>
          </widget>
         </item>

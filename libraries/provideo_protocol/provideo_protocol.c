@@ -18,24 +18,25 @@
 #include <errno.h>
 
 #include <ctrl_channel/ctrl_channel.h>
+
 #include <ctrl_protocol/ctrl_protocol.h>
 
-#include "provideo_protocol_common.h"
-#include "provideo_protocol_system.h"
-#include "provideo_protocol_cam.h"
-#include "provideo_protocol_isp.h"
-#include "provideo_protocol_cproc.h"
-#include "provideo_protocol_auto.h"
-#include "provideo_protocol_mcc.h"
-#include "provideo_protocol_chain.h"
-#include "provideo_protocol_lut.h"
-#include "provideo_protocol_tflt.h"
-#include "provideo_protocol_fpnc.h"
-#include "provideo_protocol_playback.h"
-#include "provideo_protocol_osd.h"
-#include "provideo_protocol_iris.h"
-#include "provideo_protocol_knee.h"
-#include "provideo_protocol_dpcc.h"
+#include <provideo_protocol/provideo_protocol_common.h>
+#include <provideo_protocol/provideo_protocol_system.h>
+#include <provideo_protocol/provideo_protocol_cam.h>
+#include <provideo_protocol/provideo_protocol_isp.h>
+#include <provideo_protocol/provideo_protocol_cproc.h>
+#include <provideo_protocol/provideo_protocol_auto.h>
+#include <provideo_protocol/provideo_protocol_mcc.h>
+#include <provideo_protocol/provideo_protocol_chain.h>
+#include <provideo_protocol/provideo_protocol_lut.h>
+#include <provideo_protocol/provideo_protocol_tflt.h>
+#include <provideo_protocol/provideo_protocol_fpnc.h>
+#include <provideo_protocol/provideo_protocol_playback.h>
+#include <provideo_protocol/provideo_protocol_osd.h>
+#include <provideo_protocol/provideo_protocol_iris.h>
+#include <provideo_protocol/provideo_protocol_knee.h>
+#include <provideo_protocol/provideo_protocol_dpcc.h>
 
 /******************************************************************************
  * provideo_protocol_init

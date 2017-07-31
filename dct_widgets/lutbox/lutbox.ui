@@ -84,7 +84,7 @@
            <x>0</x>
            <y>0</y>
            <width>784</width>
-           <height>423</height>
+           <height>419</height>
           </rect>
          </property>
         </widget>
@@ -473,13 +473,13 @@
            <widget class="QLabel" name="lblLinContrast">
             <property name="minimumSize">
              <size>
-              <width>100</width>
+              <width>0</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>100</width>
+              <width>16777215</width>
               <height>16777215</height>
              </size>
             </property>
@@ -529,13 +529,13 @@
            <widget class="QLabel" name="lblLinOffset">
             <property name="minimumSize">
              <size>
-              <width>100</width>
+              <width>0</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>100</width>
+              <width>16777215</width>
               <height>16777215</height>
              </size>
             </property>
@@ -579,13 +579,13 @@
            <widget class="QLabel" name="lblThreshold">
             <property name="minimumSize">
              <size>
-              <width>100</width>
+              <width>0</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>100</width>
+              <width>16777215</width>
               <height>16777215</height>
              </size>
             </property>
@@ -629,13 +629,13 @@
            <widget class="QLabel" name="lblContrast">
             <property name="minimumSize">
              <size>
-              <width>100</width>
+              <width>0</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>100</width>
+              <width>16777215</width>
               <height>16777215</height>
              </size>
             </property>
@@ -648,13 +648,13 @@
            <widget class="QLabel" name="lblGamma">
             <property name="minimumSize">
              <size>
-              <width>100</width>
+              <width>0</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>100</width>
+              <width>16777215</width>
               <height>16777215</height>
              </size>
             </property>
@@ -667,13 +667,13 @@
            <widget class="QLabel" name="lblGamma_2">
             <property name="minimumSize">
              <size>
-              <width>100</width>
+              <width>0</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>100</width>
+              <width>16777215</width>
               <height>16777215</height>
              </size>
             </property>

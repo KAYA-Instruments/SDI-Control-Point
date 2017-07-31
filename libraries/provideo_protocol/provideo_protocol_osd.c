@@ -23,7 +23,7 @@
 #include <ctrl_protocol/ctrl_protocol.h>
 #include <ctrl_protocol/ctrl_protocol_osd.h>
 
-#include "provideo_protocol_common.h"
+#include <provideo_protocol/provideo_protocol_common.h>
 
 /******************************************************************************
  * @brief command "test_pattern" 

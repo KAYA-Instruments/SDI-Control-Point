@@ -24,9 +24,7 @@
 #include <ctrl_protocol/ctrl_protocol_knee.h>
 
 #include <provideo_protocol/provideo_protocol.h>
-
-#include "provideo_protocol_common.h"
-
+#include <provideo_protocol/provideo_protocol_common.h>
 
 /******************************************************************************
  * @brief command "knee"

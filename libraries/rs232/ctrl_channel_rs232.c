@@ -33,7 +33,7 @@
 #include <rs232/ctrl_channel_rs232.h>
 
 // header files of system specific implementation
-#include "rs232.h"
+#include <rs232/rs232.h>
 
 /******************************************************************************
  * ctrl_channel_rs232_get_no_ports - Return the number of available serial 

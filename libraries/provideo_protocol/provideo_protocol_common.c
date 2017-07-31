@@ -23,7 +23,7 @@
 
 #include <ctrl_channel/ctrl_channel.h>
 
-#include "provideo_protocol_common.h"
+#include <provideo_protocol/provideo_protocol_common.h>
 
 /******************************************************************************
  * evaluate_error_response - evaluate error message from provideo device

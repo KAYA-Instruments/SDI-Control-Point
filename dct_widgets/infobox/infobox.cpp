@@ -16,6 +16,7 @@
  *****************************************************************************/
 #include <QtDebug>
 #include <QMessageBox>
+#include <QTextBrowser>
 
 #include <com_ctrl/ComChannelRSxxx.h>
 
@@ -92,6 +93,9 @@ InfoBox::InfoBox( QWidget * parent ) : DctWidgetBox( parent )
 
     // connect control settings
     connect( d_data->m_ui->cbxEngineeringMode, SIGNAL(stateChanged(int)), this, SLOT(onCbxEngineeringModeChange(int)) );
+
+    // connect software license dialogs
+    connect ( d_data->m_ui->btnShowLicense, SIGNAL(clicked(bool)), this, SLOT(onShowLicenseClicked()) );
 }
 
 /******************************************************************************
@@ -368,5 +372,37 @@ void InfoBox::onBtnApplySerialPortSettingsClicked()
 void InfoBox::onCbxEngineeringModeChange( int value )
 {
     emit EngineeringModeChanged( (Qt::Unchecked == value) ? false : true );
+}
+
+/******************************************************************************
+ * InfoBox::onShowLicenseClicked
+ *****************************************************************************/
+void InfoBox::onShowLicenseClicked()
+{
+    // Open license file
+    QFile file(":/../third-party-licenses.txt");
+    if ( !file.open(QIODevice::ReadOnly) )
+    {
+        qDebug() << "Can not open license file.";
+        return;
+    }
+
+    // Load contents of file to string
+    QTextStream stream(&file);
+    QString content = stream.readAll();
+    file.close();
+
+    // Show content in text browser
+    QTextBrowser textBrowser;
+    textBrowser.setPlainText(content);
+    textBrowser.show();
+}
+
+/******************************************************************************
+ * InfoBox::onShowThirdPartyLicensesClicked
+ *****************************************************************************/
+void InfoBox::onShowThirdPartyLicensesClicked()
+{
+
 }
 
