@@ -129,8 +129,11 @@ MccEqBox::MccEqBox( QWidget * parent ) : DctWidgetBox( parent )
     // initialize UI
     d_data->m_ui->setupUi( this );
 
-    // MCC phase mode
+    // Add operational modes
+    addOperationMode( 0, 12 );
+    addOperationMode( 1, 16 );
     addOperationMode( MCC_DEFAULT_OPERATION_MODE, MCC_DEFAULT_COLOR_PHASES );
+    addOperationMode( 3, 32 );
 
     /* call hue and saturation changed events to setup the range of the selected phase
      * spin boxes and the text of the min / max labels */

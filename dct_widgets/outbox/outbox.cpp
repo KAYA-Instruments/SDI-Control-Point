@@ -220,6 +220,24 @@ OutBox::OutBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->SdiWhite->setMaxRounds( 1 );
     d_data->m_ui->SdiWhite->setFmt( OUT_SDI_WHITE_DISPLAY_MASK );
 
+    ///////////////////////////////////////
+    // fill sdi modes
+    ///////////////////////////////////////
+
+    for ( int i=SdiModeFirst; i<SdiModeMax; i++ )
+    {
+        addSdiMode( GetSdiModeName( (enum SdiMode)i ), i );
+    }
+
+    ///////////////////////////////////////
+    // fill color space modes
+    ///////////////////////////////////////
+
+    for ( int i=ColorSpaceModeFirst; i<ColorSpaceModeMax; i++ )
+    {
+        addColorSpaceMode( GetColorSpaceModeName( (enum ColorSpaceMode)i ), i );
+    }
+
     ////////////////////
     // connect signals
     ////////////////////

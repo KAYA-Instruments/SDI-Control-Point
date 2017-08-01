@@ -66,53 +66,6 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
     // Connect with dialog
     setConnectDlg(connectDialog);
     
-    // add aditional operation modes
-    m_ui->mccEqBox->addOperationMode( 0, 12 );
-    m_ui->mccEqBox->addOperationMode( 1, 16 );
-    m_ui->mccEqBox->addOperationMode( 3, 32 );
-
-    // fill lens shading correction segmentation mode combo box
-    for ( int i=LscSegmentationModeFirst; i<LscSegmentationMax; i++ )
-    {
-        m_ui->inoutBox->addLscSegmentationMode( GetLscSegmentationModeName( (LscSegmentationMode)i ), i );
-    }
-
-    // fill bayer pattern combo box
-    for ( int i=BayerPatternFirst; i<BayerPatternMax; i++ )
-    {
-        m_ui->inoutBox->addBayerPattern( GetBayerPatternName( (BayerPattern)i ), i );
-    }
-
-    // fill sdi2-mode combo box
-    for ( int i=Sdi2ModeFirst; i<Sdi2ModeMax; i++ )
-    {
-        m_ui->inoutBox->addSdi2Mode( GetSdi2ModeName( (Sdi2Mode)i ), i );
-    }
-
-    // fill flip-mode combo box
-    for ( int i=FlipModeFirst; i<FlipModeMax; i++ )
-    {
-        m_ui->inoutBox->addFlipMode( GetFlipModeName( (FlipMode)i ), i );
-    }
-
-    // fill genlock-mode combo box
-    for ( int i=GenLockModeFirst; i<GenLockModeMax; i++ )
-    {
-        m_ui->inoutBox->addGenlockMode( GetGenlockModeName( (GenLockMode)i ), i );
-    }
-    
-    // fill sdi modes
-    for ( int i=SdiModeFirst; i<SdiModeMax; i++ )
-    {
-        m_ui->outBox->addSdiMode( GetSdiModeName( (SdiMode)i ), i );
-    }
-
-    // fill color space modes
-    for ( int i=ColorSpaceModeFirst; i<ColorSpaceModeMax; i++ )
-    {
-        m_ui->outBox->addColorSpaceMode( GetColorSpaceModeName( (ColorSpaceMode)i ), i );
-    }
-
     // connect actions
     connect( m_ui->actionConnect        , SIGNAL( triggered() ), this, SLOT( onConnectClicked() ) );
     connect( m_ui->actionLoadSettings   , SIGNAL( triggered() ), this, SLOT( onLoadSettingsClicked() ) );

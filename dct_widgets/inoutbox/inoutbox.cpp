@@ -202,6 +202,36 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->sbxGenlockOffsetHorizontal->setRange( -4095, 4095 );
     d_data->m_ui->sbxGenlockOffsetHorizontal->setKeyboardTracking( false );
 
+    // fill lens shading correction segmentation mode combo box
+    for ( int i=LscSegmentationModeFirst; i<LscSegmentationMax; i++ )
+    {
+        addLscSegmentationMode( GetLscSegmentationModeName( (LscSegmentationMode)i ), i );
+    }
+
+    // fill bayer pattern combo box
+    for ( int i=BayerPatternFirst; i<BayerPatternMax; i++ )
+    {
+        addBayerPattern( GetBayerPatternName( (enum BayerPattern)i ), i );
+    }
+
+    // fill sdi2-mode combo box
+    for ( int i=Sdi2ModeFirst; i<Sdi2ModeMax; i++ )
+    {
+        addSdi2Mode( GetSdi2ModeName( (enum Sdi2Mode)i ), i );
+    }
+
+    // fill flip-mode combo box
+    for ( int i=FlipModeFirst; i<FlipModeMax; i++ )
+    {
+        addFlipMode( GetFlipModeName( (enum FlipMode)i ), i );
+    }
+
+    // fill genlock-mode combo box
+    for ( int i=GenLockModeFirst; i<GenLockModeMax; i++ )
+    {
+        addGenlockMode( GetGenlockModeName( (enum GenLockMode)i ), i );
+    }
+
     // overrule auto-repeat threshold
     d_data->m_ui->sbxAnalogueGain           ->setStyle( d_data->m_sbxStyle );
     d_data->m_ui->sbxExposure               ->setStyle( d_data->m_sbxStyle );
