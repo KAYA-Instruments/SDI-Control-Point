@@ -64,10 +64,6 @@ ConnectDialog::ConnectDialog( QWidget * parent )
     , m_detectedRS485Devices()
     , m_currentRS485DeviceIndex(-1)
 {
-    ///////////////////////////////////////////////////////////////////////////
-    // init GUI stuff
-    ///////////////////////////////////////////////////////////////////////////
-
     // initialize UI
     m_ui->setupUi( this );
 
@@ -1232,7 +1228,7 @@ bool ConnectDialog::scanAndConnect()
 }
 
 /******************************************************************************
- * ConnectDialog::changeSettingsAndReconnect
+ * ConnectDialog::changeComportSettings
  *****************************************************************************/
 void ConnectDialog::changeComportSettings( int rs232Baudrate, int rs485Baudrate, int rs485Address, int rs485BroadcastAddress )
 {

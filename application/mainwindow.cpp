@@ -79,9 +79,6 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
     connect( m_ui->actionSaveToFile     , SIGNAL( triggered() ), this, SLOT( onSaveToFileClicked() ) );
     connect( m_ui->actionBroadcast      , SIGNAL( triggered() ), this, SLOT( onBroadcastClicked() ) );
     connect( m_ui->actionSync           , SIGNAL( triggered() ), this, SLOT( onSyncSettingsClicked()) );
-
-    // GUI control signals
-    connect( m_ui->infoBox, SIGNAL(EngineeringModeChanged(bool)), this, SLOT(onEngineeringModeChange(bool)) );
 }
 
 /******************************************************************************
@@ -725,6 +722,9 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
 
     // copy flag
     connect( m_ui->infoBox, SIGNAL(CopyFlagChanged(bool)), this, SLOT(onCopyFlagChange(bool)) );
+
+    // engineering mode
+    connect( m_ui->infoBox, SIGNAL(EngineeringModeChanged(bool)), this, SLOT(onEngineeringModeChange(bool)) );
     
     //////////////////////////
     // update
@@ -1282,13 +1282,10 @@ void MainWindow::onCopyFlagChange( bool value )
 void MainWindow::onEngineeringModeChange( bool value )
 {
     DctWidgetBox::Mode m = value ? DctWidgetBox::Advanced : DctWidgetBox::Normal;
-    m_ui->inoutBox->setMode( m );
-    m_ui->blackBox->setMode( m );
-    m_ui->wbBox->setMode( m );
-    m_ui->fltBox->setMode( m );
-    m_ui->mccEqBox->setMode( m );
-    m_ui->outBox->setMode( m );
-    m_ui->infoBox->setMode( m );
+    for ( int i = 0; i < m_activeWidgets.length(); i++ )
+    {
+        m_activeWidgets[i]->setMode( m );
+    }
 }
 
 /******************************************************************************
