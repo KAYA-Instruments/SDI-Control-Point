@@ -112,7 +112,7 @@
        </spacer>
       </item>
       <item row="1" column="3">
-       <widget class="TrippleChannelKnobBox" name="SensorBlack">
+       <widget class="TripleChannelKnobBox" name="SensorBlack">
         <property name="minimumSize">
          <size>
           <width>540</width>
@@ -267,7 +267,7 @@
        </spacer>
       </item>
       <item row="0" column="3">
-       <widget class="TrippleChannelKnobBox" name="FlareCompensation">
+       <widget class="TripleChannelKnobBox" name="FlareCompensation">
         <property name="minimumSize">
          <size>
           <width>540</width>
@@ -414,7 +414,7 @@
        </widget>
       </item>
       <item row="0" column="3">
-       <widget class="TrippleChannelKnobBox" name="MasterBlack">
+       <widget class="TripleChannelKnobBox" name="MasterBlack">
         <property name="minimumSize">
          <size>
           <width>540</width>
@@ -494,9 +494,9 @@
    <header>singlechannelknobbox.h</header>
   </customwidget>
   <customwidget>
-   <class>TrippleChannelKnobBox</class>
+   <class>TripleChannelKnobBox</class>
    <extends>QGroupBox</extends>
-   <header>tripplechannelknobbox.h</header>
+   <header>triplechannelknobbox.h</header>
   </customwidget>
  </customwidgets>
  <resources>

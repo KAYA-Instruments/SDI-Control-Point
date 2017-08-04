@@ -15,28 +15,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *****************************************************************************/
 /**
- * @file    wbgainbox.cpp
+ * @file    triplechannelsliderbox.cpp
  *
  * @brief   Implementation of white balance gain box
  *
  *****************************************************************************/
 #include <QtDebug>
 
-#include "tripplechannelsliderbox.h"
-#include "ui_tripplechannelsliderbox.h"
+#include "triplechannelsliderbox.h"
+#include "ui_triplechannelsliderbox.h"
 
 namespace Ui {
-    class UI_TrippleChannelSliderBox;
+    class UI_TripleChannelSliderBox;
 }
 
 /******************************************************************************
- * TrippleChannelSliderBox::PrivateData
+ * TripleChannelSliderBox::PrivateData
  *****************************************************************************/
-class TrippleChannelSliderBox::PrivateData
+class TripleChannelSliderBox::PrivateData
 {
 public:
     PrivateData()
-        : m_ui( new Ui::UI_TrippleChannelSliderBox )
+        : m_ui( new Ui::UI_TripleChannelSliderBox )
         , m_orientation( Qt::Horizontal )
         , m_min( DEFAULT_VALUE_MIN )
         , m_max( DEFAULT_VALUE_MAX )
@@ -50,7 +50,7 @@ public:
         delete m_ui;
     };
 
-    Ui::UI_TrippleChannelSliderBox *    m_ui;           /**< ui handle */
+    Ui::UI_TripleChannelSliderBox *    m_ui;           /**< ui handle */
     Qt::Orientation                     m_orientation;  /**< slider orientation */
     int                                 m_min;          /**< minimal gain value */
     int                                 m_max;          /**< maximal gain value */
@@ -58,9 +58,9 @@ public:
 };
 
 /******************************************************************************
- * TrippleChannelSliderBox::TrippleChannelSliderBox
+ * TripleChannelSliderBox::TripleChannelSliderBox
  *****************************************************************************/
-TrippleChannelSliderBox::TrippleChannelSliderBox( QWidget * parent ) : QGroupBox( parent )
+TripleChannelSliderBox::TripleChannelSliderBox( QWidget * parent ) : QGroupBox( parent )
 {
     // create private data container
     d_data = new PrivateData;
@@ -100,25 +100,25 @@ TrippleChannelSliderBox::TrippleChannelSliderBox( QWidget * parent ) : QGroupBox
 }
 
 /******************************************************************************
- * TrippleChannelSliderBox::~TrippleChannelSliderBox
+ * TripleChannelSliderBox::~TripleChannelSliderBox
  *****************************************************************************/
-TrippleChannelSliderBox::~TrippleChannelSliderBox()
+TripleChannelSliderBox::~TripleChannelSliderBox()
 {
     delete d_data;
 }
 
 /******************************************************************************
- * TrippleChannelSliderBox::sliderOrientation
+ * TripleChannelSliderBox::sliderOrientation
  *****************************************************************************/
-Qt::Orientation TrippleChannelSliderBox::sliderOrientation() const 
+Qt::Orientation TripleChannelSliderBox::sliderOrientation() const
 {
     return ( d_data->m_orientation );
 }
 
 /******************************************************************************
- * TrippleChannelSliderBox::setSliderType
+ * TripleChannelSliderBox::setSliderType
  *****************************************************************************/
-void TrippleChannelSliderBox::setSliderOrientation( Qt::Orientation orientation )
+void TripleChannelSliderBox::setSliderOrientation( Qt::Orientation orientation )
 {
     if ( orientation != d_data->m_orientation )
     {
@@ -190,17 +190,17 @@ void TrippleChannelSliderBox::setSliderOrientation( Qt::Orientation orientation 
 }
 
 /******************************************************************************
- * TrippleChannelSliderBox::minValue
+ * TripleChannelSliderBox::minValue
  *****************************************************************************/
-int TrippleChannelSliderBox::minValue() const
+int TripleChannelSliderBox::minValue() const
 {
     return ( d_data->m_min );
 }
 
 /******************************************************************************
- * TrippleChannelSliderBox::setMinValue
+ * TripleChannelSliderBox::setMinValue
  *****************************************************************************/
-void TrippleChannelSliderBox::setMinValue( int min )
+void TripleChannelSliderBox::setMinValue( int min )
 {
     if ( min >= 0 && d_data->m_max > min )
     {
@@ -217,17 +217,17 @@ void TrippleChannelSliderBox::setMinValue( int min )
 }
 
 /******************************************************************************
- * TrippleChannelSliderBox::maxValue
+ * TripleChannelSliderBox::maxValue
  *****************************************************************************/
-int TrippleChannelSliderBox::maxValue() const
+int TripleChannelSliderBox::maxValue() const
 {
     return ( d_data->m_max );
 }
 
 /******************************************************************************
- * TrippleChannelSliderBox::setMaxValue
+ * TripleChannelSliderBox::setMaxValue
  *****************************************************************************/
-void TrippleChannelSliderBox::setMaxValue( int max )
+void TripleChannelSliderBox::setMaxValue( int max )
 {
     if ( max >= 0 && max > d_data->m_min )
     {
@@ -244,17 +244,17 @@ void TrippleChannelSliderBox::setMaxValue( int max )
 }
 
 /******************************************************************************
- * TrippleChannelSliderBox::commaPos
+ * TripleChannelSliderBox::commaPos
  *****************************************************************************/
-int TrippleChannelSliderBox::commaPos() const
+int TripleChannelSliderBox::commaPos() const
 {
     return ( d_data->m_pos );
 }
 
 /******************************************************************************
- * TrippleChannelSliderBox::setCommaPos
+ * TripleChannelSliderBox::setCommaPos
  *****************************************************************************/
-void TrippleChannelSliderBox::setCommaPos( int pos )
+void TripleChannelSliderBox::setCommaPos( int pos )
 {
     if ( (pos >= 0) && (pos < 31) )
     {
@@ -275,57 +275,57 @@ void TrippleChannelSliderBox::setCommaPos( int pos )
 }
 
 /******************************************************************************
- * TrippleChannelSliderBox::value0Name
+ * TripleChannelSliderBox::value0Name
  *****************************************************************************/
-QString TrippleChannelSliderBox::value0Name() const
+QString TripleChannelSliderBox::value0Name() const
 {
     return ( d_data->m_ui->lblValue0->text() );
 }
 
 /******************************************************************************
- * TrippleChannelSliderBox::setValue0Name
+ * TripleChannelSliderBox::setValue0Name
  *****************************************************************************/
-void TrippleChannelSliderBox::setValue0Name( QString text )
+void TripleChannelSliderBox::setValue0Name( QString text )
 {
     d_data->m_ui->lblValue0->setText( text );
 }
 
 /******************************************************************************
- * TrippleChannelSliderBox::value1Name
+ * TripleChannelSliderBox::value1Name
  *****************************************************************************/
-QString TrippleChannelSliderBox::value1Name() const
+QString TripleChannelSliderBox::value1Name() const
 {
     return ( d_data->m_ui->lblValue1->text() );
 }
 
 /******************************************************************************
- * TrippleChannelSliderBox::setValue1Name
+ * TripleChannelSliderBox::setValue1Name
  *****************************************************************************/
-void TrippleChannelSliderBox::setValue1Name( QString text )
+void TripleChannelSliderBox::setValue1Name( QString text )
 {
     d_data->m_ui->lblValue1->setText( text );
 }
 
 /******************************************************************************
- * TrippleChannelSliderBox::value2Name
+ * TripleChannelSliderBox::value2Name
  *****************************************************************************/
-QString TrippleChannelSliderBox::value2Name() const
+QString TripleChannelSliderBox::value2Name() const
 {
     return ( d_data->m_ui->lblValue2->text() );
 }
 
 /******************************************************************************
- * TrippleChannelSliderBox::setValue2Name
+ * TripleChannelSliderBox::setValue2Name
  *****************************************************************************/
-void TrippleChannelSliderBox::setValue2Name( QString text )
+void TripleChannelSliderBox::setValue2Name( QString text )
 {
     d_data->m_ui->lblValue2->setText( text );
 }
 
 /******************************************************************************
- * TrippleChannelSliderBox::onValue0Change
+ * TripleChannelSliderBox::onValue0Change
  *****************************************************************************/
-void TrippleChannelSliderBox::onValue0Change( int value )
+void TripleChannelSliderBox::onValue0Change( int value )
 {
     d_data->m_ui->sldValue0->blockSignals( true );
     d_data->m_ui->sldValue0->setValue( value );
@@ -337,9 +337,9 @@ void TrippleChannelSliderBox::onValue0Change( int value )
 }
 
 /******************************************************************************
- * TrippleChannelSliderBox::onValue1Change
+ * TripleChannelSliderBox::onValue1Change
  *****************************************************************************/
-void TrippleChannelSliderBox::onValue1Change( int value )
+void TripleChannelSliderBox::onValue1Change( int value )
 {
     d_data->m_ui->sldValue1->blockSignals( true );
     d_data->m_ui->sldValue1->setValue( value );
@@ -351,9 +351,9 @@ void TrippleChannelSliderBox::onValue1Change( int value )
 }
 
 /******************************************************************************
- * TrippleChannelSliderBox::onValue2Change
+ * TripleChannelSliderBox::onValue2Change
  *****************************************************************************/
-void TrippleChannelSliderBox::onValue2Change( int value )
+void TripleChannelSliderBox::onValue2Change( int value )
 {
     d_data->m_ui->sldValue2->blockSignals( true );
     d_data->m_ui->sldValue2->setValue( value );
@@ -365,9 +365,9 @@ void TrippleChannelSliderBox::onValue2Change( int value )
 }
 
 /******************************************************************************
- * TrippleChannelSliderBox::onIntValue0Change
+ * TripleChannelSliderBox::onIntValue0Change
  *****************************************************************************/
-void TrippleChannelSliderBox::onIntValue0Change( int value )
+void TripleChannelSliderBox::onIntValue0Change( int value )
 {
     d_data->m_ui->spxValue0->blockSignals( true );
     d_data->m_ui->spxValue0->setValue( ((double)(value))/(1<<d_data->m_pos) );
@@ -377,9 +377,9 @@ void TrippleChannelSliderBox::onIntValue0Change( int value )
 }
 
 /******************************************************************************
- * TrippleChannelSliderBox::onIntValue1Change
+ * TripleChannelSliderBox::onIntValue1Change
  *****************************************************************************/
-void TrippleChannelSliderBox::onIntValue1Change( int value )
+void TripleChannelSliderBox::onIntValue1Change( int value )
 {
     d_data->m_ui->spxValue1->blockSignals( true );
     d_data->m_ui->spxValue1->setValue( ((double)(value))/(1<<d_data->m_pos) );
@@ -389,9 +389,9 @@ void TrippleChannelSliderBox::onIntValue1Change( int value )
 }
 
 /******************************************************************************
- * TrippleChannelSliderBox::onIntValue2Change
+ * TripleChannelSliderBox::onIntValue2Change
  *****************************************************************************/
-void TrippleChannelSliderBox::onIntValue2Change( int value )
+void TripleChannelSliderBox::onIntValue2Change( int value )
 {
     d_data->m_ui->spxValue2->blockSignals( true );
     d_data->m_ui->spxValue2->setValue( ((double)(value))/(1<<d_data->m_pos) );
@@ -402,9 +402,9 @@ void TrippleChannelSliderBox::onIntValue2Change( int value )
 
 
 /******************************************************************************
- * TrippleChannelSliderBox::onDoubleValue0Change
+ * TripleChannelSliderBox::onDoubleValue0Change
  *****************************************************************************/
-void TrippleChannelSliderBox::onDoubleValue0Change( double value )
+void TripleChannelSliderBox::onDoubleValue0Change( double value )
 {
     int v = (int)((value)*(1<<d_data->m_pos));
     
@@ -416,9 +416,9 @@ void TrippleChannelSliderBox::onDoubleValue0Change( double value )
 }
 
 /******************************************************************************
- * TrippleChannelSliderBox::onDoubleValue1Change
+ * TripleChannelSliderBox::onDoubleValue1Change
  *****************************************************************************/
-void TrippleChannelSliderBox::onDoubleValue1Change( double value )
+void TripleChannelSliderBox::onDoubleValue1Change( double value )
 {
     int v = (int)((value)*(1<<d_data->m_pos));
     
@@ -430,9 +430,9 @@ void TrippleChannelSliderBox::onDoubleValue1Change( double value )
 }
 
 /******************************************************************************
- * TrippleChannelSliderBox::onDoubleValue2Change
+ * TripleChannelSliderBox::onDoubleValue2Change
  *****************************************************************************/
-void TrippleChannelSliderBox::onDoubleValue2Change( double value )
+void TripleChannelSliderBox::onDoubleValue2Change( double value )
 {
     int v = (int)((value)*(1<<d_data->m_pos));
     

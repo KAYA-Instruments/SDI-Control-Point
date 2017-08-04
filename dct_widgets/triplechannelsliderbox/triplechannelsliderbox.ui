@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>UI_TrippleChannelSliderBox</class>
- <widget class="QGroupBox" name="UI_TrippleChannelSliderBox">
+ <class>UI_TripleChannelSliderBox</class>
+ <widget class="QGroupBox" name="UI_TripleChannelSliderBox">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -14,7 +14,7 @@
    <string>GroupBox</string>
   </property>
   <property name="title">
-   <string>Tripple Channel Slider Box</string>
+   <string>Triple Channel Slider Box</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">

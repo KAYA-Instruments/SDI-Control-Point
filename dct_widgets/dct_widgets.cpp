@@ -327,24 +327,24 @@ QWidget * SingleChannelKnobBoxPlugin::createWidget( QWidget * parent )
 
 
 /******************************************************************************
- * class TrippleChannelSliderBoxPlugin
+ * class TripleChannelSliderBoxPlugin
  *
  *****************************************************************************/
 
 /******************************************************************************
- * TrippleChannelSliderBoxPlugin::TrippleChannelSliderBoxPlugin
+ * TripleChannelSliderBoxPlugin::TripleChannelSliderBoxPlugin
  *****************************************************************************/
-TrippleChannelSliderBoxPlugin::TrippleChannelSliderBoxPlugin( QObject * parent )
+TripleChannelSliderBoxPlugin::TripleChannelSliderBoxPlugin( QObject * parent )
     : CustomWidgetInterface( parent )
 {
-    d_name          = "TrippleChannelSliderBox";
+    d_name          = "TripleChannelSliderBox";
 
-    d_include       = "tripplechannelsliderbox.h";
+    d_include       = "triplechannelsliderbox.h";
     
     d_icon = QPixmap( ":/images/back/dial-back.png" );
 
     d_domXml        =  "<ui language=\"c++\">\n"
-                       " <widget class=\"TrippleChannelSliderBox\" name=\"TrippleChannelSliderBox\">\n"
+                       " <widget class=\"TripleChannelSliderBox\" name=\"TripleChannelSliderBox\">\n"
                        "  <property name=\"geometry\">\n"
                        "   <rect>\n"
                        "    <x>0</x>\n"
@@ -354,10 +354,10 @@ TrippleChannelSliderBoxPlugin::TrippleChannelSliderBoxPlugin( QObject * parent )
                        "   </rect>\n"
                        "  </property>\n"
                        "  <property name=\"toolTip\" >\n"
-                       "   <string>TrippleChannelSliderBox</string>\n"
+                       "   <string>TripleChannelSliderBox</string>\n"
                        "  </property>\n"
                        "  <property name=\"whatsThis\" >\n"
-                       "   <string>TrippleChannelSliderBox</string>\n"
+                       "   <string>TripleChannelSliderBox</string>\n"
                        "  </property>\n"
                        " </widget>\n"
                        "</ui>\n";
@@ -365,34 +365,34 @@ TrippleChannelSliderBoxPlugin::TrippleChannelSliderBoxPlugin( QObject * parent )
 
 
 /******************************************************************************
- * TrippleChannelSliderBoxPlugin::createWidget
+ * TripleChannelSliderBoxPlugin::createWidget
  *****************************************************************************/
-QWidget * TrippleChannelSliderBoxPlugin::createWidget( QWidget * parent )
+QWidget * TripleChannelSliderBoxPlugin::createWidget( QWidget * parent )
 {
-    return ( new TrippleChannelSliderBox( parent ) );
+    return ( new TripleChannelSliderBox( parent ) );
 }
 
 
 
 /******************************************************************************
- * class TrippleChannelKnobBoxPlugin
+ * class TripleChannelKnobBoxPlugin
  *
  *****************************************************************************/
 
 /******************************************************************************
- * TrippleChannelKnobBoxPlugin::TrippleChannelKnobBoxPlugin
+ * TripleChannelKnobBoxPlugin::TripleChannelKnobBoxPlugin
  *****************************************************************************/
-TrippleChannelKnobBoxPlugin::TrippleChannelKnobBoxPlugin( QObject * parent )
+TripleChannelKnobBoxPlugin::TripleChannelKnobBoxPlugin( QObject * parent )
     : CustomWidgetInterface( parent )
 {
-    d_name          = "TrippleChannelKnobBox";
+    d_name          = "TripleChannelKnobBox";
 
-    d_include       = "tripplechannelknobbox.h";
+    d_include       = "triplechannelknobbox.h";
     
     d_icon = QPixmap( ":/images/back/dial-back.png" );
 
     d_domXml        =  "<ui language=\"c++\">\n"
-                       " <widget class=\"TrippleChannelKnobBox\" name=\"TrippleChannelKnobBox\">\n"
+                       " <widget class=\"TripleChannelKnobBox\" name=\"TripleChannelKnobBox\">\n"
                        "  <property name=\"geometry\">\n"
                        "   <rect>\n"
                        "    <x>0</x>\n"
@@ -402,10 +402,10 @@ TrippleChannelKnobBoxPlugin::TrippleChannelKnobBoxPlugin( QObject * parent )
                        "   </rect>\n"
                        "  </property>\n"
                        "  <property name=\"toolTip\" >\n"
-                       "   <string>TrippleChannelKnobBox</string>\n"
+                       "   <string>TripleChannelKnobBox</string>\n"
                        "  </property>\n"
                        "  <property name=\"whatsThis\" >\n"
-                       "   <string>TrippleChannelKnobBox</string>\n"
+                       "   <string>TripleChannelKnobBox</string>\n"
                        "  </property>\n"
                        "  <property name=\"maxAngle\" >\n"
                        "   <number>150</number>\n"
@@ -428,11 +428,11 @@ TrippleChannelKnobBoxPlugin::TrippleChannelKnobBoxPlugin( QObject * parent )
 
 
 /******************************************************************************
- * TrippleChannelKnobBoxPlugin::createWidget
+ * TripleChannelKnobBoxPlugin::createWidget
  *****************************************************************************/
-QWidget * TrippleChannelKnobBoxPlugin::createWidget( QWidget * parent )
+QWidget * TripleChannelKnobBoxPlugin::createWidget( QWidget * parent )
 {
-    return ( new TrippleChannelKnobBox( parent ) );
+    return ( new TripleChannelKnobBox( parent ) );
 }
 
 
@@ -1513,8 +1513,8 @@ CustomWidgetCollectionInterface::CustomWidgetCollectionInterface( QObject * pare
     plugins.append( new SkinnedDialPlugin( this ) );
     plugins.append( new SwitchButtonPlugin( this ) );
     plugins.append( new SingleChannelKnobBoxPlugin( this ) );
-    plugins.append( new TrippleChannelSliderBoxPlugin( this ) );
-    plugins.append( new TrippleChannelKnobBoxPlugin( this ) );
+    plugins.append( new TripleChannelSliderBoxPlugin( this ) );
+    plugins.append( new TripleChannelKnobBoxPlugin( this ) );
     plugins.append( new MccSliderPlugin( this ) );
     plugins.append( new ButtonArrayBoxPlugin( this ) );
     plugins.append( new PieSegmentSelectPlugin( this ) );

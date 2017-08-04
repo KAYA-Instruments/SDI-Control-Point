@@ -43,7 +43,7 @@ INCLUDEPATH += ../libraries/include ..              \
                ../dct_widgets/connectdialog         \
                ../dct_widgets/btnarraybox           \
                ../dct_widgets/singlechannelknobbox  \
-               ../dct_widgets/tripplechannelknobbox \
+               ../dct_widgets/triplechannelknobbox \
                ../dct_widgets/fmtspinbox            \
                ../dct_widgets/skinneddial           \
                ../dct_widgets/piesegmentselect      \
@@ -80,7 +80,7 @@ SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
            ../dct_widgets/connectdialog/connectdialog.cpp                   \
            ../dct_widgets/btnarraybox/btnarraybox.cpp                       \
            ../dct_widgets/singlechannelknobbox/singlechannelknobbox.cpp     \
-           ../dct_widgets/tripplechannelknobbox/tripplechannelknobbox.cpp   \
+           ../dct_widgets/triplechannelknobbox/triplechannelknobbox.cpp     \
            ../dct_widgets/fmtspinbox/fmtspinbox.cpp                         \
            ../dct_widgets/skinneddial/skinneddial.cpp                       \
            ../dct_widgets/piesegmentselect/piesegmentselect.cpp             \
@@ -178,7 +178,7 @@ HEADERS  += ../libraries/include                                                
             ../dct_widgets/dpccbox/dpccbox.h                                    \
             ../dct_widgets/btnarraybox/btnarraybox.h                            \
             ../dct_widgets/singlechannelknobbox/singlechannelknobbox.h          \
-            ../dct_widgets/tripplechannelknobbox/tripplechannelknobbox.h        \
+            ../dct_widgets/triplechannelknobbox/triplechannelknobbox.h          \
             ../dct_widgets/fmtspinbox/fmtspinbox.h                              \
             ../dct_widgets/skinneddial/skinneddial.h                            \
             ../dct_widgets/piesegmentselect/piesegmentselect.h                  \
@@ -275,7 +275,7 @@ FORMS    += ../dct_widgets/mcceqbox/mcceqbox.ui                             \
             ../dct_widgets/dpccbox/dpccbox.ui                               \
             ../dct_widgets/mccslider/mccslider.ui                           \
             ../dct_widgets/singlechannelknobbox/singlechannelknobbox.ui     \
-            ../dct_widgets/tripplechannelknobbox/tripplechannelknobbox.ui   \
+            ../dct_widgets/triplechannelknobbox/triplechannelknobbox.ui     \
             ../dct_widgets/connectdialog/connectdialog.ui                   \
             ../dct_widgets/textviewer/textviewer.ui                         \
             mainwindow.ui

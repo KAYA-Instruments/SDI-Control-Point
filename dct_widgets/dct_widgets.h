@@ -30,8 +30,8 @@
 #include "skinneddial.h"
 #include "switchbutton.h"
 #include "singlechannelknobbox.h"
-#include "tripplechannelsliderbox.h"
-#include "tripplechannelknobbox.h"
+#include "triplechannelsliderbox.h"
+#include "triplechannelknobbox.h"
 #include "btnarraybox.h"
 #include "piesegmentselect.h"
 #include "huesegmentselect.h"
@@ -151,25 +151,25 @@ public:
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
 };
 
-// TrippleChannelSliderBoxPlugin
-class TrippleChannelSliderBoxPlugin : public CustomWidgetInterface
+// TripleChannelSliderBoxPlugin
+class TripleChannelSliderBoxPlugin : public CustomWidgetInterface
 {
     Q_OBJECT
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
 public:
-    explicit TrippleChannelSliderBoxPlugin( QObject * parent = 0 );
+    explicit TripleChannelSliderBoxPlugin( QObject * parent = 0 );
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
 };
 
-// TrippleChannelKnobBoxPlugin
-class TrippleChannelKnobBoxPlugin : public CustomWidgetInterface
+// TrippeChannelKnobBoxPlugin
+class TripleChannelKnobBoxPlugin : public CustomWidgetInterface
 {
     Q_OBJECT
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
 public:
-    explicit TrippleChannelKnobBoxPlugin( QObject * parent = 0 );
+    explicit TripleChannelKnobBoxPlugin( QObject * parent = 0 );
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
 };
 

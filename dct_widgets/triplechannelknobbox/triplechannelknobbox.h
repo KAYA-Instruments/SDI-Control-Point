@@ -15,21 +15,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *****************************************************************************/
 /**
- * @file    tripplechannelknobbox.h
+ * @file    triplechannelknobbox.h
  *
- * @brief   Class definition of a tripple channel knob box 
+ * @brief   Class definition of a triple channel knob box
  *
  *****************************************************************************/
-#ifndef __TRIPPLE_CHANNEL_KNOB_BOX_H__
-#define __TRIPPLE_CHANNEL_KNOB_BOX_H__
+#ifndef __TRIPLE_CHANNEL_KNOB_BOX_H__
+#define __TRIPLE_CHANNEL_KNOB_BOX_H__
 
 #include <QGroupBox>
 
 /**
- * @brief The Tripple Channel Knob Box Widget 
+ * @brief The Triple Channel Knob Box Widget
  */
 
-class TrippleChannelKnobBox : public QGroupBox
+class TripleChannelKnobBox : public QGroupBox
 {
     Q_OBJECT
 
@@ -71,8 +71,8 @@ class TrippleChannelKnobBox : public QGroupBox
     Q_PROPERTY( QPixmap backgroundImage2 READ backgroundImage2 WRITE setBackgroundImage2 DESIGNABLE true )
 
 public:
-    explicit TrippleChannelKnobBox( QWidget * parent = 0 );
-    ~TrippleChannelKnobBox();
+    explicit TripleChannelKnobBox( QWidget * parent = 0 );
+    ~TripleChannelKnobBox();
 
     int maxRounds() const;
     void setMaxRounds( int value );
@@ -158,5 +158,5 @@ private:
     PrivateData * d_data;
 };
 
-#endif // __TRIPPLE_CHANNEL_KNOB_BOX_H__
+#endif // __TRIPLE_CHANNEL_KNOB_BOX_H__
 

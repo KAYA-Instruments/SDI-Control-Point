@@ -15,13 +15,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *****************************************************************************/
 /**
- * @file    tripplechannelsliderbox.h
+ * @file    triplechannelsliderbox.h
  *
- * @brief   Class definition of a tripple channel slider box
+ * @brief   Class definition of a triple channel slider box
  *
  *****************************************************************************/
-#ifndef __TRIPPLECHANNELSLIDERBOX_H__
-#define __TRIPPLECHANNELSLIDERBOX_H__
+#ifndef __TRIPLECHANNELSLIDERBOX_H__
+#define __TRIPLECHANNELSLIDERBOX_H__
 
 #include <QGroupBox>
 
@@ -30,9 +30,9 @@
 #define DEFAULT_VALUE_COMMA_POSITION     ( 8 )       /**< position of 2^0 */
 
 /**
- * @brief The Tripple channel slider box widget
+ * @brief The Triple channel slider box widget
  */
-class TrippleChannelSliderBox : public QGroupBox
+class TripleChannelSliderBox : public QGroupBox
 {
     Q_OBJECT
 
@@ -51,8 +51,8 @@ class TrippleChannelSliderBox : public QGroupBox
     Q_PROPERTY( QString value2Name READ value2Name WRITE setValue2Name DESIGNABLE true )
 
 public:
-    explicit TrippleChannelSliderBox( QWidget * parent = 0 );
-    ~TrippleChannelSliderBox();
+    explicit TripleChannelSliderBox( QWidget * parent = 0 );
+    ~TripleChannelSliderBox();
 
     Qt::Orientation sliderOrientation() const;
     void setSliderOrientation( Qt::Orientation orientation );
@@ -101,5 +101,5 @@ private:
     PrivateData * d_data;
 };
 
-#endif // __TRIPPLECHANNELSLIDERBOX_H__
+#endif // __TRIPLECHANNELSLIDERBOX_H__
 

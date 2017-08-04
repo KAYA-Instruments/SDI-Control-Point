@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>UI_TrippleChannelKnobBox</class>
- <widget class="QGroupBox" name="UI_TrippleChannelKnobBox">
+ <class>UI_TripleChannelKnobBox</class>
+ <widget class="QGroupBox" name="UI_TripleChannelKnobBox">
   <property name="enabled">
    <bool>true</bool>
   </property>
@@ -29,7 +29,7 @@
    <string>GroupBox</string>
   </property>
   <property name="title">
-   <string>GroupBox</string>
+   <string>Triple Channel Knob Box</string>
   </property>
   <property name="alignment">
    <set>Qt::AlignCenter</set>

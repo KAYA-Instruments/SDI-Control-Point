@@ -31,8 +31,8 @@ INCLUDEPATH += ../libraries/include     \
                skinneddial              \
                switchbutton             \
                singlechannelknobbox     \
-               tripplechannelsliderbox  \ 
-               tripplechannelknobbox    \
+               triplechannelsliderbox   \
+               triplechannelknobbox     \
                btnarraybox              \
                piesegmentselect         \
                huesegmentselect         \
@@ -58,8 +58,8 @@ HEADERS      = fmtspinbox/fmtspinbox.h                              \
                skinneddial/skinneddial.h                            \
                switchbutton/switchbutton.h                          \ 
                singlechannelknobbox/singlechannelknobbox.h          \
-               tripplechannelsliderbox/tripplechannelsliderbox.h    \
-               tripplechannelknobbox/tripplechannelknobbox.h        \
+               triplechannelsliderbox/triplechannelsliderbox.h      \
+               triplechannelknobbox/triplechannelknobbox.h          \
                btnarraybox/btnarraybox.h                            \
                piesegmentselect/piesegmentselect.h                  \
                huesegmentselect/huesegmentselect.h                  \
@@ -93,8 +93,8 @@ SOURCES      = fmtspinbox/fmtspinbox.cpp                            \
                skinneddial/skinneddial.cpp                          \
                switchbutton/switchbutton.cpp                        \
                singlechannelknobbox/singlechannelknobbox.cpp        \
-               tripplechannelsliderbox/tripplechannelsliderbox.cpp  \
-               tripplechannelknobbox/tripplechannelknobbox.cpp      \
+               triplechannelsliderbox/triplechannelsliderbox.cpp    \
+               triplechannelknobbox/triplechannelknobbox.cpp        \
                btnarraybox/btnarraybox.cpp                          \
                piesegmentselect/piesegmentselect.cpp                \
                huesegmentselect/huesegmentselect.cpp                \
@@ -130,8 +130,8 @@ SOURCES      = fmtspinbox/fmtspinbox.cpp                            \
                dct_widgets.cpp
 
 FORMS       += singlechannelknobbox/singlechannelknobbox.ui         \
-               tripplechannelsliderbox/tripplechannelsliderbox.ui   \
-               tripplechannelknobbox/tripplechannelknobbox.ui       \
+               triplechannelsliderbox/triplechannelsliderbox.ui     \
+               triplechannelknobbox/triplechannelknobbox.ui         \
                mccslider/mccslider.ui                               \
                wbbox/wbbox.ui                                       \
                mccbox/mccbox.ui                                     \

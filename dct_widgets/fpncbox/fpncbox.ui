@@ -342,7 +342,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="TrippleChannelKnobBox" name="InverseGains">
+      <widget class="TripleChannelKnobBox" name="InverseGains">
        <property name="minimumSize">
         <size>
          <width>750</width>
@@ -424,7 +424,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="TrippleChannelKnobBox" name="Gains">
+      <widget class="TripleChannelKnobBox" name="Gains">
        <property name="minimumSize">
         <size>
          <width>750</width>
@@ -499,9 +499,9 @@
    <header>singlechannelknobbox.h</header>
   </customwidget>
   <customwidget>
-   <class>TrippleChannelKnobBox</class>
+   <class>TripleChannelKnobBox</class>
    <extends>QGroupBox</extends>
-   <header>tripplechannelknobbox.h</header>
+   <header>triplechannelknobbox.h</header>
   </customwidget>
   <customwidget>
    <class>QCustomPlot</class>

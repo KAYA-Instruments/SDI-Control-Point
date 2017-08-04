@@ -15,21 +15,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *****************************************************************************/
 /**
- * @file    tripplechannelknobbox.cpp
+ * @file    triplechannelknobbox.cpp
  *
  * @brief   Implementation of 3 channel knob box
  *
  *****************************************************************************/
 #include <QtDebug>
 
-#include "tripplechannelknobbox.h"
-#include "ui_tripplechannelknobbox.h"
+#include "triplechannelknobbox.h"
+#include "ui_triplechannelknobbox.h"
 
 /******************************************************************************
  * namespaces 
  *****************************************************************************/
 namespace Ui {
-    class UI_TrippleChannelKnobBox;
+    class UI_TripleChannelKnobBox;
 }
 
 /******************************************************************************
@@ -80,13 +80,13 @@ static int powi( int x, int y )
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::PrivateData
+ * TripleChannelKnobBox::PrivateData
  *****************************************************************************/
-class TrippleChannelKnobBox::PrivateData
+class TripleChannelKnobBox::PrivateData
 {
 public:
     PrivateData()
-        : m_ui( new Ui::UI_TrippleChannelKnobBox )
+        : m_ui( new Ui::UI_TripleChannelKnobBox )
         , m_base( 2 )
         , m_min( DEFAULT_MIN )
         , m_max( DEFAULT_MAX )
@@ -122,7 +122,7 @@ public:
         return ( (int)((value * powi( m_base, m_pos ))/m_factor) ) ;
     }
 
-    Ui::UI_TrippleChannelKnobBox *  m_ui;           /**< ui handle */
+    Ui::UI_TripleChannelKnobBox *  m_ui;           /**< ui handle */
     int                             m_base;         /**< base for the interger to float conversion */
     int                             m_min;          /**< minimal value */
     int                             m_max;          /**< maximal value */
@@ -144,9 +144,9 @@ public:
 };
 
 /******************************************************************************
- * TrippleChannelKnobBox::TrippleChannelKnobBox
+ * TripleChannelKnobBox::TripleChannelKnobBox
  *****************************************************************************/
-TrippleChannelKnobBox::TrippleChannelKnobBox( QWidget * parent ) : QGroupBox( parent )
+TripleChannelKnobBox::TripleChannelKnobBox( QWidget * parent ) : QGroupBox( parent )
 {
     // create private data container
     d_data = new PrivateData;
@@ -196,25 +196,25 @@ TrippleChannelKnobBox::TrippleChannelKnobBox( QWidget * parent ) : QGroupBox( pa
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::~TrippleChannelKnobBox
+ * TripleChannelKnobBox::~TripleChannelKnobBox
  *****************************************************************************/
-TrippleChannelKnobBox::~TrippleChannelKnobBox()
+TripleChannelKnobBox::~TripleChannelKnobBox()
 {
     delete d_data;
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::maxRounds
+ * TripleChannelKnobBox::maxRounds
  *****************************************************************************/
-int TrippleChannelKnobBox::maxRounds() const
+int TripleChannelKnobBox::maxRounds() const
 {
     return ( d_data->m_roundMax );
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::setMaxRounds
+ * TripleChannelKnobBox::setMaxRounds
  *****************************************************************************/
-void TrippleChannelKnobBox::setMaxRounds( int roundMax )
+void TripleChannelKnobBox::setMaxRounds( int roundMax )
 {
     if ( d_data->m_roundMax != roundMax )
     {
@@ -235,17 +235,17 @@ void TrippleChannelKnobBox::setMaxRounds( int roundMax )
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::base
+ * TripleChannelKnobBox::base
  *****************************************************************************/
-int TrippleChannelKnobBox::base() const
+int TripleChannelKnobBox::base() const
 {
     return ( d_data->m_base );
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::base
+ * TripleChannelKnobBox::base
  *****************************************************************************/
-void TrippleChannelKnobBox::setBase( int value )
+void TripleChannelKnobBox::setBase( int value )
 {
     if ( d_data->m_base != value )
     {
@@ -274,9 +274,9 @@ void TrippleChannelKnobBox::setBase( int value )
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::value0
+ * TripleChannelKnobBox::value0
  *****************************************************************************/
-int TrippleChannelKnobBox::value0() const
+int TripleChannelKnobBox::value0() const
 {
     int v = (d_data->m_roundCnt0 * (d_data->m_ui->knbValue0->maximum() + 1)) 
           + d_data->m_ui->knbValue0->value()
@@ -285,17 +285,17 @@ int TrippleChannelKnobBox::value0() const
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::setValue0
+ * TripleChannelKnobBox::setValue0
  *****************************************************************************/
-void TrippleChannelKnobBox::setValue0( int value )
+void TripleChannelKnobBox::setValue0( int value )
 {
     onValue0Change( value );
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::value1
+ * TripleChannelKnobBox::value1
  *****************************************************************************/
-int TrippleChannelKnobBox::value1() const
+int TripleChannelKnobBox::value1() const
 {
     int v = (d_data->m_roundCnt1 * (d_data->m_ui->knbValue1->maximum() + 1)) 
           + d_data->m_ui->knbValue1->value()
@@ -304,17 +304,17 @@ int TrippleChannelKnobBox::value1() const
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::setValue1
+ * TripleChannelKnobBox::setValue1
  *****************************************************************************/
-void TrippleChannelKnobBox::setValue1( int value )
+void TripleChannelKnobBox::setValue1( int value )
 {
     onValue1Change( value );
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::value2
+ * TripleChannelKnobBox::value2
  *****************************************************************************/
-int TrippleChannelKnobBox::value2() const
+int TripleChannelKnobBox::value2() const
 {
     int v = (d_data->m_roundCnt2 * (d_data->m_ui->knbValue2->maximum() + 1)) 
           + d_data->m_ui->knbValue2->value()
@@ -323,25 +323,25 @@ int TrippleChannelKnobBox::value2() const
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::setValue2
+ * TripleChannelKnobBox::setValue2
  *****************************************************************************/
-void TrippleChannelKnobBox::setValue2( int value )
+void TripleChannelKnobBox::setValue2( int value )
 {
     onValue2Change( value );
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::minValue
+ * TripleChannelKnobBox::minValue
  *****************************************************************************/
-int TrippleChannelKnobBox::minValue() const
+int TripleChannelKnobBox::minValue() const
 {
     return ( d_data->m_min );
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::setMinValue
+ * TripleChannelKnobBox::setMinValue
  *****************************************************************************/
-void TrippleChannelKnobBox::setMinValue( int min )
+void TripleChannelKnobBox::setMinValue( int min )
 {
     if ( (d_data->m_max > min) && (d_data->m_min != min) )
     {
@@ -366,17 +366,17 @@ void TrippleChannelKnobBox::setMinValue( int min )
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::maxValue
+ * TripleChannelKnobBox::maxValue
  *****************************************************************************/
-int TrippleChannelKnobBox::maxValue() const
+int TripleChannelKnobBox::maxValue() const
 {
     return ( d_data->m_max );
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::setMaxValue
+ * TripleChannelKnobBox::setMaxValue
  *****************************************************************************/
-void TrippleChannelKnobBox::setMaxValue( int max )
+void TripleChannelKnobBox::setMaxValue( int max )
 {
     if ( (max > d_data->m_min) && (d_data->m_max != max) )
     {
@@ -401,9 +401,9 @@ void TrippleChannelKnobBox::setMaxValue( int max )
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::setRange
+ * TripleChannelKnobBox::setRange
  *****************************************************************************/
-void TrippleChannelKnobBox::setRange( int min, int max )
+void TripleChannelKnobBox::setRange( int min, int max )
 {
     if ( (max > min) &&  ((d_data->m_min != min) || (d_data->m_max != max)) )
     {
@@ -429,17 +429,17 @@ void TrippleChannelKnobBox::setRange( int min, int max )
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::commaPos
+ * TripleChannelKnobBox::commaPos
  *****************************************************************************/
-int TrippleChannelKnobBox::commaPos() const
+int TripleChannelKnobBox::commaPos() const
 {
     return ( d_data->m_pos );
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::setCommaPos
+ * TripleChannelKnobBox::setCommaPos
  *****************************************************************************/
-void TrippleChannelKnobBox::setCommaPos( int pos )
+void TripleChannelKnobBox::setCommaPos( int pos )
 {
     if ( (pos >= 0) && (pos < 31) && (d_data->m_pos != pos) )
     {
@@ -472,17 +472,17 @@ void TrippleChannelKnobBox::setCommaPos( int pos )
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::getFmt
+ * TripleChannelKnobBox::getFmt
  *****************************************************************************/
-QString TrippleChannelKnobBox::getFmt() const
+QString TripleChannelKnobBox::getFmt() const
 {
     return ( d_data->m_fmt );
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::setFmt
+ * TripleChannelKnobBox::setFmt
  *****************************************************************************/
-void TrippleChannelKnobBox::setFmt( const QString & fmt )
+void TripleChannelKnobBox::setFmt( const QString & fmt )
 {
     if ( d_data->m_fmt != fmt )
     {
@@ -494,17 +494,17 @@ void TrippleChannelKnobBox::setFmt( const QString & fmt )
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::displayMultiplier
+ * TripleChannelKnobBox::displayMultiplier
  *****************************************************************************/
-int TrippleChannelKnobBox::displayMultiplier() const
+int TripleChannelKnobBox::displayMultiplier() const
 {
     return ( d_data->m_factor );
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::setCommaPos
+ * TripleChannelKnobBox::setCommaPos
  *****************************************************************************/
-void TrippleChannelKnobBox::setDisplayMultiplier( int factor )
+void TripleChannelKnobBox::setDisplayMultiplier( int factor )
 {
     if ( (factor > 0) && (d_data->m_factor != factor) )
     {
@@ -533,17 +533,17 @@ void TrippleChannelKnobBox::setDisplayMultiplier( int factor )
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::maxAngle
+ * TripleChannelKnobBox::maxAngle
  *****************************************************************************/
-int TrippleChannelKnobBox::maxAngle() const
+int TripleChannelKnobBox::maxAngle() const
 {
     return ( d_data->m_ui->knbValue0->maxAngle() );
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::setMaxAngle
+ * TripleChannelKnobBox::setMaxAngle
  *****************************************************************************/
-void TrippleChannelKnobBox::setMaxAngle( int p_angle )
+void TripleChannelKnobBox::setMaxAngle( int p_angle )
 {
     d_data->m_ui->knbValue0->setMaxAngle( p_angle );
     d_data->m_ui->knbValue1->setMaxAngle( p_angle );
@@ -551,17 +551,17 @@ void TrippleChannelKnobBox::setMaxAngle( int p_angle )
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::needleImage
+ * TripleChannelKnobBox::needleImage
  *****************************************************************************/
-QPixmap TrippleChannelKnobBox::needleImage() const 
+QPixmap TripleChannelKnobBox::needleImage() const 
 {
     return ( d_data->m_ui->knbValue0->needleImage() );
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::setNeedleImage
+ * TripleChannelKnobBox::setNeedleImage
  *****************************************************************************/
-void TrippleChannelKnobBox::setNeedleImage( QPixmap p_img )
+void TripleChannelKnobBox::setNeedleImage( QPixmap p_img )
 {
     d_data->m_ui->knbValue0->setNeedleImage( p_img );
     d_data->m_ui->knbValue1->setNeedleImage( p_img );
@@ -569,57 +569,57 @@ void TrippleChannelKnobBox::setNeedleImage( QPixmap p_img )
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::backgroundImage0
+ * TripleChannelKnobBox::backgroundImage0
  *****************************************************************************/
-QPixmap TrippleChannelKnobBox::backgroundImage0() const 
+QPixmap TripleChannelKnobBox::backgroundImage0() const 
 {
     return ( d_data->m_ui->knbValue0->backgroundImage() );
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::setBackgroundImage0
+ * TripleChannelKnobBox::setBackgroundImage0
  *****************************************************************************/
-void TrippleChannelKnobBox::setBackgroundImage0( QPixmap p_img )
+void TripleChannelKnobBox::setBackgroundImage0( QPixmap p_img )
 {
     d_data->m_ui->knbValue0->setBackgroundImage( p_img );
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::backgroundImage1
+ * TripleChannelKnobBox::backgroundImage1
  *****************************************************************************/
-QPixmap TrippleChannelKnobBox::backgroundImage1() const 
+QPixmap TripleChannelKnobBox::backgroundImage1() const 
 {
     return ( d_data->m_ui->knbValue1->backgroundImage() );
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::setBackgroundImage1
+ * TripleChannelKnobBox::setBackgroundImage1
  *****************************************************************************/
-void TrippleChannelKnobBox::setBackgroundImage1( QPixmap p_img )
+void TripleChannelKnobBox::setBackgroundImage1( QPixmap p_img )
 {
     d_data->m_ui->knbValue1->setBackgroundImage( p_img );
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::backgroundImage2
+ * TripleChannelKnobBox::backgroundImage2
  *****************************************************************************/
-QPixmap TrippleChannelKnobBox::backgroundImage2() const 
+QPixmap TripleChannelKnobBox::backgroundImage2() const 
 {
     return ( d_data->m_ui->knbValue2->backgroundImage() );
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::setBackgroundImage2
+ * TripleChannelKnobBox::setBackgroundImage2
  *****************************************************************************/
-void TrippleChannelKnobBox::setBackgroundImage2( QPixmap p_img )
+void TripleChannelKnobBox::setBackgroundImage2( QPixmap p_img )
 {
     d_data->m_ui->knbValue2->setBackgroundImage( p_img );
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::onValue0Change
+ * TripleChannelKnobBox::onValue0Change
  *****************************************************************************/
-void TrippleChannelKnobBox::onValue0Change( int value )
+void TripleChannelKnobBox::onValue0Change( int value )
 {
     if ( (value >= d_data->m_min) && (value <= d_data->m_max) )
     {
@@ -645,9 +645,9 @@ void TrippleChannelKnobBox::onValue0Change( int value )
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::onValue1Change
+ * TripleChannelKnobBox::onValue1Change
  *****************************************************************************/
-void TrippleChannelKnobBox::onValue1Change( int value )
+void TripleChannelKnobBox::onValue1Change( int value )
 {
     if ( (value >= d_data->m_min) && (value <= d_data->m_max) )
     {
@@ -673,9 +673,9 @@ void TrippleChannelKnobBox::onValue1Change( int value )
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::onValue2Change
+ * TripleChannelKnobBox::onValue2Change
  *****************************************************************************/
-void TrippleChannelKnobBox::onValue2Change( int value )
+void TripleChannelKnobBox::onValue2Change( int value )
 {
     if ( (value >= d_data->m_min) && (value <= d_data->m_max) )
     {
@@ -701,9 +701,9 @@ void TrippleChannelKnobBox::onValue2Change( int value )
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::onValuesChange
+ * TripleChannelKnobBox::onValuesChange
  *****************************************************************************/
-void TrippleChannelKnobBox::onValuesChange( int value0, int value1, int value2 )
+void TripleChannelKnobBox::onValuesChange( int value0, int value1, int value2 )
 {
     onValue0Change( value0 );
     onValue1Change( value1 );
@@ -711,9 +711,9 @@ void TrippleChannelKnobBox::onValuesChange( int value0, int value1, int value2 )
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::onInt0Change
+ * TripleChannelKnobBox::onInt0Change
  *****************************************************************************/
-void TrippleChannelKnobBox::onInt0Change( int v_knob )
+void TripleChannelKnobBox::onInt0Change( int v_knob )
 {
     int max = (d_data->m_ui->knbValue0->maximum() >> 1) - d_data->m_tolerance;
     int v0;
@@ -765,9 +765,9 @@ void TrippleChannelKnobBox::onInt0Change( int v_knob )
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::onInt1Change
+ * TripleChannelKnobBox::onInt1Change
  *****************************************************************************/
-void TrippleChannelKnobBox::onInt1Change( int v_knob )
+void TripleChannelKnobBox::onInt1Change( int v_knob )
 {
     int max = (d_data->m_ui->knbValue1->maximum() >> 1) - d_data->m_tolerance;
     int v1;
@@ -819,9 +819,9 @@ void TrippleChannelKnobBox::onInt1Change( int v_knob )
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::onInt2Change
+ * TripleChannelKnobBox::onInt2Change
  *****************************************************************************/
-void TrippleChannelKnobBox::onInt2Change( int v_knob )
+void TripleChannelKnobBox::onInt2Change( int v_knob )
 {
     int max = (d_data->m_ui->knbValue2->maximum() >> 1) - d_data->m_tolerance;
     int v2;
@@ -873,9 +873,9 @@ void TrippleChannelKnobBox::onInt2Change( int v_knob )
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::onKnob0Action
+ * TripleChannelKnobBox::onKnob0Action
  *****************************************************************************/
-void TrippleChannelKnobBox::onKnob0Action( int v )
+void TripleChannelKnobBox::onKnob0Action( int v )
 {
     if ( v == QAbstractSlider::SliderMove )
     {
@@ -907,18 +907,18 @@ void TrippleChannelKnobBox::onKnob0Action( int v )
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::onKnob0Released
+ * TripleChannelKnobBox::onKnob0Released
  *****************************************************************************/
-void TrippleChannelKnobBox::onKnob0Released()
+void TripleChannelKnobBox::onKnob0Released()
 {
     d_data->m_cntEvents = 0;
     emit Value0Changed( (d_data->m_roundCnt0 * (d_data->m_ui->knbValue0->maximum() + 1)) + d_data->m_ui->knbValue0->value() + d_data->m_min );
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::onKnob1Action
+ * TripleChannelKnobBox::onKnob1Action
  *****************************************************************************/
-void TrippleChannelKnobBox::onKnob1Action( int v )
+void TripleChannelKnobBox::onKnob1Action( int v )
 {
     if ( v == QAbstractSlider::SliderMove )
     {
@@ -950,18 +950,18 @@ void TrippleChannelKnobBox::onKnob1Action( int v )
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::onKnob1Released
+ * TripleChannelKnobBox::onKnob1Released
  *****************************************************************************/
-void TrippleChannelKnobBox::onKnob1Released()
+void TripleChannelKnobBox::onKnob1Released()
 {
     d_data->m_cntEvents = 0;
     emit Value1Changed( (d_data->m_roundCnt1 * (d_data->m_ui->knbValue1->maximum() + 1)) + d_data->m_ui->knbValue1->value() + d_data->m_min );
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::onKnob2Action
+ * TripleChannelKnobBox::onKnob2Action
  *****************************************************************************/
-void TrippleChannelKnobBox::onKnob2Action( int v )
+void TripleChannelKnobBox::onKnob2Action( int v )
 {
     if ( v == QAbstractSlider::SliderMove )
     {
@@ -993,18 +993,18 @@ void TrippleChannelKnobBox::onKnob2Action( int v )
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::onKnob2Released
+ * TripleChannelKnobBox::onKnob2Released
  *****************************************************************************/
-void TrippleChannelKnobBox::onKnob2Released()
+void TripleChannelKnobBox::onKnob2Released()
 {
     d_data->m_cntEvents = 0;
     emit Value2Changed( (d_data->m_roundCnt2 * (d_data->m_ui->knbValue2->maximum() + 1)) + d_data->m_ui->knbValue2->value() + d_data->m_min );
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::onDouble0Change
+ * TripleChannelKnobBox::onDouble0Change
  *****************************************************************************/
-void TrippleChannelKnobBox::onDouble0Change( double value )
+void TripleChannelKnobBox::onDouble0Change( double value )
 {
     int v0 = d_data->toValueRange( value );
 
@@ -1037,9 +1037,9 @@ void TrippleChannelKnobBox::onDouble0Change( double value )
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::onDouble1Change
+ * TripleChannelKnobBox::onDouble1Change
  *****************************************************************************/
-void TrippleChannelKnobBox::onDouble1Change( double value )
+void TripleChannelKnobBox::onDouble1Change( double value )
 {
     int v1 = d_data->toValueRange( value );
 
@@ -1072,9 +1072,9 @@ void TrippleChannelKnobBox::onDouble1Change( double value )
 }
 
 /******************************************************************************
- * TrippleChannelKnobBox::onDouble2Change
+ * TripleChannelKnobBox::onDouble2Change
  *****************************************************************************/
-void TrippleChannelKnobBox::onDouble2Change( double value )
+void TripleChannelKnobBox::onDouble2Change( double value )
 {
     int v2 = d_data->toValueRange( value );
     
