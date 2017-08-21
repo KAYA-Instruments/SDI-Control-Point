@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>785</width>
+    <width>793</width>
     <height>912</height>
    </rect>
   </property>
@@ -407,19 +407,6 @@ ration</string>
                <width>80</width>
                <height>30</height>
               </size>
-             </property>
-             <property name="toolTip">
-              <string/>
-             </property>
-             <property name="whatsThis">
-              <string/>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">SwitchButton
-{
-}
-
-</string>
              </property>
             </widget>
            </item>

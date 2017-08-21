@@ -43,7 +43,7 @@ class SingleChannelKnobBox : public QGroupBox
 
     // note: meaning of comma position is different to decimals property 
     //       It means the bit position of 2^0 = 1. 
-    // i.e:  If the comma position wequal to 2 
+    // i.e:  If the comma position is equal to 2
     //        - A 'one' is reached when setting a value of 1<<2 = 4
     //        - The lowest value (greater than 0) is 1/2^2 = 0.25
     Q_PROPERTY( int comma   READ commaPos WRITE setCommaPos DESIGNABLE true )

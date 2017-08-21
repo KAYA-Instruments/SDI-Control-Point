@@ -123,7 +123,13 @@ MccBox::MccBox( QWidget * parent ) : DctWidgetBox( parent )
     // MCC phase mode
     ////////////////////
     
+    // add operational modes
+    addOperationMode( 0, 12 );
+    addOperationMode( 1, 16 );
     addOperationMode( MCC_DEFAULT_OPERATION_MODE, MCC_DEFAULT_COLOR_PHASES );
+    addOperationMode( 3, 32 );
+
+    // set amount of phases and get selected phase
     d_data->m_ui->HueSegment->setNoSegments( MCC_DEFAULT_COLOR_PHASES );
     d_data->m_phase = d_data->m_ui->HueSegment->selectedIndex();
 

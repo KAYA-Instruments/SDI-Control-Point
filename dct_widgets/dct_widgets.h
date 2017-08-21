@@ -140,7 +140,7 @@ public:
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
 };
 
-// SwitchButtonPlugin
+// SingleChannelKnobBoxPlugin
 class SingleChannelKnobBoxPlugin : public CustomWidgetInterface
 {
     Q_OBJECT
@@ -306,7 +306,7 @@ public:
     QString group() const Q_DECL_OVERRIDE;
 };
 
-// GammaBoxPlugin
+// LutBoxPlugin
 class LutBoxPlugin: public CustomWidgetInterface
 {
     Q_OBJECT

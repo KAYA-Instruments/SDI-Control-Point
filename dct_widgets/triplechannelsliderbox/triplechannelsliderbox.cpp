@@ -87,9 +87,9 @@ TripleChannelSliderBox::TripleChannelSliderBox( QWidget * parent ) : QGroupBox( 
     d_data->m_ui->spxValue1->setSingleStep( (1.0f/(1<<d_data->m_pos)) );
     d_data->m_ui->spxValue2->setSingleStep( (1.0f/(1<<d_data->m_pos)) );
  
-    // connect slider signals with with a slot
+    // connect slider signals with a slot
     // NOTE: slider works in interger range
-    //       doublespinbox works in double range (don't want to implement a doublse slider) 
+    //       doublespinbox works in double range (don't want to implement a double slider)
     connect( d_data->m_ui->sldValue0, SIGNAL(valueChanged(int)), this, SLOT(onIntValue0Change(int)) );
     connect( d_data->m_ui->sldValue1, SIGNAL(valueChanged(int)), this, SLOT(onIntValue1Change(int)) );
     connect( d_data->m_ui->sldValue2, SIGNAL(valueChanged(int)), this, SLOT(onIntValue2Change(int)) );

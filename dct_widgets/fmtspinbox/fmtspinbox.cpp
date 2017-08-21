@@ -17,7 +17,7 @@
 /**
  * @file    fmtspinbox.cpp
  *
- * @brief   Class implementation of a button array box
+ * @brief   Class implementation of a formated spinbox
  *
  *****************************************************************************/
 #include <QtDebug>

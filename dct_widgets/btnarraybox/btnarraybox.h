@@ -42,7 +42,7 @@ public:
     void addButton( QString label, QPixmap px, bool newRow = false );
     void deleteButtons();
 
-    void setButtonPixemap( int id, QPixmap px );
+    void setButtonPixmap( int id, QPixmap px );
 
 signals:
     void buttonClicked( int id );

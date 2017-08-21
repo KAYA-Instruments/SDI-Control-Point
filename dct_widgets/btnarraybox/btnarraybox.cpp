@@ -54,7 +54,7 @@ public:
         delete m_mapper;
     }
 
-    void setPixemap( int id, QPixmap px )
+    void setPixmap( int id, QPixmap px )
     {
         if ( id < m_buttons.count() )
         {
@@ -279,11 +279,11 @@ void ButtonArrayBox::deleteButtons()
 }
 
 /******************************************************************************
- * ButtonArrayBox::setButtonPixemap
+ * ButtonArrayBox::setButtonPixmap
  *****************************************************************************/
-void ButtonArrayBox::setButtonPixemap( int id, QPixmap px )
+void ButtonArrayBox::setButtonPixmap( int id, QPixmap px )
 {
-    d_data->setPixemap( id, px );
+    d_data->setPixmap( id, px );
 }
 
 /******************************************************************************
