@@ -39,7 +39,7 @@
 /******************************************************************************
  * Knee-Slope Definitions
  *****************************************************************************/
-#define KNEE_SLOPE_MIN                              (      100 )
+#define KNEE_SLOPE_MIN                              (      101 )
 #define KNEE_SLOPE_MAX                              (     1600 )
 #define KNEE_SLOPE_COMMA_POSITION                   (        2 )
 #define KNEE_SLOPE_BASE                             (       10 )

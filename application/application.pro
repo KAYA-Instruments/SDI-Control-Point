@@ -6,8 +6,8 @@
 
 # This version number is shown in the Application, it should be
 # updated before each release!
-VERSION = 1.0.2
-DEFINES += VERSION_STRING=\\\"1.0.2\\\"
+VERSION = 1.0.4
+DEFINES += VERSION_STRING=\\\"1.0.4\\\"
 
 CONFIG  += c++11
 # CONFIG  += debug
@@ -19,15 +19,23 @@ TARGET = ProVideo
 TEMPLATE = app
 
 # Platform specific tweaks
+install_binaries.path = $$OUT_PWD/tools
+install_binaries.files = ""
 unix {
     FLASH_LOADER_APPLICATION="flashloader"
+    install_binaries.files += ./tools/flashloader
 }
 win32 {
     FLASH_LOADER_APPLICATION="flashloader.exe"
+    install_binaries.files += ./tools/flashloader.exe
+    install_binaries.files += ./tools/cygwin1.dll
 }
 osx {
     QMAKE_INFO_PLIST = osx/Info.plist
 }
+
+# Copy needed binary files during make install step
+INSTALLS += install_binaries
 
 DEFINES += FLASH_LOADER_APPLICATION=\\\"$$FLASH_LOADER_APPLICATION\\\"
 DEFINES += "QT_NO_PRINTER"

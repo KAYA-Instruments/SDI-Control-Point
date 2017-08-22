@@ -834,7 +834,7 @@ void DpccBox::onDpccVideoModeChanged( int mode )
         d_data->m_delegate->setBounds(yRes - 1, xRes - 1);  // valid values: 0 ... (yRes - 1), 0 ... (xRes - 1)
     }
     // If the resolution has changed, the data in the table is not valid anymore
-    else if ( yRes != d_data->m_delegate->getFirstColBound() || xRes != d_data->m_delegate->getSecondColBound() )
+    else if ( yRes != (d_data->m_delegate->getFirstColBound() + 1) || xRes != (d_data->m_delegate->getSecondColBound() + 1) )
     {
         // Show a Dialog to save the current table
         QMessageBox msgBox;
