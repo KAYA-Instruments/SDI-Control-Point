@@ -1043,6 +1043,21 @@ int ConnectDialog::openInterface()
  *****************************************************************************/
 bool ConnectDialog::scanAndConnect()
 {
+    // Check if there is at least one com port available
+    if ( QSerialPortInfo::availablePorts().count() == 1 )
+    {
+        // Show error message
+        // Show a message box
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("No Com-Port detected");
+        msgBox.setText("There is no Com-Port available in your System. Please connect a USB-to-Serial adapter or equivalent "
+                       "device and rescan for new Com-Ports.");
+        msgBox.exec();
+
+        // Return false to indicate connection could not be established
+        return false;
+    }
+
     // Constants
     const int numAddresses = 20;
     const int numBaudrates = 2;
