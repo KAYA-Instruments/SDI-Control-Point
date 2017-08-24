@@ -1044,7 +1044,7 @@ int ConnectDialog::openInterface()
 bool ConnectDialog::scanAndConnect()
 {
     // Check if there is at least one com port available
-    if ( QSerialPortInfo::availablePorts().count() == 1 )
+    if ( QSerialPortInfo::availablePorts().count() == 0 )
     {
         // Show error message
         // Show a message box
