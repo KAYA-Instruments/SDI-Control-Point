@@ -1047,7 +1047,6 @@ bool ConnectDialog::scanAndConnect()
     if ( QSerialPortInfo::availablePorts().count() == 0 )
     {
         // Show error message
-        // Show a message box
         QMessageBox msgBox;
         msgBox.setWindowTitle("No Com-Port detected");
         msgBox.setText("There is no Com-Port available in your System. Please connect a USB-to-Serial adapter or equivalent "
@@ -1489,17 +1488,30 @@ void ConnectDialog::onReopenSerialConnection( void )
  *****************************************************************************/
 void ConnectDialog::accept()
 {
-    // Clear the device list, we only connect with one device now
-    m_detectedRS485Devices.clear();
-
-    // Set current device index to -1 to indicate that no device is selected
-    setCurrentRs485DeviceIndex( -1 );
-
-    // Try to connect with the device
-    if ( connectWithDevice() )
+    // Check if there is at least one com port available
+    if ( QSerialPortInfo::availablePorts().count() == 0 )
     {
-        // call derived function to close
-        QDialog::accept();
+        // Show error message
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("No Com-Port detected");
+        msgBox.setText("There is no Com-Port available in your System. Please connect a USB-to-Serial adapter or equivalent "
+                       "device and rescan for new Com-Ports.");
+        msgBox.exec();
+    }
+    else
+    {
+        // Clear the device list, we only connect with one device now
+        m_detectedRS485Devices.clear();
+
+        // Set current device index to -1 to indicate that no device is selected
+        setCurrentRs485DeviceIndex( -1 );
+
+        // Try to connect with the device
+        if ( connectWithDevice() )
+        {
+            // call derived function to close
+            QDialog::accept();
+        }
     }
 }
 

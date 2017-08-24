@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>430</height>
+    <width>402</width>
+    <height>446</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -26,7 +26,7 @@
    <string>Open control channel</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../ressource/ressource.qrc">
+   <iconset resource="../../ressource/ressource.qrc">
     <normaloff>:/icons/connect_128x128.png</normaloff>:/icons/connect_128x128.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -474,7 +474,7 @@
   <tabstop>sbxDevAddrRS485</tabstop>
  </tabstops>
  <resources>
-  <include location="../ressource/ressource.qrc"/>
+  <include location="../../ressource/ressource.qrc"/>
  </resources>
  <connections>
   <connection>

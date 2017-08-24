@@ -47,7 +47,7 @@ namespace Ui {
  *****************************************************************************/
 #define SYSTEM_STATE_COMMAND        ( "Camera in operation ... " )
 #define SYSTEM_STATE_UPDATE         ( "Camera waiting for update ... " ) 
-#define SYSTEM_STATE_FLASHING       ( "Camera is updateing  ... " ) 
+#define SYSTEM_STATE_FLASHING       ( "Camera is updating  ... " )
 
 /******************************************************************************
  * update configuration structure
