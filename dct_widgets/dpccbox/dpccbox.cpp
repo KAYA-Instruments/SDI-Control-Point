@@ -145,10 +145,6 @@ public:
     {
         int value = idx.model()->data( idx, Qt::EditRole ).toInt();
         QLineEdit * edt = static_cast< QLineEdit * >( editor );
-        if (value == 0)
-        {
-            value = 1;
-        }
         edt->setText( QString().setNum(value) );
     }    
 
@@ -206,7 +202,6 @@ public:
         initDataModel();
 
         m_ui->tblPositions->setItemDelegate( m_delegate );
-        m_ui->tblPositions->resizeColumnsToContents();
         m_ui->tblPositions->horizontalHeader()->setSectionResizeMode( QHeaderView::Stretch );
         m_ui->tblPositions->setSelectionBehavior( QAbstractItemView::SelectRows );
         setDataModel();
@@ -224,7 +219,7 @@ public:
     {
         m_model = new QStandardItemModel( 0, DPCC_TABLE_MAX_NO_COLUMNS, NULL );
         m_model->setHorizontalHeaderItem( 0, new QStandardItem(QString("Row (Y)")) );
-        m_model->setHorizontalHeaderItem( 1, new QStandardItem(QString("Column (X)")) );
+        m_model->setHorizontalHeaderItem( 1, new QStandardItem(QString("Col (X)")) );
     }
     
     // replace data model of the table view widget with our custom model

@@ -377,7 +377,7 @@ void MccEqBox::setupEqualizer()
     for ( int segment = 0; segment < d_data->m_no_segments; segment++ )
     {
         // calculate the angle of this segment
-        int hueAngle = round ( startAngle + (float)segment * anglePerSegment );
+        int hueAngle = qRound( startAngle + (float)segment * anglePerSegment );
 
         // create slider
         slider = new MccSlider( segment, QColor::fromHsv( hueAngle, 255, 255 ),

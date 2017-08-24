@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>700</width>
+    <width>749</width>
     <height>900</height>
    </rect>
   </property>
@@ -358,15 +358,21 @@ For this reason the table will also be automatically sorted before transmitting 
         </item>
         <item row="1" column="0">
          <widget class="QTableView" name="tblPositions">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="minimumSize">
            <size>
-            <width>220</width>
+            <width>0</width>
             <height>0</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>180</width>
+            <width>16777215</width>
             <height>16777215</height>
            </size>
           </property>

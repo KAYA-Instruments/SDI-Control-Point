@@ -79,8 +79,9 @@ int loadTableCsv( const QString & path, const int maxNumRows, const QVector<QPai
             else
             {
                 QMessageBox msgBox;
-                QString msgText = QString("The CSV file %1 contains invalid data:\n\nThe value %2 in column %3 does not lie in the legal range of %4 to %5.").arg(path).arg(value).arg(col+1).arg(minValue).arg(maxValue);
+                QString msgText = QString("The CSV file %1 contains invalid data:\n\nThe value %2 in column %3 of the table does not lie in the legal range of %4 to %5.").arg(path).arg(value).arg(col+1).arg(minValue).arg(maxValue);
                 msgBox.setText(msgText);
+                msgBox.setWindowTitle("Error while parsing CSV file");
                 msgBox.exec();
                 ret = -1;
                 break;

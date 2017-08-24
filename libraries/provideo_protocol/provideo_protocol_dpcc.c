@@ -69,6 +69,12 @@
 #define CMD_SET_DPCC_PIXEL_WITH_COPY_FLAG   ( "dpc_add_px %i %i %i\n" )
 #define CMD_SYNC_DPCC_PIXEL                 ( "dpc_add_px " )
 #define CMD_GET_DPCC_PIXEL_NO_PARMS         ( 2 )
+/* Usually transmitting one coordinate does not take long (well below the 100ms
+ * default timeout), but as up to 2048 values can be transmitted the device
+ * sometimes hangs for some ms (probably due to a bad concatenation of
+ * interrupts) thus we define a timeout of 300ms to make sure all values get
+ * transmitted correctly. */
+#define CMD_SET_DPCC_PIXEL_TMO              ( 300 )
 
 /******************************************************************************
  * @brief command "dpc_del_px" 
@@ -164,7 +170,7 @@ static int set_dpcc_enable
 {
     provideo_protocol_user_ctx_t * user = (provideo_protocol_user_ctx_t *)ctx;
 
-    if ( user  && user->use_copy_flag )
+    if ( user && user->use_copy_flag )
     {
         return ( set_param_int_X( channel, CMD_SET_DPCC_WITH_COPY_FLAG,
                                     INT( flag ), INT( user->use_copy_flag ) ) );
@@ -321,11 +327,13 @@ static int add_dpcc_pixel
 
     if ( user  && user->use_copy_flag )
     {
-        return ( set_param_int_X( channel, CMD_SET_DPCC_PIXEL_WITH_COPY_FLAG,
-                    INT( values[0] ), INT( values[1] ), INT( user->use_copy_flag ) ) );
+        return ( set_param_int_X_with_tmo( channel, CMD_SET_DPCC_PIXEL_WITH_COPY_FLAG,
+                                           CMD_SET_DPCC_PIXEL_TMO, INT( values[0] ),
+                                           INT( values[1] ), INT( user->use_copy_flag ) ) );
     }
 
-    return ( set_param_int_X( channel, CMD_SET_DPCC_PIXEL, INT( values[0] ), INT( values[1] ) ) );
+    return ( set_param_int_X_with_tmo( channel, CMD_SET_DPCC_PIXEL, CMD_SET_DPCC_PIXEL_TMO,
+                                       INT( values[0] ), INT( values[1] ) ) );
 }
 
 /******************************************************************************
