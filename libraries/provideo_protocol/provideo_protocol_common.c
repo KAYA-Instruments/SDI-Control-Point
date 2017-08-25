@@ -109,7 +109,7 @@ int evaluate_set_response_with_tmo
     // start timer
     clock_gettime(CLOCK_MONOTONIC, &start);
 
-    // set received_string and buffer to zero
+    // set received_string to zero
     memset( data, 0u, sizeof(data) );
 
     // wait for answer from COM-Port
@@ -128,6 +128,13 @@ int evaluate_set_response_with_tmo
         {
             // always put a "null" at the end of a string
             buf[n] = '\0';
+
+            // check for buffer overflow
+            if ( strlen(data) + strlen(buf) >= sizeof(data) )
+            {
+                // device is sending more data than expected -> throw away old data
+                memset( data, 0u, sizeof(data) );
+            }
 
             // append poll buffer to receive buffer
             strcat( data, buf );
