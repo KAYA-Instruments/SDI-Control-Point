@@ -346,7 +346,7 @@ void DpccBox::loadSettings( QSettings & s )
     setDpccTestMode( s.value( DPCC_SETTINGS_TEST_MODE ).toInt() );
 
     /* Note: The defect pixel table is not loaded, because it is device specific.
-     * The user may use the separate DPCC save / load mechanism to handle talbe
+     * The user may use the separate DPCC save / load mechanism to handle table
      * import and export */
 //    // NOTE: call qRegisterMetaTypeStreamOperators<QVector<int> >("QVector<int>"); in main.cpp
 //    yPos = s.value( DPCC_SETTINGS_Y_POSITIONS ).value<QVector<int> >();
@@ -379,7 +379,7 @@ void DpccBox::saveSettings( QSettings & s )
     s.setValue( DPCC_SETTINGS_TEST_MODE, getDpccTestMode() );
 
     /* Note: The defect pixel table is not saved, because it is device specific.
-     * The user may use the separate DPCC save / load mechanism to handle talbe
+     * The user may use the separate DPCC save / load mechanism to handle table
      * import and export */
 //    // NOTE: call qRegisterMetaTypeStreamOperators<QVector<int> >("QVector<int>"); in main.cpp
 //    s.setValue( DPCC_SETTINGS_Y_POSITIONS, QVariant::fromValue<QVector<int>>(yPos) );
@@ -397,7 +397,7 @@ void DpccBox::applySettings( void )
     emit DpccDetectionLevelChanged( getDpccLevel() );
 
     /* Note: The defect pixel table is not applied, because it is device specific.
-     * The user may use the separate DPCC save / load mechanism to handle talbe
+     * The user may use the separate DPCC save / load mechanism to handle table
      * import and export */
 }
 
@@ -713,6 +713,21 @@ void DpccBox::onAutoLoadTableClicked()
     emit DpccLoadTableFromRam();
 
     setNormalCursor();
+
+    // Check amount of pixels loaded
+    int rowCount = d_data->m_ui->tblPositions->model()->rowCount();
+    if ( rowCount >= DPCC_TABLE_MAX_NO_ROWS )
+    {
+        // Show a message box, that the auto loader found too many pixels
+        QString msgText = QString( "The auto detection found %1 defect pixels, which is the maximum that can be handled.\n\n"
+                                   "There might be more pixels found, which can not be displayed here. "
+                                   "To decrease the amount of pixels found, choose a lower auto-detection level, or change your test setup." )
+                                  .arg( DPCC_TABLE_MAX_NO_ROWS );
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("The autoload function found too many pixels");
+        msgBox.setText( msgText );
+        msgBox.exec();
+    }
 }
 
 /******************************************************************************
