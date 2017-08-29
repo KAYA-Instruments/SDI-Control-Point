@@ -288,6 +288,6 @@ FORMS    += ../dct_widgets/mcceqbox/mcceqbox.ui                             \
             ../dct_widgets/textviewer/textviewer.ui                         \
             mainwindow.ui
 
-RESOURCES = ../ressource/ressource.qrc
+RESOURCES = ../resource/resource.qrc
 
-DISTFILES += ../ressource/doc/third-party-licenses.txt
+DISTFILES += ../resource/doc/third-party-licenses.txt

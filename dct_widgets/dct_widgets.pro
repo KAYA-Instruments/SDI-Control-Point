@@ -150,4 +150,4 @@ FORMS       += singlechannelknobbox/singlechannelknobbox.ui         \
                dpccbox/dpccbox.ui                                   \
                textviewer/textviewer.ui
 
-RESOURCES    = ../ressource/ressource.qrc \
+RESOURCES    = ../resource/resource.qrc \
