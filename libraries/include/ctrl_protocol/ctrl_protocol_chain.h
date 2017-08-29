@@ -65,28 +65,6 @@ int ctrl_protocol_set_output_chain
 );
 
 /**************************************************************************//**
- * @brief video mode 
- *****************************************************************************/
-enum VIDEO_MODE
-{
-    VIDEO_MODE_FIRST        = 1,
-    VIDEO_MODE_720p60       = 1,    /**<  720p, 60 fps    */
-    VIDEO_MODE_720p50       = 2,    /**<  720p, 50 fps    */
-    VIDEO_MODE_720p59_94    = 3,    /**<  720p, 59.94 fps */
-    VIDEO_MODE_1080p30      = 4,    /**< 1080p, 30 fps    */
-    VIDEO_MODE_1080p25      = 5,    /**< 1080p, 25 fps    */
-    VIDEO_MODE_1080p24      = 6,    /**< 1080p, 24 fps    */
-    VIDEO_MODE_1080p23_98   = 7,    /**< 1080p, 23.98 fps */
-    VIDEO_MODE_1080p29_97   = 8,    /**< 1080p, 29.97 fps */
-    VIDEO_MODE_1080p50      = 9,    /**< 1080p, 50 fps    */
-    VIDEO_MODE_1080p60      = 10,   /**< 1080p, 60 fps    */
-    VIDEO_MODE_1080i60      = 11,   /**< 1080i, 60 fps    */
-    VIDEO_MODE_1080i50      = 12,   /**< 1080i, 50 fps    */
-    VIDEO_MODE_1080i59_94   = 13,   /**< 1080i, 59.94 fps */
-    VIDEO_MODE_MAX                  /**< number of normally supported modes (end marker) */
-};
-
-/**************************************************************************//**
  * @brief Gets the current video output mode.
  *
  * @param[in]   channel  control channel instance
@@ -476,6 +454,38 @@ int ctrl_protocol_set_timecode
 );
 
 /**************************************************************************//**
+ * @brief Gets timecode hold flag
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[out]  enable   timecode hold enable status
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_timecode_hold
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t * const              enable
+);
+
+/**************************************************************************//**
+ * @brief Sets timecode hold flag
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[in]   enable   timecode hold enable status
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_set_timecode_hold
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t const                enable
+);
+
+/**************************************************************************//**
  * @brief CHAIN protocol driver implementation
  *****************************************************************************/
 typedef struct ctrl_protocol_chain_drv_s
@@ -504,6 +514,8 @@ typedef struct ctrl_protocol_chain_drv_s
     ctrl_protocol_set_int8_t     set_sdi_white;
     ctrl_protocol_int32_array_t  get_timecode;
     ctrl_protocol_int32_array_t  set_timecode;
+    ctrl_protocol_get_uint8_t    get_timecode_hold;
+    ctrl_protocol_set_uint8_t    set_timecode_hold;
 } ctrl_protocol_chain_drv_t;
 
 /**************************************************************************//**

@@ -133,6 +133,14 @@
 #define CMD_GET_TIMECODE_NO_PARAMS          ( 3 )
 
 /******************************************************************************
+ * @brief command "timecode_hold"
+ *****************************************************************************/
+#define CMD_GET_TIMECODE_HOLD               ( "timecode_hold\n" )
+#define CMD_SET_TIMECODE_HOLD               ( "timecode_hold %i\n" )
+#define CMD_SYNC_TIMECODE_HOLD              ( "timecode_hold " )
+#define CMD_GET_TIMECODE_HOLD_NO_PARAMS     ( 1 )
+
+/******************************************************************************
  * @brief command "copy_settings" 
  *****************************************************************************/
 #define CMD_COPY_SETTINGS                   ( "copy_settings %i %i\n" )
@@ -869,6 +877,64 @@ static int set_timecode
 }
 
 /******************************************************************************
+ * get_timecode_hold - Gets the timecode hold flag.
+ *****************************************************************************/
+static int get_timecode_hold
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    uint8_t * const             enable
+)
+{
+    (void) ctx;
+
+    int value;
+    int res;
+
+    // parameter check
+    if ( !enable )
+    {
+        return ( -EINVAL );
+    }
+
+    // command call to get 1 parameter from provideo system
+    res = get_param_int_X( channel, 2,
+            CMD_GET_TIMECODE_HOLD, CMD_SYNC_TIMECODE_HOLD, CMD_SET_TIMECODE_HOLD, &value );
+
+    // return error code
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
+    // return -EFAULT if number of parameter not matching
+    else if ( res != CMD_GET_TIMECODE_HOLD_NO_PARAMS )
+    {
+        return ( -EFAULT );
+    }
+
+    // type-cast to range
+    *enable = UINT8( value );
+
+    return ( 0 );
+}
+
+/******************************************************************************
+ * set_sdi_white - Sets the timecode hold flag.
+ *****************************************************************************/
+static int set_timecode_hold
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    uint8_t const               enable
+)
+{
+    (void) ctx;
+
+    return ( set_param_int_X( channel, CMD_SET_TIMECODE_HOLD, INT( enable ) ) );
+}
+
+/******************************************************************************
  * CHAIN protocol driver declaration
  *****************************************************************************/
 static ctrl_protocol_chain_drv_t provideo_chain_drv = 
@@ -897,6 +963,8 @@ static ctrl_protocol_chain_drv_t provideo_chain_drv =
     .set_genlock_termination = set_genlock_termination,
     .get_timecode            = get_timecode,
     .set_timecode            = set_timecode,
+    .get_timecode_hold       = get_timecode_hold,
+    .set_timecode_hold       = set_timecode_hold
 };
 
 /******************************************************************************

@@ -360,7 +360,11 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
             // Timecode
             connect( dev->GetChainItf(), SIGNAL(TimecodeChanged(QVector<int>)), m_ui->inoutBox, SLOT(onTimecodeChange(QVector<int>)) );
             connect( m_ui->inoutBox, SIGNAL(TimecodeSet(QVector<int>)), dev->GetChainItf(), SLOT(onTimecodeChange(QVector<int>)) );
+
             connect( m_ui->inoutBox, SIGNAL(TimecodeGet()), dev->GetChainItf(), SLOT(onTimecodeGetRequest()) );
+
+            connect( dev->GetChainItf(), SIGNAL(TimecodeHoldChanged(bool)), m_ui->inoutBox, SLOT(onTimecodeHoldChange(bool)) );
+            connect( m_ui->inoutBox, SIGNAL(TimecodeHold(bool)), dev->GetChainItf(), SLOT(onTimecodeHoldChange(bool)) );
         }
     }
 

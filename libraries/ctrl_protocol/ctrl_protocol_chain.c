@@ -401,8 +401,8 @@ int ctrl_protocol_chain_register
 int ctrl_protocol_get_timecode
 (
     ctrl_protocol_handle_t const protocol,
-    ctrl_channel_handle_t const  channel, 
-    int const                    no, 
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
     int32_t * const              values
 )
 {
@@ -418,14 +418,45 @@ int ctrl_protocol_get_timecode
 int ctrl_protocol_set_timecode
 (
     ctrl_protocol_handle_t const protocol,
-    ctrl_channel_handle_t const  channel, 
-    int const                    no, 
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
     int32_t * const              values
 )
 {
     CHECK_HANDLE( protocol );
     CHECK_DRV_FUNC( CHAIN_DRV(protocol->drv), set_timecode );
     return ( CHAIN_DRV(protocol->drv)->set_timecode( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_timecode_hold
+ *****************************************************************************/
+int ctrl_protocol_get_timecode_hold
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t * const              enable
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( CHAIN_DRV(protocol->drv), get_timecode_hold );
+    CHECK_NOT_NULL( enable );
+    return ( CHAIN_DRV(protocol->drv)->get_timecode_hold( protocol->ctx, channel, enable ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_timecode_hold
+ *****************************************************************************/
+int ctrl_protocol_set_timecode_hold
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t const                enable
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( CHAIN_DRV(protocol->drv), set_timecode_hold );
+    return ( CHAIN_DRV(protocol->drv)->set_timecode_hold( protocol->ctx, channel, enable ) );
 }
 
 /******************************************************************************

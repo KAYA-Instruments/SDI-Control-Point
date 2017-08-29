@@ -145,6 +145,7 @@ signals:
 
     void TimecodeGet( void );
     void TimecodeSet( QVector<int> );
+    void TimecodeHold( bool );
 
     void IrisAptChanged( int );
 
@@ -175,6 +176,7 @@ public slots:
     void onLscChange( QVector<uint> values );
 
     void onTimecodeChange( QVector<int> time );
+    void onTimecodeHoldChange( bool enable );
 
     void onIrisAptChange( int value );
     void onIrisAptError( void );
@@ -215,6 +217,7 @@ private slots:
 
     void onBtnTimecodeSetClicked( );
     void onBtnTimecodeGetClicked( );
+    void onBtnTimecodeHoldClicked( bool checked );
 
     void onTafToggle( bool checked );
 

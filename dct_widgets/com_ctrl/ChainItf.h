@@ -81,6 +81,7 @@ public:
     
     // timecode
     void GetTimecode();
+    void GetTimecodeHold();
 
 signals:
     // chain selection status
@@ -118,6 +119,7 @@ signals:
 
     // timecode
     void TimecodeChanged( QVector<int> value );
+    void TimecodeHoldChanged( bool enable );
 
     // new video mode is set
     // This is used to synchronize other interface components.
@@ -137,6 +139,7 @@ public slots:
     void onChainGenlockTerminationChange( int value );
     void onTimecodeChange( QVector<int> value );
     void onTimecodeGetRequest( );
+    void onTimecodeHoldChange( bool enable );
 };
 
 #define CONNECT_CHAIN_INTERFACE(x, y)                               \

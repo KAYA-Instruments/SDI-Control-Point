@@ -49,6 +49,7 @@ void ChainItf::resync()
     GetChainGenlockOffset();
     GetChainGenlockTermination();
     GetTimecode();
+    GetTimecodeHold();
 }
 
 /******************************************************************************
@@ -298,6 +299,26 @@ void ChainItf::GetTimecode()
 }
 
 /******************************************************************************
+ * ChainItf::GetTimecodeHold
+ *****************************************************************************/
+void ChainItf::GetTimecodeHold()
+{
+    // Is there a signal listener
+    if ( receivers(SIGNAL(TimecodeHoldChanged(bool))) > 0 )
+    {
+        uint8_t enable;
+
+        // get auto processing number of white balance presets from device
+        int res = ctrl_protocol_get_timecode_hold( GET_PROTOCOL_INSTANCE(this),
+                    GET_CHANNEL_INSTANCE(this), &enable );
+        HANDLE_ERROR( res );
+
+        // emit a TimecodeHoldChanged signal
+        emit TimecodeHoldChanged( enable > 0 ? true : false );
+    }
+}
+
+/******************************************************************************
  * ChainItf::onChainSelectedChainChange
  *****************************************************************************/
 void ChainItf::onChainSelectedChainChange( int value )
@@ -450,3 +471,12 @@ void ChainItf::onTimecodeGetRequest( )
     GetTimecode();
 }
 
+/******************************************************************************
+ * ChainItf::onTimecodeHoldChange
+ *****************************************************************************/
+void ChainItf::onTimecodeHoldChange( bool enable )
+{
+    int res = ctrl_protocol_set_timecode_hold( GET_PROTOCOL_INSTANCE(this),
+            GET_CHANNEL_INSTANCE(this), (uint8_t)enable );
+    HANDLE_ERROR( res );
+}

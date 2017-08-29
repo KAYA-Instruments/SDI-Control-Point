@@ -921,9 +921,15 @@
       </item>
       <item>
        <widget class="QTimeEdit" name="tmeTimecode">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimumSize">
          <size>
-          <width>120</width>
+          <width>0</width>
           <height>0</height>
          </size>
         </property>
@@ -958,6 +964,9 @@
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
         </property>
+        <property name="toolTip">
+         <string>Set timecode on the device to the entered value.</string>
+        </property>
         <property name="text">
          <string>Apply</string>
         </property>
@@ -980,8 +989,34 @@
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
         </property>
+        <property name="toolTip">
+         <string>Read current timecode from the device.</string>
+        </property>
         <property name="text">
          <string>Read</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnHoldTimecode">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="toolTip">
+         <string>Hold timecode. As long as this button is checked, the SDI timecode will not changed. Can be used to trigger a flash recorder.
+Note: This will only hold the timecode in the SDI output, the timecode on the device will keep running in the background.</string>
+        </property>
+        <property name="text">
+         <string>Hold</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
         </property>
        </widget>
       </item>

@@ -290,6 +290,7 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     // timecode
     connect( d_data->m_ui->btnSetTimecode , SIGNAL(clicked()), this, SLOT(onBtnTimecodeSetClicked()) );
     connect( d_data->m_ui->btnGetTimecode , SIGNAL(clicked()), this, SLOT(onBtnTimecodeGetClicked()) );
+    connect( d_data->m_ui->btnHoldTimecode, SIGNAL(clicked(bool)), this, SLOT(onBtnTimecodeHoldClicked(bool)) );
 
     // lense shading correction
     connect( d_data->m_ui->cbxLscEnable   , SIGNAL(stateChanged(int)), this, SLOT(onCbxLscEnableChange(int)) );
@@ -1712,11 +1713,31 @@ void InOutBox::onBtnTimecodeGetClicked()
 }
 
 /******************************************************************************
+ * InOutBox::onBtnTimecodeHoldClicked
+ *****************************************************************************/
+void InOutBox::onBtnTimecodeHoldClicked( bool checked )
+{
+    setWaitCursor();
+    emit TimecodeHold( checked );
+    setNormalCursor();
+}
+
+/******************************************************************************
  * InOutBox::onTimecodeChange
  *****************************************************************************/
 void InOutBox::onTimecodeChange( QVector<int> time )
 {
     d_data->m_ui->tmeTimecode->setTime( QTime(time[0], time[1], time[2]) );
+}
+
+/******************************************************************************
+ * InOutBox::onTimecodeHoldChange
+ *****************************************************************************/
+void InOutBox::onTimecodeHoldChange( bool enable )
+{
+    d_data->m_ui->btnHoldTimecode->blockSignals( true );
+    d_data->m_ui->btnHoldTimecode->setChecked( enable );
+    d_data->m_ui->btnHoldTimecode->blockSignals( false );
 }
 
 /******************************************************************************
