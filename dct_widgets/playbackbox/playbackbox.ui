@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>646</width>
-    <height>900</height>
+    <height>908</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -895,7 +895,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../ressource/ressource.qrc">
+            <iconset>
              <normaloff>:/icons/icons/record_red_icon.ico</normaloff>:/icons/icons/record_red_icon.ico</iconset>
            </property>
            <property name="iconSize">
@@ -946,7 +946,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../ressource/ressource.qrc">
+            <iconset>
              <normaloff>:/icons/icons/live.png</normaloff>:/icons/icons/live.png</iconset>
            </property>
            <property name="iconSize">
@@ -991,7 +991,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../ressource/ressource.qrc">
+            <iconset>
              <normaloff>:/icons/icons/last_icon.ico</normaloff>:/icons/icons/last_icon.ico</iconset>
            </property>
            <property name="iconSize">
@@ -1039,7 +1039,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../ressource/ressource.qrc">
+            <iconset>
              <normaloff>:/icons/icons/rew_icon.ico</normaloff>:/icons/icons/rew_icon.ico</iconset>
            </property>
            <property name="iconSize">
@@ -1090,7 +1090,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../ressource/ressource.qrc">
+            <iconset>
              <normaloff>:/icons/icons/stop_icon.ico</normaloff>:/icons/icons/stop_icon.ico</iconset>
            </property>
            <property name="iconSize">
@@ -1141,7 +1141,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../ressource/ressource.qrc">
+            <iconset>
              <normaloff>:/icons/icons/play_icon.ico</normaloff>:/icons/icons/play_icon.ico</iconset>
            </property>
            <property name="iconSize">
@@ -1189,7 +1189,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../ressource/ressource.qrc">
+            <iconset>
              <normaloff>:/icons/icons/forw_icon.ico</normaloff>:/icons/icons/forw_icon.ico</iconset>
            </property>
            <property name="iconSize">
@@ -1237,7 +1237,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../ressource/ressource.qrc">
+            <iconset>
              <normaloff>:/icons/icons/next_icon.ico</normaloff>:/icons/icons/next_icon.ico</iconset>
            </property>
            <property name="iconSize">
@@ -1287,11 +1287,6 @@
   <tabstop>sbxEndFrame3</tabstop>
   <tabstop>sbxSize3</tabstop>
  </tabstops>
- <resources>
-  <include location="../ressource/ressource.qrc"/>
-  <include location="../ressource/ressource.qrc"/>
-  <include location="../ressource/ressource.qrc"/>
-  <include location="ressource.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

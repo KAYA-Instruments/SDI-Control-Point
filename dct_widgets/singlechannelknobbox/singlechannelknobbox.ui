@@ -85,10 +85,10 @@
       <bool>false</bool>
      </property>
      <property name="backgroundImage">
-      <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back.png</pixmap>
+      <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back.png</pixmap>
      </property>
      <property name="needleImage">
-      <pixmap resource="../../ressource/ressource.qrc">:/images/needle/dial-pointer.png</pixmap>
+      <pixmap resource="../../resource/resource.qrc">:/images/needle/dial-pointer.png</pixmap>
      </property>
      <property name="maxAngle">
       <number>180</number>
@@ -126,7 +126,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../ressource/ressource.qrc"/>
+  <include location="../../resource/resource.qrc"/>
  </resources>
  <connections/>
 </ui>

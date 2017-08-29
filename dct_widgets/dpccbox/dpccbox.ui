@@ -159,7 +159,7 @@
                <string>Transmit Table to Device</string>
               </property>
               <property name="icon">
-               <iconset resource="../../ressource/ressource.qrc">
+               <iconset resource="../../resource/resource.qrc">
                 <normaloff>:/icons/download.png</normaloff>:/icons/download.png</iconset>
               </property>
              </widget>
@@ -197,7 +197,7 @@
                <string>Load Table from Device</string>
               </property>
               <property name="icon">
-               <iconset resource="../../ressource/ressource.qrc">
+               <iconset resource="../../resource/resource.qrc">
                 <normaloff>:/icons/upload.png</normaloff>:/icons/upload.png</iconset>
               </property>
              </widget>
@@ -402,7 +402,7 @@ For this reason the table will also be automatically sorted before transmitting 
   </layout>
  </widget>
  <resources>
-  <include location="../../ressource/ressource.qrc"/>
+  <include location="../../resource/resource.qrc"/>
  </resources>
  <connections/>
 </ui>

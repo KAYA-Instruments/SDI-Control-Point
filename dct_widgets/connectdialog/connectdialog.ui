@@ -26,7 +26,7 @@
    <string>Open control channel</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../ressource/ressource.qrc">
+   <iconset resource="../../resource/resource.qrc">
     <normaloff>:/icons/connect_128x128.png</normaloff>:/icons/connect_128x128.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -474,7 +474,7 @@
   <tabstop>sbxDevAddrRS485</tabstop>
  </tabstops>
  <resources>
-  <include location="../../ressource/ressource.qrc"/>
+  <include location="../../resource/resource.qrc"/>
  </resources>
  <connections>
   <connection>

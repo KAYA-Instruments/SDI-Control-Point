@@ -7,14 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>953</width>
-    <height>877</height>
+    <height>962</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>ProVideo Color Control</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../ressource/ressource.qrc">
+   <iconset resource="../resource/resource.qrc">
     <normaloff>:/images/tab/piesegmentselect.png</normaloff>:/images/tab/piesegmentselect.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -44,7 +44,7 @@
       </property>
       <widget class="QWidget" name="tabInOut">
        <attribute name="icon">
-        <iconset resource="../ressource/ressource.qrc">
+        <iconset resource="../resource/resource.qrc">
          <normaloff>:/images/tab/inout.png</normaloff>:/images/tab/inout.png</iconset>
        </attribute>
        <attribute name="title">
@@ -71,7 +71,7 @@
       </widget>
       <widget class="QWidget" name="tabBlack">
        <attribute name="icon">
-        <iconset resource="../ressource/ressource.qrc">
+        <iconset resource="../resource/resource.qrc">
          <normaloff>:/images/tab/black.png</normaloff>:/images/tab/black.png</iconset>
        </attribute>
        <attribute name="title">
@@ -98,7 +98,7 @@
       </widget>
       <widget class="QWidget" name="tabWb">
        <attribute name="icon">
-        <iconset resource="../ressource/ressource.qrc">
+        <iconset resource="../resource/resource.qrc">
          <normaloff>:/images/tab/thermometer.png</normaloff>:/images/tab/thermometer.png</iconset>
        </attribute>
        <attribute name="title">
@@ -125,7 +125,7 @@
       </widget>
       <widget class="QWidget" name="tabFlt">
        <attribute name="icon">
-        <iconset resource="../ressource/ressource.qrc">
+        <iconset resource="../resource/resource.qrc">
          <normaloff>:/images/tab/filter.png</normaloff>:/images/tab/filter.png</iconset>
        </attribute>
        <attribute name="title">
@@ -152,7 +152,7 @@
       </widget>
       <widget class="QWidget" name="tabMcc">
        <attribute name="icon">
-        <iconset resource="../ressource/ressource.qrc">
+        <iconset resource="../resource/resource.qrc">
          <normaloff>:/images/tab/piesegmentselect.png</normaloff>:/images/tab/piesegmentselect.png</iconset>
        </attribute>
        <attribute name="title">
@@ -173,7 +173,7 @@
       </widget>
       <widget class="QWidget" name="tabKnee">
        <attribute name="icon">
-        <iconset resource="../ressource/ressource.qrc">
+        <iconset resource="../resource/resource.qrc">
          <normaloff>:/images/tab/knee.png</normaloff>:/images/tab/knee.png</iconset>
        </attribute>
        <attribute name="title">
@@ -194,7 +194,7 @@
       </widget>
       <widget class="QWidget" name="tabGamma">
        <attribute name="icon">
-        <iconset resource="../ressource/ressource.qrc">
+        <iconset resource="../resource/resource.qrc">
          <normaloff>:/images/tab/gamma.png</normaloff>:/images/tab/gamma.png</iconset>
        </attribute>
        <attribute name="title">
@@ -215,7 +215,7 @@
       </widget>
       <widget class="QWidget" name="tabDpcc">
        <attribute name="icon">
-        <iconset resource="../ressource/ressource.qrc">
+        <iconset resource="../resource/resource.qrc">
          <normaloff>:/images/tab/dpcc.png</normaloff>:/images/tab/dpcc.png</iconset>
        </attribute>
        <attribute name="title">
@@ -236,7 +236,7 @@
       </widget>
       <widget class="QWidget" name="tabOut">
        <attribute name="icon">
-        <iconset resource="../ressource/ressource.qrc">
+        <iconset resource="../resource/resource.qrc">
          <normaloff>:/images/tab/out.png</normaloff>:/images/tab/out.png</iconset>
        </attribute>
        <attribute name="title">
@@ -263,7 +263,7 @@
       </widget>
       <widget class="QWidget" name="tabInfo">
        <attribute name="icon">
-        <iconset resource="../ressource/ressource.qrc">
+        <iconset resource="../resource/resource.qrc">
          <normaloff>:/images/tab/info.png</normaloff>:/images/tab/info.png</iconset>
        </attribute>
        <attribute name="title">
@@ -284,7 +284,7 @@
       </widget>
       <widget class="QWidget" name="tabUpdate">
        <attribute name="icon">
-        <iconset resource="../ressource/ressource.qrc">
+        <iconset resource="../resource/resource.qrc">
          <normaloff>:/images/tab/update.png</normaloff>:/images/tab/update.png</iconset>
        </attribute>
        <attribute name="title">
@@ -347,7 +347,7 @@
   </widget>
   <action name="actionConnect">
    <property name="icon">
-    <iconset resource="../ressource/ressource.qrc">
+    <iconset resource="../resource/resource.qrc">
      <normaloff>:/icons/connect_64x64.png</normaloff>:/icons/connect_64x64.png</iconset>
    </property>
    <property name="text">
@@ -359,7 +359,7 @@
   </action>
   <action name="actionLoadSettings">
    <property name="icon">
-    <iconset resource="../ressource/ressource.qrc">
+    <iconset resource="../resource/resource.qrc">
      <normaloff>:/icons/load.png</normaloff>:/icons/load.png</iconset>
    </property>
    <property name="text">
@@ -371,7 +371,7 @@
   </action>
   <action name="actionSaveSettings">
    <property name="icon">
-    <iconset resource="../ressource/ressource.qrc">
+    <iconset resource="../resource/resource.qrc">
      <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
    </property>
    <property name="text">
@@ -383,7 +383,7 @@
   </action>
   <action name="actionSaveToFile">
    <property name="icon">
-    <iconset resource="../ressource/ressource.qrc">
+    <iconset resource="../resource/resource.qrc">
      <normaloff>:/icons/save2.png</normaloff>:/icons/save2.png</iconset>
    </property>
    <property name="text">
@@ -395,7 +395,7 @@
   </action>
   <action name="actionLoadFromFile">
    <property name="icon">
-    <iconset resource="../ressource/ressource.qrc">
+    <iconset resource="../resource/resource.qrc">
      <normaloff>:/icons/load2.png</normaloff>:/icons/load2.png</iconset>
    </property>
    <property name="text">
@@ -544,7 +544,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../ressource/ressource.qrc"/>
+  <include location="../resource/resource.qrc"/>
  </resources>
  <connections/>
 </ui>

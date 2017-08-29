@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>782</width>
-    <height>905</height>
+    <height>908</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -218,7 +218,7 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset resource="../../ressource/ressource.qrc">
+              <iconset resource="../../resource/resource.qrc">
                <normaloff>:/images/tool/sync.png</normaloff>:/images/tool/sync.png</iconset>
              </property>
             </widget>
@@ -244,7 +244,7 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset resource="../../ressource/ressource.qrc">
+              <iconset resource="../../resource/resource.qrc">
                <normaloff>:/images/tool/sync.png</normaloff>:/images/tool/sync.png</iconset>
              </property>
             </widget>
@@ -314,10 +314,10 @@
            <number>180</number>
           </property>
           <property name="needleImage">
-           <pixmap resource="../../ressource/ressource.qrc">:/images/needle/dial-pointer.png</pixmap>
+           <pixmap resource="../../resource/resource.qrc">:/images/needle/dial-pointer.png</pixmap>
           </property>
           <property name="backgroundImage">
-           <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-gray.png</pixmap>
+           <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-gray.png</pixmap>
           </property>
          </widget>
         </item>
@@ -380,16 +380,16 @@
         <number>180</number>
        </property>
        <property name="needleImage">
-        <pixmap resource="../../ressource/ressource.qrc">:/images/needle/dial-pointer.png</pixmap>
+        <pixmap resource="../../resource/resource.qrc">:/images/needle/dial-pointer.png</pixmap>
        </property>
        <property name="backgroundImage0">
-        <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-red.png</pixmap>
+        <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-red.png</pixmap>
        </property>
        <property name="backgroundImage1">
-        <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-green.png</pixmap>
+        <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-green.png</pixmap>
        </property>
        <property name="backgroundImage2">
-        <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-blue.png</pixmap>
+        <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-blue.png</pixmap>
        </property>
       </widget>
      </item>
@@ -462,16 +462,16 @@
         <number>180</number>
        </property>
        <property name="needleImage">
-        <pixmap resource="../../ressource/ressource.qrc">:/images/needle/dial-pointer.png</pixmap>
+        <pixmap resource="../../resource/resource.qrc">:/images/needle/dial-pointer.png</pixmap>
        </property>
        <property name="backgroundImage0">
-        <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-red.png</pixmap>
+        <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-red.png</pixmap>
        </property>
        <property name="backgroundImage1">
-        <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-green.png</pixmap>
+        <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-green.png</pixmap>
        </property>
        <property name="backgroundImage2">
-        <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-blue.png</pixmap>
+        <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-blue.png</pixmap>
        </property>
       </widget>
      </item>
@@ -497,6 +497,7 @@
    <class>SingleChannelKnobBox</class>
    <extends>QGroupBox</extends>
    <header>singlechannelknobbox.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>TripleChannelKnobBox</class>
@@ -510,7 +511,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../ressource/ressource.qrc"/>
+  <include location="../../resource/resource.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -119,10 +119,10 @@
           <number>180</number>
          </property>
          <property name="needleImage">
-          <pixmap resource="../../ressource/ressource.qrc">:/images/needle/dial-pointer.png</pixmap>
+          <pixmap resource="../../resource/resource.qrc">:/images/needle/dial-pointer.png</pixmap>
          </property>
          <property name="backgroundImage">
-          <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-gray.png</pixmap>
+          <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-gray.png</pixmap>
          </property>
         </widget>
        </item>
@@ -272,10 +272,10 @@
           <number>180</number>
          </property>
          <property name="needleImage">
-          <pixmap resource="../../ressource/ressource.qrc">:/images/needle/dial-pointer.png</pixmap>
+          <pixmap resource="../../resource/resource.qrc">:/images/needle/dial-pointer.png</pixmap>
          </property>
          <property name="backgroundImage">
-          <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-gray.png</pixmap>
+          <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-gray.png</pixmap>
          </property>
         </widget>
        </item>
@@ -341,10 +341,10 @@
           <number>180</number>
          </property>
          <property name="needleImage">
-          <pixmap resource="../../ressource/ressource.qrc">:/images/needle/dial-pointer.png</pixmap>
+          <pixmap resource="../../resource/resource.qrc">:/images/needle/dial-pointer.png</pixmap>
          </property>
          <property name="backgroundImage">
-          <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-gray.png</pixmap>
+          <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-gray.png</pixmap>
          </property>
         </widget>
        </item>
@@ -393,7 +393,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../ressource/ressource.qrc"/>
+  <include location="../../resource/resource.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>788</width>
+    <width>789</width>
     <height>910</height>
    </rect>
   </property>
@@ -143,10 +143,10 @@
            <number>150</number>
           </property>
           <property name="needleImage">
-           <pixmap resource="../../ressource/ressource.qrc">:/images/needle/dial-pointer.png</pixmap>
+           <pixmap resource="../../resource/resource.qrc">:/images/needle/dial-pointer.png</pixmap>
           </property>
           <property name="backgroundImage">
-           <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-gray.png</pixmap>
+           <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-gray.png</pixmap>
           </property>
          </widget>
         </item>
@@ -319,10 +319,10 @@
            <number>150</number>
           </property>
           <property name="needleImage">
-           <pixmap resource="../../ressource/ressource.qrc">:/images/needle/dial-pointer.png</pixmap>
+           <pixmap resource="../../resource/resource.qrc">:/images/needle/dial-pointer.png</pixmap>
           </property>
           <property name="backgroundImage">
-           <pixmap resource="../../ressource/ressource.qrc">:/images/back/dial-back-gray.png</pixmap>
+           <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-gray.png</pixmap>
           </property>
          </widget>
         </item>
@@ -351,6 +351,7 @@
    <class>SingleChannelKnobBox</class>
    <extends>QGroupBox</extends>
    <header>singlechannelknobbox.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>PieSegmentSelect</class>
@@ -370,7 +371,7 @@
   <tabstop>btnSave</tabstop>
  </tabstops>
  <resources>
-  <include location="../../ressource/ressource.qrc"/>
+  <include location="../../resource/resource.qrc"/>
  </resources>
  <connections/>
 </ui>

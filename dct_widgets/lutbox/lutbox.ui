@@ -58,7 +58,7 @@
      </property>
      <widget class="QWidget" name="tabMaster">
       <attribute name="icon">
-       <iconset resource="../../ressource/ressource.qrc">
+       <iconset resource="../../resource/resource.qrc">
         <normaloff>:/images/tab/gray.png</normaloff>:/images/tab/gray.png</iconset>
       </attribute>
       <attribute name="title">
@@ -93,7 +93,7 @@
      </widget>
      <widget class="QWidget" name="tabRedChannel">
       <attribute name="icon">
-       <iconset resource="../../ressource/ressource.qrc">
+       <iconset resource="../../resource/resource.qrc">
         <normaloff>:/images/tab/red.png</normaloff>:/images/tab/red.png</iconset>
       </attribute>
       <attribute name="title">
@@ -120,7 +120,7 @@
      </widget>
      <widget class="QWidget" name="tabGreenChannel">
       <attribute name="icon">
-       <iconset resource="../../ressource/ressource.qrc">
+       <iconset resource="../../resource/resource.qrc">
         <normaloff>:/images/tab/green.png</normaloff>:/images/tab/green.png</iconset>
       </attribute>
       <attribute name="title">
@@ -147,7 +147,7 @@
      </widget>
      <widget class="QWidget" name="tabBlueChannel">
       <attribute name="icon">
-       <iconset resource="../../ressource/ressource.qrc">
+       <iconset resource="../../resource/resource.qrc">
         <normaloff>:/images/tab/blue.png</normaloff>:/images/tab/blue.png</iconset>
       </attribute>
       <attribute name="title">
@@ -825,7 +825,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../ressource/ressource.qrc"/>
+  <include location="../../resource/resource.qrc"/>
  </resources>
  <connections/>
  <buttongroups>
