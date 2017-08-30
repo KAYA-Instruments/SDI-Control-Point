@@ -1,7 +1,13 @@
 # Introduction
 The ProVideo GUI is a graphical user interface used to setup Dream Chips ProVideo devices like cameras and color correctors.
 
-The master-branch of this project contains the most recent GUI version used for our current line of products. Branches may be created for special or legacy devices.  
+The master-branch of this project contains the most recent GUI version used for our current line of products. Branches may be created for special or legacy devices. Below is a list of all branches and the devices that they support, the term given in braces is the internal device codename:
+
+* **Master:**
+  * ATOM one (xbow) - Small 2k broadcast camera
+  * ATOM one 4k (condor4k) - Small 4k broadcast camera
+  * ATOM one 4k Mini (condor4k_mini) - Even smaller 4k broadcast camera
+  * Cameleon (cameleon) - Image processor box
 
 The software is based on the Qt framework and provided as a Qt-Project, which can be opened using the Qt Creator.
 
