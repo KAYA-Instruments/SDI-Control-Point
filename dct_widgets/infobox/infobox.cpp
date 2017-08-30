@@ -105,9 +105,9 @@ InfoBox::InfoBox( QWidget * parent ) : DctWidgetBox( parent )
     connect ( d_data->m_ui->btnShowLicense, SIGNAL(clicked(bool)), this, SLOT(onShowLicenseClicked()) );
     connect ( d_data->m_ui->btnShowThirdPartyLicenses, SIGNAL(clicked(bool)), this, SLOT(onShowThirdPartyLicensesClicked()) );
 
-    // THIS IS TEMPORARY UNTIL THE GUI IS RELEASED OPEN SOURCE
+    // FIXME: THIS IS TEMPORARY UNTIL THE GUI IS RELEASED OPEN SOURCE
     // Do not show license group box
-    d_data->m_ui->gpxLicenses->setVisible( false );
+//    d_data->m_ui->gpxLicenses->setVisible( false );
 }
 
 /******************************************************************************

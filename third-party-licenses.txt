@@ -40,3 +40,12 @@ https://cygwin.com/licensing.html
 
 This aplies to the following file:
 ./application/cygwin1.dll
+
+-------- QDarkStyleSheet --------
+
+This program uses the "Dark Style" style sheet by Colin Duquesnoy which is licensed under
+MIT license and can be obtained on GitHub:
+https://github.com/ColinDuquesnoy/QDarkStyleSheet
+
+This applies to the files under:
+./resources/style/

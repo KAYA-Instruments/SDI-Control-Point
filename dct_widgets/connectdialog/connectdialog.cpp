@@ -1089,7 +1089,7 @@ bool ConnectDialog::scanAndConnect()
     // Show a progress bar
     this->setEnabled(false);
     QProgressDialog progressDialog( "Scanning for Devices...", "Abort Scan", 0, numAddresses * numBaudrates, this );
-    progressDialog.setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowTitleHint);
+    progressDialog.setWindowFlags( Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowTitleHint );
 
     // sleep for 100ms and refresh progress bar, this ensures that the progress bar is correctly shown under linux
     QThread::msleep( 100 );
@@ -1227,6 +1227,9 @@ bool ConnectDialog::scanAndConnect()
                        "make sure that each device has a unique address.");
         msgBox.exec();
     }
+
+    // Make sure the progress dialog is closed, otherwise we might end up with having two taskbar symbols
+    progressDialog.close();
 
     return false;
 }
