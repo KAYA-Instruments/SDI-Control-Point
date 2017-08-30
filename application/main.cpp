@@ -29,6 +29,9 @@
 
 #include "mainwindow.h"
 
+
+#include <QThread>
+
 /******************************************************************************
  * main 
  *****************************************************************************/
@@ -54,8 +57,11 @@ int main(int argc, char *argv[])
     // Create the main application window
     MainWindow w( &dlg );
 
+    // Try to automatically scan an connect
+    bool connected = dlg.scanAndConnect();
+
     // If the connection can be established automatically directly show the main window
-    if ( dlg.scanAndConnect() )
+    if ( connected )
     {
         w.show();
         res = app.exec();

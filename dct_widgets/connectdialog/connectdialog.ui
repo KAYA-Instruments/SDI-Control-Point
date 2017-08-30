@@ -23,7 +23,7 @@
    <enum>Qt::NoContextMenu</enum>
   </property>
   <property name="windowTitle">
-   <string>Open control channel</string>
+   <string>Connect to ProVideo Device</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../../resource/resource.qrc">
