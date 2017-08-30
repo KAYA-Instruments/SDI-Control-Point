@@ -285,7 +285,7 @@ For this reason the table will also be automatically sorted before transmitting 
              <item>
               <widget class="QPushButton" name="btnRemove">
                <property name="focusPolicy">
-                <enum>Qt::NoFocus</enum>
+                <enum>Qt::StrongFocus</enum>
                </property>
                <property name="text">
                 <string>Delete</string>
@@ -302,7 +302,7 @@ For this reason the table will also be automatically sorted before transmitting 
              <item>
               <widget class="QPushButton" name="btnClear">
                <property name="focusPolicy">
-                <enum>Qt::NoFocus</enum>
+                <enum>Qt::StrongFocus</enum>
                </property>
                <property name="text">
                 <string>Clear</string>
@@ -334,7 +334,7 @@ For this reason the table will also be automatically sorted before transmitting 
              <item>
               <widget class="QPushButton" name="btnImport">
                <property name="focusPolicy">
-                <enum>Qt::NoFocus</enum>
+                <enum>Qt::StrongFocus</enum>
                </property>
                <property name="text">
                 <string>Import</string>
@@ -344,7 +344,7 @@ For this reason the table will also be automatically sorted before transmitting 
              <item>
               <widget class="QPushButton" name="btnExport">
                <property name="focusPolicy">
-                <enum>Qt::NoFocus</enum>
+                <enum>Qt::StrongFocus</enum>
                </property>
                <property name="text">
                 <string>Export</string>
@@ -377,7 +377,7 @@ For this reason the table will also be automatically sorted before transmitting 
            </size>
           </property>
           <property name="focusPolicy">
-           <enum>Qt::NoFocus</enum>
+           <enum>Qt::StrongFocus</enum>
           </property>
          </widget>
         </item>
@@ -401,6 +401,23 @@ For this reason the table will also be automatically sorted before transmitting 
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>cbxEnable</tabstop>
+  <tabstop>cbxCorrectionMode</tabstop>
+  <tabstop>sbxLevel</tabstop>
+  <tabstop>cbxTestMode</tabstop>
+  <tabstop>btnAutoLoadTable</tabstop>
+  <tabstop>btnTransmitTable</tabstop>
+  <tabstop>cbxSaveTablePermanently</tabstop>
+  <tabstop>btnLoadTable</tabstop>
+  <tabstop>tblPositions</tabstop>
+  <tabstop>btnAdd</tabstop>
+  <tabstop>btnRemove</tabstop>
+  <tabstop>btnSort</tabstop>
+  <tabstop>btnClear</tabstop>
+  <tabstop>btnImport</tabstop>
+  <tabstop>btnExport</tabstop>
+ </tabstops>
  <resources>
   <include location="../../resource/resource.qrc"/>
  </resources>

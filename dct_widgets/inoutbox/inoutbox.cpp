@@ -975,9 +975,10 @@ void InOutBox::setGenLockVisible(const bool value)
 /******************************************************************************
  * InOutBox::setTimeCodeVisible
  *****************************************************************************/
-void InOutBox::setTimeCodeVisible(const bool value)
+void InOutBox::setTimeCodeVisible(const bool groupbox_visible, const bool hold_visible)
 {
-    d_data->m_ui->gbxTimeCodeSettings->setVisible(value);
+    d_data->m_ui->gbxTimeCodeSettings->setVisible(groupbox_visible);
+    d_data->m_ui->btnHoldTimecode->setVisible(hold_visible);
 }
 
 /******************************************************************************

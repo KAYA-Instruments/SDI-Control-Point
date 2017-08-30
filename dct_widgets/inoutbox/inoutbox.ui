@@ -336,6 +336,9 @@
       </item>
       <item row="2" column="2">
        <widget class="QSlider" name="sldControlSpeed">
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -370,6 +373,9 @@
         </item>
         <item row="1" column="2">
          <widget class="QSlider" name="sldK">
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -393,6 +399,9 @@
         </item>
         <item row="4" column="2">
          <widget class="QSlider" name="sldSlope">
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -435,6 +444,9 @@
         </item>
         <item row="3" column="2">
          <widget class="QSlider" name="sldOffset">
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -962,7 +974,7 @@
          </size>
         </property>
         <property name="focusPolicy">
-         <enum>Qt::NoFocus</enum>
+         <enum>Qt::StrongFocus</enum>
         </property>
         <property name="toolTip">
          <string>Set timecode on the device to the entered value.</string>
@@ -987,7 +999,7 @@
          </size>
         </property>
         <property name="focusPolicy">
-         <enum>Qt::NoFocus</enum>
+         <enum>Qt::StrongFocus</enum>
         </property>
         <property name="toolTip">
          <string>Read current timecode from the device.</string>
@@ -1006,7 +1018,7 @@
          </size>
         </property>
         <property name="focusPolicy">
-         <enum>Qt::NoFocus</enum>
+         <enum>Qt::StrongFocus</enum>
         </property>
         <property name="toolTip">
          <string>Hold timecode. As long as this button is checked, the SDI timecode will not changed. Can be used to trigger a flash recorder.
@@ -1056,17 +1068,25 @@ Note: This will only hold the timecode in the SDI output, the timecode on the de
   <tabstop>sbxExposure</tabstop>
   <tabstop>sbxAnalogueGain</tabstop>
   <tabstop>sbxAperture</tabstop>
+  <tabstop>cbxAecEnable</tabstop>
+  <tabstop>sbxSetPoint</tabstop>
+  <tabstop>sbxControlSpeed</tabstop>
+  <tabstop>rdbTaf50Hz</tabstop>
+  <tabstop>rdbTaf60Hz</tabstop>
+  <tabstop>cbxLscEnable</tabstop>
+  <tabstop>cbxSegmentationMode</tabstop>
+  <tabstop>sbxK</tabstop>
+  <tabstop>sbxOffset</tabstop>
+  <tabstop>sbxSlope</tabstop>
   <tabstop>cbxVideoMode</tabstop>
   <tabstop>cbxSdi2Mode</tabstop>
   <tabstop>cbxFlipMode</tabstop>
+  <tabstop>cbxTestPattern</tabstop>
   <tabstop>cbxGenLockMode</tabstop>
   <tabstop>sbxGenLockOffsetVertical</tabstop>
+  <tabstop>sbxGenlockOffsetHorizontal</tabstop>
   <tabstop>cbxGenLockTermination</tabstop>
   <tabstop>tmeTimecode</tabstop>
-  <tabstop>cbxAecEnable</tabstop>
-  <tabstop>sbxSetPoint</tabstop>
-  <tabstop>rdbTaf50Hz</tabstop>
-  <tabstop>rdbTaf60Hz</tabstop>
  </tabstops>
  <resources/>
  <connections/>

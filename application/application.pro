@@ -119,10 +119,8 @@ SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
            ../dct_widgets/com_ctrl/OsdItf.cpp                               \
            ../dct_widgets/com_ctrl/devices/ProVideoDevice.cpp               \
            ../dct_widgets/com_ctrl/devices/XbowDevice.cpp                   \
-           ../dct_widgets/com_ctrl/devices/AdamDevice.cpp                   \
            ../dct_widgets/com_ctrl/devices/CameleonDevice.cpp               \
            ../dct_widgets/com_ctrl/devices/Condor4kDevice.cpp               \
-           ../dct_widgets/com_ctrl/devices/CondorZeissDevice.cpp            \
            ../dct_widgets/csvwrapper/csvwrapper.cpp                         \
            ../dct_widgets/textviewer/textviewer.cpp                         \
            ../libraries/ctrl_channel/ctrl_channel.c                         \
@@ -196,10 +194,8 @@ HEADERS  += ../libraries/include                                                
             ../dct_widgets/connectdialog/connectdialog.h                        \
             ../dct_widgets/com_ctrl/devices/ProVideoDevice.h                    \
             ../dct_widgets/com_ctrl/devices/XbowDevice.h                        \
-            ../dct_widgets/com_ctrl/devices/AdamDevice.h                        \
             ../dct_widgets/com_ctrl/devices/Condor4kDevice.h                    \
             ../dct_widgets/com_ctrl/devices/CameleonDevice.h                    \
-            ../dct_widgets/com_ctrl/devices/CondorZeissDevice.h                 \
             ../dct_widgets/com_ctrl/ProVideoItf.h                               \
             ../dct_widgets/com_ctrl/ProVideoSystemItf.h                         \
             ../dct_widgets/com_ctrl/IspItf.h                                    \

@@ -88,6 +88,9 @@
            <height>300</height>
           </size>
          </property>
+         <property name="focusPolicy">
+          <enum>Qt::TabFocus</enum>
+         </property>
          <property name="toolTip">
           <string/>
          </property>
@@ -238,6 +241,9 @@
            <height>240</height>
           </size>
          </property>
+         <property name="focusPolicy">
+          <enum>Qt::TabFocus</enum>
+         </property>
          <property name="toolTip">
           <string/>
          </property>
@@ -309,6 +315,9 @@
            <width>300</width>
            <height>300</height>
           </size>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::TabFocus</enum>
          </property>
          <property name="toolTip">
           <string/>
@@ -385,6 +394,7 @@
    <class>SingleChannelKnobBox</class>
    <extends>QGroupBox</extends>
    <header>singlechannelknobbox.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QCustomPlot</class>
@@ -392,6 +402,12 @@
    <header>qcustomplot.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>cbxEnable</tabstop>
+  <tabstop>KneePoint</tabstop>
+  <tabstop>WhiteClip</tabstop>
+  <tabstop>KneeSlope</tabstop>
+ </tabstops>
  <resources>
   <include location="../../resource/resource.qrc"/>
  </resources>

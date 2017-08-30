@@ -264,7 +264,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
     m_ui->inoutBox->setApartureVisible(deviceFeatures.hasIrisItf);
     m_ui->inoutBox->setSdi2ModeVisible(deviceFeatures.hasChainSdi2Mode);
     m_ui->inoutBox->setGenLockVisible(deviceFeatures.hasChainGenLock);
-    m_ui->inoutBox->setTimeCodeVisible(deviceFeatures.hasChainTimeCode);
+    m_ui->inoutBox->setTimeCodeVisible(deviceFeatures.hasChainTimeCode, deviceFeatures.hasChainTimeCodeHold);
     m_ui->inoutBox->setFlipModeVisible(deviceFeatures.hasChainFlip);
     m_ui->inoutBox->setTestPatternVisible(deviceFeatures.hasOsdTestPattern);
 

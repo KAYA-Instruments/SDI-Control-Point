@@ -53,6 +53,9 @@
           <height>240</height>
          </size>
         </property>
+        <property name="focusPolicy">
+         <enum>Qt::TabFocus</enum>
+        </property>
         <property name="toolTip">
          <string/>
         </property>
@@ -194,6 +197,9 @@
           <height>240</height>
          </size>
         </property>
+        <property name="focusPolicy">
+         <enum>Qt::TabFocus</enum>
+        </property>
         <property name="toolTip">
          <string/>
         </property>
@@ -280,6 +286,9 @@
           <width>280</width>
           <height>240</height>
          </size>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::TabFocus</enum>
         </property>
         <property name="toolTip">
          <string/>
@@ -419,6 +428,9 @@
           <height>240</height>
          </size>
         </property>
+        <property name="focusPolicy">
+         <enum>Qt::TabFocus</enum>
+        </property>
         <property name="toolTip">
          <string/>
         </property>
@@ -487,8 +499,17 @@
    <class>SingleChannelKnobBox</class>
    <extends>QGroupBox</extends>
    <header>singlechannelknobbox.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>cbxEnable</tabstop>
+  <tabstop>kbxDenoiseLevel2d</tabstop>
+  <tabstop>kbxDetailLevel2d</tabstop>
+  <tabstop>cbxTfltEnable</tabstop>
+  <tabstop>kbxDenoiseLevel3d</tabstop>
+  <tabstop>kbxDetailLevel3d</tabstop>
+ </tabstops>
  <resources>
   <include location="../../resource/resource.qrc"/>
  </resources>

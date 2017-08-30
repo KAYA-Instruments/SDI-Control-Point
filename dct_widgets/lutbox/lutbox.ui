@@ -212,7 +212,7 @@
              </size>
             </property>
             <property name="focusPolicy">
-             <enum>Qt::NoFocus</enum>
+             <enum>Qt::StrongFocus</enum>
             </property>
             <property name="text">
              <string>Preset 1</string>
@@ -237,7 +237,7 @@
              </size>
             </property>
             <property name="focusPolicy">
-             <enum>Qt::NoFocus</enum>
+             <enum>Qt::StrongFocus</enum>
             </property>
             <property name="text">
              <string>Preset 2</string>
@@ -262,7 +262,7 @@
              </size>
             </property>
             <property name="focusPolicy">
-             <enum>Qt::NoFocus</enum>
+             <enum>Qt::StrongFocus</enum>
             </property>
             <property name="text">
              <string>Preset 3</string>
@@ -287,7 +287,7 @@
              </size>
             </property>
             <property name="focusPolicy">
-             <enum>Qt::NoFocus</enum>
+             <enum>Qt::StrongFocus</enum>
             </property>
             <property name="text">
              <string>Preset 4</string>
@@ -312,7 +312,7 @@
              </size>
             </property>
             <property name="focusPolicy">
-             <enum>Qt::NoFocus</enum>
+             <enum>Qt::StrongFocus</enum>
             </property>
             <property name="text">
              <string>Preset 5</string>
@@ -374,7 +374,7 @@
            </size>
           </property>
           <property name="focusPolicy">
-           <enum>Qt::NoFocus</enum>
+           <enum>Qt::TabFocus</enum>
           </property>
          </widget>
         </item>
@@ -383,7 +383,7 @@
           <item>
            <widget class="QPushButton" name="btnRemoveSample">
             <property name="focusPolicy">
-             <enum>Qt::NoFocus</enum>
+             <enum>Qt::StrongFocus</enum>
             </property>
             <property name="text">
              <string>Delete</string>
@@ -393,7 +393,7 @@
           <item>
            <widget class="QPushButton" name="btnReset">
             <property name="focusPolicy">
-             <enum>Qt::NoFocus</enum>
+             <enum>Qt::StrongFocus</enum>
             </property>
             <property name="text">
              <string>Clear</string>
@@ -403,7 +403,7 @@
           <item>
            <widget class="QPushButton" name="btnInterpolate">
             <property name="focusPolicy">
-             <enum>Qt::NoFocus</enum>
+             <enum>Qt::StrongFocus</enum>
             </property>
             <property name="text">
              <string>Interpolate</string>
@@ -426,7 +426,7 @@
           <item>
            <widget class="QPushButton" name="btnImport">
             <property name="focusPolicy">
-             <enum>Qt::NoFocus</enum>
+             <enum>Qt::StrongFocus</enum>
             </property>
             <property name="text">
              <string>Import CSV</string>
@@ -436,7 +436,7 @@
           <item>
            <widget class="QPushButton" name="btnExport">
             <property name="focusPolicy">
-             <enum>Qt::NoFocus</enum>
+             <enum>Qt::StrongFocus</enum>
             </property>
             <property name="text">
              <string>Export CSV</string>
@@ -778,7 +778,7 @@
           <item row="6" column="1">
            <widget class="QPushButton" name="btnDefaultRec709">
             <property name="focusPolicy">
-             <enum>Qt::NoFocus</enum>
+             <enum>Qt::StrongFocus</enum>
             </property>
             <property name="text">
              <string>Defaults</string>
@@ -790,7 +790,7 @@
         <item>
          <widget class="QPushButton" name="btnSetRec709">
           <property name="focusPolicy">
-           <enum>Qt::NoFocus</enum>
+           <enum>Qt::StrongFocus</enum>
           </property>
           <property name="text">
            <string>Apply and Interpolate</string>
@@ -824,6 +824,28 @@
    <header>qcustomplot.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>tabColorSelect</tabstop>
+  <tabstop>cbxPreset0</tabstop>
+  <tabstop>cbxPreset1</tabstop>
+  <tabstop>cbxPreset2</tabstop>
+  <tabstop>cbxPreset3</tabstop>
+  <tabstop>cbxPreset4</tabstop>
+  <tabstop>tblSamples</tabstop>
+  <tabstop>btnRemoveSample</tabstop>
+  <tabstop>btnReset</tabstop>
+  <tabstop>btnInterpolate</tabstop>
+  <tabstop>btnImport</tabstop>
+  <tabstop>btnExport</tabstop>
+  <tabstop>sbxRec709LinContrast</tabstop>
+  <tabstop>sbxRec709LinOffset</tabstop>
+  <tabstop>sbxRec709Threshold</tabstop>
+  <tabstop>sbxRec709Contrast</tabstop>
+  <tabstop>sbxRec709Gamma</tabstop>
+  <tabstop>sbxRec709Offset</tabstop>
+  <tabstop>btnDefaultRec709</tabstop>
+  <tabstop>btnSetRec709</tabstop>
+ </tabstops>
  <resources>
   <include location="../../resource/resource.qrc"/>
  </resources>

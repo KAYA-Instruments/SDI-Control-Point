@@ -33,8 +33,6 @@
 #include <ProVideoDevice.h>
 #include <XbowDevice.h>
 #include <Condor4kDevice.h>
-#include <CondorZeissDevice.h>
-#include <AdamDevice.h>
 #include <CameleonDevice.h>
 
 #include "connectdialog.h"
@@ -269,17 +267,9 @@ bool ConnectDialog::connectWithDevice()
         {
             connectedDevice = new Condor4kDevice( getActiveChannel(), new ProVideoProtocol() );
         }
-        else if ( systemPlatform == KNOWN_DEVICE_ADAM || systemPlatform == KNOWN_DEVICE_ADAM_IMX )
-        {
-            connectedDevice = new AdamDevice( getActiveChannel(), new ProVideoProtocol() );
-        }
         else if ( systemPlatform == KNOWN_DEVICE_CAMELEON )
         {
             connectedDevice = new CameleonDevice( getActiveChannel(), new ProVideoProtocol() );
-        }
-        else if ( systemPlatform == KNOWN_DEVICE_CONDOR_ZEISS )
-        {
-            connectedDevice = new CondorZeissDevice( getActiveChannel(), new ProVideoProtocol() );
         }
         qDebug() << "connected with: " << systemPlatform;
 

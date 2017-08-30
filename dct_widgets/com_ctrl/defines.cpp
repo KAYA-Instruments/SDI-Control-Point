@@ -38,15 +38,6 @@ QString GetKnownDeviceName( KnownDevice device )
         case KnownDeviceCondor4kMini:
             return ( QString(KNOWN_DEVICE_CONDOR4K_MINI) );
 
-        case KnownDeviceCondorZeiss:
-            return ( QString(KNOWN_DEVICE_CONDOR_ZEISS) );
-
-        case KnownDeviceAdam:
-            return ( QString(KNOWN_DEVICE_ADAM) );
-
-        case KnownDeviceAdamImx:
-            return ( QString(KNOWN_DEVICE_ADAM_IMX) );
-
         case KnownDeviceCameleon:
             return ( QString(KNOWN_DEVICE_CAMELEON) );
 

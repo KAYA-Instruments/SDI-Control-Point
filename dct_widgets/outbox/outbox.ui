@@ -713,7 +713,7 @@
            </size>
           </property>
           <property name="focusPolicy">
-           <enum>Qt::NoFocus</enum>
+           <enum>Qt::StrongFocus</enum>
           </property>
           <property name="text">
            <string>Rec.709</string>
@@ -729,7 +729,7 @@
            </size>
           </property>
           <property name="focusPolicy">
-           <enum>Qt::NoFocus</enum>
+           <enum>Qt::StrongFocus</enum>
           </property>
           <property name="text">
            <string>BT.601</string>
@@ -745,7 +745,7 @@
            </size>
           </property>
           <property name="focusPolicy">
-           <enum>Qt::NoFocus</enum>
+           <enum>Qt::StrongFocus</enum>
           </property>
           <property name="text">
            <string>SMPTE 240M</string>
@@ -777,7 +777,7 @@
            </size>
           </property>
           <property name="focusPolicy">
-           <enum>Qt::NoFocus</enum>
+           <enum>Qt::StrongFocus</enum>
           </property>
           <property name="text">
            <string>Load Matrx</string>
@@ -793,7 +793,7 @@
            </size>
           </property>
           <property name="focusPolicy">
-           <enum>Qt::NoFocus</enum>
+           <enum>Qt::StrongFocus</enum>
           </property>
           <property name="text">
            <string>Save Matrix</string>
@@ -816,6 +816,9 @@
          <width>16777215</width>
          <height>16777215</height>
         </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::TabFocus</enum>
        </property>
        <property name="toolTip">
         <string/>
@@ -859,6 +862,9 @@
          <width>250</width>
          <height>280</height>
         </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::TabFocus</enum>
        </property>
        <property name="toolTip">
         <string/>
@@ -916,7 +922,7 @@
            </size>
           </property>
           <property name="focusPolicy">
-           <enum>Qt::NoFocus</enum>
+           <enum>Qt::StrongFocus</enum>
           </property>
          </widget>
         </item>
@@ -929,7 +935,7 @@
            </size>
           </property>
           <property name="focusPolicy">
-           <enum>Qt::NoFocus</enum>
+           <enum>Qt::StrongFocus</enum>
           </property>
          </widget>
         </item>
@@ -965,6 +971,9 @@
          <width>16777215</width>
          <height>16777215</height>
         </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::TabFocus</enum>
        </property>
        <property name="toolTip">
         <string/>
@@ -1008,6 +1017,9 @@
          <width>250</width>
          <height>280</height>
         </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::TabFocus</enum>
        </property>
        <property name="toolTip">
         <string/>
@@ -1063,8 +1075,22 @@
    <class>SingleChannelKnobBox</class>
    <extends>QGroupBox</extends>
    <header>singlechannelknobbox.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>btnRec709</tabstop>
+  <tabstop>btnBt601</tabstop>
+  <tabstop>btnSmpte240M</tabstop>
+  <tabstop>btnLoad</tabstop>
+  <tabstop>btnSave</tabstop>
+  <tabstop>Kred</tabstop>
+  <tabstop>Kblue</tabstop>
+  <tabstop>cbxSdiMode</tabstop>
+  <tabstop>cbxCsMode</tabstop>
+  <tabstop>SdiBlack</tabstop>
+  <tabstop>SdiWhite</tabstop>
+ </tabstops>
  <resources>
   <include location="../../resource/resource.qrc"/>
  </resources>

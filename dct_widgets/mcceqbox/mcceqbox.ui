@@ -359,7 +359,11 @@ ration</string>
           </property>
           <layout class="QGridLayout" name="gridLayout">
            <item row="1" column="1">
-            <widget class="QComboBox" name="cbxNoPhases"/>
+            <widget class="QComboBox" name="cbxNoPhases">
+             <property name="focusPolicy">
+              <enum>Qt::StrongFocus</enum>
+             </property>
+            </widget>
            </item>
            <item row="1" column="0">
             <widget class="QLabel" name="lblNoPhases">
@@ -387,7 +391,7 @@ ration</string>
            <item row="3" column="0" colspan="2">
             <widget class="QPushButton" name="btnLoad">
              <property name="focusPolicy">
-              <enum>Qt::NoFocus</enum>
+              <enum>Qt::StrongFocus</enum>
              </property>
              <property name="text">
               <string>Load Profile</string>
@@ -408,6 +412,9 @@ ration</string>
                <height>30</height>
               </size>
              </property>
+             <property name="focusPolicy">
+              <enum>Qt::StrongFocus</enum>
+             </property>
             </widget>
            </item>
            <item row="0" column="0">
@@ -420,7 +427,7 @@ ration</string>
            <item row="4" column="0" colspan="2">
             <widget class="QPushButton" name="btnSave">
              <property name="focusPolicy">
-              <enum>Qt::NoFocus</enum>
+              <enum>Qt::StrongFocus</enum>
              </property>
              <property name="text">
               <string>Save Profile</string>
@@ -646,6 +653,12 @@ ration</string>
   <tabstop>cbxNoPhases</tabstop>
   <tabstop>btnLoad</tabstop>
   <tabstop>btnSave</tabstop>
+  <tabstop>sbxHueRange</tabstop>
+  <tabstop>sbxSaturationRange</tabstop>
+  <tabstop>btnResetEqualizer</tabstop>
+  <tabstop>sbxHue</tabstop>
+  <tabstop>sbxSaturation</tabstop>
+  <tabstop>btnResetPhase</tabstop>
  </tabstops>
  <resources/>
  <connections/>

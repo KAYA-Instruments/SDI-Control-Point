@@ -292,6 +292,11 @@
    <header>skinneddial.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>sbxValue0</tabstop>
+  <tabstop>sbxValue1</tabstop>
+  <tabstop>sbxValue2</tabstop>
+ </tabstops>
  <resources>
   <include location="../../resource/resource.qrc"/>
  </resources>

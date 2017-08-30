@@ -63,6 +63,9 @@
          <height>200</height>
         </size>
        </property>
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
@@ -91,6 +94,9 @@
          <width>0</width>
          <height>200</height>
         </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
        </property>
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -132,6 +138,9 @@
          <width>0</width>
          <height>0</height>
         </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
        </property>
        <property name="autoFillBackground">
         <bool>false</bool>

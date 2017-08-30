@@ -103,7 +103,7 @@ public:
     void setLensChadingCorrectionSettingsVisible(const bool value);
     void setApartureVisible(const bool value);
     void setGenLockVisible(const bool value);
-    void setTimeCodeVisible(const bool value);
+    void setTimeCodeVisible(const bool groupbox_visible, const bool hold_visible);
     void setSdi2ModeVisible(const bool value);
     void setFlipModeVisible(const bool value);
     void setTestPatternVisible(const bool value);

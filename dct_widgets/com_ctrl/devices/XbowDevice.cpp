@@ -287,6 +287,7 @@ XbowDevice::features XbowDevice::getSupportedFeatures()
     deviceFeatures.hasChainSdi2Mode         = true;
     deviceFeatures.hasChainGenLock          = true;
     deviceFeatures.hasChainTimeCode         = true;
+    deviceFeatures.hasChainTimeCodeHold     = true;
     deviceFeatures.hasChainSdiSettings      = true;
     deviceFeatures.hasChainSelection        = true;
     deviceFeatures.hasChainFlip             = true;

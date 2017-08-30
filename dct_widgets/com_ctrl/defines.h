@@ -31,9 +31,6 @@
 #define KNOWN_DEVICE_XBOW               ( "xbow" )
 #define KNOWN_DEVICE_CONDOR4K           ( "condor4k" )
 #define KNOWN_DEVICE_CONDOR4K_MINI      ( "condor4k_mini" )
-#define KNOWN_DEVICE_CONDOR_ZEISS       ( "condor_zeiss" )
-#define KNOWN_DEVICE_ADAM               ( "adam" )
-#define KNOWN_DEVICE_ADAM_IMX           ( "adam_imx" )
 #define KNOWN_DEVICE_CAMELEON           ( "cameleon" )
 
 /******************************************************************************
@@ -157,10 +154,7 @@ enum KnownDevice
     KnownDeviceXbow         = 0,
     KnownDeviceCondor4k     = 1,
     KnownDeviceCondor4kMini = 2,
-    KnownDeviceCondorZeiss  = 3,
-    KnownDeviceAdam         = 4,
-    KnownDeviceAdamImx      = 5,
-    KnownDeviceCameleon     = 6,
+    KnownDeviceCameleon     = 3,
     KnownDeviceMax,
 };
 
