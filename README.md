@@ -51,6 +51,11 @@ Open the application project file "application.pro" in the "application" folder 
 
 To test whether the import of the custom widgets to the designer has worked, open "mainwindow.ui" in the "Forms" folder. If you see the groups "DCT Basic Widgets" and "DCT Dialog Widgets" in the widget list on the left side of the designer window, the import was successful. You can now start making changes to the software. Please not that you directly edit the widgets from the "application" project, you do not need to use the "dct_widgets" project. As noted above, recompiling the "dct_widgets" project is only needed to add new widgets to the designer.
 
+## Deploy the project on Windows
+By default Qt uses dynamic linking, that means all DLLs needed by the application have to be provided with it. To conveniently create a deploy folder that includes the application and DLLs run the script ```<project folder>\application\deploy_qt5.9.1_mingw5.3_win32.bat```. It will copy all needed files to ```<project folder>\application\deploy```.
+
+If you want to use static linking instead (only one executable, no DLLs needed), please take a look at the [steps provided by Qt](https://wiki.qt.io/Building_a_static_Qt_for_Windows_using_MinGW).
+
 ## Cross-Compilation under Linux
 It is possible to cross-compile a 32 Bit windows executable under Linux by using the M cross environment (MXE):
 How to crosscompile a QT5 project using MXE
