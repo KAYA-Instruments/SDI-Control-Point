@@ -2,7 +2,32 @@
 
 All releases are tagged in Git with their version number.
 
+## Upcoming Release:
+
+Version **1.0.5** - NOT RELEASED YET
+
+* Changes to support MXE crosscompile toolchain under Linux: MXE had problems with the clock_gettime functions, so they were replaced under _WIN32 targets.
+* Using new flashloader applications, the windows application does not need cygwin1.dll anymore and they got reduced CPU usage
+
 ## Newest Release:
+
+Version **1.0.4** - 24.08.2017
+
+* Fixed a bug where the GUI would request a deletion of the DPCC table on video mode change, although the resolution of the new video mode was identical to the old one
+* Fixed a bug where the GUI would crash when no Com-Port was available
+
+## Older Releases:
+
+Version **1.0.3** - 16.08.2017
+
+* Fixed an out of memory error by increasing communication buffer size
+* Increased dpcc table loading timeout
+* RAW 10 and 12 video modes were swapped
+* MCC Sliders in the MCC Eq Box can now be reset by double clicking them
+* Min and Max values of the MCC Sliders are now displayed in the MCC Eq Box
+* Added button to execute "dpc_auto_load" command from the DPCC Box
+* Fix for DPCC coordinates: Valid range is now 0 to resolution-1
+* Added "reset to defaults" button for master black and flare level settings
 
 Version **1.0.2** - 21.06.2017
 
@@ -10,8 +35,6 @@ Version **1.0.2** - 21.06.2017
 * Changes to support new device name feature
 * Changes to the DPC tab for easier usage and new test mode functionality
 * Minor changes to the info tab (now shows release / build date)
-
-## Older Releases:
 
 Version **1.0.0** - Date 01.06.2017
 
