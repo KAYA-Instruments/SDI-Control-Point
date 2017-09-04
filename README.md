@@ -51,3 +51,27 @@ Open the application project file "application.pro" in the "application" folder 
 
 To test whether the import of the custom widgets to the designer has worked, open "mainwindow.ui" in the "Forms" folder. If you see the groups "DCT Basic Widgets" and "DCT Dialog Widgets" in the widget list on the left side of the designer window, the import was successful. You can now start making changes to the software. Please not that you directly edit the widgets from the "application" project, you do not need to use the "dct_widgets" project. As noted above, recompiling the "dct_widgets" project is only needed to add new widgets to the designer.
 
+## Cross-Compilation under Linux
+It is possible to cross-compile a 32 Bit windows executable under Linux by using the M cross environment (MXE):
+How to crosscompile a QT5 project using MXE
+
+1. Get the MXE repo from github:  
+   ```# git clone https://github.com/mxe/mxe.git```
+2. Build the cross compile toolchain for qt5. This will just build the needed functionality for this project to decrease compile time:  
+   ```# cd mxe && make qtbase qtserialport```
+3. Go to the application folder of the project (where the application *.pro file lies)  
+   ```# cd <project folder>/application/```
+4. Add the MXE path to the path variable:  
+   ```# export PATH=<mxe root>/usr/bin:$PATH```
+5. Run qmake from the MXE toolchain to create the Makefile  
+   ```# <mxe root>/usr/i686-w64-mingw32.static/qt5/bin/qmake```
+6. Build the application:  
+   ```# make```
+7. The resulting executable will be placed in ```<project folder>/application/release/ProVideo.exe```. If you want to deploy the executable, do not forget to place the file ```<project folder>/application/tools/flashloader.exe``` in a folder named ```tools``` on the same folder as the executable, otherwise firmware updates will not be possible.
+
+The above steps will build a Win32 static executable. To use dynamic libraries or generate a 64 bit executable you have to use a different MXE_TARGET in step 2:
+
+```# make qtbase qtserialport MXE_TARGETS=x86_64-w64-mingw32.static``` 	# MinGW-w64, 64-bit, static libs
+```# make qtbase qtserialport MXE_TARGETS=i686-w64-mingw32.shared```   	# MinGW-w64, 32-bit, shared libs
+
+And use the according toolchain-path in step 5.
