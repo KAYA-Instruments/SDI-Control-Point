@@ -31,6 +31,95 @@
 
 #include <provideo_protocol/provideo_protocol_common.h>
 
+#define USE_CUSTOM_GET_TIME
+#ifdef USE_CUSTOM_GET_TIME
+/* Mahr: Note on "clock_gettime":
+ * Using clock_gettime() on non POSIX systems (windows) is tricky. Acutally MinGW should support it,
+ * but while cross-compiling using MXE it still was not able to link it no matter what I tried.
+ * So we now use a custom get time function for windows, which can be found here:
+ * https://stackoverflow.com/questions/5404277/porting-clock-gettime-to-windows */
+#ifdef _WIN32
+#include <windows.h>
+
+static LARGE_INTEGER getFILETIMEoffset()
+{
+    SYSTEMTIME s;
+    FILETIME f;
+    LARGE_INTEGER t;
+
+    s.wYear = 1970;
+    s.wMonth = 1;
+    s.wDay = 1;
+    s.wHour = 0;
+    s.wMinute = 0;
+    s.wSecond = 0;
+    s.wMilliseconds = 0;
+    SystemTimeToFileTime(&s, &f);
+    t.QuadPart = f.dwHighDateTime;
+    t.QuadPart <<= 32;
+    t.QuadPart |= f.dwLowDateTime;
+    return (t);
+}
+
+static int clock_gettime_windows(struct timeval *tv)
+{
+    LARGE_INTEGER           t;
+    FILETIME                f;
+    double                  microseconds;
+    static LARGE_INTEGER    offset;
+    static double           frequencyToMicroseconds;
+    static int              initialized = 0;
+    static BOOL             usePerformanceCounter = 0;
+
+    if (!initialized) {
+        LARGE_INTEGER performanceFrequency;
+        initialized = 1;
+        usePerformanceCounter = QueryPerformanceFrequency(&performanceFrequency);
+        if (usePerformanceCounter) {
+            QueryPerformanceCounter(&offset);
+            frequencyToMicroseconds = (double)performanceFrequency.QuadPart / 1000000.;
+        } else {
+            offset = getFILETIMEoffset();
+            frequencyToMicroseconds = 10.;
+        }
+    }
+    if (usePerformanceCounter) QueryPerformanceCounter(&t);
+    else {
+        GetSystemTimeAsFileTime(&f);
+        t.QuadPart = f.dwHighDateTime;
+        t.QuadPart <<= 32;
+        t.QuadPart |= f.dwLowDateTime;
+    }
+
+    t.QuadPart -= offset.QuadPart;
+    microseconds = (double)t.QuadPart / frequencyToMicroseconds;
+    t.QuadPart = microseconds;
+    tv->tv_sec = t.QuadPart / 1000000;
+    tv->tv_usec = t.QuadPart % 1000000;
+    return (0);
+}
+#endif // _WIN32
+#endif // USE_CUSTOM_GET_TIME
+
+/******************************************************************************
+ * get_time_monotonic - Platform dependend clock_gettime function
+ *****************************************************************************/
+static int get_time_monotonic(struct timespec * time)
+{
+    int ret = 0;
+
+#if defined(_WIN32) && defined(USE_CUSTOM_GET_TIME)
+    struct timeval tv;
+    ret = clock_gettime_windows( &tv );
+    time->tv_sec = tv.tv_sec;
+    time->tv_nsec = tv.tv_usec * 1000;
+#else
+    ret = clock_gettime(CLOCK_MONOTONIC, time);
+#endif
+
+    return ret;
+}
+
 /******************************************************************************
  * evaluate_error_response - evaluate error message from provideo device
  *****************************************************************************/
@@ -107,7 +196,7 @@ int evaluate_set_response_with_tmo
     int loop = 1;
 
     // start timer
-    clock_gettime(CLOCK_MONOTONIC, &start);
+    get_time_monotonic( &start );
 
     // set received_string to zero
     memset( data, 0u, sizeof(data) );
@@ -160,7 +249,7 @@ int evaluate_set_response_with_tmo
         else
         {
             // timeout handling
-            clock_gettime(CLOCK_MONOTONIC, &now);
+            get_time_monotonic( &now );
             int diff_ms = (now.tv_sec - start.tv_sec) * 1000 + (now.tv_nsec - start.tv_nsec) / 1000000;
             loop = (diff_ms > tmo_ms) ? 0 : 1;
         }
@@ -199,7 +288,7 @@ int evaluate_get_response_with_tmo
     int i = 0;
 
     // start timer
-    clock_gettime(CLOCK_MONOTONIC, &start);
+    get_time_monotonic( &start );
 
     // set received_string and buffer to zero
     memset( data, 0u, len );
@@ -244,7 +333,7 @@ int evaluate_get_response_with_tmo
         else
         {
             // timeout handling
-            clock_gettime(CLOCK_MONOTONIC, &now);
+            get_time_monotonic( &now );
             int diff_ms = (now.tv_sec - start.tv_sec) * 1000 + (now.tv_nsec - start.tv_nsec) / 1000000;
             loop = (diff_ms > tmo_ms) ? 0 : 1;
         }

@@ -90,7 +90,7 @@ ConnectDialog::ConnectDialog( QWidget * parent )
     m_ui->buttonBox->addButton( tr("C&onnect"), QDialogButtonBox::AcceptRole );
 
     // add a rescan button to the button box
-    m_rescan = new QPushButton( tr("S&can COM Ports") );
+    m_rescan = new QPushButton( tr("Sc&an COM-Ports") );
     m_rescan->setToolTip( "Searches for connected serial port devices." );
     connect( m_rescan, SIGNAL(clicked()), this, SLOT(rescan()) );
     m_ui->buttonBox->addButton( m_rescan, QDialogButtonBox::ResetRole );
@@ -1203,7 +1203,11 @@ bool ConnectDialog::scanAndConnect()
     }
 
     // Renable ui elements
-    this->setEnabled(true);
+    this->setEnabled( true );
+
+    // Make sure the progress dialog is closed, otherwise we might end up with having two taskbar symbols
+    progressDialog.close();
+    QApplication::processEvents( QEventLoop::WaitForMoreEvents );
 
     // Open first device in list and connect to it (if list not empty)
     if ( !m_detectedRS485Devices.empty() )
@@ -1222,14 +1226,12 @@ bool ConnectDialog::scanAndConnect()
     else if ( !progressDialog.wasCanceled() )
     {
         QMessageBox msgBox;
-        msgBox.setWindowTitle("Auto-Detection failed");
-        msgBox.setText("The Auto-Detection could not find any devices which use the RS485 protocol. Try using a different port or protocol and"
-                       "make sure that each device has a unique address.");
+        msgBox.setWindowTitle( "Auto-Detection failed" );
+        msgBox.setWindowIcon( QIcon(":/icons/connect_128x128.png") );
+        msgBox.setText( "The Auto-Detection could not find any devices which use the RS485 protocol. Try using a different port or protocol and"
+                        "make sure that each device has a unique address.");
         msgBox.exec();
     }
-
-    // Make sure the progress dialog is closed, otherwise we might end up with having two taskbar symbols
-    progressDialog.close();
 
     return false;
 }

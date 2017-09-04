@@ -960,7 +960,8 @@ void MainWindow::onSelectSdi1Clicked()
         QApplication::setOverrideCursor( Qt::WaitCursor );
         m_ui->actionSelectSdi1->setChecked( true );
         m_ui->actionSelectSdi2->setChecked( false );
-        emit SdiOutChanged( 1 );  m_dev->resync();
+        emit SdiOutChanged( 1 );
+        m_dev->resync();
         QApplication::setOverrideCursor( Qt::ArrowCursor );
     }
 }
@@ -975,7 +976,8 @@ void MainWindow::onSelectSdi2Clicked()
         QApplication::setOverrideCursor( Qt::WaitCursor );
         m_ui->actionSelectSdi1->setChecked( false );
         m_ui->actionSelectSdi2->setChecked( true );
-        emit SdiOutChanged( 2 ); m_dev->resync();
+        emit SdiOutChanged( 2 );
+        m_dev->resync();
         QApplication::setOverrideCursor( Qt::ArrowCursor );
     }
 }

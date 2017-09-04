@@ -65,9 +65,9 @@
 #define REGEX_VERIFY_DONE               ( "^Verifying done.$" )
 
 // regular expression to parse system name
-#define REGEX_ATOME_ONE                 ( "ATOM ONE (X-BOW)" )
-#define REGEX_ATOME_ONE_4K              ( "ATOM ONE 4K (CONDOR)" )
-#define REGEX_ATOME_ONE_4K_MINI         ( "ATOM ONE 4K MINI (CONDOR)" )
+#define REGEX_ATOME_ONE                 ( "XBOW" )
+#define REGEX_ATOME_ONE_4K              ( "CONDOR 4K" )
+#define REGEX_ATOME_ONE_4K_MINI         ( "CONDOR 4K MINI" )
 
 /******************************************************************************
  * fileExists
@@ -271,17 +271,17 @@ void FlashLoader::parseSystemId( QString name )
 {
     if ( !name.compare( REGEX_ATOME_ONE ) )
     {
-        emit SystemId( SYSTEM_ID_ATOM_ONE  );
+        emit SystemId( SYSTEM_ID_ATOM_ONE );
         return;
     }
 
     if ( !name.compare( REGEX_ATOME_ONE_4K ) || !name.compare( REGEX_ATOME_ONE_4K_MINI ) )
     {
-        emit SystemId( SYSTEM_ID_ATOM_ONE_4K  );
+        emit SystemId( SYSTEM_ID_ATOM_ONE_4K );
         return;
     }
 
-    emit SystemId( SYSTEM_ID_INVALID  );
+    emit SystemId( SYSTEM_ID_INVALID );
 }
  
 /******************************************************************************

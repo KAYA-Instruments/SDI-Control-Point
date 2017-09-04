@@ -28,7 +28,6 @@ unix {
 win32 {
     FLASH_LOADER_APPLICATION="flashloader.exe"
     install_binaries.files += ./tools/flashloader.exe
-    install_binaries.files += ./tools/cygwin1.dll
 }
 osx {
     QMAKE_INFO_PLIST = osx/Info.plist
