@@ -76,7 +76,9 @@ How to crosscompile a QT5 project using MXE
 
 The above steps will build a Win32 static executable. To use dynamic libraries or generate a 64 bit executable you have to use a different MXE_TARGET in step 2:
 
-```# make qtbase qtserialport MXE_TARGETS=x86_64-w64-mingw32.static``` 	# MinGW-w64, 64-bit, static libs
-```# make qtbase qtserialport MXE_TARGETS=i686-w64-mingw32.shared```   	# MinGW-w64, 32-bit, shared libs
+* MinGW-w64, 32-bit, static libs: ```# make qtbase qtserialport MXE_TARGETS=i686-w64-mingw32.static``` (default)
+* MinGW-w64, 32-bit, shared libs: ```# make qtbase qtserialport MXE_TARGETS=i686-w64-mingw32.shared```
+* MinGW-w64, 64-bit, static libs: ```# make qtbase qtserialport MXE_TARGETS=x86_64-w64-mingw32.static```
+* MinGW-w64, 64-bit, shared libs: ```# make qtbase qtserialport MXE_TARGETS=x86_64-w64-mingw32.shared```
 
 And use the according toolchain-path in step 5.
