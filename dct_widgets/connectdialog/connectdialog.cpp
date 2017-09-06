@@ -1205,10 +1205,6 @@ bool ConnectDialog::scanAndConnect()
     // Renable ui elements
     this->setEnabled( true );
 
-    // Make sure the progress dialog is closed, otherwise we might end up with having two taskbar symbols
-    progressDialog.close();
-    QApplication::processEvents( QEventLoop::WaitForMoreEvents );
-
     // Open first device in list and connect to it (if list not empty)
     if ( !m_detectedRS485Devices.empty() )
     {

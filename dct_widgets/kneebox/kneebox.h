@@ -29,7 +29,7 @@
 /******************************************************************************
  * Knee-Point Definitions
  *****************************************************************************/
-#define KNEE_POINT_MIN                              (        0 )
+#define KNEE_POINT_MIN                              (        1 )
 #define KNEE_POINT_MAX                              (      100 )
 #define KNEE_POINT_COMMA_POSITION                   (        0 )
 #define KNEE_POINT_BASE                             (       10 )
