@@ -2,21 +2,19 @@
 
 All releases are tagged in Git with their version number.
 
-## Upcoming Release:
+## Newest Release:
 
-Version **1.0.5** - NOT RELEASED YET
+Version **1.0.5** - 06.09.2017
 
 * Changes to support MXE crosscompile toolchain under Linux: MXE had problems with the clock_gettime functions, so they were replaced under _WIN32 targets.
 * Using new flashloader applications, the windows application does not need cygwin1.dll anymore and they got reduced CPU usage
 
-## Newest Release:
+## Older Releases:
 
 Version **1.0.4** - 24.08.2017
 
 * Fixed a bug where the GUI would request a deletion of the DPCC table on video mode change, although the resolution of the new video mode was identical to the old one
 * Fixed a bug where the GUI would crash when no Com-Port was available
-
-## Older Releases:
 
 Version **1.0.3** - 16.08.2017
 
