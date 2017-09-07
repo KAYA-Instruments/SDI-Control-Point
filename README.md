@@ -38,6 +38,8 @@ You sould now have a Qt library file called "libdct_widgets.so" in the build fol
 * Windows: ```C:\qt\Tools\QtCreator\lib\Qt\plugins\Designer```
 * Linux: ```/opt/Qt/Tools/QtCreator/lib/Qt/plugins/designer/``` (you might have to grant yourself write access to this folder)
 
+Restart the Qt Creator to make the widgets available.
+
 If you want to automatically copy the library file to the designer folder you can add a custom build step. Therefore open the projects tab in Qt Creator, select the "dct_widgets" project from the dropdown menu and klick "Add Build Step -> Custom Process Step". An example for the copy command under Linux would be:
 
 >**Command:** cp  
