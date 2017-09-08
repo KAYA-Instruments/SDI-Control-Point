@@ -24,7 +24,7 @@ The project contains four folders with multiple sub-directories:
 # Working on the Project
 ## Development Environment
 The easiest way to edit the software is by using the Qt Creator, which is available for free for open source development at https://www.qt.io/ide/  
-It is recommended to use the latest version of Qt Creator and the Qt framework. The last tested version is Qt Creator 4.3.1 based on Qt 5.9.1.
+It is recommended to use the latest version of Qt Creator and the Qt framework. The last tested version is Qt Creator 4.4.0 based on Qt 5.9.1.
 
 ## Unit Tests for C-Libraries
 The unit tests are written using an open source framework called embUnit which is available here: https://sourceforge.net/projects/embunit/  
@@ -37,6 +37,8 @@ To build the widgets open the Qt Creator and and click "Open Project" on the "We
 You sould now have a Qt library file called "libdct_widgets.so" in the build folder (e.g. "build-dct_widgets-Desktop_Qt_5_9_1_GCC_64bit-Release"). Copy this file to the plugins folder of the Qt Creator, the default paths are as follows:  
 * Windows: ```C:\qt\Tools\QtCreator\lib\Qt\plugins\Designer```
 * Linux: ```/opt/Qt/Tools/QtCreator/lib/Qt/plugins/designer/``` (you might have to grant yourself write access to this folder)
+
+Restart the Qt Creator to make the widgets available.
 
 If you want to automatically copy the library file to the designer folder you can add a custom build step. Therefore open the projects tab in Qt Creator, select the "dct_widgets" project from the dropdown menu and klick "Add Build Step -> Custom Process Step". An example for the copy command under Linux would be:
 
