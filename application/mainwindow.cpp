@@ -274,6 +274,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
 
     // WbBox Tab
     m_ui->wbBox->setWhiteBalanceSettingsVisible(deviceFeatures.hasIspAutoWhiteBalance, deviceFeatures.hasIspGain, deviceFeatures.hasIspGreenGain);
+    m_ui->wbBox->setColorProcessingSettingsVisible(deviceFeatures.hasCprocItfHue);
 
     // Dpcc Tab
     m_ui->dpccBox->setCameraFlashVisible(deviceFeatures.hasDpccFlash);
@@ -285,6 +286,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
     // Info Tab
     m_ui->infoBox->setRuntimeVisible(deviceFeatures.hasSystemRuntime);
     m_ui->infoBox->setBroadcastSettingsVisible(deviceFeatures.hasSystemBroadcast);
+    m_ui->infoBox->setRS232SettingsVisible(deviceFeatures.hasRS232Interface);
 }
 
 /******************************************************************************
@@ -507,9 +509,12 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
 
     if (deviceFeatures.hasCprocItf)
     {
-        // connect Hue with Dialog box
-        connect( m_ui->wbBox, SIGNAL(HueChanged(int)), dev->GetCprocItf(), SLOT(onHueChange(int)) );
-        connect( dev->GetCprocItf(), SIGNAL(HueChanged(int)), m_ui->wbBox, SLOT(onHueChange(int)) );
+        if ( deviceFeatures.hasCprocItfHue )
+        {
+            // connect Hue with Dialog box
+            connect( m_ui->wbBox, SIGNAL(HueChanged(int)), dev->GetCprocItf(), SLOT(onHueChange(int)) );
+            connect( dev->GetCprocItf(), SIGNAL(HueChanged(int)), m_ui->wbBox, SLOT(onHueChange(int)) );
+        }
 
         // connect Saturation with Dialog box
         connect( m_ui->wbBox, SIGNAL(SaturationChanged(int)), dev->GetCprocItf(), SLOT(onSaturationChange(int)) );
@@ -695,6 +700,7 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
     connect( dev->GetProVideoSystemItf(), SIGNAL(FeatureMaskHwChanged(uint32_t)), m_ui->infoBox, SLOT(onFeatureMaskHwChange(uint32_t)) );
     connect( dev->GetProVideoSystemItf(), SIGNAL(FeatureMaskHwListChanged(QStringList)), m_ui->infoBox, SLOT(onFeatureMaskHwListChange(QStringList)) );
     connect( dev->GetProVideoSystemItf(), SIGNAL(FeatureMaskSwChanged(uint32_t)), m_ui->infoBox, SLOT(onFeatureMaskSwChange(uint32_t)) );
+
     if (deviceFeatures.hasSystemRuntime)
     {
         connect( dev->GetProVideoSystemItf(), SIGNAL(RunTimeChanged(uint32_t)), m_ui->infoBox, SLOT(onRunTimeChange(uint32_t)) );
@@ -705,8 +711,11 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
     connect( m_ui->infoBox, SIGNAL(ResyncRequest()), this, SLOT(onResyncRequest()) );
 
     // system settings (serial connection) changed
-    connect( m_dlg, SIGNAL(RS232BaudrateChanged(uint32_t)), dev->GetProVideoSystemItf(), SLOT(onRS232BaudRateChange(uint32_t)) );
-    connect( dev->GetProVideoSystemItf(), SIGNAL(RS232BaudRateChanged(uint32_t)), m_ui->infoBox, SLOT(onRS232BaudrateChange(uint32_t)) );
+    if (deviceFeatures.hasRS232Interface)
+    {
+        connect( m_dlg, SIGNAL(RS232BaudrateChanged(uint32_t)), dev->GetProVideoSystemItf(), SLOT(onRS232BaudRateChange(uint32_t)) );
+        connect( dev->GetProVideoSystemItf(), SIGNAL(RS232BaudRateChanged(uint32_t)), m_ui->infoBox, SLOT(onRS232BaudrateChange(uint32_t)) );
+    }
 
     connect( m_dlg, SIGNAL(RS485BaudrateChanged(uint32_t)), dev->GetProVideoSystemItf(), SLOT(onRS485BaudRateChange(uint32_t)) );
     connect( dev->GetProVideoSystemItf(), SIGNAL(RS485BaudRateChanged(uint32_t)), m_ui->infoBox, SLOT(onRS485BaudrateChange(uint32_t)) );

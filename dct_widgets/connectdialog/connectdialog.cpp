@@ -34,6 +34,7 @@
 #include <XbowDevice.h>
 #include <Condor4kDevice.h>
 #include <CameleonDevice.h>
+#include <CooperDevice.h>
 
 #include "connectdialog.h"
 #include "ui_connectdialog.h"
@@ -270,6 +271,10 @@ bool ConnectDialog::connectWithDevice()
         else if ( systemPlatform == KNOWN_DEVICE_CAMELEON )
         {
             connectedDevice = new CameleonDevice( getActiveChannel(), new ProVideoProtocol() );
+        }
+        else if ( systemPlatform == KNOWN_DEVICE_COOPER )
+        {
+            connectedDevice = new CooperDevice( getActiveChannel(), new ProVideoProtocol() );
         }
         qDebug() << "connected with: " << systemPlatform;
 
@@ -1144,7 +1149,7 @@ bool ConnectDialog::scanAndConnect()
                 continue;
             }
 
-            // IV. Get the device name and find out if it is a known device
+            // IV. Get the device platform and find out if it is a known device
             genericDevice.GetProVideoSystemItf()->GetSystemPlatform();
             QString systemPlatform = genericDevice.getSystemPlatform();
             if ( !DeviceIsKnown(systemPlatform) )
@@ -1162,6 +1167,7 @@ bool ConnectDialog::scanAndConnect()
 
             // Store device parameters in struct
             detectedDevice.name = deviceName;
+            detectedDevice.platform = systemPlatform;
             detectedDevice.config = openCfg;
 
             // Get broadcast address and broadcast master flag from device
@@ -1331,7 +1337,7 @@ void ConnectDialog::onBroadcastChange( bool enabled )
         if ( enabled )
         {
             // Check whether all devices in this broadcast group are identical, otherwise show a info message
-            QString currentDeviceName = m_detectedRS485Devices[m_currentRS485DeviceIndex].name;
+            QString currentDevicePlatform = m_detectedRS485Devices[m_currentRS485DeviceIndex].platform;
             unsigned int currentDeviceBroadcastAddress = m_detectedRS485Devices[m_currentRS485DeviceIndex].broadcastAddress;
             for ( int i = 0; i < m_detectedRS485Devices.count(); i++ )
             {
@@ -1341,9 +1347,9 @@ void ConnectDialog::onBroadcastChange( bool enabled )
                     continue;
                 }
 
-                // Check for same broadcast group but different device name
+                // Check for same broadcast group but different device platform
                 if ( m_detectedRS485Devices[i].broadcastAddress == currentDeviceBroadcastAddress &&
-                     m_detectedRS485Devices[i].name != currentDeviceName )
+                     m_detectedRS485Devices[i].platform != currentDevicePlatform )
                 {
                     // Before showing message box, revert to normal cursor
                     Qt::CursorShape currentCursorShape = QApplication::overrideCursor()->shape();

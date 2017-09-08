@@ -548,6 +548,18 @@ void WbBox::setWhiteBalanceSettingsVisible(const bool awbVisible, const bool gai
 }
 
 /******************************************************************************
+ * WbBox::setColorProcessingSettingsVisible
+ *****************************************************************************/
+void WbBox::setColorProcessingSettingsVisible(const bool hueVisible )
+{
+    // Set Hue knob visibility
+    d_data->m_ui->Hue->setVisible( hueVisible );
+
+    /* Note: At the moment only Hue can be hidden, since all devices support the
+     * other color processing settings */
+}
+
+/******************************************************************************
  * WbBox::onNoWbPresetsChange
  *****************************************************************************/
 void WbBox::onNoWbPresetsChange( int value )

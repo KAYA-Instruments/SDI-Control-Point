@@ -52,6 +52,7 @@ public:
     struct detectedRS485Device
     {
         QString                             name;
+        QString                             platform;
         ctrl_channel_rs4xx_open_config_t    config;
         uint32_t                            broadcastAddress;
         bool                                isBroadcastMaster;

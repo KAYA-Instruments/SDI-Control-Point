@@ -141,6 +141,7 @@ public:
 
     // Show or hide UI elements
     void setWhiteBalanceSettingsVisible( const bool awbVisible, const bool gainVisible, const bool greenGainVisible );
+    void setColorProcessingSettingsVisible(const bool hueVisible );
 
 protected:
     void prepareMode( const Mode ) Q_DECL_OVERRIDE;

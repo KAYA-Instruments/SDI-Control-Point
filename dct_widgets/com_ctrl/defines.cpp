@@ -23,37 +23,13 @@
 #include "defines.h"
 
 /******************************************************************************
- * GetKnownDeviceName()
- *****************************************************************************/
-QString GetKnownDeviceName( KnownDevice device )
-{
-    switch ( device )
-    {
-        case KnownDeviceXbow:
-            return ( QString(KNOWN_DEVICE_XBOW) );
-
-        case KnownDeviceCondor4k:
-            return ( QString(KNOWN_DEVICE_CONDOR4K) );
-
-        case KnownDeviceCondor4kMini:
-            return ( QString(KNOWN_DEVICE_CONDOR4K_MINI) );
-
-        case KnownDeviceCameleon:
-            return ( QString(KNOWN_DEVICE_CAMELEON) );
-
-        default:
-            return ( QString::null );
-    }
-}
-
-/******************************************************************************
  * DeviceIsKnown
  *****************************************************************************/
-bool DeviceIsKnown(const QString & deviceName)
+bool DeviceIsKnown( const QString & deviceName )
 {
-    for (int i = KnownDeviceFirst; i < KnownDeviceMax; i++)
+    for ( int i = KnownDeviceFirst; i < KnownDeviceMax; i++ )
     {
-        if (deviceName == GetKnownDeviceName((KnownDevice)i))
+        if ( deviceName == gKnownDevices[i] )
         {
             return ( true );
         }

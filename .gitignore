@@ -13,6 +13,21 @@ depends.mk
 *.pro.user
 
 # Qt build folders #
-#########################
+####################
 build-application-*/
 build-dct_widgets-*/
+
+# MXE build artifacts #
+#######################
+application/.qmake.stash
+application/Makefile
+application/Makefile.Debug
+application/Makefile.Release
+application/ProVideo_resource.rc
+application/debug/
+application/mocinclude.opt
+application/object_script.ProVideo.Debug
+application/object_script.ProVideo.Release
+application/provideo_plugin_import.cpp
+application/release/
+application/ui_*.h

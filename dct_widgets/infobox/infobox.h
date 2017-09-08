@@ -39,6 +39,7 @@ public:
     // Show or hide UI elements
     void setRuntimeVisible( const bool value );
     void setBroadcastSettingsVisible( const bool value );
+    void setRS232SettingsVisible( const bool value );
 
 protected:
     void prepareMode( const Mode mode ) Q_DECL_OVERRIDE;

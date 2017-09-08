@@ -73,6 +73,7 @@ public:
         bool hasIspGreenGain;
         bool hasIspConversion;
         bool hasCprocItf;
+        bool hasCprocItfHue;
         bool hasMccItf;
         bool hasKneeItf;
         bool hasLutItf;
@@ -85,6 +86,7 @@ public:
         bool hasSystemRuntime;
         bool hasSystemCopySettings;
         bool hasSystemBroadcast;
+        bool hasRS232Interface;
     };
 
     explicit ProVideoDevice( ComChannel *, ComProtocol * );

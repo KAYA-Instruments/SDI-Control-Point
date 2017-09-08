@@ -154,6 +154,7 @@ CameleonDevice::features CameleonDevice::getSupportedFeatures()
     deviceFeatures.hasIspGain               = true;
     deviceFeatures.hasIspGreenGain          = true;
     deviceFeatures.hasCprocItf              = true;
+    deviceFeatures.hasCprocItfHue           = true;
     deviceFeatures.hasMccItf                = true;
     deviceFeatures.hasSystemSaveLoad        = true;
     deviceFeatures.hasSystemCopySettings    = true;
@@ -231,7 +232,7 @@ void CameleonDevice::setComChannel( ComChannel * c )
     GetMccItf()     ->SetComChannel( c );
     GetChainItf()   ->SetComChannel( c );
     GetOsdItf()     ->SetComChannel( c );
- }
+}
 
 /******************************************************************************
  * CameleonDevice::resync()

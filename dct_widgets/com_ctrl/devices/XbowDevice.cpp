@@ -302,6 +302,7 @@ XbowDevice::features XbowDevice::getSupportedFeatures()
     deviceFeatures.hasIspGain               = true;
     deviceFeatures.hasIspConversion         = true;
     deviceFeatures.hasCprocItf              = true;
+    deviceFeatures.hasCprocItfHue           = true;
     deviceFeatures.hasMccItf                = true;
     deviceFeatures.hasKneeItf               = true;
     deviceFeatures.hasLutItf                = true;
@@ -311,6 +312,7 @@ XbowDevice::features XbowDevice::getSupportedFeatures()
     deviceFeatures.hasSystemUpdate          = true;
     deviceFeatures.hasSystemRuntime         = true;
     deviceFeatures.hasSystemBroadcast       = true;
+    deviceFeatures.hasRS232Interface        = true;
 
     return deviceFeatures;
 }
@@ -428,7 +430,7 @@ void XbowDevice::setComChannel( ComChannel * c )
     GetIrisItf()    ->SetComChannel( c );
     GetKneeItf()    ->SetComChannel( c );
     GetDpccItf()    ->SetComChannel( c );
- }
+}
 
 /******************************************************************************
  * XbowDevice::resync()

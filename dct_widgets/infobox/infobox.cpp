@@ -178,6 +178,15 @@ void InfoBox::setBroadcastSettingsVisible( const bool value )
 }
 
 /******************************************************************************
+ * InfoBox::setRS232SettingsVisible
+ *****************************************************************************/
+void InfoBox::setRS232SettingsVisible( const bool value )
+{
+    d_data->m_ui->lblRS232Baudrate->setVisible( value );
+    d_data->m_ui->cbxRS232Baudrate->setVisible( value );
+}
+
+/******************************************************************************
  * InfoBox::onDeviceIdChange
  *****************************************************************************/
 void InfoBox::onDeviceIdChange( uint32_t id0, uint32_t id1, uint32_t id2, uint32_t id3 )

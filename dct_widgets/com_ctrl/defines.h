@@ -26,14 +26,6 @@
 #include <QString>
 
 /******************************************************************************
- * known devices
- *****************************************************************************/
-#define KNOWN_DEVICE_XBOW               ( "xbow" )
-#define KNOWN_DEVICE_CONDOR4K           ( "condor4k" )
-#define KNOWN_DEVICE_CONDOR4K_MINI      ( "condor4k_mini" )
-#define KNOWN_DEVICE_CAMELEON           ( "cameleon" )
-
-/******************************************************************************
  * lens shading correction segmentation mode
  *****************************************************************************/
 #define LSC_SEGM_MODE_LIN_SEG_33        ( "Linear, 33 Nodes" )
@@ -148,6 +140,12 @@
 /******************************************************************************
  * known devices
  *****************************************************************************/
+#define KNOWN_DEVICE_XBOW               ( "xbow" )
+#define KNOWN_DEVICE_CONDOR4K           ( "condor4k" )
+#define KNOWN_DEVICE_CONDOR4K_MINI      ( "condor4k_mini" )
+#define KNOWN_DEVICE_CAMELEON           ( "cameleon" )
+#define KNOWN_DEVICE_COOPER             ( "cooper" )
+
 enum KnownDevice
 {
     KnownDeviceFirst        = 0,
@@ -155,7 +153,17 @@ enum KnownDevice
     KnownDeviceCondor4k     = 1,
     KnownDeviceCondor4kMini = 2,
     KnownDeviceCameleon     = 3,
+    KnownDeviceCooper       = 4,
     KnownDeviceMax,
+};
+
+static QString gKnownDevices[KnownDeviceMax] =
+{
+    KNOWN_DEVICE_XBOW,
+    KNOWN_DEVICE_CONDOR4K,
+    KNOWN_DEVICE_CONDOR4K_MINI,
+    KNOWN_DEVICE_CAMELEON,
+    KNOWN_DEVICE_COOPER
 };
 
 /******************************************************************************
@@ -324,9 +332,6 @@ enum FlipMode
     FlipModeRotated     = 3,    /**< rotated by 180° (readout starts at lower right corner) */
     FlipModeMax
 };
-
-// return corresponding known device name
-QString GetKnownDeviceName (KnownDevice device);
 
 // return if the name belongs to a known device
 bool DeviceIsKnown(const QString & deviceName);
