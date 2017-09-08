@@ -4,10 +4,12 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
-Version **1.0.5** - 06.09.2017
+Version **1.0.5** - 08.09.2017
 
 * Changes to support MXE crosscompile toolchain under Linux: MXE had problems with the clock_gettime functions, so they were replaced under _WIN32 targets.
 * Using new flashloader applications, the windows application does not need cygwin1.dll anymore and they got reduced CPU usage
+* Fix for devices being recognized as not being identical in broadcast mode (incorrectly checked for name, not for platform)
+* Added support for ATOM one Mini (cooper) device
 
 ## Older Releases:
 
