@@ -5,6 +5,7 @@ The master-branch of this project contains the most recent GUI version used for 
 
 * **Master:**
   * ATOM one (xbow) - Small 2k broadcast camera
+  * ATOM one Mini (cooper) - Tiny 2k broadcast camera
   * ATOM one 4k (condor4k) - Small 4k broadcast camera
   * ATOM one 4k Mini (condor4k_mini) - Even smaller 4k broadcast camera
   * Cameleon (cameleon) - Image processor box
