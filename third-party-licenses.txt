@@ -33,14 +33,6 @@ This applies to the following files:
 embUnit is licensed under the MIT license, for more informatin view:
 https://sourceforge.net/projects/embunit/
 
--------- Cygwin --------
-
-This program uses the cygwin1.dll which is licensed under GPLv3, for more information view:
-https://cygwin.com/licensing.html
-
-This aplies to the following file:
-./application/cygwin1.dll
-
 -------- QDarkStyleSheet --------
 
 This program uses the "Dark Style" style sheet by Colin Duquesnoy which is licensed under

@@ -471,7 +471,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Broadcast-Mode</string>
+    <string>Multi-Camera-Mode</string>
    </property>
    <property name="toolTip">
     <string>Toggles the RS485 Broadcast-Mode on / off</string>
