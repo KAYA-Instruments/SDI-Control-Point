@@ -3,12 +3,14 @@ The ProVideo GUI is a graphical user interface used to setup Dream Chips ProVide
 
 The master-branch of this project contains the most recent GUI version used for our current line of products. Branches may be created for special or legacy devices. Below is a list of all branches and the devices that they support, the term given in braces is the internal device codename:
 
-* **Master:**
+* **master:**
   * ATOM one (xbow) - Small 2k broadcast camera
   * ATOM one Mini (cooper) - Tiny 2k broadcast camera
   * ATOM one 4k (condor4k) - Small 4k broadcast camera
   * ATOM one 4k Mini (condor4k_mini) - Even smaller 4k broadcast camera
   * Cameleon (cameleon) - Image processor box
+
+Development by Dream Chip is done in the *dct_development* branch which will be pushed to the master when new features are ready. Other developers are encouraged to create their own branches and issue merge requests.
 
 The software is based on the Qt framework and provided as a Qt-Project, which can be opened using the Qt Creator.
 
