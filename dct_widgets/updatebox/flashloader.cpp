@@ -567,6 +567,7 @@ void FlashLoader::loaderFinished()
             return;
         }
     }
+    m_stderr.clear();
 
     // II. check application output
     QStringList lout = m_stdout.split( QRegExp("[\r\n]+"), QString::SkipEmptyParts );

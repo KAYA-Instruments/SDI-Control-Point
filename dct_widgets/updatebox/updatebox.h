@@ -33,7 +33,14 @@ class UpdateBox : public DctWidgetBox
     Q_OBJECT
 
 public:
-    enum SystemStates { InvalidState = -1, CommandState = 0, UpdateState = 1, FlashState = 2,  };
+    enum SystemStates
+    {
+        InvalidState = -1,
+        CommandState =  0,
+        UpdateState  =  1,
+        FlashState   =  2,
+        ErrorState   =  3,
+    };
 
     explicit UpdateBox( QWidget * parent = 0 );
     ~UpdateBox();
@@ -52,6 +59,7 @@ protected:
     void applySettings( void ) Q_DECL_OVERRIDE;
 
 private:
+    SystemStates getSystemState( void );
     void setSystemState( SystemStates state );
     unsigned int getTotalNumUpdates();
     void setUpdateCounter( unsigned int updCnt );

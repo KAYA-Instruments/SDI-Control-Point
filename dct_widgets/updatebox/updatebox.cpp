@@ -27,6 +27,7 @@
 #include <QMessageBox>
 #include <QTimer>
 #include <QThread>
+#include <QSemaphore>
 
 #include <common.h>
 
@@ -45,14 +46,20 @@ namespace Ui {
 /******************************************************************************
  * definitions
  *****************************************************************************/
-#define SYSTEM_STATE_COMMAND        ( "Camera in operation ... " )
-#define SYSTEM_STATE_UPDATE         ( "Camera waiting for update ... " ) 
-#define SYSTEM_STATE_FLASHING       ( "Camera is updating  ... " )
+#define SYSTEM_STATE_COMMAND        ( "Device in operation. " )
+#define SYSTEM_STATE_UPDATE         ( "Device waiting for update. " )
+#define SYSTEM_STATE_FLASHING       ( "Device is updating. " )
 
 /******************************************************************************
  * update configuration structure
  *****************************************************************************/
-enum updateType { xbow, condor4k_fw, condor4k_bs, invalid };
+enum updateType
+{
+    xbow,
+    condor4k_fw, condor4k_bs,
+    cooper_fw, cooper_bs,
+    invalid
+};
 
 typedef struct update_config_s
 {
@@ -81,8 +88,8 @@ const update_config_t xbow_update =
 // NOTE: condor4k and condor4k_mini, bitstream and firmware are seperate
 #define PLATFORM_CONDOR_4K      ( "condor4k" )      // platform-name
 #define PLATFORM_CONDOR_4K_MINI ( "condor4k_mini" ) // platform-name
-#define DEVICE_ATOM_1_4K_SP     ( 0x2001C000u )     // stack-pointer
-#define DEVICE_ATOM_1_4K_PC     ( 0x08030000u )     // program counter
+#define PLATFORM_CONDOR_4K_SP   ( 0x2001C000u )     // stack-pointer
+#define PLATFORM_CONDOR_4K_PC   ( 0x08030000u )     // program counter
 
 // firmware update
 const update_config_t condor4k_fw_update =
@@ -108,6 +115,35 @@ const update_config_t condor4k_bs_update =
     .file      = QString::null
 };
 
+// NOTE: cooper, bitstream and firmware are seperate
+#define PLATFORM_COOPER     ( "cooper" )        // platform-name
+#define PLATFORM_COOPER_SP  ( 0x2001C000u )     // stack-pointer
+#define PLATFORM_COOPER_PC  ( 0x08030000u )     // program counter
+
+// firmware update
+const update_config_t cooper_fw_update =
+{
+    .type      = cooper_fw,
+    .baudrate  = 115200u,
+    .sector    = 1u,
+    .extension = "bin",
+    .content   = true,      // needed to distinguish between firmare and bitstream
+    .reversal  = false,
+    .file      = QString::null
+};
+
+// bitstream update
+const update_config_t cooper_bs_update =
+{
+    .type      = cooper_bs,
+    .baudrate  = 115200u,
+    .sector    = 16u,
+    .extension = "bin",
+    .content   = true,      // needed to distinguish between firmare and bitstream
+    .reversal  = false,
+    .file      = QString::null
+};
+
 /******************************************************************************
  * fileExists
  *****************************************************************************/
@@ -120,9 +156,9 @@ static bool fileExists( const QString & path )
 }
 
 /******************************************************************************
- * fileType
+ * fileTypeMatches
  *****************************************************************************/
-static updateType fileType( const QString & fn )
+static bool fileTypeMatches( const updateType type, const QString & fn )
 {
     QFile f( fn );
 
@@ -135,17 +171,37 @@ static updateType fileType( const QString & fn )
     f.read( (char *)d, sizeof(quint32) * 2 );
     f.close();
 
-    // if stack-pointer matches and program-pointer is smaller than max, this is a firmware binary
-    if ( (d[0] == DEVICE_ATOM_1_4K_SP) && (d[1] <= DEVICE_ATOM_1_4K_PC ) )
+    // Condor 4k
+    if ( type == condor4k_fw || type == condor4k_bs )
     {
-        return ( condor4k_fw );
+        // if stack-pointer matches and program-pointer is smaller than max, this is a firmware binary
+        if ( type == condor4k_fw && (d[0] == PLATFORM_CONDOR_4K_SP) && (d[1] <= PLATFORM_CONDOR_4K_PC) )
+        {
+            return true;
+        }
+        // else this is a bitstream binary
+        else if ( type == condor4k_bs && !(d[0] == PLATFORM_CONDOR_4K_SP) && (d[1] <= PLATFORM_CONDOR_4K_PC) )
+        {
+            return true;
+        }
     }
 
-    // else this is a bitstream binary
-    else
+    // Cooper
+    if ( type == cooper_fw || type == cooper_bs )
     {
-        return ( condor4k_bs );
+        // if stack-pointer matches and program-pointer is smaller than max, this is a firmware binary
+        if ( type == cooper_fw && (d[0] == PLATFORM_COOPER_SP) && (d[1] <= PLATFORM_COOPER_PC) )
+        {
+            return true;
+        }
+        // else this is a bitstream binary
+        else if ( type == cooper_bs && !(d[0] == PLATFORM_COOPER_SP) && (d[1] <= PLATFORM_COOPER_PC) )
+        {
+            return true;
+        }
     }
+
+    return false;
 }
 
 /******************************************************************************
@@ -160,6 +216,7 @@ public:
         , m_FsmTimer( new QTimer( parent ) )
         , m_application ( new FlashLoader() )
         , m_state( InvalidState )
+        , m_state_sema(1)
     {
         // setup ui
         m_ui->setupUi( parent );
@@ -224,6 +281,8 @@ public:
     qint32                      m_upd_idx;          /**< index in m_upd_config of the update that is currently being flashed */
     QVector<update_config_t>    m_upd_config;       /**< vector of update configurations */
     QString                     m_upd_dir;          /**< path to the directory that contains binary files */
+
+    QSemaphore                  m_state_sema;       /**< semaphore to protect the access to get / set state */
 };
 
 /******************************************************************************
@@ -310,12 +369,33 @@ void UpdateBox::applySettings( void )
     // do nothing here
 }
 
+/******************************************************************************
+ * UpdateBox::getSystemState
+ *****************************************************************************/
+UpdateBox::SystemStates UpdateBox::getSystemState( void )
+{
+    // Aquire semaphore
+    d_data->m_state_sema.acquire();
+
+    // Get current state
+    SystemStates state = d_data->m_state;
+
+    // Release semaphore
+    d_data->m_state_sema.release();
+
+    // Return system state
+    return state;
+}
 
 /******************************************************************************
  * UpdateBox::setSystemState
  *****************************************************************************/
 void UpdateBox::setSystemState( SystemStates state )
 {
+    // Aquire semaphore
+    d_data->m_state_sema.acquire();
+
+    // Configure system state
     if ( (state != d_data->m_state) && (state > InvalidState) )
     {
         bool enable;
@@ -327,7 +407,7 @@ void UpdateBox::setSystemState( SystemStates state )
             fn = d_data->m_upd_config[d_data->m_upd_idx].file;
         }
 
-        if ( CommandState == state )
+        if ( state == CommandState )
         {
             // command state (prepared to execute commands from console)
             d_data->m_ui->letSystemMode->setText( SYSTEM_STATE_COMMAND );
@@ -339,9 +419,9 @@ void UpdateBox::setSystemState( SystemStates state )
             d_data->m_ui->progressBar->setValue( 0 );
             enable = false;
         }
-        else if ( UpdateState == state )
+        else if ( state == UpdateState )
         {
-            // update state (waits for update data)
+            // update state or error retry state (waits for update data)
             d_data->m_ui->letSystemMode->setText( SYSTEM_STATE_UPDATE ); 
             d_data->m_ui->btnRun->setText( "Start" );
             d_data->m_ui->btnRun->setEnabled( (!fn.isEmpty()) && (fileExists(fn)) ? true : false );
@@ -349,16 +429,8 @@ void UpdateBox::setSystemState( SystemStates state )
             d_data->m_ui->btnFilename->setEnabled( false );
             enable = true;
         }
-        else
-        {
-            // flash state (clears, programs or verifies flash sectors)
-            d_data->m_ui->letSystemMode->setText( SYSTEM_STATE_FLASHING ); 
-            d_data->m_ui->btnRun->setText( "Cancel" );
-            d_data->m_ui->btnRun->setEnabled( true );
-            d_data->m_ui->cbxVerify->setEnabled( false );
-            d_data->m_ui->btnFilename->setEnabled( false );
-            enable = true;
-        }
+
+        // Note: Do nothing in error state, it will be set to update state by the FSM timer
 
         d_data->m_ui->lblSystemName->setEnabled( enable );
         d_data->m_ui->letSystemName->setEnabled( enable );
@@ -366,9 +438,13 @@ void UpdateBox::setSystemState( SystemStates state )
         d_data->m_ui->letSystemVersion->setEnabled( enable );
         d_data->m_ui->lblFlashLoaderVersion->setEnabled( enable );
         d_data->m_ui->letFlashLoaderVersion->setEnabled( enable );
-        
+
+        // set the new system state
         d_data->m_state = state;
     }
+
+    // Release semaphore
+    d_data->m_state_sema.release();
 }
 
 /******************************************************************************
@@ -500,8 +576,10 @@ void UpdateBox::onFsmTimer( )
     int res = 0;
     int updateIndex = d_data->m_upd_idx;
 
+    SystemStates state = getSystemState();
+
     // I. CommandState: not connected with flashloader
-    if ( CommandState == d_data->m_state )
+    if ( state == CommandState )
     {
         // set baudrate
         d_data->m_application->setBaudrate( d_data->m_upd_config[updateIndex].baudrate );
@@ -517,7 +595,7 @@ void UpdateBox::onFsmTimer( )
     }
 
     // II. UpdateState: initiate update run
-    else if ( UpdateState == d_data->m_state )
+    else if ( state == UpdateState )
     {
         d_data->m_erase_cnt     = 0u;
         d_data->m_program_cnt   = 0u;
@@ -529,7 +607,14 @@ void UpdateBox::onFsmTimer( )
         HANDLE_ERROR( res );
     }
 
-    // III. update running
+    // III. ErrorStateRetry: An error occured while updating
+    else if ( state == ErrorState )
+    {
+        // switch to update state, so the device stays in fw update mode and the user can try again
+        setSystemState( UpdateState );
+    }
+
+    // IV. update running or error state
     else
     {
     }
@@ -593,7 +678,7 @@ void UpdateBox::onFileNameClicked()
                         if ( d_data->m_upd_config[i].content )
                         {
                             // check file type matches, if it does not, continue with next file
-                            if ( d_data->m_upd_config[i].type != fileType(binaryFiles.filePath()) )
+                            if ( !fileTypeMatches(d_data->m_upd_config[i].type, binaryFiles.filePath()) )
                             {
                                 continue;
                             }
@@ -692,9 +777,11 @@ void UpdateBox::onRunClicked()
     // Check if updates available
     if ( getTotalNumUpdates() > 0 )
     {
+        SystemStates state = getSystemState();
+
         // CommandState, UpdateState -> Start update
-        if ( (CommandState == d_data->m_state) ||
-             (UpdateState == d_data->m_state) )
+        if ( (state == CommandState) ||
+             (state == UpdateState) )
         {
             int dT = 1; // 1 ms = 1 tick
 
@@ -703,7 +790,7 @@ void UpdateBox::onRunClicked()
             emit LockCurrentTabPage( true );
 
             // II. boot into update state if needed
-            if ( CommandState == d_data->m_state )
+            if ( state == CommandState )
             {
                 // restart camera in update (bootloader) mode
                 emit BootIntoUpdateMode();
@@ -742,7 +829,7 @@ void UpdateBox::onRunClicked()
             {
                 /* Check if still in flash state, otherwise update was completed
                  * while user was reading the message and we do not need to cancel */
-                if ( d_data->m_state == FlashState )
+                if ( getSystemState() == FlashState )
                 {
                     // I. reset progress bar and update counter / index
                     d_data->m_ui->progressBar->setFormat( "%p%" );
@@ -809,6 +896,15 @@ void UpdateBox::onSystemPlatformChange( QString name )
 
         // second file is bitstream update
         d_data->m_upd_config.append( condor4k_bs_update );
+    }
+
+    else if ( name == PLATFORM_COOPER )
+    {
+        // first file is firmware update
+        d_data->m_upd_config.append( cooper_fw_update );
+
+        // second file is bitstream update
+        d_data->m_upd_config.append( cooper_bs_update );
     }
 
     else 
@@ -895,6 +991,9 @@ void UpdateBox::onReconfCond( quint32 mask )
  *****************************************************************************/
 void UpdateBox::onFlashLoaderError( int error )
 {
+    // Set error state
+    setSystemState( ErrorState );
+
     // Build error message
     QMessageBox errorMessage( this );
     errorMessage.setIcon( QMessageBox::Warning );
@@ -906,7 +1005,7 @@ void UpdateBox::onFlashLoaderError( int error )
             errorMessage.setText( "Communication with device timed out. Please retry." );
             break;
         case -ENODEV:
-            errorMessage.setText( "No device found, try reconnecting the device" );
+            errorMessage.setText( "No device found, try power-cycling the device and restarting the GUI." );
             break;
         case -EIO:
             errorMessage.setText( "Can not communicate with device, please retry." );
@@ -932,9 +1031,6 @@ void UpdateBox::onFlashLoaderError( int error )
 
     setUpdateCounter( 1 );
     getFirstUpdateIndex();
-
-    // update system state
-    setSystemState( UpdateState );
 }
 
 /******************************************************************************
@@ -984,7 +1080,7 @@ void UpdateBox::onVerifyProgress( quint32 progress )
  *****************************************************************************/
 void UpdateBox::onUpdateFinished()
 {
-    if ( FlashState == d_data->m_state )
+    if ( FlashState == getSystemState() )
     {
         if ( ( d_data->m_erase_cnt   == 100 ) &&
              ( d_data->m_program_cnt == 100 ) &&
