@@ -61,6 +61,15 @@ By default Qt uses dynamic linking, that means all DLLs needed by the applicatio
 
 If you want to use static linking instead (only one executable, no DLLs needed), please take a look at the [steps provided by Qt](https://wiki.qt.io/Building_a_static_Qt_for_Windows_using_MinGW).
 
+## Deploy the project on Linux
+For deployment on Linux see [this page of the Qt Wiki](https://wiki.qt.io/Deploying_a_Qt5_Application_Linux). The easiest way is again dynamic linking:
+
+* Download the deployment tool app-image from [here](https://github.com/probonopd/linuxdeployqt/releases)
+* Copy the deployment tool and your compiled "ProVideo" application file to a new folder
+* Add qmake to the PATH variable, e.g.: ```export PATH=/opt/Qt/5.9.1/gcc_64/bin/:$PATH```
+* Run the deployment tool: ```./linuxdeployqt-continuous-x86_64.AppImage ProVideo```
+* The tool will copy all files needed to run the application into the folder
+
 ## Cross-Compilation under Linux
 It is possible to cross-compile a 32 Bit windows executable under Linux by using the M cross environment (MXE):
 How to crosscompile a QT5 project using MXE
