@@ -1230,7 +1230,7 @@ bool ConnectDialog::scanAndConnect()
         QMessageBox msgBox;
         msgBox.setWindowTitle( "Auto-Detection failed" );
         msgBox.setWindowIcon( QIcon(":/icons/connect_128x128.png") );
-        msgBox.setText( "The Auto-Detection could not find any devices which use the RS485 protocol. Try using a different port or protocol and"
+        msgBox.setText( "The Auto-Detection could not find any devices which use the RS485 protocol. Try using a different port or protocol and "
                         "make sure that each device has a unique address.");
         msgBox.exec();
     }

@@ -86,6 +86,7 @@
  * @brief command "dpc_del_px" 
  *****************************************************************************/
 #define CMD_CLEAR_DPCC_TABLE                ( "dpc_del_px\n" )
+#define CMD_CLEAR_DPCC_TABLE_TMO            ( 1000 )
 
 /******************************************************************************
  * @brief command "dpc_save" 
@@ -485,7 +486,7 @@ static int clear_dpcc_table
 {
     (void) ctx;
 
-    return ( set_param_0( channel, CMD_CLEAR_DPCC_TABLE ) );
+    return ( set_param_0_with_tmo( channel, CMD_CLEAR_DPCC_TABLE, CMD_CLEAR_DPCC_TABLE_TMO ) );
 }
 
 /******************************************************************************

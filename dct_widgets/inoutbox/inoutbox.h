@@ -50,8 +50,8 @@ public:
 
     int BayerPattern() const;
     void setBayerPattern( const int );
-    int CameraGain() const;
-    void setCameraGain( const int value );
+    int CameraIso() const;
+    void setCameraIso( const int value );
     int CameraExposure() const;
     void setCameraExposure( const int value );
 
@@ -152,10 +152,9 @@ signals:
     void ResyncRequest( void );
 
 public slots:
-
     void onBayerPatternChange( int value );
 
-    void onCameraInfoChange( int min_gain, int max_gain, int min_exposure, int max_exposure );
+    void onCameraInfoChange( int min_gain, int max_gain, int min_exposure, int max_exposure , int min_iso );
     void onCameraGainChange( int value );
     void onCameraExposureChange( int value );
 
@@ -185,9 +184,9 @@ public slots:
 private slots:
     void onCbxBayerPatternChange( int value );
 
-    void onSldAnalogueGainChange( int value );
-    void onSldAnalogueGainReleased();
-    void onSbxAnalogueGainChange( int value );
+    void onSldIsoChange( int value );
+    void onSldIsoReleased();
+    void onSbxIsoChange( int value );
 
     void onSldExposureChange( int value );
     void onSldExposureReleased();
@@ -244,6 +243,9 @@ private slots:
 private:
     class PrivateData;
     PrivateData * d_data;
+
+    int gainToIso( int gain );
+    int isoToGain( int iso );
 
 };
 

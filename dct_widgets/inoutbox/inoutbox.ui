@@ -110,7 +110,7 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QSpinBox" name="sbxAnalogueGain">
+       <widget class="QSpinBox" name="sbxIso">
         <property name="minimumSize">
          <size>
           <width>120</width>
@@ -171,7 +171,7 @@
        </widget>
       </item>
       <item row="2" column="0">
-       <widget class="QLabel" name="lblAnalogueGain">
+       <widget class="QLabel" name="lblIso">
         <property name="minimumSize">
          <size>
           <width>140</width>
@@ -190,7 +190,7 @@
        </widget>
       </item>
       <item row="2" column="2">
-       <widget class="QSlider" name="sldAnalogueGain">
+       <widget class="QSlider" name="sldIso">
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
         </property>
@@ -1066,7 +1066,7 @@ Note: This will only hold the timecode in the SDI output, the timecode on the de
  <tabstops>
   <tabstop>cbxBayerPattern</tabstop>
   <tabstop>sbxExposure</tabstop>
-  <tabstop>sbxAnalogueGain</tabstop>
+  <tabstop>sbxIso</tabstop>
   <tabstop>sbxAperture</tabstop>
   <tabstop>cbxAecEnable</tabstop>
   <tabstop>sbxSetPoint</tabstop>
