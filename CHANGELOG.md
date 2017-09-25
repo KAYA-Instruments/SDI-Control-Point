@@ -4,14 +4,19 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
+Version **1.0.6** - 25.09.2017
+
+* Started implementing a new settings dialog which will contain system wide settings which are at the moment placed on the info tab (not finished yet!)
+* Fixed a bug that made firmware updates impossible since cooper device support was added
+
+## Older Releases:
+
 Version **1.0.5** - 08.09.2017
 
 * Changes to support MXE crosscompile toolchain under Linux: MXE had problems with the clock_gettime functions, so they were replaced under _WIN32 targets.
 * Using new flashloader applications, the windows application does not need cygwin1.dll anymore and they got reduced CPU usage
 * Fix for devices being recognized as not being identical in broadcast mode (incorrectly checked for name, not for platform)
 * Added support for ATOM one Mini (cooper) device
-
-## Older Releases:
 
 Version **1.0.4** - 24.08.2017
 
