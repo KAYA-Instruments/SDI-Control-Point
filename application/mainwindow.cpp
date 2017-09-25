@@ -149,6 +149,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
 
         // Set size adjust policyto auto adjust to react to changing device names
         cbxConnectedDevices->setSizeAdjustPolicy( cbxConnectedDevices->AdjustToContents );
+        cbxConnectedDevices->setMaximumWidth( 300 );
 
         // Add device names to the combo box
         for (int i = 0; i < connectedRS485Devices.count(); i++ )
@@ -308,7 +309,7 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
     if (deviceFeatures.hasCamItf)
     {
         // connect camera info
-        connect( dev->GetCamItf(), SIGNAL(CameraInfoChanged(int,int,int,int)), m_ui->inoutBox, SLOT(onCameraInfoChange(int,int,int,int)) );
+        connect( dev->GetCamItf(), SIGNAL(CameraInfoChanged(int,int,int,int,int)), m_ui->inoutBox, SLOT(onCameraInfoChange(int,int,int,int,int)) );
 
         // connect camera gain
         connect( dev->GetCamItf(), SIGNAL(CameraGainChanged(int)), m_ui->inoutBox, SLOT(onCameraGainChange(int)) );

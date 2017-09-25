@@ -280,7 +280,6 @@ CooperDevice::features CooperDevice::getSupportedFeatures()
     deviceFeatures.hasChainTimeCodeHold     = true;
     deviceFeatures.hasChainSdiSettings      = true;
     deviceFeatures.hasAutoItf               = true;
-    deviceFeatures.hasIrisItf               = true;
     deviceFeatures.hasIspItf                = true;
     deviceFeatures.hasIspLsc                = true;
     deviceFeatures.hasIspMasterBlackLevel   = true;

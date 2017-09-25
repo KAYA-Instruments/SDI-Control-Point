@@ -6,8 +6,8 @@
 
 # This version number is shown in the Application, it should be
 # updated before each release!
-VERSION = 1.0.5
-DEFINES += VERSION_STRING=\\\"1.0.5\\\"
+VERSION = 1.0.6
+DEFINES += VERSION_STRING=\\\"1.0.6_dev\\\"
 
 CONFIG  += c++11
 # CONFIG  += debug
@@ -85,6 +85,7 @@ SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
            ../dct_widgets/kneebox/knee_interpolation.cpp                    \
            ../dct_widgets/dpccbox/dpccbox.cpp                               \
            ../dct_widgets/connectdialog/connectdialog.cpp                   \
+           ../dct_widgets/settingsdialog/settingsdialog.cpp                 \
            ../dct_widgets/btnarraybox/btnarraybox.cpp                       \
            ../dct_widgets/singlechannelknobbox/singlechannelknobbox.cpp     \
            ../dct_widgets/triplechannelknobbox/triplechannelknobbox.cpp     \
@@ -193,6 +194,7 @@ HEADERS  += ../libraries/include                                                
             ../dct_widgets/mccslider/mccslider.h                                \
             ../dct_widgets/qcustomplot/qcustomplot.h                            \
             ../dct_widgets/connectdialog/connectdialog.h                        \
+            ../dct_widgets/settingsdialog/settingsdialog.h                      \
             ../dct_widgets/com_ctrl/devices/ProVideoDevice.h                    \
             ../dct_widgets/com_ctrl/devices/XbowDevice.h                        \
             ../dct_widgets/com_ctrl/devices/Condor4kDevice.h                    \
@@ -283,6 +285,7 @@ FORMS    += ../dct_widgets/mcceqbox/mcceqbox.ui                             \
             ../dct_widgets/singlechannelknobbox/singlechannelknobbox.ui     \
             ../dct_widgets/triplechannelknobbox/triplechannelknobbox.ui     \
             ../dct_widgets/connectdialog/connectdialog.ui                   \
+            ../dct_widgets/settingsdialog/settingsdialog.ui                 \
             ../dct_widgets/textviewer/textviewer.ui                         \
             mainwindow.ui
 

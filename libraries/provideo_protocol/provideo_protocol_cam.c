@@ -51,9 +51,9 @@
  * @brief command definition to read out the camera info
  *****************************************************************************/
 #define CMD_GET_CAM_INFO                    ( "cam_info\n" )
-#define CMD_SET_CAM_INFO                    ( "cam_info %i %i %i %i\n" )
+#define CMD_SET_CAM_INFO                    ( "cam_info %i %i %i %i %i\n" )
 #define CMD_SYNC_CAM_INFO                   ( "cam_info " )
-#define CMD_GET_CAM_INFO_NO_PARMS           ( 4 )
+#define CMD_GET_CAM_INFO_NO_PARMS           ( 5 )
 
 /**************************************************************************//**
  * get_cam_info - get camera information
@@ -74,6 +74,7 @@ static int get_cam_info
     int v1;
     int v2;
     int v3;
+    int v4;
 
     int res;
 
@@ -85,7 +86,7 @@ static int get_cam_info
 
     // command call to get 4 parameters from provideo system
     res = get_param_int_X( channel, 2,
-            CMD_GET_CAM_INFO, CMD_SYNC_CAM_INFO, CMD_SET_CAM_INFO, &v0, &v1, &v2, &v3 );
+            CMD_GET_CAM_INFO, CMD_SYNC_CAM_INFO, CMD_SET_CAM_INFO, &v0, &v1, &v2, &v3, &v4 );
 
     // return error code
     if ( res < 0 )
@@ -105,6 +106,7 @@ static int get_cam_info
     v->max_gain          = UINT32( v1 );
     v->min_exposure_time = UINT32( v2 );
     v->max_exposure_time = UINT32( v3 );
+    v->min_iso           = UINT32( v4 );
 
     return ( 0 );
 }

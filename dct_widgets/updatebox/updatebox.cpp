@@ -175,12 +175,12 @@ static bool fileTypeMatches( const updateType type, const QString & fn )
     if ( type == condor4k_fw || type == condor4k_bs )
     {
         // if stack-pointer matches and program-pointer is smaller than max, this is a firmware binary
-        if ( type == condor4k_fw && (d[0] == PLATFORM_CONDOR_4K_SP) && (d[1] <= PLATFORM_CONDOR_4K_PC) )
+        if ( type == condor4k_fw && ((d[0] == PLATFORM_CONDOR_4K_SP) && (d[1] <= PLATFORM_CONDOR_4K_PC)) )
         {
             return true;
         }
         // else this is a bitstream binary
-        else if ( type == condor4k_bs && !(d[0] == PLATFORM_CONDOR_4K_SP) && (d[1] <= PLATFORM_CONDOR_4K_PC) )
+        else if ( type == condor4k_bs && !((d[0] == PLATFORM_CONDOR_4K_SP) && (d[1] <= PLATFORM_CONDOR_4K_PC)) )
         {
             return true;
         }
@@ -190,12 +190,12 @@ static bool fileTypeMatches( const updateType type, const QString & fn )
     if ( type == cooper_fw || type == cooper_bs )
     {
         // if stack-pointer matches and program-pointer is smaller than max, this is a firmware binary
-        if ( type == cooper_fw && (d[0] == PLATFORM_COOPER_SP) && (d[1] <= PLATFORM_COOPER_PC) )
+        if ( type == cooper_fw && ((d[0] == PLATFORM_COOPER_SP) && (d[1] <= PLATFORM_COOPER_PC)) )
         {
             return true;
         }
         // else this is a bitstream binary
-        else if ( type == cooper_bs && !(d[0] == PLATFORM_COOPER_SP) && (d[1] <= PLATFORM_COOPER_PC) )
+        else if ( type == cooper_bs && !((d[0] == PLATFORM_COOPER_SP) && (d[1] <= PLATFORM_COOPER_PC)) )
         {
             return true;
         }
@@ -398,7 +398,7 @@ void UpdateBox::setSystemState( SystemStates state )
     // Configure system state
     if ( (state != d_data->m_state) && (state > InvalidState) )
     {
-        bool enable;
+        bool enable = true;
 
         // check if update index is in range, if it is, get file path
         QString fn = QString::null;
@@ -781,7 +781,8 @@ void UpdateBox::onRunClicked()
 
         // CommandState, UpdateState -> Start update
         if ( (state == CommandState) ||
-             (state == UpdateState) )
+             (state == UpdateState)  ||
+             (state == ErrorState) )
         {
             int dT = 1; // 1 ms = 1 tick
 

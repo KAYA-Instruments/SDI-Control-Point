@@ -291,7 +291,6 @@ Condor4kDevice::features Condor4kDevice::getSupportedFeatures()
     deviceFeatures.hasChainSdiSettings      = true;
     deviceFeatures.hasChainSelection        = true;
     deviceFeatures.hasAutoItf               = true;
-    deviceFeatures.hasIrisItf               = true;
     deviceFeatures.hasIspItf                = true;
     deviceFeatures.hasIspLsc                = true;
     deviceFeatures.hasIspMasterBlackLevel   = true;

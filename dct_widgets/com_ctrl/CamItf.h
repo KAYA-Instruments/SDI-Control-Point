@@ -48,7 +48,7 @@ public:
 
 signals:
     // cam configuration
-    void CameraInfoChanged( int, int, int, int );
+    void CameraInfoChanged( int, int, int, int, int );
     void CameraGainChanged( int value );
     void CameraExposureChanged( int value );
 
@@ -68,8 +68,8 @@ public slots:
 
 #define CONNECT_CAM_INTERFACE(x, y)                                                                             \
 {                                                                                                               \
-    QObject::connect( x, SIGNAL(CameraInfoChanged(int,int,int,int)),                                            \
-                      y, SLOT(onCameraInfoChange(int,int,int,int)) );                                           \
+    QObject::connect( x, SIGNAL(CameraInfoChanged(int,int,int,int,int)),                                        \
+                      y, SLOT(onCameraInfoChange(int,int,int,int,int)) );                                       \
     QObject::connect( x, SIGNAL(CameraGainChanged(int)),                                                        \
                       y, SLOT(onCameraGainChange(int)) );                                                       \
     QObject::connect( x, SIGNAL(CameraExposureChanged(int)),                                                    \

@@ -63,10 +63,11 @@ enum CAM_FEATURE
  *****************************************************************************/
 typedef struct ctrl_protocol_cam_info_s
 {
-    uint32_t    min_gain;
-    uint32_t    max_gain;
-    uint32_t    min_exposure_time;
-    uint32_t    max_exposure_time;
+    uint32_t    min_gain;           /**< minimum gain of the camera as a factor, multiplied by 1000 (gain 1 = 1000) */
+    uint32_t    max_gain;           /**< maximum gain of the camera as a factor, multiplied by 1000 (gain 1 = 1000) */
+    uint32_t    min_exposure_time;  /**< minimum exposure time of the camera in micro seconds */
+    uint32_t    max_exposure_time;  /**< maximum exposure time of the camera in micro seconds */
+    uint32_t    min_iso;            /**< minimum iso of the camera at gain 1 */
 } ctrl_protocol_cam_info_t;
 
 /**************************************************************************//**

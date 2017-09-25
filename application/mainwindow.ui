@@ -488,6 +488,18 @@
     <string>Applies the Settings of the currently selected Camera to all Cameras in the current Broadcast-Group</string>
    </property>
   </action>
+  <action name="actionsettings">
+   <property name="icon">
+    <iconset resource="../resource/resource.qrc">
+     <normaloff>:/icons/cog-64.png</normaloff>:/icons/cog-64.png</iconset>
+   </property>
+   <property name="text">
+    <string>settings</string>
+   </property>
+   <property name="toolTip">
+    <string>Open Settings Dialog</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

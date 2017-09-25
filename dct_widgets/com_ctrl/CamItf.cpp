@@ -47,7 +47,7 @@ void CamItf::resync()
 void CamItf::GetCameraInfo()
 {
     // Is there at least one signal listener
-    if ( receivers(SIGNAL(CameraInfoChanged(int, int, int, int))) > 0 )
+    if ( receivers(SIGNAL(CameraInfoChanged(int, int, int, int, int))) > 0 )
     {
         ctrl_protocol_cam_info_t i;
 
@@ -58,7 +58,7 @@ void CamItf::GetCameraInfo()
 
         // emit a CameraInfoChanged signal
         emit CameraInfoChanged(
-                i.min_gain, i.max_gain, i.min_exposure_time, i.max_exposure_time );
+                i.min_gain, i.max_gain, i.min_exposure_time, i.max_exposure_time, i.min_iso);
     }
 }
 

@@ -78,7 +78,7 @@ public:
 #define INOUT_SETTINGS_SECTION_NAME                 ( "INOUT" )
 
 #define INOUT_SETTINGS_BAYER_PATTERN                ( "bayer" )
-#define INOUT_SETTINGS_CAMERA_GAIN                  ( "iso" )
+#define INOUT_SETTINGS_CAMERA_ISO                   ( "iso" )
 #define INOUT_SETTINGS_CAMERA_EXPOSURE              ( "shutter" )
 
 #define INOUT_SETTINGS_AEC_ENABLE                   ( "aec_enable" )
@@ -124,11 +124,12 @@ public:
         , m_cntEvents( 0 )
         , m_maxEvents( 10 )
         , m_sbxStyle( new SpinBoxStyle() )
+        , m_AptMin( 125 )
+        , m_AptMax( 16000 )
+        , m_AptEnable( true )
+        , m_minIso( 1 )
     {
         // do nothing
-        m_AptMin    = 125;
-        m_AptMax    = 16000;
-        m_AptEnable = true;
     };
 
     ~PrivateData()
@@ -149,6 +150,8 @@ public:
     int                 m_AptMin;
     int                 m_AptMax;
     bool                m_AptEnable;
+
+    int                 m_minIso;       /**< iso value of the device at gain 1 (1000) */
 };
 
 /******************************************************************************
@@ -162,8 +165,8 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     // initialize UI
     d_data->m_ui->setupUi( this );
 
-    d_data->m_ui->sbxAnalogueGain->setRange( 100, 1600 );
-    d_data->m_ui->sldAnalogueGain->setRange( 100, 1600 );
+    d_data->m_ui->sbxIso->setRange( 80, 400 );
+    d_data->m_ui->sldIso->setRange( 80, 400 );
     
     d_data->m_ui->sbxExposure->setRange( 100, 20000 );
     d_data->m_ui->sldExposure->setRange( 100, 20000 );
@@ -233,7 +236,7 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     }
 
     // overrule auto-repeat threshold
-    d_data->m_ui->sbxAnalogueGain           ->setStyle( d_data->m_sbxStyle );
+    d_data->m_ui->sbxIso                    ->setStyle( d_data->m_sbxStyle );
     d_data->m_ui->sbxExposure               ->setStyle( d_data->m_sbxStyle );
     d_data->m_ui->sbxGenLockOffsetVertical  ->setStyle( d_data->m_sbxStyle );
     d_data->m_ui->sbxGenlockOffsetHorizontal->setStyle( d_data->m_sbxStyle );
@@ -248,9 +251,9 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->cbxBayerPattern, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxBayerPatternChange(int)) );
 
     // gain
-    connect( d_data->m_ui->sldAnalogueGain, SIGNAL(valueChanged(int)), this, SLOT(onSldAnalogueGainChange(int)) );
-    connect( d_data->m_ui->sldAnalogueGain, SIGNAL(sliderReleased()), this, SLOT(onSldAnalogueGainReleased()) );
-    connect( d_data->m_ui->sbxAnalogueGain, SIGNAL(valueChanged(int)), this, SLOT(onSbxAnalogueGainChange(int)) );
+    connect( d_data->m_ui->sldIso, SIGNAL(valueChanged(int)), this, SLOT(onSldIsoChange(int)) );
+    connect( d_data->m_ui->sldIso, SIGNAL(sliderReleased()), this, SLOT(onSldIsoReleased()) );
+    connect( d_data->m_ui->sbxIso, SIGNAL(valueChanged(int)), this, SLOT(onSbxIsoChange(int)) );
 
     // exposure
     connect( d_data->m_ui->sldExposure    , SIGNAL(valueChanged(int)), this, SLOT(onSldExposureChange(int)) );
@@ -324,6 +327,22 @@ InOutBox::~InOutBox()
 }
 
 /******************************************************************************
+ * gain_to_iso
+ *****************************************************************************/
+int InOutBox::gainToIso( int gain )
+{
+    return ( (gain * d_data->m_minIso) / 1000 );
+}
+
+/******************************************************************************
+ * isoToGain
+ *****************************************************************************/
+int InOutBox::isoToGain( int iso )
+{
+    return ( (iso * 1000) / d_data->m_minIso );
+}
+
+/******************************************************************************
  * InOutBox::BayerPattern
  *****************************************************************************/
 int InOutBox::BayerPattern() const
@@ -348,28 +367,28 @@ void InOutBox::setBayerPattern( const int value )
 }
 
 /******************************************************************************
- * InOutBox::CameraGain
+ * InOutBox::CameraIso
  *****************************************************************************/
-int InOutBox::CameraGain() const
+int InOutBox::CameraIso() const
 {
-    return ( d_data->m_ui->sbxAnalogueGain->value() );
+    return ( d_data->m_ui->sbxIso->value() );
 }
 
 /******************************************************************************
  * InOutBox::setCameraGain
  *****************************************************************************/
-void InOutBox::setCameraGain( const int value )
+void InOutBox::setCameraIso( const int value )
 {
-    d_data->m_ui->sldAnalogueGain->blockSignals( true );
-    d_data->m_ui->sldAnalogueGain->setValue( value );
-    d_data->m_ui->sldAnalogueGain->blockSignals( false );
+    d_data->m_ui->sldIso->blockSignals( true );
+    d_data->m_ui->sldIso->setValue( value );
+    d_data->m_ui->sldIso->blockSignals( false );
 
-    d_data->m_ui->sbxAnalogueGain->blockSignals( true );
-    d_data->m_ui->sbxAnalogueGain->setValue( value );
-    d_data->m_ui->sbxAnalogueGain->blockSignals( false );
+    d_data->m_ui->sbxIso->blockSignals( true );
+    d_data->m_ui->sbxIso->setValue( value );
+    d_data->m_ui->sbxIso->blockSignals( false );
 
     setWaitCursor();
-    emit CameraGainChanged( value * 10 );
+    emit CameraGainChanged( isoToGain(value) );
     setNormalCursor();
 }
 
@@ -777,7 +796,7 @@ void InOutBox::loadSettings( QSettings & s )
     setTestPattern( s.value( INOUT_SETTINGS_TEST_PATTERN ).toBool() );
 
     setBayerPattern( s.value( INOUT_SETTINGS_BAYER_PATTERN ).toInt() );
-    setCameraGain( s.value( INOUT_SETTINGS_CAMERA_GAIN ).toInt() );
+    setCameraIso( s.value( INOUT_SETTINGS_CAMERA_ISO ).toInt() );
     setCameraExposure( s.value( INOUT_SETTINGS_CAMERA_EXPOSURE ).toInt() );
 
     setAecSetPoint( s.value( INOUT_SETTINGS_AEC_SETPOINT ).toInt() );
@@ -810,7 +829,7 @@ void InOutBox::saveSettings( QSettings & s )
     s.beginGroup( INOUT_SETTINGS_SECTION_NAME );
 
     s.setValue( INOUT_SETTINGS_BAYER_PATTERN                , BayerPattern() );
-    s.setValue( INOUT_SETTINGS_CAMERA_GAIN                  , CameraGain() );
+    s.setValue( INOUT_SETTINGS_CAMERA_ISO                   , CameraIso() );
     s.setValue( INOUT_SETTINGS_CAMERA_EXPOSURE              , CameraExposure() );
     
     s.setValue( INOUT_SETTINGS_AEC_ENABLE                   , AecEnable() );
@@ -849,7 +868,7 @@ void InOutBox::applySettings( void )
     emit OsdTestPatternChanged( TestPattern() );
 
     emit BayerPatternChanged( BayerPattern() );
-    emit CameraGainChanged( CameraGain() * 10 );
+    emit CameraGainChanged( gainToIso(CameraIso()) );
     emit CameraExposureChanged( CameraExposure() );
 
     emit AecSetupChanged( createAecVector() );
@@ -1025,17 +1044,28 @@ void InOutBox::onBayerPatternChange( int value )
 /******************************************************************************
  * InOutBox::onCameraInfoChange
  *****************************************************************************/
-void InOutBox::onCameraInfoChange( int min_gain, int max_gain, int min_exposure, int max_exposure )
+void InOutBox::onCameraInfoChange( int min_gain, int max_gain, int min_exposure, int max_exposure, int min_iso )
 {
-    d_data->m_ui->sbxAnalogueGain->blockSignals( true );
-    d_data->m_ui->sbxAnalogueGain->setRange( min_gain / 10, max_gain / 10 );
-    d_data->m_ui->sldAnalogueGain->setRange( min_gain / 10, max_gain / 10 );
-    d_data->m_ui->sbxAnalogueGain->blockSignals( false );
+    // Set min iso in class variable
+    d_data->m_minIso = min_iso;
 
+    // Set gain / iso range
+    d_data->m_ui->sbxIso->blockSignals( true );
+    d_data->m_ui->sbxIso->setRange( gainToIso(min_gain), gainToIso(max_gain) );
+    d_data->m_ui->sbxIso->blockSignals( false );
+
+    d_data->m_ui->sldIso->blockSignals( true );
+    d_data->m_ui->sldIso->setRange( gainToIso(min_gain), gainToIso(max_gain) );
+    d_data->m_ui->sldIso->blockSignals( false );
+
+    // Set exposure range
     d_data->m_ui->sbxExposure->blockSignals( true );
     d_data->m_ui->sbxExposure->setRange( min_exposure, max_exposure );
-    d_data->m_ui->sldExposure->setRange( min_exposure, max_exposure );
     d_data->m_ui->sbxExposure->blockSignals( false );
+
+    d_data->m_ui->sldExposure->blockSignals( true );
+    d_data->m_ui->sldExposure->setRange( min_exposure, max_exposure );
+    d_data->m_ui->sldExposure->blockSignals( false );
 }
 
 /******************************************************************************
@@ -1043,13 +1073,13 @@ void InOutBox::onCameraInfoChange( int min_gain, int max_gain, int min_exposure,
  *****************************************************************************/
 void InOutBox::onCameraGainChange( int value )
 {
-    d_data->m_ui->sbxAnalogueGain->blockSignals( true );
-    d_data->m_ui->sbxAnalogueGain->setValue( value / 10 );
-    d_data->m_ui->sbxAnalogueGain->blockSignals( false );
+    d_data->m_ui->sbxIso->blockSignals( true );
+    d_data->m_ui->sbxIso->setValue( gainToIso(value) );
+    d_data->m_ui->sbxIso->blockSignals( false );
 
-    d_data->m_ui->sldAnalogueGain->blockSignals( true );
-    d_data->m_ui->sldAnalogueGain->setValue( value / 10 );
-    d_data->m_ui->sldAnalogueGain->blockSignals( false );
+    d_data->m_ui->sldIso->blockSignals( true );
+    d_data->m_ui->sldIso->setValue( gainToIso(value) );
+    d_data->m_ui->sldIso->blockSignals( false );
 }
 
 /******************************************************************************
@@ -1169,48 +1199,48 @@ void InOutBox::onCbxBayerPatternChange( int index )
 }
 
 /******************************************************************************
- * InOutBox::onSldAnalogueGainChange
+ * InOutBox::onSldIsoChange
  *****************************************************************************/
-void InOutBox::onSldAnalogueGainChange( int value )
+void InOutBox::onSldIsoChange( int value )
 {
-    d_data->m_ui->sbxAnalogueGain->blockSignals( true );
-    d_data->m_ui->sbxAnalogueGain->setValue( value );
-    d_data->m_ui->sbxAnalogueGain->blockSignals( false );
+    d_data->m_ui->sbxIso->blockSignals( true );
+    d_data->m_ui->sbxIso->setValue( value );
+    d_data->m_ui->sbxIso->blockSignals( false );
 
-    if ( (d_data->m_ui->sldAnalogueGain->isSliderDown()  ) &&
+    if ( (d_data->m_ui->sldIso->isSliderDown()  ) &&
          (d_data->m_cntEvents++ > d_data->m_maxEvents) )
     {
         d_data->m_cntEvents = 0;
         
         setWaitCursor();
-        emit CameraGainChanged( value * 10 );
+        emit CameraGainChanged( isoToGain(value) );
         setNormalCursor();
     }
 }
 
 /******************************************************************************
- * InOutBox::onSldAnalogueGainReleased
+ * InOutBox::onSldIsoReleased
  *****************************************************************************/
-void InOutBox::onSldAnalogueGainReleased()
+void InOutBox::onSldIsoReleased()
 {
     d_data->m_cntEvents = 0;
         
     setWaitCursor();
-    emit CameraGainChanged( d_data->m_ui->sldAnalogueGain->value() * 10 );
+    emit CameraGainChanged( isoToGain(d_data->m_ui->sldIso->value()) );
     setNormalCursor();
 }
 
 /******************************************************************************
- * InOutBox::onSbxAnalogueGainChange
+ * InOutBox::onSbxIsoChange
  *****************************************************************************/
-void InOutBox::onSbxAnalogueGainChange( int value )
+void InOutBox::onSbxIsoChange( int value )
 {
-    d_data->m_ui->sldAnalogueGain->blockSignals( true );
-    d_data->m_ui->sldAnalogueGain->setValue( value );
-    d_data->m_ui->sldAnalogueGain->blockSignals( false );
+    d_data->m_ui->sldIso->blockSignals( true );
+    d_data->m_ui->sldIso->setValue( value );
+    d_data->m_ui->sldIso->blockSignals( false );
 
     setWaitCursor();
-    emit CameraGainChanged( value * 10 );
+    emit CameraGainChanged( isoToGain(value) );
     setNormalCursor();
 }
 
@@ -1640,8 +1670,8 @@ void InOutBox::enableAecWidgets( bool enable )
  *****************************************************************************/
 void InOutBox::enableCamConfWidgets( bool enable )
 {
-    d_data->m_ui->sbxAnalogueGain->setEnabled( enable );
-    d_data->m_ui->sldAnalogueGain->setEnabled( enable );
+    d_data->m_ui->sbxIso->setEnabled( enable );
+    d_data->m_ui->sldIso->setEnabled( enable );
     
     d_data->m_ui->sbxExposure->setEnabled( enable );
     d_data->m_ui->sldExposure->setEnabled( enable );
@@ -1856,8 +1886,8 @@ void InOutBox::onIrisAptError( void )
     // Iris Aperture error reported
     // means there is no stepper motor for aperture control present.
     // disabling aperture control
-    d_data->m_ui->sbxAperture->setEnabled( false );
-    d_data->m_ui->sldAperture->setEnabled( false );
+    d_data->m_ui->sbxAperture->setVisible( false );
+    d_data->m_ui->sldAperture->setVisible( false );
 
     d_data->m_AptEnable = false;
 }
