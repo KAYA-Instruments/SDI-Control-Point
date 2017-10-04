@@ -846,7 +846,9 @@ void DpccBox::onDpccVideoModeChanged( int mode )
     // If the resolution has changed, the data in the table is not valid anymore
     else if ( yRes != (d_data->m_delegate->getFirstColBound() + 1) || xRes != (d_data->m_delegate->getSecondColBound() + 1) )
     {
+
         // Show a Dialog to save the current table
+        setNormalCursor();
         QMessageBox msgBox;
         msgBox.setWindowTitle("Defect Pixel Correction");
         msgBox.setText("The camera resolution has been changed.");
@@ -856,7 +858,8 @@ void DpccBox::onDpccVideoModeChanged( int mode )
         msgBox.setIcon(QMessageBox::Question);
 
         int ret = msgBox.exec();
-        switch (ret) {
+        switch (ret)
+        {
           case QMessageBox::Yes:    // Save was clicked, show save dialog
               onExportClicked();
               break;
@@ -865,7 +868,9 @@ void DpccBox::onDpccVideoModeChanged( int mode )
           default:
               // should never be reached
               break;
+
         }
+        setWaitCursor();
 
         // Clear the table, apply the new bounds
         onClearClicked();
@@ -875,5 +880,6 @@ void DpccBox::onDpccVideoModeChanged( int mode )
         // @TODO Maybe this will be done directly in the camera if the resolution changes,
         // or the camera will have different dpcc storages for each resolution. For now, this
         // is not a use case.
+
     }
 }
