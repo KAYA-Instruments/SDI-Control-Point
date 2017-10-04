@@ -648,7 +648,6 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         connect( m_ui->dpccBox, SIGNAL(DpccAutoLoadTable()), dev->GetDpccItf(), SLOT(onDpccAutoLoadTable()) );
 
         // video mode
-        connect( dev->GetChainItf(), SIGNAL(ChainVideoModeChanged(int)), m_ui->dpccBox, SLOT(onDpccVideoModeChanged(int)) );
         connect( m_ui->inoutBox, SIGNAL(ChainVideoModeChanged(int)), m_ui->dpccBox, SLOT(onDpccVideoModeChanged(int)) );
     }
 

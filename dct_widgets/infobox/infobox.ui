@@ -900,7 +900,7 @@
 
 This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you are welcome to redistribute it under certain conditions. See above license for more details.
 
-You can download the source code of this software on GitLab:</string>
+You can download the source code of this software from GitLab:</string>
           </property>
           <property name="wordWrap">
            <bool>true</bool>
