@@ -6,8 +6,8 @@
 
 # This version number is shown in the Application, it should be
 # updated before each release!
-VERSION = 1.0.6
-DEFINES += VERSION_STRING=\\\"1.0.6_dev\\\"
+VERSION = 1.0.7
+DEFINES += VERSION_STRING=\\\"1.0.7_dev\\\"
 
 CONFIG  += c++11
 # CONFIG  += debug
