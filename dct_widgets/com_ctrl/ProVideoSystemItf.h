@@ -49,6 +49,9 @@ public:
     // resync all settings
     void resync() override;
 
+    // complete system info
+    void GetSystemInfo();
+
     // system platform
     void GetSystemPlatform();
 

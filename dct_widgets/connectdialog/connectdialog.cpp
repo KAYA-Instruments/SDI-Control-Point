@@ -1186,7 +1186,7 @@ bool ConnectDialog::scanAndConnect()
 
             // Add device to list of detected devices
             m_detectedRS485Devices.append( detectedDevice );
-            qDebug() << "Found a " << deviceName << " connected at address " << openCfg.dev_addr << " with baudrate " << openCfg.baudrate;
+            qDebug() << "Found a " << systemPlatform << "device with the name" << deviceName << " connected at address " << openCfg.dev_addr << " with baudrate " << openCfg.baudrate;
 
             // If a device was found for this address, do not scan the other baudrates (there can not be two device with the same address)
             break;
