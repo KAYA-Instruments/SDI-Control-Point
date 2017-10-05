@@ -37,57 +37,54 @@
 #define CMD_GET_VERSION                         ( "version\n" )
 
 #define CMD_SYNC_VERSION_SYS_PLATFORM           ( "platform" )
-#define CMD_VERSION_SYS_PLATFORM                ( "platform : %s\n" )
+#define CMD_VERSION_SYS_PLATFORM                ( "platform : %[^\t\r\n]\n" )
+#define CMD_GET_SYS_PLATFORM_NO_PARMS           ( 1 )
 
 #define CMD_SYNC_VERSION_DEV_NAME               ( "device name" )
-#define CMD_VERSION_DEV_NAME                    ( "device name : %[^\r\t\n]\n" )
+#define CMD_VERSION_DEV_NAME                    ( "device name : %[^\t\r\n]\n" )
+#define CMD_GET_DEV_NAME_NO_PARMS               ( 1 )
                                                
 #define CMD_SYNC_VERSION_SYS_ID                 ( "system-id" )
 #define CMD_VERSION_SYS_ID                      ( "system-id : %x-%x-%x-%x\n" )
+#define CMD_GET_SYS_ID_NO_PARMS                 ( 4 )
                                                
 #define CMD_SYNC_VERSION_HW_REVISION            ( "hw revision" )
 #define CMD_VERSION_HW_REVISION                 ( "hw revision : %x\n" )
+#define CMD_GET_HW_REVISION_NO_PARMS            ( 1 )
                                                
 #define CMD_SYNC_VERSION_SYS_VALIDITY           ( "system validity" )
 #define CMD_VERSION_SYS_VALIDITY                ( "system validity: %[^\t\r\n]\n" )
+#define CMD_GET_SYS_VALIDITY_NO_PARAMS          ( 1 )
                                                
 #define CMD_SYNC_VERSION_FEAT_MASK_HW           ( "feature mask HW" )
 #define CMD_VERSION_FEAT_MASK_HW                ( "feature mask HW: %x\n" )
+#define CMD_GET_FEAT_MASK_HW_NO_PARMS           ( 1 )
                                                
 #define CMD_SYNC_VERSION_FEAT_MASK_SW           ( "feature mask SW" )
 #define CMD_VERSION_FEAT_MASK_SW                ( "feature mask SW: %x\n" )
+#define CMD_GET_FEAT_MASK_SW_NO_PARMS           ( 1 )
 
 #define CMD_SYNC_VERSION_RESOLUTION_MASK        ( "resolution mask" )
 #define CMD_VERSION_RESOLUTION_MASK             ( "resolution mask: %x-%x-%x\n" )
+#define CMD_GET_RESOLUTION_MASK_NO_PARMS        ( 3 )
                                                
-#define CMD_SYNC_VERSION_LOADER_VERS            ( "loader version" )
-#define CMD_VERSION_LOADER_VERS                 ( "loader version : %i (%i)\n" )
+#define CMD_SYNC_VERSION_LOADER_VERSION         ( "loader version" )
+#define CMD_VERSION_LOADER_VERSION              ( "loader version : %i (%i)\n" )
+#define CMD_GET_LOADER_VERSION_NO_PARMS         ( 2 )
                                                
 #define CMD_SYNC_VERSION_SW_RELEASE_ID          ( "sw-release-id" )
 #define CMD_VERSION_SW_RELEASE_ID               ( "sw-release-id  : %[^\t\r\n]\n" )
+#define CMD_GET_SW_RELEASE_ID_NO_PARMS          ( 1 )
 
 #define CMD_SYNC_VERSION_SW_RELEASE_DATE        ( "sw-release-date" )
 #define CMD_VERSION_SW_RELEASE_DATE             ( "sw-release-date: %[^\t\r\n]\n" )
+#define CMD_GET_SW_RELEASE_DATE_NO_PARMS        ( 1 )
 
 #define CMD_SYNC_VERSION_SW_BUILD_DATE          ( "sw-build-date" )
 #define CMD_VERSION_SW_BUILD_DATE               ( "sw-build-date : %[^\t\r\n]\n" )
+#define CMD_GET_SW_BUILD_DATE_NO_PARMS          ( 1 )
                                                
-#define CMD_VERSION_SW_RELEASE_ID_NUMBER_0      ( "v%i_%i_%i" )
-#define CMD_VERSION_SW_RELEASE_ID_NUMBER_1      ( "v%i_%i_%i" )
-
-#define CMD_GET_SYSTEM_PLATFORM_NO_PARMS            ( 1 )
-#define CMD_GET_DEVICE_NAME_NO_PARMS                ( 1 )
-#define CMD_GET_SYSTEM_ID_NO_PARMS                  ( 4 )
-#define CMD_GET_BITSTREAM_VERSION_NO_PARMS          ( 1 )
-#define CMD_GET_BOOTLOADER_VERSION_NO_PARMS         ( 2 )
-#define CMD_GET_APPLICATION_VERSION_NO_PARMS        ( 1 )
-#define CMD_GET_APPLICATION_RELEASE_DATE_NO_PARMS   ( 1 )
-#define CMD_GET_APPLICATION_BUILD_DATE_NO_PARMS     ( 1 )
-#define CMD_GET_FEAT_MASK_HW_NO_PARMS               ( 1 )
-#define CMD_GET_FEAT_MASK_SW_NO_PARMS               ( 1 )
-#define CMD_GET_RESOLUTION_MASK_NO_PARMS            ( 3 )
-
-#define CMD_GET_VERSION_NUM_RESPONSE_LINES          ( 13 )
+#define CMD_GET_VERSION_NUM_RESPONSE_LINES      ( 13 )
 
 /******************************************************************************
  * @brief command "rs232_baud" 
@@ -229,7 +226,7 @@ static int get_system_info
         if ( s )
         {
             res = sscanf( s, CMD_VERSION_SYS_PLATFORM, version->system_platform );
-            if ( res != CMD_GET_SYSTEM_PLATFORM_NO_PARMS )
+            if ( res != CMD_GET_SYS_PLATFORM_NO_PARMS )
             {
                 return ( -EINVAL );
             }
@@ -240,7 +237,7 @@ static int get_system_info
         if ( s )
         {
             res = sscanf( s, CMD_VERSION_DEV_NAME, version->device_name );
-            if ( res != CMD_GET_DEVICE_NAME_NO_PARMS )
+            if ( res != CMD_GET_DEV_NAME_NO_PARMS )
             {
                 return ( -EINVAL );
             }
@@ -255,7 +252,7 @@ static int get_system_info
                             &version->system_id[1],
                             &version->system_id[2],
                             &version->system_id[3] );
-            if ( res != CMD_GET_SYSTEM_ID_NO_PARMS )
+            if ( res != CMD_GET_SYS_ID_NO_PARMS )
             {
                 return ( -EINVAL );
             }
@@ -266,7 +263,7 @@ static int get_system_info
         if ( s )
         {
             res = sscanf( s, CMD_VERSION_HW_REVISION, &version->hw_revision );
-            if ( res != CMD_GET_BITSTREAM_VERSION_NO_PARMS )
+            if ( res != CMD_GET_HW_REVISION_NO_PARMS )
             {
                 return ( -EINVAL );
             }
@@ -277,7 +274,7 @@ static int get_system_info
         if ( s )
         {
             res = sscanf( s, CMD_VERSION_SYS_VALIDITY, version->system_validity );
-            if ( res != 1 )
+            if ( res != CMD_GET_SYS_VALIDITY_NO_PARAMS )
             {
                 return ( -EINVAL );
             }
@@ -320,12 +317,12 @@ static int get_system_info
         }
 
         // set pointer to feature mask software
-        s = strstr( data, CMD_SYNC_VERSION_LOADER_VERS );
+        s = strstr( data, CMD_SYNC_VERSION_LOADER_VERSION );
         if ( s )
         {
-            res = sscanf( s, CMD_VERSION_LOADER_VERS,
+            res = sscanf( s, CMD_VERSION_LOADER_VERSION,
                     &version->loader_version[0u], &version->loader_version[1u] );
-            if ( res != CMD_GET_BOOTLOADER_VERSION_NO_PARMS )
+            if ( res != CMD_GET_LOADER_VERSION_NO_PARMS )
             {
                 return ( -EINVAL );
             }
@@ -335,8 +332,8 @@ static int get_system_info
         s = strstr( data, CMD_SYNC_VERSION_SW_RELEASE_ID );
         if ( s )
         {
-            res = sscanf( s, CMD_VERSION_SW_RELEASE_ID, version->sw_release_id_NAME );
-            if ( res != CMD_GET_APPLICATION_VERSION_NO_PARMS )
+            res = sscanf( s, CMD_VERSION_SW_RELEASE_ID, version->sw_release_id );
+            if ( res != CMD_GET_SW_RELEASE_ID_NO_PARMS )
             {
                 return ( -EINVAL );
             }
@@ -347,7 +344,18 @@ static int get_system_info
         if ( s )
         {
             res = sscanf( s, CMD_VERSION_SW_RELEASE_DATE, version->sw_release_date );
-            if ( res != CMD_GET_APPLICATION_RELEASE_DATE_NO_PARMS )
+            if ( res != CMD_GET_SW_RELEASE_DATE_NO_PARMS )
+            {
+                return ( -EINVAL );
+            }
+        }
+
+        // set pointer to software build date
+        s = strstr( data, CMD_SYNC_VERSION_SW_BUILD_DATE );
+        if ( s )
+        {
+            res = sscanf( s, CMD_VERSION_SW_BUILD_DATE, version->sw_build_date );
+            if ( res != CMD_GET_SW_BUILD_DATE_NO_PARMS )
             {
                 return ( -EINVAL );
             }
@@ -384,8 +392,8 @@ static int get_system_platform
         return ( -EINVAL );
     }
 
-    // command call to get 1 parameter from provideo system
-    res = get_param_int_X( channel, CMD_GET_VERSION_NUM_RESPONSE_LINES,
+    // command call to get a string from provideo system
+    res = get_param_string( channel, CMD_GET_VERSION_NUM_RESPONSE_LINES,
             CMD_GET_VERSION, CMD_SYNC_VERSION_SYS_PLATFORM, CMD_VERSION_SYS_PLATFORM, (char *)name );
 
     // return error code
@@ -395,7 +403,7 @@ static int get_system_platform
     }
 
     // return -EFAULT if number of parameter not matching
-    else if ( res != CMD_GET_SYSTEM_PLATFORM_NO_PARMS )
+    else if ( res != CMD_GET_SYS_PLATFORM_NO_PARMS )
     {
         return ( -EFAULT );
     }
@@ -424,8 +432,8 @@ static int get_device_name
         return ( -EINVAL );
     }
 
-    // command call to get 1 parameter from provideo system
-    res = get_param_int_X( channel, CMD_GET_VERSION_NUM_RESPONSE_LINES,
+    // command call to get a string from provideo system
+    res = get_param_string( channel, CMD_GET_VERSION_NUM_RESPONSE_LINES,
             CMD_GET_VERSION, CMD_SYNC_VERSION_DEV_NAME, CMD_VERSION_DEV_NAME, (char *)name );
 
     // return error code
@@ -435,7 +443,7 @@ static int get_device_name
     }
 
     // return -EFAULT if number of parameter not matching
-    else if ( res != CMD_GET_SYSTEM_PLATFORM_NO_PARMS )
+    else if ( res != CMD_GET_DEV_NAME_NO_PARMS )
     {
         return ( -EFAULT );
     }
@@ -483,7 +491,7 @@ static int get_system_id
     }
 
     // return -EFAULT if number of parameter not matching
-    else if ( res != CMD_GET_SYSTEM_ID_NO_PARMS )
+    else if ( res != CMD_GET_SYS_ID_NO_PARMS )
     {
         return ( -EFAULT );
     }
@@ -519,8 +527,8 @@ static int get_system_validity
         return ( -EINVAL );
     }
 
-    // command call to get 1 parameter from provideo system
-    res = get_param_int_X( channel, CMD_GET_VERSION_NUM_RESPONSE_LINES,
+    // command call to get a string from provideo system
+    res = get_param_string( channel, CMD_GET_VERSION_NUM_RESPONSE_LINES,
             CMD_GET_VERSION, CMD_SYNC_VERSION_SYS_VALIDITY, CMD_VERSION_SYS_VALIDITY, (char *)validity );
 
     // return error code
@@ -530,7 +538,7 @@ static int get_system_validity
     }
 
     // return -EFAULT if number of parameter not matching
-    else if ( res != CMD_GET_APPLICATION_VERSION_NO_PARMS )
+    else if ( res != CMD_GET_SYS_VALIDITY_NO_PARAMS )
     {
         return ( -EFAULT );
     }
@@ -571,7 +579,7 @@ static int get_bitstream_version
     }
 
     // return -EFAULT if number of parameter not matching
-    else if ( res != CMD_GET_BITSTREAM_VERSION_NO_PARMS )
+    else if ( res != CMD_GET_HW_REVISION_NO_PARMS )
     {
         return ( -EFAULT );
     }
@@ -607,7 +615,7 @@ static int get_bootloader_version
 
     // command call to get 1 parameter from provideo system
     res = get_param_int_X( channel, CMD_GET_VERSION_NUM_RESPONSE_LINES,
-            CMD_GET_VERSION, CMD_SYNC_VERSION_LOADER_VERS, CMD_VERSION_LOADER_VERS, &value0, &value1 );
+            CMD_GET_VERSION, CMD_SYNC_VERSION_LOADER_VERSION, CMD_VERSION_LOADER_VERSION, &value0, &value1 );
 
     // return error code
     if ( res < 0 )
@@ -616,7 +624,7 @@ static int get_bootloader_version
     }
 
     // return -EFAULT if number of parameter not matching
-    else if ( res != CMD_GET_BOOTLOADER_VERSION_NO_PARMS )
+    else if ( res != CMD_GET_LOADER_VERSION_NO_PARMS )
     {
         return ( -EFAULT );
     }
@@ -648,8 +656,8 @@ static int get_application_version
         return ( -EINVAL );
     }
 
-    // command call to get 1 parameter from provideo system
-    res = get_param_int_X( channel, CMD_GET_VERSION_NUM_RESPONSE_LINES,
+    // command call to get a string from provideo system
+    res = get_param_string( channel, CMD_GET_VERSION_NUM_RESPONSE_LINES,
             CMD_GET_VERSION, CMD_SYNC_VERSION_SW_RELEASE_ID, CMD_VERSION_SW_RELEASE_ID, (char *)version );
 
     // return error code
@@ -659,7 +667,7 @@ static int get_application_version
     }
 
     // return -EFAULT if number of parameter not matching
-    else if ( res != CMD_GET_APPLICATION_VERSION_NO_PARMS )
+    else if ( res != CMD_GET_SW_RELEASE_ID_NO_PARMS )
     {
         return ( -EFAULT );
     }
@@ -688,8 +696,8 @@ static int get_application_release_date
         return ( -EINVAL );
     }
 
-    // command call to get 1 parameter from provideo system
-    res = get_param_int_X( channel, CMD_GET_VERSION_NUM_RESPONSE_LINES,
+    // command call to get a string from provideo system
+    res = get_param_string( channel, CMD_GET_VERSION_NUM_RESPONSE_LINES,
             CMD_GET_VERSION, CMD_SYNC_VERSION_SW_RELEASE_DATE, CMD_VERSION_SW_RELEASE_DATE, (char *)date );
 
     // return error code
@@ -699,7 +707,7 @@ static int get_application_release_date
     }
 
     // return -EFAULT if number of parameter not matching
-    else if ( res != CMD_GET_APPLICATION_RELEASE_DATE_NO_PARMS )
+    else if ( res != CMD_GET_SW_RELEASE_DATE_NO_PARMS )
     {
         return ( -EFAULT );
     }
@@ -728,8 +736,8 @@ static int get_application_build_date
         return ( -EINVAL );
     }
 
-    // command call to get 1 parameter from provideo system
-    res = get_param_int_X( channel, CMD_GET_VERSION_NUM_RESPONSE_LINES,
+    // command call to get a string from provideo system
+    res = get_param_string( channel, CMD_GET_VERSION_NUM_RESPONSE_LINES,
             CMD_GET_VERSION, CMD_SYNC_VERSION_SW_BUILD_DATE, CMD_VERSION_SW_BUILD_DATE, (char *)date );
 
     // return error code
@@ -739,7 +747,7 @@ static int get_application_build_date
     }
 
     // return -EFAULT if number of parameter not matching
-    else if ( res != CMD_GET_APPLICATION_BUILD_DATE_NO_PARMS )
+    else if ( res != CMD_GET_SW_BUILD_DATE_NO_PARMS )
     {
         return ( -EFAULT );
     }

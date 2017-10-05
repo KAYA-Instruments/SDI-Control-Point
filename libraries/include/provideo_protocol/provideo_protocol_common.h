@@ -266,6 +266,29 @@ int set_param_0_with_tmo
 );
 
 /******************************************************************************
+ * @brief Sends a given get-command to provideo device and parses device
+ *        response for a string
+ *
+ * @param[in]   channel         control channel to use
+ * @param[in]   lines           expected number of response lines
+ * @param[in]   cmd_get         command string to readout parameter fron device
+ * @param[in]   cmd_sync        command string to sync response buffer
+ * @param[in]   cmd_set         formatted command string to parse response buffer
+ * @param[in]   param           pointer to returned string
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int get_param_string
+(
+    ctrl_channel_handle_t const  channel,
+    int const                    lines,
+    char * const                 cmd_get,
+    char * const                 cmd_sync,
+    char * const                 cmd_set,
+    char *                       param
+);
+
+/******************************************************************************
  * @brief Sends a given get-command to provideo device and parses device 
  *        response for a variable number of integer values
  *
