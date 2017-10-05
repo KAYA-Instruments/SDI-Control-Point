@@ -40,7 +40,7 @@ The application uses a lot of custom widgets which can be build as a stand-alone
 To build the widgets open the Qt Creator and and click "Open Project" on the "Welcome" tab. Navigate to the "dct_widgets" folder in the checked out project folder and open the "dct_widgets.pro" file. Configure the project with the kit needed by your operating system. On Windows this should be Qt 5.9.1 with MinGW 5.3, on Linux it should be Qt 5.9.1 with GCC. Build the project with the release target.
 
 You sould now have a Qt library file called "libdct_widgets.so" in the build folder (e.g. "build-dct_widgets-Desktop_Qt_5_9_1_GCC_64bit-Release"). Copy this file to the plugins folder of the Qt Creator, the default paths are as follows:  
-* Windows: ```C:\qt\Tools\QtCreator\lib\Qt\plugins\Designer```
+* Windows: ```C:\Qt\Tools\QtCreator\lib\Qt\plugins\Designer```
 * Linux: ```/opt/Qt/Tools/QtCreator/lib/Qt/plugins/designer/``` (you might have to grant yourself write access to this folder)
 
 Restart the Qt Creator to make the widgets available.
