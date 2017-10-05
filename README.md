@@ -34,18 +34,30 @@ The unit tests are written using an open source framework called embUnit which i
 At the moment the unit tests are not complete and outdated see [Issue #1](dreamchip/provideo-gui#1).
 
 ## Import Custom Widgets to the Qt Designer
-**Note:** This step is only needed to make the widgets visible in the designer. Rebuilding and copying the widget library is only needed when new widgets are added to the library, not after every change made to a widget.
+**Note:** This step is only needed to make the widgets visible in the designer.
 
-The application uses a lot of custom widgets which can be build as a stand-alone project. This is needed to add them to the widgets available in the Qt Designer.  
-To build the widgets open the Qt Creator and and click "Open Project" on the "Welcome" tab. Navigate to the "dct_widgets" folder in the checked out project folder and open the "dct_widgets.pro" file. Configure the project with the kit needed by your operating system. On Windows this should be Qt 5.9.1 with MinGW 5.3, on Linux it should be Qt 5.9.1 with GCC. Build the project with the release target.
+The application uses a lot of custom widgets which can be build as a stand-alone project. This is needed to add them to the widgets available in the Qt Designer. Please note that Qt ships with two kinds of Designers, the stand-alone Designer which is placed under
 
-You sould now have a Qt library file called "libdct_widgets.so" in the build folder (e.g. "build-dct_widgets-Desktop_Qt_5_9_1_GCC_64bit-Release"). Copy this file to the plugins folder of the Qt Creator, the default paths are as follows:  
-* Windows: ```C:\Qt\Tools\QtCreator\lib\Qt\plugins\Designer```
-* Linux: ```/opt/Qt/Tools/QtCreator/lib/Qt/plugins/designer/``` (you might have to grant yourself write access to this folder)
+* Windows: ```C:\Qt\<Qt Version>\<Compiler Version>\bin\designer.exe```
+* Linux: ```/opt/Qt/<Qt Version>/<Compiler Version>/bin/designer```
 
-Restart the Qt Creator to make the widgets available.
+And the build-in designer of the Qt Creator. For more information see [this page](http://doc.qt.io/qtcreator/adding-plugins.html).
 
-If you want to automatically copy the library file to the designer folder you can add a custom build step. Therefore open the projects tab in Qt Creator, select the "dct_widgets" project from the dropdown menu and klick "Add Build Step -> Custom Process Step". An example for the copy command under Linux would be:
+### Stand-Alone Designer
+If you want to edit the widgets in the standalone designer, you only have to add an install step to your project by opening the "Projects" tab for the dct_widgets project and selecting "Add Build Step -> Make" and entering "install" as the "Make arguments". This will copy the needed plugin files to
+
+* Windows: ```C:\Qt\<Qt Version>\<Compiler Version>\plugins\designer```
+* Linux: ```/opt/Qt/<Qt Version>/<Compiler Version>/plugins/designer```
+
+whenever a build is started.
+
+### Integrated Designer
+The integrated Designer of the Qt Creator fetches its plugins from
+
+* Windows: ```C:\Qt\Tools\QtCreator\bin\plugins\designer```
+* Linux: ```/opt/Qt/Tools/QtCreator/lib/Qt/plugins/designer``` (you might have to grant yourself write access to this folder)
+
+To make the plugins available in the integrated designer, the files need to be copied there. At the moment this does not work under Windows, because the compiler versions of the Designer and the Plugins do not match (see [here](http://doc.qt.io/qtcreator/adding-plugins.html#matching-build-keys) for more details). On Linux you can use another custom build step to copy the files. Therefore open the projects tab in Qt Creator, select the "dct_widgets" project from the dropdown menu and klick "Add Build Step -> Custom Process Step". An example for the copy command under Linux would be:
 
 >**Command:** cp  
 >**Arguments:** libdct_widgets.so /opt/Qt/Tools/QtCreator/lib/Qt/plugins/designer/libdct_widgets.so  
