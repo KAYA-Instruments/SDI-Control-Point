@@ -1,15 +1,25 @@
 # This define is needed to compile the Infobox widget,
 # the version number is just a dummy in this case
-VERSION = DCT_Widget_Build
-DEFINES += VERSION_STRING=\\\"DCT_Widget_Build\\\"
+VERSION = 1.0.0
+DEFINES += VERSION_STRING=\\\"1.0.0\\\"
 
-CONFIG      += plugin
-TEMPLATE     = lib
+QMAKE_TARGET_COMPANY = "Dream Chip Technologies GmbH"
+QMAKE_TARGET_PRODUCT = "ProVideo Widget Collection"
+QMAKE_TARGET_DESCRIPTION = "Collection of Widgets used for the ProVideo GUI"
+QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2017, Dream Chip Technologies GmbH"
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets designer
+greaterThan(QT_MAJOR_VERSION, 4) {
+    QT += widgets designer
+}
 
-target.path  = $$[QT_INSTALL_PLUGINS]/designer
-INSTALLS    += target
+lessThan(QT_MAJOR_VERSION, 5) {
+    CONFIG += plugin
+}
+
+TEMPLATE = lib
+TARGET = $$qtLibraryTarget($$TARGET)
+target.path = $$[QT_INSTALL_PLUGINS]/designer
+INSTALLS += target
 
 # Platform specific tweaks
 unix {
@@ -83,6 +93,12 @@ HEADERS      = fmtspinbox/fmtspinbox.h                              \
                kneebox/kneebox.h                                    \
                kneebox/knee_interpolation.h                         \
                dpccbox/dpccbox.h                                    \
+               ../libraries/include/csv/csvparser.h                 \
+               ../libraries/include/csv/csvwriter.h                 \
+               ../libraries/include/simple_math/cubic.h             \
+               ../libraries/include/simple_math/knee.h              \
+               ../libraries/include/simple_math/rgb2ycbcr.h         \
+               ../libraries/include/simple_math/xyz2ct.h            \
                com_ctrl/FpncData.h                                  \
                csvwrapper/csvwrapper.h                              \
                textviewer/textviewer.h                              \
@@ -118,6 +134,8 @@ SOURCES      = fmtspinbox/fmtspinbox.cpp                            \
                kneebox/kneebox.cpp                                  \
                kneebox/knee_interpolation.cpp                       \
                dpccbox/dpccbox.cpp                                  \
+               ../libraries/csv/csvparser.c                         \
+               ../libraries/csv/csvwriter.c                         \
                ../libraries/simple_math/rgb2ycbcr.c                 \
                ../libraries/simple_math/xyz2ct.c                    \
                ../libraries/simple_math/cubic.c                     \
@@ -150,4 +168,4 @@ FORMS       += singlechannelknobbox/singlechannelknobbox.ui         \
                dpccbox/dpccbox.ui                                   \
                textviewer/textviewer.ui
 
-RESOURCES    = ../resource/resource.qrc
+RESOURCES   += ../resource/resource.qrc
