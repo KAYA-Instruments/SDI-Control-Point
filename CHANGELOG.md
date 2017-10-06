@@ -4,12 +4,19 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
+Version **1.0.7** - 06.10.2017
+
+* Fixed crash during device detection on Windows 10 based systems
+* Fixed "DPCC table invalid" message when switching between devices with different resolutions
+* Fixed a bug that caused the "dct_widgets" project to be not compile-able on Windows
+* Minor UI changes (typos, label arrangement, added link to repository in Info Tab)
+
+## Older Releases:
+
 Version **1.0.6** - 25.09.2017
 
 * Started implementing a new settings dialog which will contain system wide settings which are at the moment placed on the info tab (not finished yet!)
 * Fixed a bug that made firmware updates impossible since cooper device support was added
-
-## Older Releases:
 
 Version **1.0.5** - 08.09.2017
 
