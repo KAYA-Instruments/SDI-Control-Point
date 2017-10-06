@@ -279,6 +279,8 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
 
     // Dpcc Tab
     m_ui->dpccBox->setCameraFlashVisible(deviceFeatures.hasDpccFlash);
+     // Clear old table, otherwise user might see a "your table is not valid" message on device switch
+    m_ui->dpccBox->clearDpccTable();
 
     // Out Tab
     m_ui->outBox->changeSdiStringToHdmi(deviceFeatures.hasChainHdmiSettings);
@@ -648,6 +650,7 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         connect( m_ui->dpccBox, SIGNAL(DpccAutoLoadTable()), dev->GetDpccItf(), SLOT(onDpccAutoLoadTable()) );
 
         // video mode
+        connect( dev->GetChainItf(), SIGNAL(ChainVideoModeChanged(int)), m_ui->dpccBox, SLOT(onDpccVideoModeChanged(int)) );
         connect( m_ui->inoutBox, SIGNAL(ChainVideoModeChanged(int)), m_ui->dpccBox, SLOT(onDpccVideoModeChanged(int)) );
     }
 

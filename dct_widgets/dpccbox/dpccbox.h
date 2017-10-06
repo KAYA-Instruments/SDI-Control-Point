@@ -42,6 +42,9 @@ public:
     // Show or hide UI elements
     void setCameraFlashVisible(bool visible);
 
+    // Clear table (usefull when connecting to new device)
+    void clearDpccTable();
+
 protected:
     void prepareMode( const Mode mode ) Q_DECL_OVERRIDE;
 
