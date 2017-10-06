@@ -376,6 +376,53 @@ int set_param_0_with_tmo
 }
 
 /******************************************************************************
+ * get_param_int - Sends a given get-command to provideo device and parses
+ *                 device response for a string
+ *****************************************************************************/
+int get_param_string
+(
+    ctrl_channel_handle_t const  channel,
+    int const                    lines,
+    char * const                 cmd_get,
+    char * const                 cmd_sync,
+    char * const                 cmd_set,
+    char *                       param
+)
+{
+    char data[(lines*CMD_SINGLE_LINE_RESPONSE_SIZE)];
+
+    int res;
+
+    // send get-command to control channel
+    ctrl_channel_send_request( channel, (uint8_t *)cmd_get, strlen(cmd_get) );
+
+    // read response from provideo device
+    res = evaluate_get_response( channel, data, sizeof(data) );
+    if ( !res )
+    {
+        // get start position of command
+        char * s = strstr( data, cmd_sync );
+        if ( s )
+        {
+            // parse command
+            res = sscanf( s, cmd_set, param );
+            return ( res );
+        }
+        else
+        {
+            // command not found in received data
+            return ( -EFAULT );
+        }
+    }
+    else
+    {
+        res = evaluate_error_response( data, res );
+    }
+
+    return ( res );
+}
+
+/******************************************************************************
  * get_param_int_X - Sends a given get-command to provideo device and parses
  *                   device response for a variable number of integer values
  *****************************************************************************/
@@ -428,9 +475,9 @@ int get_param_int_X
 }
 
 /******************************************************************************
- * get_param_int_X - Sends a given get-command to provideo device and parses
- *                   device response for a variable number of integer values
- *                   with a specified timeout in ms
+ * get_param_int_X_with_tmo - Sends a given get-command to provideo device and
+ *                            parses device response for a variable number of
+ *                            integer values with a specified timeout in ms
  *****************************************************************************/
 int get_param_int_X_with_tmo
 (
@@ -519,8 +566,8 @@ int set_param_int_X
 }
 
 /******************************************************************************
- * set_param_int_X - Send a set command with X interger parameters
- *                   with a specified timeout in ms
+ * set_param_int_X_with_tmo - Send a set command with X interger parameters
+ *                            with a specified timeout in ms
  *****************************************************************************/
 int set_param_int_X_with_tmo
 (

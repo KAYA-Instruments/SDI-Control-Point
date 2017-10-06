@@ -35,30 +35,8 @@
  *****************************************************************************/
 void ProVideoSystemItf::resync()
 {
-    // sync system platform
-    GetSystemPlatform();
-    // sync device name 
-    GetDeviceName();
-    // sync device identifier
-    GetDeviceId();
-    // sync system validity string
-    GetSystemValidity();
-    // sync bitstream version
-    GetBitStreamVersion();
-    // sync bootloader version
-    GetBootloaderVersion();
-    // sync application version
-    GetApplicationVersion();
-    // sync application release date
-    GetApplicationReleaseDate();
-    // sync application build date
-    GetApplicationBuildDate();
-    // sync bitstream feature mask
-    GetFeatureMaskHw();
-    // sync application feature mask
-    GetFeatureMaskSw();
-    // sync resolution mask
-    GetResolutionMask();
+    // sync system info
+    GetSystemInfo();
     // sync RS232 bausrate 
     GetRS232BaudRate();
     // sync RS485 bausrate 
@@ -78,6 +56,69 @@ void ProVideoSystemItf::resync()
 }
 
 /******************************************************************************
+ * ProVideoSystemItf::GetSystemInfo
+ *****************************************************************************/
+void ProVideoSystemItf::GetSystemInfo()
+{
+    ctrl_protocol_version_t system_info;
+
+    memset( &system_info, 0, sizeof(system_info) );
+
+    // read current system info
+    int res = ctrl_protocol_get_system_info( GET_PROTOCOL_INSTANCE(this),
+                    GET_CHANNEL_INSTANCE(this),
+                    sizeof(system_info), (uint8_t *)&system_info );
+    HANDLE_ERROR( res );
+
+    // emit a SystemPlatformChanged signal
+    emit SystemPlatformChanged( QString((char *)system_info.system_platform) );
+
+    // emit a DeviceNameChanged signal
+    emit DeviceNameChanged( QString((char *)system_info.device_name) );
+
+    // emit a DeviceIdChanged signal
+    emit DeviceIdChanged( system_info.system_id[0], system_info.system_id[1],
+                          system_info.system_id[2], system_info.system_id[2] );
+
+    // emit a SystemValidityChanged signal
+    emit SystemValidityChanged( QString((char *)system_info.system_validity) );
+
+    // emit a BitStreamVersionChanged signal
+    emit BitStreamVersionChanged( system_info.hw_revision );
+
+    // emit a BootloaderVersionChanged signal
+    emit BootloaderVersionChanged( system_info.loader_version[0] );
+
+    // emit a ApplicationVersionChanged signal
+    emit ApplicationVersionChanged( QString((char *)system_info.sw_release_id) );
+
+    // emit a ApplicationReleaseDateChanged signal
+    emit ApplicationReleaseDateChanged( QString((char *)system_info.sw_release_date) );
+
+    // emit a ApplicationBuildDateChanged signal
+    emit ApplicationBuildDateChanged( QString((char *)system_info.sw_build_date) );
+
+    // emit a FeatureMaskHwChanged signal
+    emit FeatureMaskHwChanged( system_info.feature_mask_HW );
+
+    if ( m_HwMask )
+    {
+        emit FeatureMaskHwListChanged( m_HwMask->interpret( system_info.feature_mask_HW ) );
+    }
+
+    // emit a FeatureMaskSwChanged signal
+    emit FeatureMaskSwChanged( system_info.feature_mask_SW );
+
+    if ( m_SwMask )
+    {
+        emit FeatureMaskSwListChanged( m_SwMask->interpret( system_info.feature_mask_SW ) );
+    }
+
+    // emit a ResolutionMaskChanged signal
+    emit ResolutionMaskChanged( system_info.resolution_mask[0], system_info.resolution_mask[1], system_info.resolution_mask[2] );
+}
+
+/******************************************************************************
  * ProVideoSystemItf::GetSystemPlatform
  *****************************************************************************/
 void ProVideoSystemItf::GetSystemPlatform()
@@ -87,15 +128,15 @@ void ProVideoSystemItf::GetSystemPlatform()
     {
         ctrl_protocol_system_desc_t system_platform;
 
-        memset( &system_platform, 0, sizeof(ctrl_protocol_system_desc_t) );
+        memset( system_platform, 0, sizeof(system_platform) );
 
         // read current device identifier
         int res = ctrl_protocol_get_system_platform( GET_PROTOCOL_INSTANCE(this),
                         GET_CHANNEL_INSTANCE(this),
-                        sizeof(ctrl_protocol_system_desc_t), (uint8_t *)&system_platform );
+                        sizeof(system_platform), (uint8_t *)system_platform );
         HANDLE_ERROR( res );
 
-        // emit a DeviceNameChanged signal
+        // emit a SystemPlatformChanged signal
         emit SystemPlatformChanged( QString((char *)system_platform) );
     }
 }
@@ -110,12 +151,12 @@ void ProVideoSystemItf::GetDeviceName()
     {
         ctrl_protocol_system_desc_t device_name;
 
-        memset( &device_name, 0, sizeof(ctrl_protocol_system_desc_t) );
+        memset( device_name, 0, sizeof(device_name) );
 
         // read current device identifier 
         int res = ctrl_protocol_get_device_name( GET_PROTOCOL_INSTANCE(this),
                         GET_CHANNEL_INSTANCE(this), 
-                        sizeof(ctrl_protocol_system_desc_t), (uint8_t *)&device_name );
+                        sizeof(device_name), (uint8_t *)device_name );
         HANDLE_ERROR( res );
 
         // emit a DeviceNameChanged signal
@@ -133,12 +174,12 @@ void ProVideoSystemItf::GetDeviceId()
     {
         ctrl_protocol_device_id_t system_id;
 
-        memset( &system_id, 0, sizeof(ctrl_protocol_device_id_t) );
+        memset( &system_id, 0, sizeof(system_id) );
 
         // read current device identifier 
         int res = ctrl_protocol_get_system_id( GET_PROTOCOL_INSTANCE(this),
                         GET_CHANNEL_INSTANCE(this), 
-                        sizeof(ctrl_protocol_device_id_t), (uint8_t *)&system_id );
+                        sizeof(system_id), (uint8_t *)&system_id );
         HANDLE_ERROR( res );
 
         // emit a DeviceIdChanged signal
@@ -152,7 +193,7 @@ void ProVideoSystemItf::GetDeviceId()
 void ProVideoSystemItf::GetSystemValidity()
 {
     // Is there a signal listener
-    if ( receivers(SIGNAL(ApplicationVersionChanged(QString))) > 0 )
+    if ( receivers(SIGNAL(SystemValidityChanged(QString))) > 0 )
     {
         ctrl_protocol_system_desc_t validity;
 
@@ -164,7 +205,7 @@ void ProVideoSystemItf::GetSystemValidity()
                         GET_CHANNEL_INSTANCE(this), sizeof(validity), (uint8_t *)validity ); 
         HANDLE_ERROR( res );
 
-        // emit a ApplicationVersionChanged signal
+        // emit a SystemValidityChanged signal
         emit SystemValidityChanged( QString((char *)validity) );
     }
 }
@@ -346,7 +387,7 @@ void ProVideoSystemItf::GetResolutionMask()
                         sizeof(ctrl_protocol_resolution_id_t), (uint8_t *)&res_id );
         HANDLE_ERROR( res );
 
-        // emit a DeviceIdChanged signal
+        // emit a ResolutionMaskChanged signal
         emit ResolutionMaskChanged( res_id.id0, res_id.id1, res_id.id2 );
     }
 }

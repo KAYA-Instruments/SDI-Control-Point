@@ -86,7 +86,7 @@ typedef struct ctrl_protocol_version_s
                 system_platform;            /**< system platform, used to identify this device */
     ctrl_protocol_system_desc_t
                 device_name;                /**< device name, specified by user */
-    uint32_t    system_id[3];               /**< 96 bit unique system identifier */
+    uint32_t    system_id[4];               /**< 96 bit unique system identifier */
     uint32_t    hw_revision;                /**< bitstream revision */
     ctrl_protocol_system_desc_t
                 system_validity;            /**< system validity (set by device firmware) */
@@ -95,10 +95,11 @@ typedef struct ctrl_protocol_version_s
     uint32_t    resolution_mask[3];         /**< 96 bit resolution mask */
     uint32_t    loader_version[2];          /**< boot loader version */
     ctrl_protocol_system_desc_t
-                sw_release_id_NAME;         /**< software release desciption */
-    uint32_t    sw_release_id_VERSION[4];   /**< software release id (major,minor,sub) */
+                sw_release_id;              /**< software release desciption */
     ctrl_protocol_system_desc_t
                 sw_release_date;            /**< software release date */
+    ctrl_protocol_system_desc_t
+                sw_build_date;              /**< software build date */
 } ctrl_protocol_version_t;
 
 /**************************************************************************//**

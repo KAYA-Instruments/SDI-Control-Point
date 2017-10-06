@@ -847,7 +847,7 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
-         <widget class="QLabel" name="label_2">
+         <widget class="QLabel" name="lblLicense">
           <property name="text">
            <string>This software is published under GPLv3, to view the license, click the following button.</string>
           </property>
@@ -864,7 +864,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label">
+         <widget class="QLabel" name="lblThirdParty">
           <property name="text">
            <string>This software uses the Qt Framework by the Qt Company. Click the following button to view all third-party software licenses.</string>
           </property>
@@ -894,14 +894,32 @@
          </spacer>
         </item>
         <item>
-         <widget class="QLabel" name="label_3">
+         <widget class="QLabel" name="lblCopyright">
           <property name="text">
            <string>Copyright (C) 2017  Dream Chip Technologies GmbH
 
-This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you are welcome to redistribute it under certain conditions. See above license for more details.</string>
+This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you are welcome to redistribute it under certain conditions. See above license for more details.
+
+You can download the source code of this software from GitLab:</string>
           </property>
           <property name="wordWrap">
            <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="lblLink">
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="text">
+           <string>&lt;a href=&quot;https://gitlab.com/dreamchip/provideo-gui&quot;&gt;https://gitlab.com/dreamchip/provideo-gui&lt;/a&gt;</string>
+          </property>
+          <property name="openExternalLinks">
+           <bool>true</bool>
+          </property>
+          <property name="textInteractionFlags">
+           <set>Qt::TextBrowserInteraction</set>
           </property>
          </widget>
         </item>

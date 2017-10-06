@@ -411,7 +411,7 @@ static int get_dpcc_table
             }
 
             // append poll buffer to receive buffer
-            strncat( data, buf, sizeof(data) );
+            strcat( data, buf );
 
             // consume all commands from buffer
             // (get start position of first command therefoe)

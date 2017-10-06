@@ -6,8 +6,13 @@
 
 # This version number is shown in the Application, it should be
 # updated before each release!
-VERSION = 1.0.6
-DEFINES += VERSION_STRING=\\\"1.0.6\\\"
+VERSION = 1.0.7
+DEFINES += VERSION_STRING=\\\"1.0.7\\\"
+
+QMAKE_TARGET_COMPANY = "Dream Chip Technologies GmbH"
+QMAKE_TARGET_PRODUCT = "ProVideo GUI"
+QMAKE_TARGET_DESCRIPTION = "GUI to control ProVideo cameras and image processors"
+QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2017, Dream Chip Technologies GmbH"
 
 CONFIG  += c++11
 # CONFIG  += debug
@@ -289,6 +294,6 @@ FORMS    += ../dct_widgets/mcceqbox/mcceqbox.ui                             \
             ../dct_widgets/textviewer/textviewer.ui                         \
             mainwindow.ui
 
-RESOURCES = ../resource/resource.qrc
+RESOURCES += ../resource/resource.qrc
 
 DISTFILES += ../resource/doc/third-party-licenses.txt

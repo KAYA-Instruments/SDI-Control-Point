@@ -1886,6 +1886,7 @@ void InOutBox::onIrisAptError( void )
     // Iris Aperture error reported
     // means there is no stepper motor for aperture control present.
     // disabling aperture control
+    d_data->m_ui->lblAperture->setVisible( false );
     d_data->m_ui->sbxAperture->setVisible( false );
     d_data->m_ui->sldAperture->setVisible( false );
 
