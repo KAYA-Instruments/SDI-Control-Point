@@ -83,8 +83,9 @@ For deployment on Linux see [this page of the Qt Wiki](https://wiki.qt.io/Deploy
 * The tool will copy all files needed to run the application into the folder
 
 ## Cross-Compilation under Linux
-It is possible to cross-compile a 32 Bit windows executable under Linux by using the M cross environment (MXE):
-How to crosscompile a QT5 project using MXE
+It is possible to cross-compile a 32 Bit windows executable under Linux by using the M cross environment (MXE).
+
+How to crosscompile a QT5 project using MXE:
 
 1. Get the MXE repo from github:  
    ```# git clone https://github.com/mxe/mxe.git```
