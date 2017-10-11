@@ -27,7 +27,7 @@ The project contains four folders with multiple sub-directories:
 # Working on the Project
 ## Development Environment
 The easiest way to edit the software is by using the Qt Creator, which is available for free for open source development at https://info.qt.io/download-qt-for-application-development    
-It is recommended to use the latest version of Qt Creator and the Qt framework. The last tested version is Qt Creator 4.4.0 based on Qt 5.9.1.
+It is recommended to use the latest version of Qt Creator and the Qt framework. The last tested version is Qt Creator 4.4.1 based on Qt 5.9.2.
 
 ## Unit Tests for C-Libraries
 The unit tests are written using an open source framework called embUnit which is available here: https://sourceforge.net/projects/embunit/  
@@ -47,7 +47,7 @@ And the build-in designer of the Qt Creator. For more information see [this page
 If you want to edit the widgets in the standalone designer, you only have to add an install step to your project by opening the "Projects" tab for the dct_widgets project and selecting "Add Build Step -> Make" and entering "install" as the "Make arguments". This will copy the needed plugin files to
 
 * Windows: ```C:\Qt\<Qt Version>\<Compiler Version>\plugins\designer```
-* Linux: ```/opt/Qt/<Qt Version>/<Compiler Version>/plugins/designer```
+* Linux: ```/opt/Qt/<Qt Version>/<Compiler Version>/plugins/designer``` (you might have to grant yourself write access to this folder)
 
 whenever a build is started.
 
