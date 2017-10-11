@@ -17,7 +17,7 @@ Version **1.0.6** - 25.09.2017
 
 * Started implementing a new settings dialog which will contain system wide settings which are at the moment placed on the info tab (not finished yet!)
 * Fixed a bug that made firmware updates impossible since cooper device support was added
-* The ISO of the devices is now correctly converted from gain to ISO. This requires up to date devices due to changes in the "cam_info" command which now additionally reports the ISO of the device at gain 1.
+* The ISO value of the devices which is shown in the In-Out-Tab is now correctly converted from gain to ISO. This requires up to date devices due to changes in the "cam_info" command which now additionally reports the ISO of the device at gain 1.
 
 Version **1.0.5** - 08.09.2017
 
