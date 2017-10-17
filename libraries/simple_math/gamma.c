@@ -16,12 +16,14 @@
  *****************************************************************************/
 #include <stdint.h>
 
-#include <simple_math/simple_math.h>
+#include <math.h>
+
+#include <simple_math/gamma.h>
 
 /******************************************************************************
  * sm_degamma
  *****************************************************************************/
-uint32_t sm_degamma_correction
+uint32_t sm_degamma
 (
     uint32_t const  value,
     int32_t const   kink,
@@ -63,15 +65,15 @@ uint32_t sm_degamma_correction
     res   = (int32_t)Vout;
 
     // clip to range 0..(size_o-1)
-    clip( res, 0, ((int32_t)(size_o-1)) );
+    clip( res, 0, (int32_t)(size_o-1) );
 
-    return ( ((uint32_t)(res)) );
+    return ( (uint32_t)(res) );
 }
 
 /******************************************************************************
- * sm_gamma_correction
+ * sm_gamma
  *****************************************************************************/
-uint32_t sm_gamma_correction
+uint32_t sm_gamma
 (
     uint32_t const  value,
     int32_t const   kink,
@@ -116,9 +118,58 @@ uint32_t sm_gamma_correction
     res   = (int32_t)Vout;
 
     // clip to range 0..(size_o-1)
-    clip( res, 0, ((int32_t)(size_o-1)) );
+    clip( res, 0, (int32_t)(size_o-1) );
 
-    return ( ((uint32_t)(res)) );
+    return ( (uint32_t)(res) );
 }
 
+/******************************************************************************
+ * sm_gamma_float - identical to sm_gamma, but uses float input values for
+ *                  the constants.
+ *****************************************************************************/
+uint32_t sm_gamma_float
+(
+    uint32_t const  value,
+    float   const   kink,
+    float   const   linear_contrast,
+    float   const   linear_brightness,
+    float   const   contrast,
+    float   const   gamma,
+    float   const   brightness,
+    uint8_t const   bit_width_input,
+    uint8_t const   bit_width_output
+)
+{
+    float Vin       = value;
+    float Vout      = 0.0f;
+    int32_t res     = 0;
+    uint32_t size_i = (1ul << bit_width_input);
+    uint32_t size_o = (1ul << bit_width_output);
+    float k         = kink;
 
+    // see ITU-R BT.709-5 (pg. 18, "opto-electronic conversion" )
+    // V = 1.099 L^0.45 – 0.099    for 1 >= L >= 0.018
+    // V = 4.500 L                 for 0.018 > L >= 0
+    Vin  /= (float)size_i;                                  // normalize to 0..1
+    if ( Vin < k )
+    {
+        Vout  = Vin;                                        // linear range
+        Vout *= linear_contrast;
+        Vout += linear_brightness;                          // add brightness offset
+    }
+    else
+    {
+        // formula = contrast * Vin^g + brightness
+        Vout  = (gamma != 1.0f) ? powf( Vin, gamma ) : Vin; // compute Vin^g when g!=1
+        Vout *= contrast;                                   // contrast
+        Vout += brightness;                                 // add brightness offset
+    }
+    Vout *= (float)size_o;                                  // normalize to output bit-width
+    Vout += 0.5f;                                           // for rounding
+    res   = (int32_t)Vout;
+
+    // clip to range 0..(size_o-1)
+    clip( res, 0, (int32_t)(size_o-1) );
+
+    return ( (uint32_t)(res) );
+}

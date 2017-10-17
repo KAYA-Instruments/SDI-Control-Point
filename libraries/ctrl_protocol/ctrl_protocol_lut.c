@@ -70,6 +70,37 @@ int ctrl_protocol_set_lut_enable
 }
 
 /******************************************************************************
+ * ctrl_protocol_get_lut_mode
+ *****************************************************************************/
+int ctrl_protocol_get_lut_mode
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t * const              mode
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), get_lut_mode );
+    CHECK_NOT_NULL( mode );
+    return ( LUT_DRV(protocol->drv)->get_lut_mode( protocol->ctx, channel, mode ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lut_mode
+ *****************************************************************************/
+int ctrl_protocol_set_lut_mode
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t const                mode
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), set_lut_mode );
+    return ( LUT_DRV(protocol->drv)->set_lut_mode( protocol->ctx, channel, mode ) );
+}
+
+/******************************************************************************
  * ctrl_protocol_get_lut_preset
  *****************************************************************************/
 int ctrl_protocol_get_lut_preset
@@ -566,6 +597,37 @@ int ctrl_protocol_set_lut_interpolate_blue
     CHECK_HANDLE( protocol );
     CHECK_DRV_FUNC( LUT_DRV(protocol->drv), set_lut_interpolate_blue );
     return ( LUT_DRV(protocol->drv)->set_lut_interpolate_blue( protocol->ctx, channel ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_lut_fast_gamma
+ *****************************************************************************/
+int ctrl_protocol_get_lut_fast_gamma
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int16_t * const              gamma
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), get_lut_fast_gamma );
+    CHECK_NOT_NULL( gamma );
+    return ( LUT_DRV(protocol->drv)->get_lut_fast_gamma( protocol->ctx, channel, gamma ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lut_fast_gamma
+ *****************************************************************************/
+int ctrl_protocol_set_lut_fast_gamma
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int16_t const                gamma
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), set_lut_fast_gamma );
+    return ( LUT_DRV(protocol->drv)->set_lut_fast_gamma( protocol->ctx, channel, gamma ) );
 }
 
 /******************************************************************************

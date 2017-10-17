@@ -6,8 +6,8 @@
 
 # This version number is shown in the Application, it should be
 # updated before each release!
-VERSION = 1.0.7
-DEFINES += VERSION_STRING=\\\"1.0.7\\\"
+VERSION = 1.0.8
+DEFINES += VERSION_STRING=\\\"1.0.8\\\"
 
 QMAKE_TARGET_COMPANY = "Dream Chip Technologies GmbH"
 QMAKE_TARGET_PRODUCT = "ProVideo GUI"
@@ -167,6 +167,7 @@ SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
            ../libraries/simple_math/xyz2ct.c                                \
            ../libraries/simple_math/cubic.c                                 \
            ../libraries/simple_math/knee.c                                  \
+           ../libraries/simple_math/gamma.c                                 \
            ../libraries/csv/csvparser.c                                     \
            ../libraries/csv/csvwriter.c                                     \
            mainwindow.cpp                                                   \
@@ -257,6 +258,7 @@ HEADERS  += ../libraries/include                                                
             ../libraries/include/simple_math/knee.h                             \
             ../libraries/include/simple_math/rgb2ycbcr.h                        \
             ../libraries/include/simple_math/xyz2ct.h                           \
+            ../libraries/include/simple_math/gamma.h                            \
             ../libraries/include/provideo_protocol/provideo_protocol_auto.h     \
             ../libraries/include/provideo_protocol/provideo_protocol_cam.h      \
             ../libraries/include/provideo_protocol/provideo_protocol_chain.h    \

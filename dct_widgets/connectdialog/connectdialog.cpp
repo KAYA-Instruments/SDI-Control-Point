@@ -88,7 +88,11 @@ ConnectDialog::ConnectDialog( QWidget * parent )
     m_ui->cbxStopbitsRS485->setVisible( false );
 
     // create an "ok" button labeled with "connect"
-    m_ui->buttonBox->addButton( tr("C&onnect"), QDialogButtonBox::AcceptRole );
+    QPushButton * okButton = m_ui->buttonBox->button(QDialogButtonBox::Ok);
+    if ( okButton )
+    {
+        okButton->setText("Connect");
+    }
 
     // add a rescan button to the button box
     m_rescan = new QPushButton( tr("Sc&an COM-Ports") );

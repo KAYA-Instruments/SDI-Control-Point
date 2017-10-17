@@ -568,6 +568,9 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         connect( dev->GetLutItf(), SIGNAL(LutEnableChanged(int,int)), m_ui->lutBox, SLOT(onLutEnableChange(int,int)) );
         connect( m_ui->lutBox, SIGNAL(LutEnableChanged(int,int)), dev->GetLutItf(), SLOT(onLutEnableChange(int,int)) );
 
+        connect( dev->GetLutItf(), SIGNAL(LutModeChanged(int)), m_ui->lutBox, SLOT(onLutModeChange(int)) );
+        connect( m_ui->lutBox, SIGNAL(LutModeChanged(int)), dev->GetLutItf(), SLOT(onLutModeChange(int)) );
+
         connect( dev->GetLutItf(), SIGNAL(LutPresetChanged(int)), m_ui->lutBox, SLOT(onLutPresetChange(int)) );
         connect( m_ui->lutBox, SIGNAL(LutPresetChanged(int)), dev->GetLutItf(), SLOT(onLutPresetChange(int)) );
 
@@ -611,6 +614,9 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
                  dev->GetLutItf(), SLOT(onLutSampleValuesGreenRequest()) );
         connect( m_ui->lutBox, SIGNAL(LutSampleValuesBlueRequested()),
                  dev->GetLutItf(), SLOT(onLutSampleValuesBlueRequest()) );
+
+        connect( dev->GetLutItf(), SIGNAL(LutFastGammaChanged(int)), m_ui->lutBox, SLOT(onLutFastGammaChange(int)) );
+        connect( m_ui->lutBox, SIGNAL(LutFastGammaChanged(int)), dev->GetLutItf(), SLOT(onLutFastGammaChange(int)) );
     }
 
     //////////////////////////

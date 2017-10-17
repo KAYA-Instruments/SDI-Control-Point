@@ -1,7 +1,7 @@
 # This version number is shown in the Application, it should be
 # updated before each release!
-VERSION = 1.0.7
-DEFINES += VERSION_STRING=\\\"1.0.7\\\"
+VERSION = 1.0.8
+DEFINES += VERSION_STRING=\\\"1.0.8\\\"
 
 QMAKE_TARGET_COMPANY = "Dream Chip Technologies GmbH"
 QMAKE_TARGET_PRODUCT = "ProVideo Widget Collection"
@@ -99,6 +99,7 @@ HEADERS      = fmtspinbox/fmtspinbox.h                              \
                ../libraries/include/simple_math/knee.h              \
                ../libraries/include/simple_math/rgb2ycbcr.h         \
                ../libraries/include/simple_math/xyz2ct.h            \
+               ../libraries/include/simple_math/gamma.h             \
                com_ctrl/FpncData.h                                  \
                csvwrapper/csvwrapper.h                              \
                textviewer/textviewer.h                              \
@@ -140,6 +141,7 @@ SOURCES      = fmtspinbox/fmtspinbox.cpp                            \
                ../libraries/simple_math/xyz2ct.c                    \
                ../libraries/simple_math/cubic.c                     \
                ../libraries/simple_math/knee.c                      \
+               ../libraries/simple_math/gamma.c                     \
                com_ctrl/FpncData.cpp                                \
                com_ctrl/common.cpp                                  \
                com_ctrl/defines.cpp                                 \

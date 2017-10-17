@@ -18,6 +18,8 @@
 #include <float.h>
 #include <math.h>
 
+#include <simple_math/xyz2ct.h>
+
 // http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
 
 /******************************************************************************

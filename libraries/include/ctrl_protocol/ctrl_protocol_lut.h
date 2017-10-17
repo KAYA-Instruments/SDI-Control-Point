@@ -102,6 +102,38 @@ int ctrl_protocol_set_lut_enable
 );
 
 /**************************************************************************//**
+ * @brief Gets the operational mode of gamma LUT module
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[out]  mode     current mode
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_lut_mode
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t * const              mode
+);
+
+/**************************************************************************//**
+ * @brief Set current preset storage
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[in]   mode     mode to set (0 = interpolate, 1 = fast gamma)
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_set_lut_mode
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t const                mode
+);
+
+/**************************************************************************//**
  * @brief Gets the currently selected preset storage
  *
  * @param[in]   channel  control channel instance
@@ -133,7 +165,7 @@ int ctrl_protocol_set_lut_preset
     uint8_t const                value
 );
 
-/******************************************************************************
+/**************************************************************************//**
  * @brief Sets read/write index of all LUT components
  *
  * @param[in]   channel  control channel instance
@@ -634,12 +666,47 @@ int ctrl_protocol_set_lut_interpolate_blue
 );
 
 /**************************************************************************//**
+ * @brief Gets the currently set gamma value of the luts fast gamma function
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[out]  gamma    current gamma setting
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_lut_fast_gamma
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int16_t * const              gamma
+);
+
+/**************************************************************************//**
+ * @brief Sets the gamma value of the fast gamma function and recalculates the
+ *        LUT
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[in]   gamma    gamma value to set (multiplied by 1000)
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_set_lut_fast_gamma
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int16_t const                gamma
+);
+
+/**************************************************************************//**
  * @brief GAMMA protocol driver implementation
  *****************************************************************************/
 typedef struct ctrl_protocol_lut_drv_s
 {
     ctrl_protocol_uint8_array_t     get_lut_enable;
     ctrl_protocol_uint8_array_t     set_lut_enable;
+    ctrl_protocol_get_uint8_t       get_lut_mode;
+    ctrl_protocol_set_uint8_t       set_lut_mode;
     ctrl_protocol_get_uint8_t       get_lut_preset;
     ctrl_protocol_set_uint8_t       set_lut_preset;
     ctrl_protocol_set_uint16_t      set_lut_write_index;
@@ -671,6 +738,8 @@ typedef struct ctrl_protocol_lut_drv_s
     ctrl_protocol_run_t             set_lut_interpolate_red;
     ctrl_protocol_run_t             set_lut_interpolate_green;
     ctrl_protocol_run_t             set_lut_interpolate_blue;
+    ctrl_protocol_get_int16_t       get_lut_fast_gamma;
+    ctrl_protocol_set_int16_t       set_lut_fast_gamma;
 } ctrl_protocol_lut_drv_t;
 
 /******************************************************************************
