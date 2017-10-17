@@ -64,7 +64,7 @@
 /******************************************************************************
  * Gamma Definitions
  *****************************************************************************/
-#define LUT_GAMMA_MIN                             (     1000 )
+#define LUT_GAMMA_MIN                             (     1100 )
 #define LUT_GAMMA_MAX                             (     3000 )
 #define LUT_GAMMA_DECIMALS                        (        3 )
 #define LUT_GAMMA_STEP                            (        1 )
@@ -76,6 +76,16 @@
 #define LUT_BRIGHTNESS_MAX                        (     1000 )
 #define LUT_BRIGHTNESS_DECIMALS                   (        3 )
 #define LUT_BRIGHTNESS_STEP                       (        1 )
+
+/******************************************************************************
+ * Fast Gamma Knob Box Definitions
+ *****************************************************************************/
+#define FAST_GAMMA_MIN                          ( LUT_GAMMA_MIN )
+#define FAST_GAMMA_MAX                          ( LUT_GAMMA_MAX )
+#define FAST_GAMMA_COMMA_POSITION               (             3 )
+#define FAST_GAMMA_BASE                         (            10 )
+#define FAST_GAMMA_DISPLAY_MULTIPLIER           (             1 )
+#define FAST_GAMMA_DISPLAY_MASK                 (       "%1.3f" )
 
 /******************************************************************************
  * LutBox Configuration Box Widget
@@ -92,9 +102,15 @@ public:
 
     bool LutEnable() const;
     void setLutEnable( const bool );
+
+    int LutMode() const;
+    void setLutMode( const int );
     
     int LutPresetStorage() const;
     void setLutPresetStorage( const int );
+
+    int LutFastGamma() const;
+    void setLutFastGamma( const int );
 
 protected:
     void prepareMode( const Mode mode ) Q_DECL_OVERRIDE;
@@ -108,6 +124,7 @@ protected:
 
 signals:
     void LutEnableChanged( int, int );
+    void LutModeChanged( int );
     void LutPresetChanged( int );
 
     void LutRec709Changed( int, int, int, int, int, int );
@@ -133,15 +150,20 @@ signals:
     void LutResetGreenChanged();
     void LutResetBlueChanged();
 
+    void LutFastGammaChanged( int );
+
 public slots:
     void onLutEnableChange( int, int );
+    void onLutModeChange( int );
     void onLutPresetChange( int );
 
     void onLutSampleValuesMasterChange( QVector<int> x, QVector<int> y );
     void onLutSampleValuesRedChange( QVector<int> x, QVector<int> y );
     void onLutSampleValuesGreenChange( QVector<int> x, QVector<int> y );
     void onLutSampleValuesBlueChange( QVector<int> x, QVector<int> y );
- 
+
+    void onLutFastGammaChange( int );
+
 private:
     void SetXRangeChanged( const QCPRange &, QCustomPlot * );
     void SetYRangeChanged( const QCPRange &, QCustomPlot * );
@@ -160,6 +182,10 @@ private slots:
     void onGreenYRangeChanged( const QCPRange & );
     void onBlueXRangeChanged( const QCPRange & );
     void onBlueYRangeChanged( const QCPRange & );
+
+    // lut operational mode
+    void onLutModeInterpolateClicked( bool );
+    void onLutModeFastGammaClicked( bool );
 
     // lut storage select
     void onLutPresetClicked( QAbstractButton * );
@@ -189,8 +215,12 @@ private slots:
     void onSelectionChange( const QItemSelection &, const QItemSelection & );
 
     // REC.709
-    void onDefaultRec709Click();
-    void onSetRec709Click();
+    void onDefaultRec709Clicked();
+    void onSetRec709Clicked();
+
+    // fast gamma
+    void onFastGammaChanged( int );
+    void onDefaultFastGammaClicked();
 
 private:
     class PrivateData;
