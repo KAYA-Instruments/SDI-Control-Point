@@ -810,6 +810,7 @@ LutBox::LutBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->sckbFastGamma->setMaxAngle( 180 );
     d_data->m_ui->sckbFastGamma->setMaxRounds( 3 );
     d_data->m_ui->sckbFastGamma->setFmt( FAST_GAMMA_DISPLAY_MASK );
+    d_data->m_ui->sckbFastGamma->setMaxEvent( 2 );
 
     // connect internal signals
 
@@ -1685,8 +1686,12 @@ void LutBox::onLutFastGammaChange( int gamma )
     d_data->m_ui->sckbFastGamma->setValue( gamma );
     d_data->m_ui->sckbFastGamma->blockSignals( false );
 
-    // Draw the fast gamma curve in the master plot
-    d_data->drawFastGammaPlot( Master, LutFastGamma() );
+    // If device is in fast gamma mode, display fast gamma plot
+    if ( d_data->m_mode == 1 )
+    {
+        // Draw the fast gamma curve in the master plot
+        d_data->drawFastGammaPlot( Master, LutFastGamma() );
+    }
 }
 
 /******************************************************************************
@@ -1701,6 +1706,12 @@ void LutBox::onLutModeInterpolateClicked( bool checked )
         setLutMode( 0 );
         setNormalCursor();
     }
+
+    // If button is being "unchecked" by clicking on it again, make it checked again
+    else
+    {
+        d_data->m_ui->rbInterpolate->setChecked( true );
+    }
 }
 
 /******************************************************************************
@@ -1714,6 +1725,12 @@ void LutBox::onLutModeFastGammaClicked( bool checked )
         setWaitCursor();
         setLutMode( 1 );
         setNormalCursor();
+    }
+
+    // If button is being "unchecked" by clicking on it again, make it checked again
+    else
+    {
+        d_data->m_ui->rbFastGamma->setChecked( true );
     }
 }
 

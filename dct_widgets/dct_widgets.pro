@@ -100,6 +100,7 @@ HEADERS      = fmtspinbox/fmtspinbox.h                              \
                ../libraries/include/simple_math/rgb2ycbcr.h         \
                ../libraries/include/simple_math/xyz2ct.h            \
                ../libraries/include/simple_math/gamma.h             \
+               ../libraries/include/simple_math/float.h             \
                com_ctrl/FpncData.h                                  \
                csvwrapper/csvwrapper.h                              \
                textviewer/textviewer.h                              \
@@ -142,6 +143,7 @@ SOURCES      = fmtspinbox/fmtspinbox.cpp                            \
                ../libraries/simple_math/cubic.c                     \
                ../libraries/simple_math/knee.c                      \
                ../libraries/simple_math/gamma.c                     \
+               ../libraries/simple_math/float.c                     \
                com_ctrl/FpncData.cpp                                \
                com_ctrl/common.cpp                                  \
                com_ctrl/defines.cpp                                 \

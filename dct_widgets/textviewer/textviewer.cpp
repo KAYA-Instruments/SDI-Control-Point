@@ -29,7 +29,7 @@
 #include "ui_textviewer.h"
 
 TextViewer::TextViewer(const QString &path, const QString &title, QWidget *parent) :
-    QWidget(parent),
+    QDialog(parent),
     ui(new Ui::TextViewer)
 {
     ui->setupUi(this);

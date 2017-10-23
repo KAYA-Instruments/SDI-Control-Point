@@ -221,7 +221,7 @@
 #define CMD_SET_LUT_FAST_GAMMA                  ( "lut_fast_gamma %i\n" )
 #define CMD_SYNC_LUT_FAST_GAMMA                 ( "lut_fast_gamma " )
 #define CMD_GET_LUT_FAST_GAMMA_NO_PARMS         ( 1 )
-#define CMD_SET_LUT_FAST_GAMMA_TMO              ( 1000 )
+#define CMD_SET_LUT_FAST_GAMMA_TMO              ( 3000 )
 
 
 /******************************************************************************

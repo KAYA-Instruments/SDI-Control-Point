@@ -18,6 +18,7 @@
 
 #include <math.h>
 
+#include <simple_math/float.h>
 #include <simple_math/gamma.h>
 
 /******************************************************************************
@@ -125,7 +126,8 @@ uint32_t sm_gamma
 
 /******************************************************************************
  * sm_gamma_float - identical to sm_gamma, but uses float input values for
- *                  the constants.
+ *                  the constants. It also uses fastpow() instead of powf()
+ *                  which is a lot faster but less precise.
  *****************************************************************************/
 uint32_t sm_gamma_float
 (
@@ -150,22 +152,23 @@ uint32_t sm_gamma_float
     // see ITU-R BT.709-5 (pg. 18, "opto-electronic conversion" )
     // V = 1.099 L^0.45 – 0.099    for 1 >= L >= 0.018
     // V = 4.500 L                 for 0.018 > L >= 0
-    Vin  /= (float)size_i;                                  // normalize to 0..1
+    Vin  /= (float)size_i;                                      // normalize to 0..1
     if ( Vin < k )
     {
-        Vout  = Vin;                                        // linear range
+        Vout  = Vin;                                            // linear range
         Vout *= linear_contrast;
-        Vout += linear_brightness;                          // add brightness offset
+        Vout += linear_brightness;                              // add brightness offset
     }
     else
     {
         // formula = contrast * Vin^g + brightness
-        Vout  = (gamma != 1.0f) ? powf( Vin, gamma ) : Vin; // compute Vin^g when g!=1
-        Vout *= contrast;                                   // contrast
-        Vout += brightness;                                 // add brightness offset
+        // use fastpow which is less precise than powf, but a lot faster
+        Vout  = (gamma != 1.0f) ? fastpow( Vin, gamma ) : Vin;  // compute Vin^g when g!=1
+        Vout *= contrast;                                       // contrast
+        Vout += brightness;                                     // add brightness offset
     }
-    Vout *= (float)size_o;                                  // normalize to output bit-width
-    Vout += 0.5f;                                           // for rounding
+    Vout *= (float)size_o;                                      // normalize to output bit-width
+    Vout += 0.5f;                                               // for rounding
     res   = (int32_t)Vout;
 
     // clip to range 0..(size_o-1)
