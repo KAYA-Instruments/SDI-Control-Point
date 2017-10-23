@@ -109,6 +109,8 @@ uint32_t sm_gamma
 /**************************************************************************//**
  * @brief Compute a gamma-correction sample for a given input-value.
  *        Identical to sm_gamma, but uses float input values for the constants.
+ *        It also uses fastpow() instead of powf() which is a lot faster but
+ *        less precise.
  *
  * Formula:
  * Vout = (contrast * Vin ^ (unit/gamma) + brightness) / unit

@@ -170,6 +170,7 @@ SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
            ../libraries/simple_math/cubic.c                                 \
            ../libraries/simple_math/knee.c                                  \
            ../libraries/simple_math/gamma.c                                 \
+           ../libraries/simple_math/float.c                                 \
            ../libraries/csv/csvparser.c                                     \
            ../libraries/csv/csvwriter.c                                     \
            mainwindow.cpp                                                   \
@@ -261,6 +262,7 @@ HEADERS  += ../libraries/include                                                
             ../libraries/include/simple_math/rgb2ycbcr.h                        \
             ../libraries/include/simple_math/xyz2ct.h                           \
             ../libraries/include/simple_math/gamma.h                            \
+            ../libraries/include/simple_math/float.h                            \
             ../libraries/include/provideo_protocol/provideo_protocol_auto.h     \
             ../libraries/include/provideo_protocol/provideo_protocol_cam.h      \
             ../libraries/include/provideo_protocol/provideo_protocol_chain.h    \

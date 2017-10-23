@@ -43,6 +43,7 @@ void LutItf::resync()
     GetLutMode();
 
     // preset
+    // Note: Do this before GetLutFastGamma() otherwise the Lutbox might display the wrong plot
     GetLutPreset();
 
     // sync sample data 
