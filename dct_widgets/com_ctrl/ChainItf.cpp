@@ -30,6 +30,8 @@
 
 #include "ChainItf.h"
 
+#include <QApplication>
+#include <QMessageBox>
 #include <QtDebug>
 
 /******************************************************************************
@@ -337,9 +339,28 @@ void ChainItf::onChainVideoModeChange( int value )
     // set video-mode on device
     int res = ctrl_protocol_set_video_mode( GET_PROTOCOL_INSTANCE(this),
             GET_CHANNEL_INSTANCE(this), (uint8_t)value );
-    HANDLE_ERROR( res );
 
-    emit NotifyVideoModeChanged();
+    /* In case swtich was successful, or if a genlock error occured,
+     * notify video mode was changed to get new exposure range. */
+    if ( res == 0 || res == -ENOSYS )
+    {
+        emit NotifyVideoModeChanged();
+
+        // If a genlock error occured, display a message box
+        if ( res == -ENOSYS )
+        {
+            QApplication::setOverrideCursor( Qt::ArrowCursor );
+
+            QMessageBox msgBox;
+            msgBox.setWindowTitle("Genlock Error");
+            msgBox.setText("The device can not lock to the supplied sync source.\n\n"
+                           "Please make sure you have attached a valid sync signal "
+                           "that matches the the currently setup video mode.");
+            msgBox.exec();
+        }
+    }
+
+    HANDLE_ERROR( res );
 }
 
 /******************************************************************************
@@ -416,6 +437,20 @@ void ChainItf::onChainGenlockModeChange( int value )
     // set genlock mode on device
     int res = ctrl_protocol_set_genlock_mode( GET_PROTOCOL_INSTANCE(this),
             GET_CHANNEL_INSTANCE(this), (uint8_t)value );
+
+    // check if a genlock error occured and display a message box
+    if ( res == -ENOSYS )
+    {
+        QApplication::setOverrideCursor( Qt::ArrowCursor );
+
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Genlock Error");
+        msgBox.setText("The device can not lock to the supplied sync source.\n\n"
+                       "Please make sure you have attached a valid sync signal "
+                       "that matches the the currently setup video mode.");
+        msgBox.exec();
+    }
+
     HANDLE_ERROR( res );
 }
 
