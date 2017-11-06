@@ -16,6 +16,9 @@ The software is based on the Qt framework and provided as a Qt-Project, which ca
 
 Below is a short overview of the project files and a guide on how to start working on this project. For more information about the usage and development of this software, take a look at the [wiki pages](https://gitlab.com/dreamchip/provideo-gui/wikis/home).
 
+# Downloads
+We provide compiled binaries for Windows in our separata [provideo-downloads repository](https://gitlab.com/dreamchip/provideo-downloads). You can find the ProVideo GUI downloads on this [wiki page](https://gitlab.com/dreamchip/provideo-downloads/wikis/ProVideo-GUI).
+
 # Project Structure
 The project contains four folders with multiple sub-directories:
 
