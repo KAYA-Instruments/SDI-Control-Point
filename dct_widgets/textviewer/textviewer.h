@@ -24,14 +24,14 @@
 #ifndef TEXTVIEWER_H
 #define TEXTVIEWER_H
 
-#include <QWidget>
+#include <QDialog>
 #include <QTextBrowser>
 
 namespace Ui {
 class TextViewer;
 }
 
-class TextViewer : public QWidget
+class TextViewer : public QDialog
 {
     Q_OBJECT
 

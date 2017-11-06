@@ -39,6 +39,11 @@ void LutItf::resync()
     GetLutEnable( 0 );
     GetLutEnable( 1 );
 
+    // operational mode
+    GetLutMode();
+
+    // preset
+    // Note: Do this before GetLutFastGamma() otherwise the Lutbox might display the wrong plot
     GetLutPreset();
 
     // sync sample data 
@@ -46,6 +51,9 @@ void LutItf::resync()
     GetLutSampleValuesGreen();
     GetLutSampleValuesBlue();
     GetLutSampleValuesMaster();
+
+    // fast gamma setting
+    GetLutFastGamma();
 }
 
 /******************************************************************************
@@ -58,13 +66,33 @@ void LutItf::GetLutEnable( int id )
     {
         ctrl_protocol_enable_t v = { .id = (uint8_t)id, .flag = 0u };
     
-        // read red gain from device
+        // read enable state from device
         int res = ctrl_protocol_get_lut_enable( GET_PROTOCOL_INSTANCE(this),
             GET_CHANNEL_INSTANCE(this), sizeof(v), (uint8_t *)&v );
         HANDLE_ERROR( res );
         
         // emit a LutEnableChanged signal
         emit LutEnableChanged( id, (int)v.flag );
+    }
+}
+
+/******************************************************************************
+ * LutItf::GetLutMode
+ *****************************************************************************/
+void LutItf::GetLutMode()
+{
+    // Is there a signal listener
+    if ( receivers(SIGNAL(LutModeChanged(int))) > 0 )
+    {
+        uint8_t mode = 0u;
+
+        // read mode from device
+        int res = ctrl_protocol_get_lut_mode( GET_PROTOCOL_INSTANCE(this),
+            GET_CHANNEL_INSTANCE(this), &mode );
+        HANDLE_ERROR( res );
+
+        // emit a LutPresetChanged signal
+        emit LutModeChanged( (int)mode );
     }
 }
 
@@ -78,7 +106,7 @@ void LutItf::GetLutPreset()
     {
         uint8_t value = 0u;
     
-        // read red gain from device
+        // read preset number from device
         int res = ctrl_protocol_get_lut_preset( GET_PROTOCOL_INSTANCE(this),
             GET_CHANNEL_INSTANCE(this), &value );
         HANDLE_ERROR( res );
@@ -291,6 +319,26 @@ void LutItf::GetLutSampleValuesMaster()
 }
 
 /******************************************************************************
+ * LutItf::GetLutFastGamma
+ *****************************************************************************/
+void LutItf::GetLutFastGamma()
+{
+    // Is there a signal listener
+    if ( receivers(SIGNAL(LutFastGammaChanged(int))) > 0 )
+    {
+        int16_t gamma = 0u;
+
+        // read fast gamma setting from device
+        int res = ctrl_protocol_get_lut_fast_gamma( GET_PROTOCOL_INSTANCE(this),
+            GET_CHANNEL_INSTANCE(this), &gamma );
+        HANDLE_ERROR( res );
+
+        // emit a LutPresetChanged signal
+        emit LutFastGammaChanged( (int)gamma );
+    }
+}
+
+/******************************************************************************
  * LutItf::onLutEnableChange
  *****************************************************************************/
 void LutItf::onLutEnableChange( int id, int value )
@@ -301,6 +349,32 @@ void LutItf::onLutEnableChange( int id, int value )
     int res = ctrl_protocol_set_lut_enable( GET_PROTOCOL_INSTANCE(this),
         GET_CHANNEL_INSTANCE(this), sizeof(v), (uint8_t *)&v );
     HANDLE_ERROR( res );
+}
+
+/******************************************************************************
+ * LutItf::onLutModeChange
+ *****************************************************************************/
+void LutItf::onLutModeChange( int mode )
+{
+    // set LUT operational mode on device
+    int res = ctrl_protocol_set_lut_mode( GET_PROTOCOL_INSTANCE(this),
+        GET_CHANNEL_INSTANCE(this), (uint8_t)mode );
+    HANDLE_ERROR( res );
+
+    // If mode was changed to interpolation mode, sync sample data
+    if ( mode == 0 )
+    {
+        GetLutSampleValuesMaster();
+        GetLutSampleValuesRed();
+        GetLutSampleValuesGreen();
+        GetLutSampleValuesBlue();
+    }
+
+    // Else if mode was changed t ofast gamma, get current gamma setting
+    else if ( mode == 1 )
+    {
+        GetLutFastGamma();
+    }
 }
 
 /******************************************************************************
@@ -697,3 +771,13 @@ void LutItf::onLutResetMaster( void )
     GetLutSampleValuesMaster();
 }
 
+/******************************************************************************
+ * LutItf::onLutFastGammaChange
+ *****************************************************************************/
+void LutItf::onLutFastGammaChange( int gamma )
+{
+    // set LUT fast gamma on device
+    int res = ctrl_protocol_set_lut_fast_gamma( GET_PROTOCOL_INSTANCE(this),
+        GET_CHANNEL_INSTANCE(this), (int16_t)gamma );
+    HANDLE_ERROR( res );
+}

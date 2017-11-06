@@ -40,6 +40,15 @@
 #define CMD_GET_LUT_ENABLE_NO_PARMS             ( 2 )
 
 /******************************************************************************
+ * @brief command "lut_mode"
+ *****************************************************************************/
+#define CMD_GET_LUT_MODE                        ( "lut_mode \n" )
+#define CMD_SET_LUT_MODE                        ( "lut_mode %i\n" )
+#define CMD_SYNC_LUT_MODE                       ( "lut_mode " )
+#define CMD_GET_LUT_MODE_NO_PARMS               ( 1 )
+#define CMD_SET_LUT_MODE_TMO                    ( 5000 )
+
+/******************************************************************************
  * @brief command "lut_enable" 
  *****************************************************************************/
 #define CMD_GET_LUT_PRESET                      ( "lut_preset \n" )
@@ -180,10 +189,6 @@
  * @brief command "lut_rec709" 
  *****************************************************************************/
 #define CMD_SET_LUT_REC709                      ( "lut_fun_rec709 %i %i %i %i %i %i\n" )
-#define CMD_SET_LUT_REC709_RED                  ( "lut_fun_rec709_red %i %i %i %i %i %i\n" )
-#define CMD_SET_LUT_REC709_GREEN                ( "lut_fun_rec709_green %i %i %i %i %i %i\n" )
-#define CMD_SET_LUT_REC709_BLUE                 ( "lut_fun_rec709_blue %i %i %i %i %i %i\n" )
-#define CMD_SET_LUT_REC709_MASTER               ( "lut_fun_rec709_master %i %i %i %i %i %i\n" )
 
 /******************************************************************************
  * @brief command "lut_interpolate" 
@@ -208,6 +213,16 @@
  *****************************************************************************/
 #define CMD_SET_LUT_INTERPOLATE_BLUE            ( "lut_interpolate_blue\n" )
 #define CMD_SET_LUT_INTERPOLATE_BLUE_TMO        ( 2000 )
+
+/******************************************************************************
+ * @brief command "lut_fast_gamma"
+ *****************************************************************************/
+#define CMD_GET_LUT_FAST_GAMMA                  ( "lut_fast_gamma \n" )
+#define CMD_SET_LUT_FAST_GAMMA                  ( "lut_fast_gamma %i\n" )
+#define CMD_SYNC_LUT_FAST_GAMMA                 ( "lut_fast_gamma " )
+#define CMD_GET_LUT_FAST_GAMMA_NO_PARMS         ( 1 )
+#define CMD_SET_LUT_FAST_GAMMA_TMO              ( 3000 )
+
 
 /******************************************************************************
  * protocol helper function
@@ -728,7 +743,79 @@ static int set_lut_enable
                 CMD_SET_LUT_ENABLE, INT( enable->id ), INT( enable->flag ) ) );
 }
 
-/******************************************************************************
+/**************************************************************************//**
+ * @brief Gets the operational mode of gamma LUT module
+ *
+ * @param[in]  ctx      private protocol context
+ * @param[in]  channel  control channel to send the request
+ * @param[out] mode     current mode
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+static int get_lut_mode
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    uint8_t * const             mode
+)
+{
+    (void) ctx;
+
+    int v;
+    int res;
+
+    // parameter check
+    if ( !mode )
+    {
+        return ( -EINVAL );
+    }
+
+    // command call to get 1 parameter from provideo system
+    res = get_param_int_X( channel, 2,
+            CMD_GET_LUT_MODE, CMD_SYNC_LUT_MODE, CMD_SET_LUT_MODE, &v );
+
+    // return error code
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
+    // return -EFAULT if number of parameter not matching
+    else if ( res != CMD_GET_LUT_MODE_NO_PARMS )
+    {
+        return ( -EFAULT );
+    }
+
+    // type-cast to range
+    *mode = UINT8( v );
+
+    return ( 0 );
+}
+
+/**************************************************************************//**
+ * @brief Sets the operational mode of the LUT module
+ *
+ * @param[in]  ctx      private protocol context
+ * @param[in]  channel  control channel to send the request
+ * @param[in]  mode     mode to set (0 = interpolate, 1 = fast gamma)
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+static int set_lut_mode
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    uint8_t const               mode
+)
+{
+    (void) ctx;
+
+    return ( set_param_int_X_with_tmo( channel,
+                                       CMD_SET_LUT_MODE, CMD_SET_LUT_MODE_TMO,
+                                       INT( mode ) ) );
+}
+
+/**************************************************************************//**
  * @brief Get current LUT preset storage
  *
  * @param[in]  ctx      private protocol context
@@ -1426,6 +1513,79 @@ static int set_lut_interpolate_blue
     return ( set_param_0_with_tmo( channel, CMD_SET_LUT_INTERPOLATE_BLUE, CMD_SET_LUT_INTERPOLATE_BLUE_TMO ) );
 }
 
+/**************************************************************************//**
+ * @brief Gets the currently set gamma value of the luts fast gamma function
+ *
+ * @param[in]  ctx      private protocol context
+ * @param[in]  channel  control channel to send the request
+ * @param[out] gamma    current gamma setting
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+static int get_lut_fast_gamma
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    int16_t * const             gamma
+)
+{
+    (void) ctx;
+
+    int v;
+    int res;
+
+    // parameter check
+    if ( !gamma )
+    {
+        return ( -EINVAL );
+    }
+
+    // command call to get 1 parameter from provideo system
+    res = get_param_int_X( channel, 2,
+            CMD_GET_LUT_FAST_GAMMA, CMD_SYNC_LUT_FAST_GAMMA, CMD_SET_LUT_FAST_GAMMA, &v );
+
+    // return error code
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
+    // return -EFAULT if number of parameter not matching
+    else if ( res != CMD_GET_LUT_FAST_GAMMA_NO_PARMS )
+    {
+        return ( -EFAULT );
+    }
+
+    // type-cast to range
+    *gamma = INT16( v );
+
+    return ( 0 );
+}
+
+/**************************************************************************//**
+ * @brief Sets the gamma value of the fast gamma function and recalculates the
+ *        LUT
+ *
+ * @param[in]  ctx      private protocol context
+ * @param[in]  channel  control channel to send the request
+ * @param[in]  gamma    gamma value to set (multiplied by 1000)
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+static int set_lut_fast_gamma
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    int16_t const               gamma
+)
+{
+    (void) ctx;
+
+    return ( set_param_int_X_with_tmo( channel,
+                                       CMD_SET_LUT_FAST_GAMMA, CMD_SET_LUT_FAST_GAMMA_TMO,
+                                       INT( gamma ) ) );
+}
+
 /******************************************************************************
  * ISP protocol driver declaration
  *****************************************************************************/
@@ -1433,6 +1593,8 @@ static ctrl_protocol_lut_drv_t provideo_lut_drv =
 {
     .get_lut_enable             = get_lut_enable,
     .set_lut_enable             = set_lut_enable,
+    .get_lut_mode               = get_lut_mode,
+    .set_lut_mode               = set_lut_mode,
     .get_lut_preset             = get_lut_preset,
     .set_lut_preset             = set_lut_preset,
     .set_lut_write_index        = set_lut_write_index,
@@ -1463,7 +1625,9 @@ static ctrl_protocol_lut_drv_t provideo_lut_drv =
     .set_lut_interpolate        = set_lut_interpolate,
     .set_lut_interpolate_red    = set_lut_interpolate_red,
     .set_lut_interpolate_green  = set_lut_interpolate_green,
-    .set_lut_interpolate_blue   = set_lut_interpolate_blue
+    .set_lut_interpolate_blue   = set_lut_interpolate_blue,
+    .get_lut_fast_gamma         = get_lut_fast_gamma,
+    .set_lut_fast_gamma         = set_lut_fast_gamma
 };
 
 /******************************************************************************

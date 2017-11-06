@@ -46,7 +46,7 @@
 #define CMD_SET_VIDEO_MODE                  ( "video_mode %i\n" )
 #define CMD_SYNC_VIDEO_MODE                 ( "video_mode " )
 #define CMD_GET_VIDEO_MODE_NO_PARMS         ( 1 )
-#define CMD_SET_VIDEO_MODE_TMO              ( 5000 )
+#define CMD_SET_VIDEO_MODE_TMO              ( 15000 )
 
 /******************************************************************************
  * @brief command "raw" 

@@ -30,6 +30,7 @@
 #include <QFileDialog>
 
 #include <csvwrapper.h>
+#include <simple_math/gamma.h>
 
 #include "cubic_interpolation.h"
 #include "lutbox.h"
@@ -46,6 +47,7 @@ namespace Ui {
  * unit-scale
  *****************************************************************************/
 #define SCALING_FACTOR                      ( 1000.0f )
+#define TO_FLOAT(x)                         (((float)x) / SCALING_FACTOR)
 #define TO_DOUBLE(x)                        (((double)x) / SCALING_FACTOR)
 #define TO_INT(x)                           ((int)(x * SCALING_FACTOR))
 
@@ -93,6 +95,7 @@ namespace Ui {
  *****************************************************************************/
 #define LUT_SETTINGS_SECTION_NAME           ( "LUT" )
 #define LUT_SETTINGS_ENABLE                 ( "enable" )
+#define LUT_SETTINGS_MODE                   ( "mode" )
 #define LUT_SETTINGS_STORAGE                ( "storage" )
 #define LUT_SETTINGS_SAMPLE_X               ( "sample_x" )
 #define LUT_SETTINGS_SAMPLE_Y               ( "sample_y" )
@@ -108,6 +111,7 @@ namespace Ui {
 #define LUT_SETTINGS_REC709_CONTRAST        ( "rec709_contrast" )
 #define LUT_SETTINGS_REC709_GAMMA           ( "rec709_gamma" )
 #define LUT_SETTINGS_REC709_BRIGHTNESS      ( "rec709_brightness" )
+#define LUT_SETTINGS_FAST_GAMMA             ( "fast_gamma" )
 #define LUT_TABLE_NO_ROWS                   ( 24 )
 #define LUT_TABLE_NO_COLUMNS                ( 2 )
 #define LUT_NO_PRESETS                      ( 5 )
@@ -194,6 +198,7 @@ public:
         : m_ui( new Ui::UI_LutBox )
         , m_delegate( new LutDelegate )
         , m_enable( true )
+        , m_mode( -1 )
         , m_preset( 0 )
         , m_ch( Master )
     {
@@ -217,12 +222,12 @@ public:
         m_ui->sbxRec709Threshold->setSingleStep( TO_DOUBLE(LUT_THRESHOLD_STEP) );
 
         m_ui->sbxRec709Contrast->setRange( 
-                TO_DOUBLE(LUT_GAMMA_MIN), TO_DOUBLE(LUT_GAMMA_MAX) );
+                TO_DOUBLE(LUT_CONTRAST_MIN), TO_DOUBLE(LUT_CONTRAST_MAX) );
         m_ui->sbxRec709Contrast->setDecimals( LUT_CONTRAST_DECIMALS );
         m_ui->sbxRec709Contrast->setSingleStep( TO_DOUBLE(LUT_CONTRAST_STEP) );
 
         m_ui->sbxRec709Gamma->setRange( 
-                TO_DOUBLE(LUT_CONTRAST_MIN), TO_DOUBLE(LUT_CONTRAST_MAX) );
+                TO_DOUBLE(LUT_GAMMA_MIN), TO_DOUBLE(LUT_GAMMA_MAX) );
         m_ui->sbxRec709Gamma->setDecimals( LUT_GAMMA_DECIMALS );
         m_ui->sbxRec709Gamma->setSingleStep( TO_DOUBLE(LUT_GAMMA_STEP) );
 
@@ -436,7 +441,7 @@ public:
         m_final_interpolate[ch] = new CubicInterpolation();
     }
     
-    // set samples int tableview widget
+    // set data model
     void setDataModel( LutChannel ch )
     {
         // see http://doc.qt.io/qt-5.7/qabstractitemview.html#setModel
@@ -449,7 +454,7 @@ public:
         delete m;
     }
 
-    // set samples int tableview widget
+    // set samples in tableview widget
     void setSamples( LutChannel ch, QVector<int> &x, QVector<int> &y )
     {
         Q_ASSERT( x.count() == y.count() );
@@ -659,9 +664,126 @@ public:
         plot->replot();
     }
 
+    void drawFastGammaPlot( LutChannel ch, int gamma_int )
+    {
+        float kink;
+        float lcontrast;
+        float lbrightness;
+        float contrast;
+        float gamma;
+        float brightness;
+
+        float x_i, y_i;
+        float inverse_gamma;
+
+        QVector<int> x;
+        QVector<int> y;
+
+        // I. Calculate intersection of linear section and gamma curve
+        /* Note:
+         * The gamma curve has a linear part at the beginning, because otherwise the curve
+         * would not go trough the point of origin. The linear function will be called g(x)
+         * while the gamma function will be called f(x) in the following text. They are
+         * described as follows:
+         *
+         *    g(x) = lcontrast * x + lbrightness
+         * I) f(x) = contrast * x^(1/gamma) + brightness
+         *
+         * Since we always want the the linear part to go through the point of origin we set:
+         *
+         * lbrightness = 0
+         *
+         * The point of the intersection is defined by x_i = kink and y_i. Since it goes
+         * trough the origin the linear part can now also be described as:
+         *
+         * II) g(x) = y_i/x_i * x
+         *
+         * To calculate the intersection point (x_i|y_i) we calculate the derivatives of g(x)
+         * and f(x). Both have to be equal in the intersection point. This way we find the
+         * point where the curve points towards the origin.
+         *
+         * g'(x) = y_i/x_i
+         * f'(x) = contrast/g * x^((1/gamma) - 1)
+         *
+         * Setting those equal and solving for x_i results in:
+         *
+         * III) x_i = (y_i * gamma / contrast)^gamma
+         *
+         * Which still includes y_i as an unknown.
+         * Inserting III) into I) and solving for y_i results in:
+         *
+         * IV) y_i = brightness / (1-gamma)
+         *
+         * Inserting IV) into III) gives us the formula for x_i:
+         *
+         * V) x_i = ((brightness / (1-gamma) * gamma) / contrast)^gamma
+         *
+         * x_i and y_i can now be calculated for any contrast brightness and gamma. Please
+         * note that for some settings, there will be no solution to the formula. Which means
+         * those input values are illegal.
+         *
+         * Here we fix contrast and brightness of the curve to the REC.709 defaults:
+         *
+         * contrast = 1.099
+         * brightness = -0.099
+         */
+
+        // convert gamma to float
+        gamma = TO_FLOAT( gamma_int );
+
+        // contrast and brightness are fixed to REC.709 defaults
+        contrast = TO_FLOAT( REC709_CONTRAST );
+        brightness = TO_FLOAT( REC709_BRIGHTNESS );
+
+        // calculate intersection point of linear part and gamma curve (see note above)
+        y_i = brightness / ( 1.0f - gamma);
+        x_i = powf(((y_i * gamma) / contrast), gamma);
+
+        // kink is x_i
+        kink = x_i;
+
+        // calculate linear contrast
+        lcontrast = y_i / x_i;
+
+        // linear brightness is fixed to 0
+        lbrightness = 0.0f;
+
+        // compute inverse gamma
+        inverse_gamma = 1.0f / gamma;
+
+        // II. Calculate samples
+        const int bit_width = 12;   // At the moment HW uses 12 Bit input and output width for the LUT
+        int i;
+        for ( i = 0; i < (1 << bit_width); i += (1 << bit_width) / 64 ) // Calculate 64 samples
+        {
+            x.append( i );
+            y.append( sm_gamma_float(i, kink, lcontrast, lbrightness, contrast, inverse_gamma, brightness, bit_width, bit_width) );
+
+            // Add a sample at the intersection of linear part and gamma curve
+            int x_i_int = (int)(x_i * (1 << bit_width));
+            if ( x_i_int > i && x_i_int < (i + (1 << bit_width) / 64) )
+            {
+                x.append( x_i_int );
+                y.append( sm_gamma_float(x_i_int, kink, lcontrast, lbrightness, contrast, inverse_gamma, brightness, bit_width, bit_width) );
+            }
+        }
+
+        // Add last point if not done by loop
+        int last_sample = ((1 << bit_width) - 1);
+        if ( x.last() < last_sample )
+        {
+            x.append( last_sample );
+            y.append( sm_gamma_float(last_sample, kink, lcontrast, lbrightness, contrast, inverse_gamma, brightness, bit_width, bit_width) );
+        }
+
+        // III. Draw the lut line
+        computeLutLine( ch, x, y );
+    }
+
     Ui::UI_LutBox *         m_ui;                           /**< ui handle */
     LutDelegate *           m_delegate;                     /**< delegation class */
     bool                    m_enable;                       /**< enable status */
+    int                     m_mode;                         /**< operational mode */
     int                     m_preset;                       /**< current preset */
     LutChannel              m_ch;
     
@@ -680,7 +802,21 @@ LutBox::LutBox( QWidget * parent ) : DctWidgetBox( parent )
     // create private data container
     d_data = new PrivateData( this );
 
+    // Setup fast gamma knob box
+    d_data->m_ui->sckbFastGamma->setRange( FAST_GAMMA_MIN, FAST_GAMMA_MAX );
+    d_data->m_ui->sckbFastGamma->setCommaPos( FAST_GAMMA_COMMA_POSITION );
+    d_data->m_ui->sckbFastGamma->setDisplayMultiplier( FAST_GAMMA_DISPLAY_MULTIPLIER);
+    d_data->m_ui->sckbFastGamma->setBase( FAST_GAMMA_BASE );
+    d_data->m_ui->sckbFastGamma->setMaxAngle( 180 );
+    d_data->m_ui->sckbFastGamma->setMaxRounds( 3 );
+    d_data->m_ui->sckbFastGamma->setFmt( FAST_GAMMA_DISPLAY_MASK );
+    d_data->m_ui->sckbFastGamma->setMaxEvent( 2 );
+
     // connect internal signals
+
+    // lut operational mode
+    connect( d_data->m_ui->rbInterpolate, SIGNAL(clicked(bool)), this, SLOT(onLutModeInterpolateClicked(bool)));
+    connect( d_data->m_ui->rbFastGamma, SIGNAL(clicked(bool)), this, SLOT(onLutModeFastGammaClicked(bool)));
 
     // lut plot tab-widget
     connect( d_data->m_ui->tabColorSelect, SIGNAL(currentChanged(int)), this, SLOT(onColorSelectChange(int)) );
@@ -722,8 +858,12 @@ LutBox::LutBox( QWidget * parent ) : DctWidgetBox( parent )
              this, SLOT(onSelectionChange(const QItemSelection &, const QItemSelection &)) );
 
     // REC.709, ignore value, it's directly read from component
-    connect( d_data->m_ui->btnDefaultRec709, SIGNAL(clicked()), this, SLOT(onDefaultRec709Click()));
-    connect( d_data->m_ui->btnSetRec709 , SIGNAL(clicked()), this, SLOT(onSetRec709Click()));
+    connect( d_data->m_ui->btnDefaultRec709, SIGNAL(clicked()), this, SLOT(onDefaultRec709Clicked()));
+    connect( d_data->m_ui->btnSetRec709 , SIGNAL(clicked()), this, SLOT(onSetRec709Clicked()));
+
+    // lut fast gamma
+    connect( d_data->m_ui->sckbFastGamma, SIGNAL(ValueChanged(int)), this, SLOT(onFastGammaChanged(int)) );
+    connect( d_data->m_ui->btnDefaultFastGamma, SIGNAL(clicked()), this, SLOT(onDefaultFastGammaClicked()) );
 
     // draw initial (master) lut line
     QVector<int> x;
@@ -760,6 +900,26 @@ void LutBox::setLutEnable( const bool value )
 /******************************************************************************
  * LutBox::LutPresetStorage
  *****************************************************************************/
+int LutBox::LutMode() const
+{
+    return ( d_data->m_mode );
+}
+
+/******************************************************************************
+ * LutBox::LutPresetStorage
+ *****************************************************************************/
+void LutBox::setLutMode( const int mode )
+{
+    // Setup lut mode
+    onLutModeChange( mode );
+
+    // Emit lut mode changed signal
+    emit LutModeChanged( mode );
+}
+
+/******************************************************************************
+ * LutBox::LutPresetStorage
+ *****************************************************************************/
 int LutBox::LutPresetStorage() const
 {
     return ( d_data->m_preset );
@@ -770,9 +930,31 @@ int LutBox::LutPresetStorage() const
  *****************************************************************************/
 void LutBox::setLutPresetStorage( const int value )
 {
-    QCheckBox * cbx = qobject_cast<QCheckBox *>( d_data->m_ui->grpPreset->button( value ) );
-    cbx->setChecked( true );
-    d_data->m_preset = value;
+    // Set preset
+    onLutPresetChange( value );
+
+    // Emit lut preset changed signal
+    emit LutPresetChanged( value );
+}
+
+/******************************************************************************
+ * LutBox::LutPresetStorage
+ *****************************************************************************/
+int LutBox::LutFastGamma() const
+{
+    return ( d_data->m_ui->sckbFastGamma->value() );
+}
+
+/******************************************************************************
+ * LutBox::setLutFastGamma
+ *****************************************************************************/
+void LutBox::setLutFastGamma( const int gamma )
+{
+    // Set Value of knob box
+    onLutFastGammaChange( gamma );
+
+    // Emit fast gamma value changed signal
+    emit LutFastGammaChanged( gamma );
 }
 
 /******************************************************************************
@@ -795,6 +977,12 @@ void LutBox::loadSettings( QSettings & s )
 
     // set lut enable
     setLutEnable( s.value( LUT_SETTINGS_ENABLE).toBool() );
+
+    // set lut mode
+    setLutMode( s.value( LUT_SETTINGS_MODE).toInt() );
+
+    // set lut fast gamma
+    setLutFastGamma( s.value( LUT_SETTINGS_FAST_GAMMA).toInt() );
 
     // get lut preset number and set it
     int presetStorage = s.value( LUT_SETTINGS_STORAGE).toInt();
@@ -908,8 +1096,10 @@ void LutBox::saveSettings( QSettings & s )
     s.beginGroup( LUT_SETTINGS_SECTION_NAME );
 
     // Store general lut settings
-    s.setValue( LUT_SETTINGS_ENABLE  , LutEnable() );
-    s.setValue( LUT_SETTINGS_STORAGE , LutPresetStorage() );
+    s.setValue( LUT_SETTINGS_ENABLE    , LutEnable() );
+    s.setValue( LUT_SETTINGS_MODE      , LutMode() );
+    s.setValue( LUT_SETTINGS_STORAGE   , LutPresetStorage() );
+    s.setValue( LUT_SETTINGS_FAST_GAMMA, LutFastGamma() );
 
     // disable updates to the view, otherwise the user can see the iterations
     d_data->m_ui->LutPlot->setUpdatesEnabled( false );
@@ -989,6 +1179,10 @@ void LutBox::applySettings( void )
 {
     QVector<int> x;
     QVector<int> y;
+
+    // general lut settins
+    emit LutModeChanged( LutMode() );
+    emit LutFastGammaChanged( LutFastGamma() );
 
     // disable updates to the view, otherwise the user can see the iterations
     d_data->m_ui->LutPlot->setUpdatesEnabled( false );
@@ -1091,11 +1285,78 @@ void LutBox::onLutEnableChange( int, int value )
 }
 
 /******************************************************************************
+ * LutBox::onLutModeChange
+ *****************************************************************************/
+void LutBox::onLutModeChange( int mode )
+{
+    // Check if mode got changed
+    if ( mode == LutMode() )
+    {
+        return;
+    }
+
+    // Block signals to ui elements
+    d_data->m_ui->rbInterpolate->blockSignals( true );
+    d_data->m_ui->rbFastGamma->blockSignals( true );
+
+    // If mode = interpolate, activate table based lut configuration
+    if ( mode == 0 )
+    {
+        // Enable table based ui elements, add RGB plots
+        d_data->m_ui->rbInterpolate->setChecked( true );
+        d_data->m_ui->gbxPreset->setEnabled( true );
+        d_data->m_ui->gbxSamplePoints->setEnabled( true );
+        d_data->m_ui->gbxDefaults->setEnabled( true );
+        d_data->m_ui->LutPlot->setEnabled( true );
+        d_data->m_ui->tabColorSelect->addTab( d_data->m_ui->tabRedChannel, QIcon(":/images/tab/red.png"), "Red" );
+        d_data->m_ui->tabColorSelect->addTab( d_data->m_ui->tabGreenChannel, QIcon(":/images/tab/green.png"), "Green" );
+        d_data->m_ui->tabColorSelect->addTab( d_data->m_ui->tabBlueChannel, QIcon(":/images/tab/blue.png"), "Blue" );
+
+        // Disable fast gamma ui elements
+        d_data->m_ui->rbFastGamma->setChecked( false );
+        d_data->m_ui->sckbFastGamma->setEnabled( false );
+        d_data->m_ui->btnDefaultFastGamma->setEnabled( false );
+    }
+
+    // Else if mode = fast gamma activate simple configuration
+    else if ( mode == 1 )
+    {
+        // Disable table based ui elements, remove RGB plots (show only master plot)
+        d_data->m_ui->rbInterpolate->setChecked( false );
+        d_data->m_ui->gbxPreset->setEnabled( false );
+        d_data->m_ui->gbxSamplePoints->setEnabled( false );
+        d_data->m_ui->gbxDefaults->setEnabled( false );
+        d_data->m_ui->tabColorSelect->setCurrentIndex( Master );
+        d_data->m_ui->LutPlot->setEnabled( false );
+        d_data->m_ui->tabColorSelect->removeTab( Blue );
+        d_data->m_ui->tabColorSelect->removeTab( Green );
+        d_data->m_ui->tabColorSelect->removeTab( Red );
+
+        // Enable fast gamma ui elements
+        d_data->m_ui->rbFastGamma->setChecked( true );
+        d_data->m_ui->sckbFastGamma->setEnabled( true );
+        d_data->m_ui->btnDefaultFastGamma->setEnabled( true );
+
+        // Draw the fast gamma curve in the master plot
+        d_data->drawFastGammaPlot( Master, LutFastGamma() );
+    }
+
+    // Enable signals to ui elements
+    d_data->m_ui->rbInterpolate->blockSignals( false );
+    d_data->m_ui->rbFastGamma->blockSignals( false );
+
+    // Store mode
+    d_data->m_mode = mode;
+}
+
+/******************************************************************************
  * LutBox::onLutPresetChange
  *****************************************************************************/
 void LutBox::onLutPresetChange( int value )
 {
-    setLutPresetStorage( value );
+    QCheckBox * cbx = qobject_cast<QCheckBox *>( d_data->m_ui->grpPreset->button( value ) );
+    cbx->setChecked( true );
+    d_data->m_preset = value;
 }
 
 /******************************************************************************
@@ -1416,6 +1677,64 @@ void LutBox::onLutSampleValuesBlueChange( QVector<int> x, QVector<int> y )
 }
 
 /******************************************************************************
+ * LutBox::onLutFastGammaChange
+ *****************************************************************************/
+void LutBox::onLutFastGammaChange( int gamma )
+{
+    // Set Value of knob box
+    d_data->m_ui->sckbFastGamma->blockSignals( true );
+    d_data->m_ui->sckbFastGamma->setValue( gamma );
+    d_data->m_ui->sckbFastGamma->blockSignals( false );
+
+    // If device is in fast gamma mode, display fast gamma plot
+    if ( d_data->m_mode == 1 )
+    {
+        // Draw the fast gamma curve in the master plot
+        d_data->drawFastGammaPlot( Master, LutFastGamma() );
+    }
+}
+
+/******************************************************************************
+ * LutBox::onLutModeInterpolateClicked
+ *****************************************************************************/
+void LutBox::onLutModeInterpolateClicked( bool checked )
+{
+    // Set interpolation mode
+    if ( checked )
+    {
+        setWaitCursor();
+        setLutMode( 0 );
+        setNormalCursor();
+    }
+
+    // If button is being "unchecked" by clicking on it again, make it checked again
+    else
+    {
+        d_data->m_ui->rbInterpolate->setChecked( true );
+    }
+}
+
+/******************************************************************************
+ * LutBox::onLutModeFastGammaClicked
+ *****************************************************************************/
+void LutBox::onLutModeFastGammaClicked( bool checked )
+{
+    // Set fast gamma mode
+    if ( checked )
+    {
+        setWaitCursor();
+        setLutMode( 1 );
+        setNormalCursor();
+    }
+
+    // If button is being "unchecked" by clicking on it again, make it checked again
+    else
+    {
+        d_data->m_ui->rbFastGamma->setChecked( true );
+    }
+}
+
+/******************************************************************************
  * LutBox::oonLutPresetClicked
  *****************************************************************************/
 void LutBox::onLutPresetClicked( QAbstractButton * btn )
@@ -1509,9 +1828,9 @@ void LutBox::onColorSelectChange( int value )
 }
 
 /******************************************************************************
- * LutBox::onDefaultRec709Click
+ * LutBox::onDefaultRec709Clicked
  *****************************************************************************/
-void LutBox::onDefaultRec709Click()
+void LutBox::onDefaultRec709Clicked()
 {
     d_data->initRec709Default();
 }
@@ -1519,7 +1838,7 @@ void LutBox::onDefaultRec709Click()
 /******************************************************************************
  * LutBox::onSetRec709Click
  *****************************************************************************/
-void LutBox::onSetRec709Click()
+void LutBox::onSetRec709Clicked()
 {
     int threshold   = TO_INT( d_data->m_ui->sbxRec709Threshold->value() );
     int lcontrast   = TO_INT( d_data->m_ui->sbxRec709LinContrast->value() );
@@ -1531,6 +1850,30 @@ void LutBox::onSetRec709Click()
     setWaitCursor();
     emit LutRec709Changed( threshold, lcontrast, lbrightness, contrast, gamma, brightness );
     emit LutInterpolateChanged();
+    setNormalCursor();
+}
+
+/******************************************************************************
+ * LutBox::onFastGammaChanged
+ *****************************************************************************/
+void LutBox::onFastGammaChanged( int gamma )
+{
+    // Draw the fast gamma curve in the master plot
+    d_data->drawFastGammaPlot( Master, LutFastGamma() );
+
+    // Emit fast gamma changed signal
+    setWaitCursor();
+    emit LutFastGammaChanged( gamma );
+    setNormalCursor();
+}
+
+/******************************************************************************
+ * LutBox::onDefaultFastGammaClick
+ *****************************************************************************/
+void LutBox::onDefaultFastGammaClicked()
+{
+    setWaitCursor();
+    setLutFastGamma( REC709_GAMMA );
     setNormalCursor();
 }
 

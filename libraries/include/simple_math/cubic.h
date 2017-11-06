@@ -27,7 +27,7 @@ extern "C" {
 /******************************************************************************
  * @brief maximal samples for cubic spline interpolation
  *****************************************************************************/
-#define CSIP_MAX_SAMPLES    ( 64u )
+#define CSIP_MAX_SAMPLES    ( 4096u )
 
 /******************************************************************************
  * @brief sample type definition for cubic spline interpolation
