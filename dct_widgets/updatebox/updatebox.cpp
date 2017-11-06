@@ -77,7 +77,7 @@ typedef struct update_config_s
 const update_config_t xbow_update =
 {
     .type      = xbow,
-    .baudrate  = 57600u,
+    .baudrate  = 0u,        // use automatic baudrate detection of flashloader
     .sector    = 128u,
     .extension = "rpd",
     .content   = false,     // not needed it's clear
@@ -95,7 +95,7 @@ const update_config_t xbow_update =
 const update_config_t condor4k_fw_update =
 {
     .type      = condor4k_fw,
-    .baudrate  = 115200u,
+    .baudrate  = 0u,        // use automatic baudrate detection of flashloader
     .sector    = 1u,
     .extension = "bin",
     .content   = true,      // needed to distinguish between firmare and bitstream
@@ -107,7 +107,7 @@ const update_config_t condor4k_fw_update =
 const update_config_t condor4k_bs_update =
 {
     .type      = condor4k_bs,
-    .baudrate  = 115200u,
+    .baudrate  = 0u,        // use automatic baudrate detection of flashloader
     .sector    = 144u,
     .extension = "bin",
     .content   = true,      // needed to distinguish between firmare and bitstream
@@ -124,7 +124,7 @@ const update_config_t condor4k_bs_update =
 const update_config_t cooper_fw_update =
 {
     .type      = cooper_fw,
-    .baudrate  = 115200u,
+    .baudrate  = 0u,        // use automatic baudrate detection of flashloader
     .sector    = 1u,
     .extension = "bin",
     .content   = true,      // needed to distinguish between firmare and bitstream
@@ -136,7 +136,7 @@ const update_config_t cooper_fw_update =
 const update_config_t cooper_bs_update =
 {
     .type      = cooper_bs,
-    .baudrate  = 115200u,
+    .baudrate  = 0u,        // use automatic baudrate detection of flashloader
     .sector    = 16u,
     .extension = "bin",
     .content   = true,      // needed to distinguish between firmare and bitstream
@@ -303,38 +303,6 @@ UpdateBox::UpdateBox( QWidget * parent ) : DctWidgetBox( parent )
 UpdateBox::~UpdateBox()
 {
     delete d_data;
-}
-
-/******************************************************************************
- * UpdateBox::~UpdateBox
- *****************************************************************************/
-quint32 UpdateBox::Baudrate() const
-{
-    return ( d_data->m_application->Baudrate() );
-}
-
-/******************************************************************************
- * UpdateBox::~UpdateBox
- *****************************************************************************/
-void UpdateBox::setBaudrate( const quint32 baudrate )
-{
-    d_data->m_application->setBaudrate( baudrate );
-}
-
-/******************************************************************************
- * UpdateBox::~UpdateBox
- *****************************************************************************/
-QString UpdateBox::Portname() const
-{
-    return ( d_data->m_application->Portname() );
-}
-
-/******************************************************************************
- * UpdateBox::~UpdateBox
- *****************************************************************************/
-void UpdateBox::setPortname( const QString& portname )
-{
-    d_data->m_application->setPortname( portname );
 }
 
 /******************************************************************************
