@@ -4,14 +4,20 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
+Version **1.0.8** - 06.11.2017
+
+* Use new flashloader tool with automatic baudrate detection
+* In case of a genlock error after changing genlock settings, an error message is displayed
+* Implemented a "fast gamma" knob which controls the new fast gamma function which allows easy gamma changes on the fly
+
+## Older Releases:
+
 Version **1.0.7** - 06.10.2017
 
 * Fixed crash during device detection on Windows 10 based systems
 * Fixed "DPCC table invalid" message when switching between devices with different resolutions
 * Fixed a bug that caused the "dct_widgets" project to be not compile-able on Windows
 * Minor UI changes (typos, label arrangement, added link to repository in Info Tab)
-
-## Older Releases:
 
 Version **1.0.6** - 25.09.2017
 
