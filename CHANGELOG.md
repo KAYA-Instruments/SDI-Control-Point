@@ -4,7 +4,7 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
-Version **1.0.8** - 06.11.2017
+Version **1.0.8** - 07.11.2017
 
 * Use new flashloader tool with automatic baudrate detection
 * In case of a genlock error after changing genlock settings, an error message is displayed
