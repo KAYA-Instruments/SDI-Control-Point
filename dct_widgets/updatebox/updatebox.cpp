@@ -591,7 +591,7 @@ void UpdateBox::onFsmTimer( )
         HANDLE_ERROR( res );
 
         // restart reconnect timer
-        d_data->m_FsmTimer->start( 1000 );
+        d_data->m_FsmTimer->start( 2000 );
     }
 
     // II. UpdateState: initiate update run
@@ -612,6 +612,7 @@ void UpdateBox::onFsmTimer( )
     {
         // switch to update state, so the device stays in fw update mode and the user can try again
         setSystemState( UpdateState );
+        setNormalCursor();
     }
 
     // IV. update running or error state
@@ -1092,7 +1093,7 @@ void UpdateBox::onUpdateFinished()
             {
                 // reset update counter and index
                 setUpdateCounter( 0 );
-                getNextUpdateIndex();   // this will not find a index, thus clearing the file path line edit
+                getNextUpdateIndex();   // this will not find a index, thus clear the file path line edit
 
                 // send restart command to camera
                 int res = d_data->m_application->runCommand(
@@ -1119,11 +1120,11 @@ void UpdateBox::onUpdateFinished()
                 incrementUpdateCounter();
                 getNextUpdateIndex();
 
-                // restart FSM timer
-                d_data->m_FsmTimer->start( 1 );
-
                 // update process for this update sucessfully finished, switch back to command state
                 setSystemState( CommandState );
+
+                // restart FSM timer
+                d_data->m_FsmTimer->start( 1 );
             }
         }
     }
