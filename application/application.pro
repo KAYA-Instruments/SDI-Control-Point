@@ -14,7 +14,7 @@ QMAKE_TARGET_PRODUCT = "ProVideo GUI"
 QMAKE_TARGET_DESCRIPTION = "GUI to control ProVideo cameras and image processors"
 QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2017, Dream Chip Technologies GmbH"
 
-RC_ICONS = icons/dct_icon.ico
+RC_ICONS = ../resource/icons/dct_icon.ico
 
 CONFIG  += c++11
 # CONFIG  += debug
