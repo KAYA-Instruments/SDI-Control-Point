@@ -762,6 +762,9 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         connect( m_ui->updBox, SIGNAL(ReopenSerialConnection()), m_dlg, SLOT(onReopenSerialConnection()) );
 
         connect( m_ui->updBox, SIGNAL(LockCurrentTabPage(bool)), this, SLOT(onLockCurrentTabPage(bool)) );
+
+        m_ui->updBox->setPortname( m_dlg->getActiveChannel()->getSystemPortName() );
+        m_ui->updBox->setBaudrate( m_dlg->getActiveChannel()->getBaudRate() );
     }
     
     //////////////////////////

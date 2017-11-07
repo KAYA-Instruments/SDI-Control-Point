@@ -306,6 +306,38 @@ UpdateBox::~UpdateBox()
 }
 
 /******************************************************************************
+ * UpdateBox::~UpdateBox
+ *****************************************************************************/
+quint32 UpdateBox::Baudrate() const
+{
+    return ( d_data->m_application->Baudrate() );
+}
+
+/******************************************************************************
+ * UpdateBox::~UpdateBox
+ *****************************************************************************/
+void UpdateBox::setBaudrate( const quint32 baudrate )
+{
+    d_data->m_application->setBaudrate( baudrate );
+}
+
+/******************************************************************************
+ * UpdateBox::~UpdateBox
+ *****************************************************************************/
+QString UpdateBox::Portname() const
+{
+    return ( d_data->m_application->Portname() );
+}
+
+/******************************************************************************
+ * UpdateBox::~UpdateBox
+ *****************************************************************************/
+void UpdateBox::setPortname( const QString& portname )
+{
+    d_data->m_application->setPortname( portname );
+}
+
+/******************************************************************************
  * UpdateBox::prepareMode
  *****************************************************************************/
 void UpdateBox::prepareMode( const Mode )

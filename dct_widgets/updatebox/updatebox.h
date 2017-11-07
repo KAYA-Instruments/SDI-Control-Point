@@ -45,6 +45,12 @@ public:
     explicit UpdateBox( QWidget * parent = 0 );
     ~UpdateBox();
 
+    quint32 Baudrate() const;
+    void setBaudrate( const quint32 baudrate );
+
+    QString Portname() const;
+    void setPortname( const QString& portname );
+
 protected:
     void prepareMode( const Mode mode ) Q_DECL_OVERRIDE;
 
