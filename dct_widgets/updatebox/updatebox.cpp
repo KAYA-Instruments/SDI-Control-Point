@@ -429,8 +429,16 @@ void UpdateBox::setSystemState( SystemStates state )
             d_data->m_ui->btnFilename->setEnabled( false );
             enable = true;
         }
-
-        // Note: Do nothing in error state, it will be set to update state by the FSM timer
+        else if ( state == ErrorState )
+        {
+            // error state, change run botton text to start, so that user can restart the update
+            d_data->m_ui->btnRun->setText( "Start" );
+        }
+        else if ( state == FlashState )
+        {
+            // flash tate, set run botton text to abort, so that user can stop the update
+            d_data->m_ui->btnRun->setText( "Abort" );
+        }
 
         d_data->m_ui->lblSystemName->setEnabled( enable );
         d_data->m_ui->letSystemName->setEnabled( enable );
@@ -612,7 +620,9 @@ void UpdateBox::onFsmTimer( )
     {
         // switch to update state, so the device stays in fw update mode and the user can try again
         setSystemState( UpdateState );
-        setNormalCursor();
+
+        // Call FSM timer again to restart update procedure
+        onFsmTimer();
     }
 
     // IV. update running or error state
@@ -816,7 +826,10 @@ void UpdateBox::onRunClicked()
         // FlashState -> Cancel update
         else 
         {
-            // I. Ask user if he really wants to cancel the update
+            // Change cursor to normal
+            setNormalCursor();
+
+            // Ask user if he really wants to cancel the update
             QMessageBox::StandardButton reply;
             reply = QMessageBox::question( this,
                                            "Cancel Update?",
@@ -846,15 +859,13 @@ void UpdateBox::onRunClicked()
 
                     // III. update system state
                     setSystemState( UpdateState );
-
-                    // IV. set normal cursor
-                    setNormalCursor();
                 }
             }
             // User choose no
             else
             {
-              // Do nothing
+              // Set cursor to busy again
+              setWaitCursor();
             }
         }
     }
