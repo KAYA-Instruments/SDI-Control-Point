@@ -118,7 +118,7 @@ static int get_cam_gain
 (
     void * const                ctx,
     ctrl_channel_handle_t const channel,
-    uint16_t * const            gain
+    uint32_t * const            gain
 )
 {
     (void) ctx;
@@ -149,7 +149,7 @@ static int get_cam_gain
     }
 
     // type-cast to range
-    *gain = UINT16( value );
+    *gain = UINT32( value );
 
     return ( 0 );
 }
@@ -161,7 +161,7 @@ static int set_cam_gain
 (
     void * const                ctx,
     ctrl_channel_handle_t const channel,
-    uint16_t const              gain
+    uint32_t const              gain
 )
 {
     (void) ctx;

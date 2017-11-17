@@ -101,7 +101,7 @@ int ctrl_protocol_get_cam_gain
 (
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel, 
-    uint16_t * const             gain
+    uint32_t * const             gain
 );
 
 /**************************************************************************//**
@@ -117,7 +117,7 @@ int ctrl_protocol_set_cam_gain
 (
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel, 
-    uint16_t const               gain
+    uint32_t const               gain
 );
 
 /**************************************************************************//**
@@ -317,8 +317,8 @@ int ctrl_protocol_set_cam_auto_black
 typedef struct ctrl_protocol_cam_drv_s
 {
     ctrl_protocol_uint8_array_t     get_cam_info;
-    ctrl_protocol_get_uint16_t      get_cam_gain;
-    ctrl_protocol_set_uint16_t      set_cam_gain;
+    ctrl_protocol_get_uint32_t      get_cam_gain;
+    ctrl_protocol_set_uint32_t      set_cam_gain;
     ctrl_protocol_get_uint32_t      get_cam_exposure;
     ctrl_protocol_set_uint32_t      set_cam_exposure;
 } ctrl_protocol_cam_drv_t;

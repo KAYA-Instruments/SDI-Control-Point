@@ -44,6 +44,31 @@ namespace Ui {
 }
 
 /******************************************************************************
+ * general
+ *****************************************************************************/
+#define LUT_BIT_WIDTH                       ( 12 )
+
+enum LutMode
+{
+    LUT_MODE_INVALID = -1,      /**< for range check */
+    LUT_MODE_FIRST   = 0,       /**< Table based interpolation mode (load table, do cubic spline interpolate) */
+    LUT_MODE_INTERPOLATE = 0,   /**< Table based interpolation mode (load table, do cubic spline interpolate) */
+    LUT_MODE_FAST_GAMMA = 1,    /**< Fast gamma function with direct computation and without interpolation */
+    LUT_MODE_FIXED = 2,         /**< Fixed gamma table that can not be edited */
+    LUT_MODE_MAX                /**< number of available components */
+};
+
+enum LutFixedMode
+{
+    LUT_FIXED_INVALID = -1,     /**< for range check */
+    LUT_FIXED_FIRST   = 0,      /**< Default Rec.709 gamma curve */
+    LUT_FIXED_REC709 = 0,       /**< Default Rec.709 gamma curve */
+    LUT_FIXED_PQ = 1,           /**< PQ gamma curve function specified in Rec. ITU-R BT.2100 used for HDR content */
+    LUT_FIXED_HLG = 2,          /**< Hybrid Log-Gamma (HLG) function specified in Rec. ITU-R BT.2100 used for HDR content */
+    LUT_FIXED_MAX               /**< number of available components */
+};
+
+/******************************************************************************
  * unit-scale
  *****************************************************************************/
 #define SCALING_FACTOR                      ( 1000.0f )
@@ -96,6 +121,7 @@ namespace Ui {
 #define LUT_SETTINGS_SECTION_NAME           ( "LUT" )
 #define LUT_SETTINGS_ENABLE                 ( "enable" )
 #define LUT_SETTINGS_MODE                   ( "mode" )
+#define LUT_SETTINGS_FIXED_MODE             ( "fixed_mode" )
 #define LUT_SETTINGS_STORAGE                ( "storage" )
 #define LUT_SETTINGS_SAMPLE_X               ( "sample_x" )
 #define LUT_SETTINGS_SAMPLE_Y               ( "sample_y" )
@@ -117,7 +143,7 @@ namespace Ui {
 #define LUT_NO_PRESETS                      ( 5 )
 
 /******************************************************************************
- * fileExists
+ * Colors
  *****************************************************************************/
 const QColor InterpolColor[LutBox::LutChannelMax] =
 {
@@ -198,7 +224,8 @@ public:
         : m_ui( new Ui::UI_LutBox )
         , m_delegate( new LutDelegate )
         , m_enable( true )
-        , m_mode( -1 )
+        , m_mode( LUT_MODE_INVALID )
+        , m_fixed_mode( LUT_FIXED_INVALID )
         , m_preset( 0 )
         , m_ch( Master )
     {
@@ -490,8 +517,11 @@ public:
         }
         m_model[ch]->blockSignals( false );
 
-        // update plot
-        computeLutLine( ch, x, y );
+        // update plot if in interpolation mode
+        if ( m_mode == LUT_MODE_INTERPOLATE )
+        {
+            computeLutLine( ch, x, y );
+        }
     }
 
     // return channel plot
@@ -609,8 +639,8 @@ public:
             
             plot->graph( FINAL_CURVE_ID )->setData( x4, y4 );
         }
-        // master curve
-        else
+        // master curve and interpolation mode
+        else if ( m_mode == LUT_MODE_INTERPOLATE )
         {
             QVector<int> x2;
             QVector<int> y2;
@@ -752,31 +782,64 @@ public:
         inverse_gamma = 1.0f / gamma;
 
         // II. Calculate samples
-        const int bit_width = 12;   // At the moment HW uses 12 Bit input and output width for the LUT
+        int const bit_width = LUT_BIT_WIDTH;
+        int const num_samples = 128;
         int i;
-        for ( i = 0; i < (1 << bit_width); i += (1 << bit_width) / 64 ) // Calculate 64 samples
+        for ( i = 0; i < (1 << bit_width); i += (1 << bit_width) / num_samples )
         {
             x.append( i );
             y.append( sm_gamma_float(i, kink, lcontrast, lbrightness, contrast, inverse_gamma, brightness, bit_width, bit_width) );
 
             // Add a sample at the intersection of linear part and gamma curve
             int x_i_int = (int)(x_i * (1 << bit_width));
-            if ( x_i_int > i && x_i_int < (i + (1 << bit_width) / 64) )
+            if ( x_i_int > i && x_i_int < (i + (1 << bit_width) / num_samples ) )
             {
                 x.append( x_i_int );
                 y.append( sm_gamma_float(x_i_int, kink, lcontrast, lbrightness, contrast, inverse_gamma, brightness, bit_width, bit_width) );
             }
         }
 
-        // Add last point if not done by loop
-        int last_sample = ((1 << bit_width) - 1);
-        if ( x.last() < last_sample )
+        // III. Draw the lut line
+        computeLutLine( ch, x, y );
+    }
+
+    void drawFixedModePlot( LutChannel ch, int mode )
+    {
+        QVector<int> x;
+        QVector<int> y;
+
+        // Set constants for Rec. 709 curve calculation
+        float const kink = TO_FLOAT( REC709_THRESHOLD );
+        float const lcontrast = TO_FLOAT( REC709_LINEAR_CONTRAST );
+        float const lbrightness = TO_FLOAT( REC709_LINEAR_BRIGHTNESS );
+        float const contrast = TO_FLOAT( REC709_CONTRAST );
+        float const inverse_gamma = 1.0f / TO_FLOAT( REC709_GAMMA );
+        float const brightness = TO_FLOAT( REC709_BRIGHTNESS );
+
+        // I. Calculate samples
+        int const bit_width = LUT_BIT_WIDTH;
+        int const num_samples = 512;
+        int i;
+        for ( i = 0; i < (1 << bit_width); i += (1 << bit_width) / num_samples )
         {
-            x.append( last_sample );
-            y.append( sm_gamma_float(last_sample, kink, lcontrast, lbrightness, contrast, inverse_gamma, brightness, bit_width, bit_width) );
+            x.append( i );
+            switch ( mode )
+            {
+            case LUT_FIXED_REC709: // Rec. 709
+                y.append( sm_gamma_float(i, kink, lcontrast, lbrightness, contrast, inverse_gamma, brightness, bit_width, bit_width) );
+                break;
+            case LUT_FIXED_PQ: // Rec. 2100 - PQ
+                y.append( sm_pq(i, bit_width, bit_width) );
+                break;
+            case LUT_FIXED_HLG: // Rec. 2100 - HLG
+                y.append( sm_hlg(i, bit_width, bit_width) );
+                break;
+            default:
+                return;
+            }
         }
 
-        // III. Draw the lut line
+        // II. Draw the lut line
         computeLutLine( ch, x, y );
     }
 
@@ -784,6 +847,7 @@ public:
     LutDelegate *           m_delegate;                     /**< delegation class */
     bool                    m_enable;                       /**< enable status */
     int                     m_mode;                         /**< operational mode */
+    int                     m_fixed_mode;                   /**< fixed gamma curve mode */
     int                     m_preset;                       /**< current preset */
     LutChannel              m_ch;
     
@@ -817,6 +881,9 @@ LutBox::LutBox( QWidget * parent ) : DctWidgetBox( parent )
     // lut operational mode
     connect( d_data->m_ui->rbInterpolate, SIGNAL(clicked(bool)), this, SLOT(onLutModeInterpolateClicked(bool)));
     connect( d_data->m_ui->rbFastGamma, SIGNAL(clicked(bool)), this, SLOT(onLutModeFastGammaClicked(bool)));
+    connect( d_data->m_ui->rbFixedRec709, SIGNAL(clicked(bool)), this, SLOT(onLutFixedModeRec709Clicked(bool)));
+    connect( d_data->m_ui->rbFixedPQ, SIGNAL(clicked(bool)), this, SLOT(onLutFixedModePQClicked(bool)));
+    connect( d_data->m_ui->rbFixedHLG, SIGNAL(clicked(bool)), this, SLOT(onLutFixedModeHLGClicked(bool)));
 
     // lut plot tab-widget
     connect( d_data->m_ui->tabColorSelect, SIGNAL(currentChanged(int)), this, SLOT(onColorSelectChange(int)) );
@@ -898,7 +965,7 @@ void LutBox::setLutEnable( const bool value )
 }
 
 /******************************************************************************
- * LutBox::LutPresetStorage
+ * LutBox::LutMode
  *****************************************************************************/
 int LutBox::LutMode() const
 {
@@ -906,7 +973,7 @@ int LutBox::LutMode() const
 }
 
 /******************************************************************************
- * LutBox::LutPresetStorage
+ * LutBox::setLutMode
  *****************************************************************************/
 void LutBox::setLutMode( const int mode )
 {
@@ -915,6 +982,26 @@ void LutBox::setLutMode( const int mode )
 
     // Emit lut mode changed signal
     emit LutModeChanged( mode );
+}
+
+/******************************************************************************
+ * LutBox::LutFixedMode
+ *****************************************************************************/
+int LutBox::LutFixedMode() const
+{
+    return ( d_data->m_fixed_mode );
+}
+
+/******************************************************************************
+ * LutBox::setLutFixedMode
+ *****************************************************************************/
+void LutBox::setLutFixedMode( const int mode )
+{
+    // Setup lut mode
+    onLutFixedModeChange( mode );
+
+    // Emit lut mode changed signal
+    emit LutFixedModeChanged( mode );
 }
 
 /******************************************************************************
@@ -980,6 +1067,9 @@ void LutBox::loadSettings( QSettings & s )
 
     // set lut mode
     setLutMode( s.value( LUT_SETTINGS_MODE).toInt() );
+
+    // set fixed mode
+    setLutFixedMode( s.value( LUT_SETTINGS_FIXED_MODE).toInt() );
 
     // set lut fast gamma
     setLutFastGamma( s.value( LUT_SETTINGS_FAST_GAMMA).toInt() );
@@ -1098,6 +1188,7 @@ void LutBox::saveSettings( QSettings & s )
     // Store general lut settings
     s.setValue( LUT_SETTINGS_ENABLE    , LutEnable() );
     s.setValue( LUT_SETTINGS_MODE      , LutMode() );
+    s.setValue( LUT_SETTINGS_FIXED_MODE, LutFixedMode() );
     s.setValue( LUT_SETTINGS_STORAGE   , LutPresetStorage() );
     s.setValue( LUT_SETTINGS_FAST_GAMMA, LutFastGamma() );
 
@@ -1182,6 +1273,7 @@ void LutBox::applySettings( void )
 
     // general lut settins
     emit LutModeChanged( LutMode() );
+    emit LutFixedModeChanged( LutFixedMode() );
     emit LutFastGammaChanged( LutFastGamma() );
 
     // disable updates to the view, otherwise the user can see the iterations
@@ -1298,9 +1390,15 @@ void LutBox::onLutModeChange( int mode )
     // Block signals to ui elements
     d_data->m_ui->rbInterpolate->blockSignals( true );
     d_data->m_ui->rbFastGamma->blockSignals( true );
+    d_data->m_ui->rbFixedRec709->blockSignals( true );
+    d_data->m_ui->rbFixedPQ->blockSignals( true );
+    d_data->m_ui->rbFixedHLG->blockSignals( true );
+
+    // Get Master lut plot
+    QCustomPlot * masterPlot = d_data->getLutPlot( Master );
 
     // If mode = interpolate, activate table based lut configuration
-    if ( mode == 0 )
+    if ( mode == LUT_MODE_INTERPOLATE )
     {
         // Enable table based ui elements, add RGB plots
         d_data->m_ui->rbInterpolate->setChecked( true );
@@ -1312,14 +1410,22 @@ void LutBox::onLutModeChange( int mode )
         d_data->m_ui->tabColorSelect->addTab( d_data->m_ui->tabGreenChannel, QIcon(":/images/tab/green.png"), "Green" );
         d_data->m_ui->tabColorSelect->addTab( d_data->m_ui->tabBlueChannel, QIcon(":/images/tab/blue.png"), "Blue" );
 
+        // Use scatter symbols in interpolation mode
+        masterPlot->graph( SAMPLE_CURVE_ID )->setScatterStyle( QCPScatterStyle(QCPScatterStyle::ssCircle, 4 ) );
+
         // Disable fast gamma ui elements
         d_data->m_ui->rbFastGamma->setChecked( false );
         d_data->m_ui->sckbFastGamma->setEnabled( false );
         d_data->m_ui->btnDefaultFastGamma->setEnabled( false );
+
+        // Uncheck fixed mode radio buttons
+        d_data->m_ui->rbFixedRec709->setChecked( false );
+        d_data->m_ui->rbFixedPQ->setChecked( false );
+        d_data->m_ui->rbFixedHLG->setChecked( false );
     }
 
-    // Else if mode = fast gamma activate simple configuration
-    else if ( mode == 1 )
+    // Else if mode = fast gamma or fixed curve, activate simple configuration
+    else if ( mode == LUT_MODE_FAST_GAMMA || mode == LUT_MODE_FIXED )
     {
         // Disable table based ui elements, remove RGB plots (show only master plot)
         d_data->m_ui->rbInterpolate->setChecked( false );
@@ -1332,21 +1438,84 @@ void LutBox::onLutModeChange( int mode )
         d_data->m_ui->tabColorSelect->removeTab( Green );
         d_data->m_ui->tabColorSelect->removeTab( Red );
 
-        // Enable fast gamma ui elements
-        d_data->m_ui->rbFastGamma->setChecked( true );
-        d_data->m_ui->sckbFastGamma->setEnabled( true );
-        d_data->m_ui->btnDefaultFastGamma->setEnabled( true );
+        // Do not use scatter symbols in fat gamma or fixed mode
+        masterPlot->graph( SAMPLE_CURVE_ID )->setScatterStyle( QCPScatterStyle(QCPScatterStyle::ssNone ) );
 
-        // Draw the fast gamma curve in the master plot
-        d_data->drawFastGammaPlot( Master, LutFastGamma() );
+        // If mode = fast gamma, enable fast gamma UI elements
+        if ( mode == LUT_MODE_FAST_GAMMA )
+        {
+            // Uncheck fixed mode radio buttons
+            d_data->m_ui->rbFixedRec709->setChecked( false );
+            d_data->m_ui->rbFixedPQ->setChecked( false );
+            d_data->m_ui->rbFixedHLG->setChecked( false );
+
+            // Enable fast gamma ui elements
+            d_data->m_ui->rbFastGamma->setChecked( true );
+            d_data->m_ui->sckbFastGamma->setEnabled( true );
+            d_data->m_ui->btnDefaultFastGamma->setEnabled( true );
+
+            // Draw the fast gamma curve in the master plot
+            d_data->drawFastGammaPlot( Master, LutFastGamma() );
+        }
+
+        // If mode = fixed gamma, disable fast gamma UI elements
+        if ( mode == LUT_MODE_FIXED )
+        {
+            // Disable fast gamma ui elements
+            d_data->m_ui->rbFastGamma->setChecked( false );
+            d_data->m_ui->sckbFastGamma->setEnabled( false );
+            d_data->m_ui->btnDefaultFastGamma->setEnabled( false );
+
+            /* Note: We check the correct radio button in onLutFixedModeChange() */
+        }
     }
 
     // Enable signals to ui elements
     d_data->m_ui->rbInterpolate->blockSignals( false );
     d_data->m_ui->rbFastGamma->blockSignals( false );
+    d_data->m_ui->rbFixedRec709->blockSignals( false );
+    d_data->m_ui->rbFixedPQ->blockSignals( false );
+    d_data->m_ui->rbFixedHLG->blockSignals( false );
 
     // Store mode
     d_data->m_mode = mode;
+}
+
+/******************************************************************************
+ * LutBox::onLutFixedModeChange
+ *****************************************************************************/
+void LutBox::onLutFixedModeChange( int mode )
+{
+    // Check if lut is in fixed mode
+    if ( LutMode() != LUT_MODE_FIXED )
+    {
+        return;
+    }
+
+    // Uncheck all radio boxes
+    d_data->m_ui->rbFixedRec709->setChecked( false );
+    d_data->m_ui->rbFixedPQ->setChecked( false );
+    d_data->m_ui->rbFixedHLG->setChecked( false );
+
+    // Check boxes according to selected mode
+    if ( mode == LUT_FIXED_REC709 )
+    {
+        d_data->m_ui->rbFixedRec709->setChecked( true );
+    }
+    else if ( mode == LUT_FIXED_PQ )
+    {
+        d_data->m_ui->rbFixedPQ->setChecked( true );
+    }
+    else if ( mode == LUT_FIXED_HLG )
+    {
+        d_data->m_ui->rbFixedHLG->setChecked( true );
+    }
+
+    // Store mode
+    d_data->m_fixed_mode = mode;
+
+    // Draw the plot
+    d_data->drawFixedModePlot( Master, LutFixedMode() );
 }
 
 /******************************************************************************
@@ -1687,7 +1856,7 @@ void LutBox::onLutFastGammaChange( int gamma )
     d_data->m_ui->sckbFastGamma->blockSignals( false );
 
     // If device is in fast gamma mode, display fast gamma plot
-    if ( d_data->m_mode == 1 )
+    if ( d_data->m_mode == LUT_MODE_FAST_GAMMA )
     {
         // Draw the fast gamma curve in the master plot
         d_data->drawFastGammaPlot( Master, LutFastGamma() );
@@ -1703,7 +1872,7 @@ void LutBox::onLutModeInterpolateClicked( bool checked )
     if ( checked )
     {
         setWaitCursor();
-        setLutMode( 0 );
+        setLutMode( LUT_MODE_INTERPOLATE );
         setNormalCursor();
     }
 
@@ -1723,7 +1892,7 @@ void LutBox::onLutModeFastGammaClicked( bool checked )
     if ( checked )
     {
         setWaitCursor();
-        setLutMode( 1 );
+        setLutMode( LUT_MODE_FAST_GAMMA );
         setNormalCursor();
     }
 
@@ -1731,6 +1900,69 @@ void LutBox::onLutModeFastGammaClicked( bool checked )
     else
     {
         d_data->m_ui->rbFastGamma->setChecked( true );
+    }
+}
+
+/******************************************************************************
+ * LutBox::onLutFixedModeRec709Clicked
+ *****************************************************************************/
+void LutBox::onLutFixedModeRec709Clicked( bool checked )
+{
+    // Set fixed lut mode to Rec. 709
+    if ( checked )
+    {
+        setWaitCursor();
+        setLutMode( LUT_MODE_FIXED );
+        setLutFixedMode( LUT_FIXED_REC709 );
+        setNormalCursor();
+    }
+
+    // If button is being "unchecked" by clicking on it again, make it checked again
+    else
+    {
+        d_data->m_ui->rbFixedRec709->setChecked( true );
+    }
+}
+
+/******************************************************************************
+ * LutBox::onLutFixedModePQClicked
+ *****************************************************************************/
+void LutBox::onLutFixedModePQClicked( bool checked )
+{
+    // Set fixed lut mode to PQ
+    if ( checked )
+    {
+        setWaitCursor();
+        setLutMode( LUT_MODE_FIXED );
+        setLutFixedMode( LUT_FIXED_PQ );
+        setNormalCursor();
+    }
+
+    // If button is being "unchecked" by clicking on it again, make it checked again
+    else
+    {
+        d_data->m_ui->rbFixedPQ->setChecked( true );
+    }
+}
+
+/******************************************************************************
+ * LutBox::onLutFixedModeHLGClicked
+ *****************************************************************************/
+void LutBox::onLutFixedModeHLGClicked( bool checked )
+{
+    // Set fixed lut mode to HLG
+    if ( checked )
+    {
+        setWaitCursor();
+        setLutMode( LUT_MODE_FIXED );
+        setLutFixedMode( LUT_FIXED_HLG );
+        setNormalCursor();
+    }
+
+    // If button is being "unchecked" by clicking on it again, make it checked again
+    else
+    {
+        d_data->m_ui->rbFixedHLG->setChecked( true );
     }
 }
 

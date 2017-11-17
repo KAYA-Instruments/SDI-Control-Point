@@ -57,7 +57,7 @@
          </size>
         </property>
         <property name="text">
-         <string>Shutter Time</string>
+         <string>Shutter Time in µs</string>
         </property>
        </widget>
       </item>

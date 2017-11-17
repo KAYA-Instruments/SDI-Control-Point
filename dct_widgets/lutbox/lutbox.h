@@ -95,7 +95,14 @@ class LutBox : public DctWidgetBox
     Q_OBJECT
 
 public:
-    enum LutChannel { Master = 0, Red = 1, Green = 2, Blue = 3, LutChannelMax };
+    enum LutChannel
+    {
+        Master = 0,
+        Red = 1,
+        Green = 2,
+        Blue = 3,
+        LutChannelMax
+    };
 
     explicit LutBox( QWidget * parent = 0 );
     ~LutBox();
@@ -105,6 +112,9 @@ public:
 
     int LutMode() const;
     void setLutMode( const int );
+
+    int LutFixedMode() const;
+    void setLutFixedMode( const int );
     
     int LutPresetStorage() const;
     void setLutPresetStorage( const int );
@@ -125,6 +135,7 @@ protected:
 signals:
     void LutEnableChanged( int, int );
     void LutModeChanged( int );
+    void LutFixedModeChanged( int );
     void LutPresetChanged( int );
 
     void LutRec709Changed( int, int, int, int, int, int );
@@ -155,6 +166,7 @@ signals:
 public slots:
     void onLutEnableChange( int, int );
     void onLutModeChange( int );
+    void onLutFixedModeChange( int );
     void onLutPresetChange( int );
 
     void onLutSampleValuesMasterChange( QVector<int> x, QVector<int> y );
@@ -186,6 +198,9 @@ private slots:
     // lut operational mode
     void onLutModeInterpolateClicked( bool );
     void onLutModeFastGammaClicked( bool );
+    void onLutFixedModeRec709Clicked( bool );
+    void onLutFixedModePQClicked( bool );
+    void onLutFixedModeHLGClicked( bool );
 
     // lut storage select
     void onLutPresetClicked( QAbstractButton * );

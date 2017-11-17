@@ -49,6 +49,15 @@
 #define CMD_SET_LUT_MODE_TMO                    ( 5000 )
 
 /******************************************************************************
+ * @brief command "lut_fixed_mode"
+ *****************************************************************************/
+#define CMD_GET_LUT_FIXED_MODE                  ( "lut_fixed_mode \n" )
+#define CMD_SET_LUT_FIXED_MODE                  ( "lut_fixed_mode %i\n" )
+#define CMD_SYNC_LUT_FIXED_MODE                 ( "lut_fixed_mode " )
+#define CMD_GET_LUT_FIXED_MODE_NO_PARMS         ( 1 )
+#define CMD_SET_LUT_FIXED_MODE_TMO              ( 3000 )
+
+/******************************************************************************
  * @brief command "lut_enable" 
  *****************************************************************************/
 #define CMD_GET_LUT_PRESET                      ( "lut_preset \n" )
@@ -797,7 +806,8 @@ static int get_lut_mode
  *
  * @param[in]  ctx      private protocol context
  * @param[in]  channel  control channel to send the request
- * @param[in]  mode     mode to set (0 = interpolate, 1 = fast gamma)
+ * @param[in]  mode     mode to set (0 = interpolate, 1 = fast gamma,
+ *                      2 = fixed gamma curve)
  *
  * @return     0 on success, error-code otherwise
  *****************************************************************************/
@@ -812,6 +822,78 @@ static int set_lut_mode
 
     return ( set_param_int_X_with_tmo( channel,
                                        CMD_SET_LUT_MODE, CMD_SET_LUT_MODE_TMO,
+                                       INT( mode ) ) );
+}
+
+/**************************************************************************//**
+ * @brief Gets the fixed gamma curve mode of gamma LUT module
+ *
+ * @param[in]  ctx      private protocol context
+ * @param[in]  channel  control channel to send the request
+ * @param[out] mode     current mode
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+static int get_lut_fixed_mode
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    uint8_t * const             mode
+)
+{
+    (void) ctx;
+
+    int v;
+    int res;
+
+    // parameter check
+    if ( !mode )
+    {
+        return ( -EINVAL );
+    }
+
+    // command call to get 1 parameter from provideo system
+    res = get_param_int_X( channel, 2,
+            CMD_GET_LUT_FIXED_MODE, CMD_SYNC_LUT_FIXED_MODE, CMD_SET_LUT_FIXED_MODE, &v );
+
+    // return error code
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
+    // return -EFAULT if number of parameter not matching
+    else if ( res != CMD_GET_LUT_FIXED_MODE_NO_PARMS )
+    {
+        return ( -EFAULT );
+    }
+
+    // type-cast to range
+    *mode = UINT8( v );
+
+    return ( 0 );
+}
+
+/**************************************************************************//**
+ * @brief Sets the fixed gamma curve mode of the LUT module
+ *
+ * @param[in]  ctx      private protocol context
+ * @param[in]  channel  control channel to send the request
+ * @param[in]  mode     mode to set (0 = Rec.709, 1 = PQ, 2 = HLG)
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+static int set_lut_fixed_mode
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    uint8_t const               mode
+)
+{
+    (void) ctx;
+
+    return ( set_param_int_X_with_tmo( channel,
+                                       CMD_SET_LUT_FIXED_MODE, CMD_SET_LUT_FIXED_MODE_TMO,
                                        INT( mode ) ) );
 }
 
@@ -1595,6 +1677,8 @@ static ctrl_protocol_lut_drv_t provideo_lut_drv =
     .set_lut_enable             = set_lut_enable,
     .get_lut_mode               = get_lut_mode,
     .set_lut_mode               = set_lut_mode,
+    .get_lut_fixed_mode         = get_lut_fixed_mode,
+    .set_lut_fixed_mode         = set_lut_fixed_mode,
     .get_lut_preset             = get_lut_preset,
     .set_lut_preset             = set_lut_preset,
     .set_lut_write_index        = set_lut_write_index,

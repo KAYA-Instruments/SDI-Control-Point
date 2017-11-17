@@ -101,6 +101,37 @@ int ctrl_protocol_set_lut_mode
 }
 
 /******************************************************************************
+ * ctrl_protocol_get_lut_mode
+ *****************************************************************************/
+int ctrl_protocol_get_lut_fixed_mode
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t * const              mode
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), get_lut_fixed_mode );
+    CHECK_NOT_NULL( mode );
+    return ( LUT_DRV(protocol->drv)->get_lut_fixed_mode( protocol->ctx, channel, mode ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lut_mode
+ *****************************************************************************/
+int ctrl_protocol_set_lut_fixed_mode
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t const                mode
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), set_lut_fixed_mode );
+    return ( LUT_DRV(protocol->drv)->set_lut_fixed_mode( protocol->ctx, channel, mode ) );
+}
+
+/******************************************************************************
  * ctrl_protocol_get_lut_preset
  *****************************************************************************/
 int ctrl_protocol_get_lut_preset

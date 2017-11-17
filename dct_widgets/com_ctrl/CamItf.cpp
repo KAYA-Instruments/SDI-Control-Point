@@ -70,7 +70,7 @@ void CamItf::GetCameraGain()
     // Is there a signal listener
     if ( receivers(SIGNAL(CameraGainChanged(int))) > 0 )
     {
-        uint16_t value;
+        uint32_t value;
     
         // get camera gain from device
         int res = ctrl_protocol_get_cam_gain( GET_PROTOCOL_INSTANCE(this),
@@ -109,7 +109,7 @@ void CamItf::onCameraGainChange( int value )
 {
     // set camera gain on device
     int res = ctrl_protocol_set_cam_gain( GET_PROTOCOL_INSTANCE(this),
-                    GET_CHANNEL_INSTANCE(this), (uint16_t)value );
+                    GET_CHANNEL_INSTANCE(this), (uint32_t)value );
     HANDLE_ERROR( res );
 
     emit NotifyCameraGainChanged();

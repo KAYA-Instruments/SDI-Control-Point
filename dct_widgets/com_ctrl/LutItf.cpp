@@ -41,6 +41,7 @@ void LutItf::resync()
 
     // operational mode
     GetLutMode();
+    GetLutFixedMode();
 
     // preset
     // Note: Do this before GetLutFastGamma() otherwise the Lutbox might display the wrong plot
@@ -91,8 +92,28 @@ void LutItf::GetLutMode()
             GET_CHANNEL_INSTANCE(this), &mode );
         HANDLE_ERROR( res );
 
-        // emit a LutPresetChanged signal
+        // emit a LutModeChanged signal
         emit LutModeChanged( (int)mode );
+    }
+}
+
+/******************************************************************************
+ * LutItf::GetLutFixedMode
+ *****************************************************************************/
+void LutItf::GetLutFixedMode()
+{
+    // Is there a signal listener
+    if ( receivers(SIGNAL(LutFixedModeChanged(int))) > 0 )
+    {
+        uint8_t mode = 0u;
+
+        // read mode from device
+        int res = ctrl_protocol_get_lut_fixed_mode( GET_PROTOCOL_INSTANCE(this),
+            GET_CHANNEL_INSTANCE(this), &mode );
+        HANDLE_ERROR( res );
+
+        // emit a LutFixedModeChanged signal
+        emit LutFixedModeChanged( (int)mode );
     }
 }
 
@@ -370,11 +391,28 @@ void LutItf::onLutModeChange( int mode )
         GetLutSampleValuesBlue();
     }
 
-    // Else if mode was changed t ofast gamma, get current gamma setting
+    // Else if mode was changed to fast gamma, get current gamma setting
     else if ( mode == 1 )
     {
         GetLutFastGamma();
     }
+
+    // Else if mode was changed to fixed gamma curve, get fixed gamma mode
+    else if ( mode == 2 )
+    {
+        GetLutFixedMode();
+    }
+}
+
+/******************************************************************************
+ * LutItf::onLutFixedModeChange
+ *****************************************************************************/
+void LutItf::onLutFixedModeChange( int mode )
+{
+    // set LUT fixed gamma curve on device
+    int res = ctrl_protocol_set_lut_fixed_mode( GET_PROTOCOL_INSTANCE(this),
+        GET_CHANNEL_INSTANCE(this), (uint8_t)mode );
+    HANDLE_ERROR( res );
 }
 
 /******************************************************************************

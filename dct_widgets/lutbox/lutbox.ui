@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>834</width>
-    <height>982</height>
+    <height>931</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -84,7 +84,7 @@
            <x>0</x>
            <y>0</y>
            <width>794</width>
-           <height>419</height>
+           <height>362</height>
           </rect>
          </property>
         </widget>
@@ -201,6 +201,9 @@
           </property>
           <property name="checked">
            <bool>true</bool>
+          </property>
+          <property name="autoExclusive">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -836,7 +839,7 @@
                 <enum>Qt::StrongFocus</enum>
                </property>
                <property name="text">
-                <string>REC.709 Defaults</string>
+                <string>Rec. 709 Defaults</string>
                </property>
               </widget>
              </item>
@@ -872,107 +875,162 @@
       </widget>
      </item>
      <item>
-      <widget class="QGroupBox" name="gbxFastGamma">
-       <property name="title">
-        <string>Fast Gamma</string>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_5">
-        <property name="spacing">
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="QRadioButton" name="rbFastGamma">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
+      <layout class="QVBoxLayout" name="verticalLayoutFastAndFixedGamma">
+       <item>
+        <widget class="QGroupBox" name="gbxFastGamma">
+         <property name="title">
+          <string>Fast Gamma</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <property name="spacing">
+           <number>0</number>
           </property>
-          <property name="toolTip">
-           <string>Use the fast gamma function. Allows for on-the-fly gamma correction but flexibility is low.</string>
-          </property>
-          <property name="text">
-           <string>Enable</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="SingleChannelKnobBox" name="sckbFastGamma">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>240</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string>SingleChannelKnobBox</string>
-          </property>
-          <property name="whatsThis">
-           <string>SingleChannelKnobBox</string>
-          </property>
-          <property name="title">
-           <string>Gamma</string>
-          </property>
-          <property name="maxRounds">
-           <number>3</number>
-          </property>
-          <property name="value">
-           <number>1000</number>
-          </property>
-          <property name="minimum" stdset="0">
-           <number>1000</number>
-          </property>
-          <property name="maximum" stdset="0">
-           <number>3000</number>
-          </property>
-          <property name="base">
-           <number>10</number>
-          </property>
-          <property name="comma" stdset="0">
-           <number>3</number>
-          </property>
-          <property name="fmt">
-           <string>%-1.3f</string>
-          </property>
-          <property name="maxAngle">
-           <number>150</number>
-          </property>
-          <property name="needleImage">
-           <pixmap resource="../../resource/resource.qrc">:/images/needle/dial-pointer.png</pixmap>
-          </property>
-          <property name="backgroundImage">
-           <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-gray.png</pixmap>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="btnDefaultFastGamma">
-          <property name="text">
-           <string>REC.709 Default</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="verticalSpacer_3">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>0</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
-      </widget>
+          <item>
+           <widget class="QRadioButton" name="rbFastGamma">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>Use the fast gamma function. Allows for on-the-fly gamma correction but flexibility is low.</string>
+            </property>
+            <property name="text">
+             <string>Enable</string>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="SingleChannelKnobBox" name="sckbFastGamma">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>240</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>SingleChannelKnobBox</string>
+            </property>
+            <property name="whatsThis">
+             <string>SingleChannelKnobBox</string>
+            </property>
+            <property name="title">
+             <string>Gamma</string>
+            </property>
+            <property name="maxRounds">
+             <number>3</number>
+            </property>
+            <property name="value">
+             <number>1000</number>
+            </property>
+            <property name="minimum" stdset="0">
+             <number>1000</number>
+            </property>
+            <property name="maximum" stdset="0">
+             <number>3000</number>
+            </property>
+            <property name="base">
+             <number>10</number>
+            </property>
+            <property name="comma" stdset="0">
+             <number>3</number>
+            </property>
+            <property name="fmt">
+             <string>%-1.3f</string>
+            </property>
+            <property name="maxAngle">
+             <number>150</number>
+            </property>
+            <property name="needleImage">
+             <pixmap resource="../../resource/resource.qrc">:/images/needle/dial-pointer.png</pixmap>
+            </property>
+            <property name="backgroundImage">
+             <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-gray.png</pixmap>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnDefaultFastGamma">
+            <property name="text">
+             <string>Rec. 709 Default</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="gbxFixedGamma">
+         <property name="title">
+          <string>Fixed Gamma</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QRadioButton" name="rbFixedRec709">
+            <property name="toolTip">
+             <string>Use fixed gamma curve according Rec. 709 standard.</string>
+            </property>
+            <property name="text">
+             <string>Rec. 709</string>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="rbFixedPQ">
+            <property name="toolTip">
+             <string>Use fixed gamma curve according to Rec. 2100 PQ standard.</string>
+            </property>
+            <property name="text">
+             <string>Rec. 2100 - PQ</string>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="rbFixedHLG">
+            <property name="toolTip">
+             <string>Use fixed gamma curve according to Rec. 2100 HLG standard.</string>
+            </property>
+            <property name="text">
+             <string>Rec. 2100 - HLG</string>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>

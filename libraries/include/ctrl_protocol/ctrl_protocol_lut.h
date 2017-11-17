@@ -118,15 +118,48 @@ int ctrl_protocol_get_lut_mode
 );
 
 /**************************************************************************//**
- * @brief Set current preset storage
+ * @brief Set the operational mode of gamma LUT module
  *
  * @param[in]   channel  control channel instance
  * @param[in]   protocol control protocol instance
- * @param[in]   mode     mode to set (0 = interpolate, 1 = fast gamma)
+ * @param[in]   mode     mode to set (0 = interpolate, 1 = fast gamma,
+ *                       2 = fixed gamma curve)
  *
  * @return      0 on success, error-code otherwise
  *****************************************************************************/
 int ctrl_protocol_set_lut_mode
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t const                mode
+);
+
+/**************************************************************************//**
+ * @brief Gets the fixed gamma curve mode of gamma LUT module
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[out]  mode     current mode
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_lut_fixed_mode
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t * const              mode
+);
+
+/**************************************************************************//**
+ * @brief Set the fixed gamma curve mode of gamma LUT module
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[in]   mode     mode to set (0 = Rec.709, 1 = PQ, 2 = HLG)
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_set_lut_fixed_mode
 (
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel,
@@ -707,6 +740,8 @@ typedef struct ctrl_protocol_lut_drv_s
     ctrl_protocol_uint8_array_t     set_lut_enable;
     ctrl_protocol_get_uint8_t       get_lut_mode;
     ctrl_protocol_set_uint8_t       set_lut_mode;
+    ctrl_protocol_get_uint8_t       get_lut_fixed_mode;
+    ctrl_protocol_set_uint8_t       set_lut_fixed_mode;
     ctrl_protocol_get_uint8_t       get_lut_preset;
     ctrl_protocol_set_uint8_t       set_lut_preset;
     ctrl_protocol_set_uint16_t      set_lut_write_index;

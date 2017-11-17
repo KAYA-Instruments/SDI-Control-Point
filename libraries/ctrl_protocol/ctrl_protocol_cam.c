@@ -58,7 +58,7 @@ int ctrl_protocol_get_cam_gain
 (
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel, 
-    uint16_t * const             gain
+    uint32_t * const             gain
 )
 {
     CHECK_HANDLE( protocol );
@@ -74,7 +74,7 @@ int ctrl_protocol_set_cam_gain
 (
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel, 
-    uint16_t const               gain
+    uint32_t const               gain
 )
 {
     CHECK_HANDLE( protocol );

@@ -176,3 +176,115 @@ uint32_t sm_gamma_float
 
     return ( (uint32_t)(res) );
 }
+
+/******************************************************************************
+ * sm_pq - Calculates the PQ gamma value for a given input value.
+ *****************************************************************************/
+uint32_t sm_pq
+(
+        uint32_t const value,
+        uint8_t const  bit_width_input,
+        uint8_t const  bit_width_output
+)
+{
+    float Vin       = value;
+    float E_non_lin = 0.0f;
+    float Y         = 0.0f;
+    float Vout      = 0.0f;
+    int32_t res     = 0;
+    uint32_t size_i = (1ul << bit_width_input);
+    uint32_t size_o = (1ul << bit_width_output);
+
+    /* See ITU-R BT.2100:
+     * https://www.itu.int/dms_pubrec/itu-r/rec/bt/R-REC-BT.2100-1-201706-I!!PDF-E.pdf
+     *
+     * E_non_lin = 1.099 * (59.5208 * L)^0.45 - 0.099   for 1         >= L >  0.0003024
+     * E_non_lin = 267.84 * L                           for 0.0003024 >= L >= 0
+     *
+     * Y = E_non_lin^2.4 / 100 */
+
+    Vin  /= (float)size_i;                      // normalize to 0..1
+
+    // Compute non linear representation of the input values
+    if ( Vin <= 0.0003024f )
+    {
+        E_non_lin = 267.84 * Vin;
+    }
+    else
+    {
+        E_non_lin = 1.099f * fastpow((59.5208f * Vin), 0.45f) - 0.099f;
+    }
+
+    // Calculate Y value
+    Y = fastpow(E_non_lin, 2.4f) / 100.0f;
+
+    // Calculate resulting code value
+    float const c1 = 0.8359375f;
+    float const c2 = 18.8515625f;
+    float const c3 = 18.6875f;
+    float const m1 = 0.1593017578125f;
+    float const m2 = 78.84375f;
+
+    Vout = fastpow(((c1 + c2 * fastpow(Y, m1)) / (1 + c3 * fastpow(Y, m1))), m2);
+
+    Vout *= (float)size_o;                      // normalize to output bit-width
+    Vout += 0.5f;                               // for rounding
+    res   = (int32_t)Vout;
+
+    // clip to range 0..(size_o-1)
+    clip( res, 0, (int32_t)(size_o-1) );
+
+    return ( (int32_t)(res) );
+}
+
+/******************************************************************************
+ * sm_hlg - Calculates the hybrid log-gamma value for a given input value.
+ *****************************************************************************/
+uint32_t sm_hlg
+(
+        uint32_t const value,
+        uint8_t const  bit_width_input,
+        uint8_t const  bit_width_output
+)
+{
+    float Vin       = value;
+    float Vout      = 0.0f;
+    int32_t res     = 0;
+    uint32_t size_i = (1ul << bit_width_input);
+    uint32_t size_o = (1ul << bit_width_output);
+
+    /* See ITU-R BT.2100:
+     * https://www.itu.int/dms_pubrec/itu-r/rec/bt/R-REC-BT.2100-1-201706-I!!PDF-E.pdf
+     *
+     * V = a * ln(12 * L - b) + c   for 1    >= L >  1/12
+     * V = sqrt(3 * L)              for 1/12 >= L >= 0
+     *
+     * where a = 0.17883277,
+     *       b = 1-4a = 0.28466892,
+     *       c = 0.5-a*ln(4a) = 0.55991073 */
+
+    Vin  /= (float)size_i;                      // normalize to 0..1
+
+    float const a = 0.17883277;
+    float const b = 0.28466892;
+    float const c = 0.55991073;
+    float const threshold = 1.0f / 12.0f;
+
+    if ( Vin <= threshold )
+    {
+        Vout = sqrtf(3.0f * Vin);
+    }
+    else
+    {
+        Vout = (a * logf((12.0f * Vin) - b)) + c;
+    }
+
+    Vout *= (float)size_o;                      // normalize to output bit-width
+    Vout += 0.5f;                               // for rounding
+    res   = (int32_t)Vout;
+
+    // clip to range 0..(size_o-1)
+    clip( res, 0, (int32_t)(size_o-1) );
+
+    return ( (int32_t)(res) );
+}

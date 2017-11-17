@@ -140,6 +140,38 @@ uint32_t sm_gamma_float
     uint8_t const   bit_width_output
 );
 
+/**************************************************************************//**
+ * @brief Calculates the PQ gamma value for a given input value.
+ *
+ * @param[in]   value               input value (X-axis)
+ * @param[in]   bit_width_input     bit-width of input
+ * @param[in]   bit_width_output    bit-width of output
+ *
+ * @return      computed gamma-correction sample
+ *****************************************************************************/
+uint32_t sm_pq
+(
+        uint32_t const value,
+        uint8_t const  bit_width_input,
+        uint8_t const  bit_width_output
+);
+
+/**************************************************************************//**
+ * @brief Calculates the hybrid log-gamma value for a given input value.
+ *
+ * @param[in]   value               input value (X-axis)
+ * @param[in]   bit_width_input     bit-width of input
+ * @param[in]   bit_width_output    bit-width of output
+ *
+ * @return      computed gamma-correction sample
+ *****************************************************************************/
+uint32_t sm_hlg
+(
+        uint32_t const value,
+        uint8_t const  bit_width_input,
+        uint8_t const  bit_width_output
+);
+
 #ifdef __cplusplus
 }
 #endif

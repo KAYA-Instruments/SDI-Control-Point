@@ -571,6 +571,9 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         connect( dev->GetLutItf(), SIGNAL(LutModeChanged(int)), m_ui->lutBox, SLOT(onLutModeChange(int)) );
         connect( m_ui->lutBox, SIGNAL(LutModeChanged(int)), dev->GetLutItf(), SLOT(onLutModeChange(int)) );
 
+        connect( dev->GetLutItf(), SIGNAL(LutFixedModeChanged(int)), m_ui->lutBox, SLOT(onLutFixedModeChange(int)) );
+        connect( m_ui->lutBox, SIGNAL(LutFixedModeChanged(int)), dev->GetLutItf(), SLOT(onLutFixedModeChange(int)) );
+
         connect( dev->GetLutItf(), SIGNAL(LutPresetChanged(int)), m_ui->lutBox, SLOT(onLutPresetChange(int)) );
         connect( m_ui->lutBox, SIGNAL(LutPresetChanged(int)), dev->GetLutItf(), SLOT(onLutPresetChange(int)) );
 

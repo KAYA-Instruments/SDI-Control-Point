@@ -47,6 +47,7 @@ public:
     
     // operational mode
     void GetLutMode();
+    void GetLutFixedMode();
 
     // preset storage
     void GetLutPreset();
@@ -71,6 +72,7 @@ signals:
     
     // operational mode storage
     void LutModeChanged( int mode );
+    void LutFixedModeChanged( int mode );
 
     // preset storage
     void LutPresetChanged( int value );
@@ -101,6 +103,7 @@ public slots:
 
     // operational mode
     void onLutModeChange( int mode );
+    void onLutFixedModeChange( int mode );
     
     // preset storage
     void onLutPresetChange( int value );
@@ -150,6 +153,8 @@ public slots:
                       y, SLOT(onLutEnableChange(int,int)) );                                \
     QObject::connect( x, SIGNAL(LutModeChanged(int)),                                       \
                       y, SLOT(onLutModeChange(int)) );                                      \
+    QObject::connect( x, SIGNAL(LutFixedModeChanged(int)),                                  \
+                      y, SLOT(onLutFixedModeChange(int)) );                                 \
     QObject::connect( x, SIGNAL(LutPresetChanged(int)),                                     \
                       y, SLOT(onLutPresetChange(int)) );                                    \
     QObject::connect( x, SIGNAL(LutSampleValuesRedChanged(QVector<int>,QVector<int>)),      \
