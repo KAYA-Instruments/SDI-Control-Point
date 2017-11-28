@@ -36,10 +36,10 @@
  * @brief command "lsc"
  *****************************************************************************/
 #define CMD_GET_LSC                         ( "lsc\n" )
-#define CMD_SET_LSC                         ( "lsc %u %u %u %u %u\n" )
-#define CMD_SET_LSC_WITH_COPY_FLAG          ( "lsc %u %u %u %u %u %i\n" )
+#define CMD_SET_LSC                         ( "lsc %u %u %u %u\n" )
+#define CMD_SET_LSC_WITH_COPY_FLAG          ( "lsc %u %u %u %u %i\n" )
 #define CMD_SYNC_LSC                        ( "lsc " )
-#define CMD_LSC_NO_PARMS                    ( 5 )
+#define CMD_LSC_NO_PARMS                    ( 4 )
 
 /******************************************************************************
  * @brief command "bayer"

@@ -167,21 +167,6 @@ static QString gKnownDevices[KnownDeviceMax] =
 };
 
 /******************************************************************************
- * lens shading correction
- *****************************************************************************/
-enum LscSegmentationMode
-{
-    LscSegmentationModeFirst    = 0,
-    LscSegmentationLinSeg33     = 0,
-    LscSegmentationLinSeg32     = 1,
-    LscSegmentation3Seg32       = 2,
-    LscSegmentation5Seg32       = 3,
-    LscSegmentationLinSeg128    = 4,
-    LscSegmentation3Seg128      = 5,
-    LscSegmentationMax,
-};
-
-/******************************************************************************
  * bayer pattern 
  *****************************************************************************/
 enum BayerPattern 
@@ -335,9 +320,6 @@ enum FlipMode
 
 // return if the name belongs to a known device
 bool DeviceIsKnown(const QString & deviceName);
-
-// return corresponding lens shading correction segmentation mode name
-QString GetLscSegmentationModeName( LscSegmentationMode mode );
 
 // return corresponding bayer-pattern name
 QString GetBayerPatternName( BayerPattern pattern );

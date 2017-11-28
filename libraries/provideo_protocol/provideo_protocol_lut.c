@@ -55,7 +55,7 @@
 #define CMD_SET_LUT_FIXED_MODE                  ( "lut_fixed_mode %i\n" )
 #define CMD_SYNC_LUT_FIXED_MODE                 ( "lut_fixed_mode " )
 #define CMD_GET_LUT_FIXED_MODE_NO_PARMS         ( 1 )
-#define CMD_SET_LUT_FIXED_MODE_TMO              ( 3000 )
+#define CMD_SET_LUT_FIXED_MODE_TMO              ( 5000 )
 
 /******************************************************************************
  * @brief command "lut_enable" 

@@ -14,7 +14,7 @@ The license file can be found in:
 ./dct_widgets/qcustomplot/GPL.txt
 
 This license applies to all files in the following folder:
-./det_widgets/qcustomplot/
+./dct_widgets/qcustomplot/
 
 -------- csvparser / csvwriter --------
 
@@ -35,8 +35,7 @@ https://sourceforge.net/projects/embunit/
 
 -------- QDarkStyleSheet --------
 
-This program uses the "Dark Style" style sheet by Colin Duquesnoy which is licensed under
-MIT license and can be obtained on GitHub:
+This program uses the "Dark Style" style sheet by Colin Duquesnoy which is licensed under MIT license and can be obtained on GitHub:
 https://github.com/ColinDuquesnoy/QDarkStyleSheet
 
 This applies to the files under:

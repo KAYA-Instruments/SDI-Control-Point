@@ -43,6 +43,7 @@
 #define CMD_SET_AEC_SETUP                   ( "aec %i %i %i %i %i %i %i %i\n" )
 #define CMD_SYNC_AEC_SETUP                  ( "aec " )
 #define CMD_GET_AEC_SETUP_NO_PARAMS         ( 8 )
+#define CMD_SET_AEC_SETUP_TMO               ( 200 )
 
 /******************************************************************************
  * @brief command "stat_ae" 
@@ -241,7 +242,7 @@ static int set_aec_setup
         return ( -EFAULT );
     }
 
-    return ( set_param_int_X( channel, CMD_SET_AEC_SETUP,
+    return ( set_param_int_X_with_tmo( channel, CMD_SET_AEC_SETUP, CMD_SET_AEC_SETUP_TMO,
         INT( values[0] ), INT( values[1] ), INT( values[2] ), INT( values[3] ),
         INT( values[4] ), INT( values[5] ), INT( values[6] ), INT( values[7] ) ) );
 }

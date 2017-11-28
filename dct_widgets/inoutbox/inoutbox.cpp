@@ -87,7 +87,6 @@ public:
 #define INOUT_SETTINGS_AEC_FLICKER                  ( "aec_flicker" )
 
 #define INOUT_SETTINGS_LSC_ENABLE                   ( "lsc_enable" )
-#define INOUT_SETTINGS_LSC_SEGMENTATION_MODE        ( "lsc_segmentation_mode" )
 #define INOUT_SETTINGS_LSC_K                        ( "lsc_k" )
 #define INOUT_SETTINGS_LSC_OFFSET                   ( "lsc_offset" )
 #define INOUT_SETTINGS_LSC_SLOPE                    ( "lsc_slope" )
@@ -205,12 +204,6 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->sbxGenlockOffsetHorizontal->setRange( -4095, 4095 );
     d_data->m_ui->sbxGenlockOffsetHorizontal->setKeyboardTracking( false );
 
-    // fill lens shading correction segmentation mode combo box
-    for ( int i=LscSegmentationModeFirst; i<LscSegmentationMax; i++ )
-    {
-        addLscSegmentationMode( GetLscSegmentationModeName( (LscSegmentationMode)i ), i );
-    }
-
     // fill bayer pattern combo box
     for ( int i=BayerPatternFirst; i<BayerPatternMax; i++ )
     {
@@ -286,9 +279,9 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->rdbTaf50Hz, SIGNAL( toggled(bool) ), this, SLOT(onTafToggle(bool)) );
     connect( d_data->m_ui->rdbTaf60Hz, SIGNAL( toggled(bool) ), this, SLOT(onTafToggle(bool)) );
 
-    connect( d_data->m_ui->sbxAperture    , SIGNAL(valueChanged(int)), this, SLOT(onSbxIrisAptChange(int)) );
     connect( d_data->m_ui->sldAperture    , SIGNAL(valueChanged(int)), this, SLOT(onSldIrisAptChange(int)) );
-    connect( d_data->m_ui->sldSetPoint    , SIGNAL(sliderReleased()), this, SLOT(onSldIrisAptReleased()) );
+    connect( d_data->m_ui->sldAperture    , SIGNAL(sliderReleased()), this, SLOT(onSldIrisAptReleased()) );
+    connect( d_data->m_ui->sbxAperture    , SIGNAL(valueChanged(int)), this, SLOT(onSbxIrisAptChange(int)) );
 
     // timecode
     connect( d_data->m_ui->btnSetTimecode , SIGNAL(clicked()), this, SLOT(onBtnTimecodeSetClicked()) );
@@ -297,8 +290,6 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
 
     // lense shading correction
     connect( d_data->m_ui->cbxLscEnable   , SIGNAL(stateChanged(int)), this, SLOT(onCbxLscEnableChange(int)) );
-
-    connect( d_data->m_ui->cbxSegmentationMode, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxSegmentationModeChange(int)) );
 
     connect( d_data->m_ui->sbxK         , SIGNAL(valueChanged(double)), this, SLOT(onSbxKChange(double)) );
     connect( d_data->m_ui->sldK         , SIGNAL(valueChanged(int)), this, SLOT(onSldKChange(int)) );
@@ -553,14 +544,6 @@ bool InOutBox::LscEnable() const
 }
 
 /******************************************************************************
- * InOutBox::LscMode
- *****************************************************************************/
-LscSegmentationMode InOutBox::LscMode() const
-{
-    return ( d_data->m_LscSetup.mode );
-}
-
-/******************************************************************************
  * InOutBox::LscK
  *****************************************************************************/
 float InOutBox::LscK() const
@@ -806,7 +789,6 @@ void InOutBox::loadSettings( QSettings & s )
 
     lsc_setup_t lscSetup;
     lscSetup.enable = s.value( INOUT_SETTINGS_LSC_ENABLE ).toBool();
-    lscSetup.mode = (LscSegmentationMode)s.value( INOUT_SETTINGS_LSC_SEGMENTATION_MODE ).toUInt();
     lscSetup.k = s.value( INOUT_SETTINGS_LSC_K ).toUInt();
     lscSetup.offset = s.value( INOUT_SETTINGS_LSC_OFFSET ).toUInt();
     lscSetup.slope = s.value( INOUT_SETTINGS_LSC_SLOPE ).toUInt();
@@ -838,7 +820,6 @@ void InOutBox::saveSettings( QSettings & s )
     s.setValue( INOUT_SETTINGS_AEC_FLICKER                  , AecFlickerFrequency() );
 
     s.setValue ( INOUT_SETTINGS_LSC_ENABLE                  , LscEnable() );
-    s.setValue ( INOUT_SETTINGS_LSC_SEGMENTATION_MODE       , LscMode() );
     s.setValue ( INOUT_SETTINGS_LSC_K                       , LscK() );
     s.setValue ( INOUT_SETTINGS_LSC_OFFSET                  , LscOffset() );
     s.setValue ( INOUT_SETTINGS_LSC_SLOPE                   , LscSlope() );
@@ -876,16 +857,6 @@ void InOutBox::applySettings( void )
     emit ChainGenlockModeChanged( d_data->m_ui->cbxGenLockMode->currentData().toInt() );
     emit ChainGenlockOffsetChanged( GenLockOffsetVertical(), GenLockOffsetHorizontal() );
     emit ChainGenlockTerminationChanged( GenLockTermination() );
-}
-
-/******************************************************************************
- * InOutBox::addLscSegmentationMode
- *****************************************************************************/
-void InOutBox::addLscSegmentationMode( QString name, int id )
-{
-    d_data->m_ui->cbxSegmentationMode->blockSignals( true );
-    d_data->m_ui->cbxSegmentationMode->addItem( name, id );
-    d_data->m_ui->cbxSegmentationMode->blockSignals( false );
 }
 
 /******************************************************************************
@@ -1618,15 +1589,6 @@ void InOutBox::updateLscWidgets( void )
     d_data->m_ui->cbxLscEnable->setChecked( d_data->m_LscSetup.enable );
     d_data->m_ui->cbxLscEnable->blockSignals( false );
 
-    // mode
-    int index = d_data->m_ui->cbxSegmentationMode->findData( d_data->m_LscSetup.mode );
-    if ( index != -1 )
-    {
-        d_data->m_ui->cbxSegmentationMode->blockSignals( true );
-        d_data->m_ui->cbxSegmentationMode->setCurrentIndex( index );
-        d_data->m_ui->cbxSegmentationMode->blockSignals( false );
-    }
-
     // k
     d_data->m_ui->sbxK->blockSignals( true );
     d_data->m_ui->sbxK->setValue( d_data->m_LscSetup.k );
@@ -1704,15 +1666,14 @@ QVector<int> InOutBox::createAecVector( void )
 QVector<uint> InOutBox::createLscVector( void )
 {
     // pack LSC setup values into vector
-    QVector<uint> values(5);
+    QVector<uint> values(4);
     values[0] = d_data->m_LscSetup.enable;
-    values[1] = d_data->m_LscSetup.mode;
 
     /* The parameters k, offset and slope have to be converted from
      * float to Q2.30 fixed point format */
-    values[2] = (uint)(d_data->m_LscSetup.k * (float)(1u << 30u));
-    values[3] = (uint)(d_data->m_LscSetup.offset * (float)(1u << 30u));
-    values[4] = (uint)(d_data->m_LscSetup.slope * (float)(1u << 30u));
+    values[1] = (uint)(d_data->m_LscSetup.k * (float)(1u << 30u));
+    values[2] = (uint)(d_data->m_LscSetup.offset * (float)(1u << 30u));
+    values[3] = (uint)(d_data->m_LscSetup.slope * (float)(1u << 30u));
     return ( values );
 }
 
@@ -1901,13 +1862,12 @@ void InOutBox::onLscChange( QVector<uint> values )
     if ( values.count() == 5 )
     {
         d_data->m_LscSetup.enable = (bool)values[0];
-        d_data->m_LscSetup.mode   = (LscSegmentationMode)values[1];
 
         /* The parameters k, offset and slope have to be converted from
          * Q2.30 fixed point format to float */
-        d_data->m_LscSetup.k      = (float)values[2] / (float)(1u << 30u);
-        d_data->m_LscSetup.offset = (float)values[3] / (float)(1u << 30u);
-        d_data->m_LscSetup.slope  = (float)values[4] / (float)(1u << 30u);
+        d_data->m_LscSetup.k      = (float)values[1] / (float)(1u << 30u);
+        d_data->m_LscSetup.offset = (float)values[2] / (float)(1u << 30u);
+        d_data->m_LscSetup.slope  = (float)values[3] / (float)(1u << 30u);
 
         updateLscWidgets();
     }
@@ -1921,18 +1881,6 @@ void InOutBox::onCbxLscEnableChange( int value )
     bool enable = (value == Qt::Checked) ? true : false;
 
     d_data->m_LscSetup.enable = enable;
-
-    setWaitCursor();
-    emit LscChanged( createLscVector() );
-    setNormalCursor();
-}
-
-/******************************************************************************
- * InOutBox::onCbxSegmentationModeChange
- *****************************************************************************/
-void InOutBox::onCbxSegmentationModeChange( int index )
-{
-    d_data->m_LscSetup.mode = (LscSegmentationMode)d_data->m_ui->cbxSegmentationMode->itemData( index ).toUInt();
 
     setWaitCursor();
     emit LscChanged( createLscVector() );

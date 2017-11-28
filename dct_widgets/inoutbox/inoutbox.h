@@ -31,7 +31,6 @@
  *****************************************************************************/
 typedef struct lsc_setup_t {
     bool                enable;
-    LscSegmentationMode mode;
     float               k;
     float               offset;
     float               slope;
@@ -65,7 +64,6 @@ public:
     void setAecFlickerFrequency( const int value );
 
     bool LscEnable() const;
-    LscSegmentationMode LscMode() const;
     float LscK() const;
     float LscOffset() const;
     float LscSlope() const;
@@ -89,7 +87,6 @@ public:
     bool GenLockTermination() const;
     void setGenLockTermination( const bool value );
 
-    void addLscSegmentationMode( QString name, int id );
     void addBayerPattern( QString name, int id );
     void clearAllVideoModes();
     void addVideoMode( QString name, int id );
@@ -226,7 +223,6 @@ private slots:
     void onSbxIrisAptChange( int value );
 
     void onCbxLscEnableChange( int value );
-    void onCbxSegmentationModeChange( int index );
 
     void onSldKChange( int value );
     void onSldKReleased();

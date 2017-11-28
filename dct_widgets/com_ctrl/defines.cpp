@@ -39,36 +39,6 @@ bool DeviceIsKnown( const QString & deviceName )
 }
 
 /******************************************************************************
- * GetLscSegmentationModeName()
- *****************************************************************************/
-QString GetLscSegmentationModeName( LscSegmentationMode mode )
-{
-    switch ( mode )
-    {
-        case LscSegmentationLinSeg33:
-            return ( QString(LSC_SEGM_MODE_LIN_SEG_33) );
-
-        case LscSegmentationLinSeg32:
-            return ( QString(LSC_SEGM_MODE_LIN_SEG_32) );
-
-        case LscSegmentation3Seg32:
-            return ( QString(LSC_SEGM_MODE_3_SEG_32) );
-
-        case LscSegmentation5Seg32:
-            return ( QString(LSC_SEGM_MODE_5_SEG_32) );
-
-        case LscSegmentationLinSeg128:
-            return ( QString(LSC_SEGM_MODE_LIN_SEG_128) );
-
-        case LscSegmentation3Seg128:
-            return ( QString(LSC_SEGM_MODE_3_SEG_128) );
-
-        default:
-            return ( QString::null );
-    }
-}
-
-/******************************************************************************
  * GetBayerPatternName()
  *****************************************************************************/
 QString GetBayerPatternName( BayerPattern pattern )
