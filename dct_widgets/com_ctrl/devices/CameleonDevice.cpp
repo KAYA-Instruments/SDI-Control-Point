@@ -161,6 +161,8 @@ CameleonDevice::features CameleonDevice::getSupportedFeatures()
     deviceFeatures.hasOsdItf                = true;
     deviceFeatures.hasOsdTestPattern        = true;
 
+    deviceFeatures.lutBitWidth              = 12;
+
     return deviceFeatures;
 }
 

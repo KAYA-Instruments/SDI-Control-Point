@@ -248,26 +248,26 @@ int sm_cubic_spline_interpolation_calc_init
     spline_interpolation_ctx_t * const ctx
 )
 {
-	double F[CSIP_MAX_SAMPLES];
-	double u[CSIP_MAX_SAMPLES];
-	double v[CSIP_MAX_SAMPLES];
+    double F[CSIP_MAX_SAMPLES];
+    double u[CSIP_MAX_SAMPLES];
+    double v[CSIP_MAX_SAMPLES];
 
     unsigned i, n;
-    
+
     CHECK_CSIP_HANDLE( ctx );
     CHECK_CSIP_STATE( ctx, CSIP_STATE_GOT_SAMPLES );
 
     memset( F, 0, sizeof(F) );
     memset( u, 0, sizeof(u) );
     memset( v, 0, sizeof(v) );
-    
+
     n = ctx->n - 1;
 
     // compute the h_i and b_i
     for( i = 0u; i<=(n-1); i++ )
     {
         ctx->h[i] = ctx->x[i+1] - ctx->x[i];
-        F[i]      = (double)(ctx->y[i+1] - ctx->y[i]) / (double)ctx->h[i];
+        F[i]      = (double)((int32_t)ctx->y[i+1] - (int32_t)ctx->y[i]) / (double)ctx->h[i];
     }
 
     // Gaussian elimination
@@ -275,8 +275,8 @@ int sm_cubic_spline_interpolation_calc_init
     v[1] = 6.0f * (F[1] - F[0]);
     for( i = 2u; i<=(n-1); i++ )
     {
-        u[i] = 2.0f * (ctx->h[i-1] + ctx->h[i]) - ((ctx->h[i-1] * ctx->h[i-1]) / u[i-1]);
-        v[i] = 6.0f * (F[i] - F[i-1]) - ((ctx->h[i-1] * v[i-1]) / u[i-1]);
+        u[i] = 2.0f * (double)(ctx->h[i-1] + ctx->h[i]) - (((double)ctx->h[i-1] * (double)ctx->h[i-1]) / u[i-1]);
+        v[i] = 6.0f * (F[i] - F[i-1]) - (((double)ctx->h[i-1] * v[i-1]) / u[i-1]);
     }
 
     // Back-substitution
@@ -284,9 +284,9 @@ int sm_cubic_spline_interpolation_calc_init
     ctx->z[0] = 0.0f;
     for ( i=(n-1); i>0; i-- )
     {
-        ctx->z[i] = (v[i] - ctx->h[i]*ctx->z[i+1]) / u[i];
+        ctx->z[i] = (v[i] - (double)ctx->h[i] * ctx->z[i+1]) / u[i];
     }
-    
+
     ctx->state = CSIP_STATE_RUNNING;
 
     return ( 0 );

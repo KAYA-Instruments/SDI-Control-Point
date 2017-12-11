@@ -46,8 +46,6 @@ namespace Ui {
 /******************************************************************************
  * general
  *****************************************************************************/
-#define LUT_BIT_WIDTH                       ( 12 )
-
 enum LutMode
 {
     LUT_MODE_INVALID = -1,      /**< for range check */
@@ -75,6 +73,7 @@ enum LutFixedMode
 #define TO_FLOAT(x)                         (((float)x) / SCALING_FACTOR)
 #define TO_DOUBLE(x)                        (((double)x) / SCALING_FACTOR)
 #define TO_INT(x)                           ((int)(x * SCALING_FACTOR))
+#define DEFAULT_BIT_WIDTH                   ( 12 )
 
 /******************************************************************************
  * local definitions
@@ -177,15 +176,24 @@ static bool fileExists( QString & path )
  *****************************************************************************/
 class LutDelegate : public QItemDelegate
 {
+private:
+    int min;
+    int max;
 
 public:
+    LutDelegate( int min, int max ) : QItemDelegate()
+    {
+        this->min = min;
+        this->max = max;
+    }
+
     // create a single editable table-cell
     QWidget* createEditor( QWidget * parent, const QStyleOptionViewItem &, const QModelIndex & ) const
     {
         QLineEdit * edit = new QLineEdit( parent );
 
         // set validator
-        QIntValidator *valid = new QIntValidator( 0, 4095, edit );
+        QIntValidator *valid = new QIntValidator( min, max, edit );
         edit->setValidator( valid );
 
         return ( edit );
@@ -222,12 +230,13 @@ class LutBox::PrivateData
 public:
     PrivateData( QWidget * parent )
         : m_ui( new Ui::UI_LutBox )
-        , m_delegate( new LutDelegate )
+        , m_delegate( new LutDelegate( 0, ((1 << DEFAULT_BIT_WIDTH) - 1)) )
         , m_enable( true )
         , m_mode( LUT_MODE_INVALID )
         , m_fixed_mode( LUT_FIXED_INVALID )
         , m_preset( 0 )
         , m_ch( Master )
+        , m_bit_width( DEFAULT_BIT_WIDTH )
     {
         // initialize UI
         m_ui->setupUi( parent );
@@ -446,8 +455,8 @@ public:
             QModelIndex y_i = m_model[ch]->index( i, 1, QModelIndex() );
 
             // set used or clear unsed sample values
-            m_model[ch]->setData( x_i, (i==0) ? 0 : 4095 );
-            m_model[ch]->setData( y_i, (i==0) ? 0 : 4095 );
+            m_model[ch]->setData( x_i, (i==0) ? 0 : ((1 << m_bit_width) - 1) );
+            m_model[ch]->setData( y_i, (i==0) ? 0 : ((1 << m_bit_width) - 1) );
 
             // set alignment 
             m_model[ch]->setData( x_i, QVariant(Qt::AlignVCenter | Qt::AlignRight), Qt::TextAlignmentRole );
@@ -459,7 +468,7 @@ public:
         m_model[ch]->item( 0, 0 )->setFlags( m_model[ch]->item( 0, 0 )->flags() ^ Qt::ItemIsEditable );
         m_model[ch]->item( 0, 0 )->setBackground( QColor(48, 48, 48) );
 
-        // x-coordinate of end-point is fix (4095)
+        // x-coordinate of end-point is fix ((1 << LUT_BIT_WIDTH) - 1)
         m_model[ch]->item( 1, 0 )->setFlags( m_model[ch]->item( 1, 0 )->flags() ^ Qt::ItemIsEditable );
         m_model[ch]->item( 1, 0 )->setBackground( QColor(48, 48, 48) );
         
@@ -598,6 +607,10 @@ public:
     {
         QCustomPlot * plot = getLutPlot( ch );
 
+        // plot 1024 values
+        const int num_samples = 1024;
+        const int scale_factor = (1 << m_bit_width) / num_samples;
+
         // clear all graphs 
         plot->graph( INTERPOLATION_CURVE_ID )->clearData();
         plot->graph( FINAL_CURVE_ID )->clearData();
@@ -605,13 +618,13 @@ public:
         plot->graph( HIGHLIGHT_CURVE_ID )->clearData();
 
         // interpolated curve
-        QVector<double> x1( 1024 );
-        QVector<double> y1( 1024 );
+        QVector<double> x1( num_samples );
+        QVector<double> y1( num_samples );
         m_interpolate[ch]->setSamples( x, y );
-        for ( int i=0; i<1024; i+=1 )
+        for ( int i=0; i<num_samples; i+=1 )
         {
-            x1[i] = ((double)(i<<2)) / 4096.0f;
-            y1[i] = ((double)m_interpolate[ch]->interpolate( (i<<2) )) / 4096.0f;
+            x1[i] = ((double)(i*scale_factor)) / (double)(1 << m_bit_width);
+            y1[i] = ((double)m_interpolate[ch]->interpolate( (i*scale_factor) )) / (double)(1 << m_bit_width);
         }
         plot->graph( INTERPOLATION_CURVE_ID )->setData( x1, y1 );
 
@@ -629,12 +642,12 @@ public:
             }
             m_final_interpolate[ch]->setSamples( x2, y3 );
             
-            QVector<double> x4( 1024 );
-            QVector<double> y4( 1024 );
-            for ( int i=0; i<1024; i+=1 )
+            QVector<double> x4( num_samples );
+            QVector<double> y4( num_samples );
+            for ( int i=0; i<num_samples; i+=1 )
             {
-                x4[i] = ((double)(i<<2)) / 4096.0f;
-                y4[i] = ((double)m_final_interpolate[ch]->interpolate( (i<<2) )) / 4096.0f;
+                x4[i] = ((double)(i*scale_factor)) / (double)(1 << m_bit_width);
+                y4[i] = ((double)m_final_interpolate[ch]->interpolate( (i*scale_factor) )) / (double)(1 << m_bit_width);
             }
             
             plot->graph( FINAL_CURVE_ID )->setData( x4, y4 );
@@ -666,8 +679,8 @@ public:
         QVector<double> y5( y.count() );
         for ( int i=0; i<x.count(); i ++ )
         {
-            x5[i] = ((double)x[i]) / 4096.0f;
-            y5[i] = ((double)y[i]) / 4096.0f;
+            x5[i] = ((double)x[i]) / (double)(1 << m_bit_width);
+            y5[i] = ((double)y[i]) / (double)(1 << m_bit_width);
         }
         plot->graph( SAMPLE_CURVE_ID )->setData( x5, y5 );
 
@@ -685,8 +698,8 @@ public:
         QVector<double> y2( y.count() );
         for ( int i=0; i<x.count(); i ++ )
         {
-            x2[i] = ((double)x[i]) / 4096.0f;
-            y2[i] = ((double)y[i]) / 4096.0f;
+            x2[i] = ((double)x[i]) / (double)(1 << m_bit_width);
+            y2[i] = ((double)y[i]) / (double)(1 << m_bit_width);
         }
 
         plot->graph( HIGHLIGHT_CURVE_ID )->setData( x2, y2 );
@@ -782,7 +795,7 @@ public:
         inverse_gamma = 1.0f / gamma;
 
         // II. Calculate samples
-        int const bit_width = LUT_BIT_WIDTH;
+        int const bit_width = m_bit_width;
         int const num_samples = 128;
         int i;
         for ( i = 0; i < (1 << bit_width); i += (1 << bit_width) / num_samples )
@@ -817,7 +830,7 @@ public:
         float const brightness = TO_FLOAT( REC709_BRIGHTNESS );
 
         // I. Calculate samples
-        int const bit_width = LUT_BIT_WIDTH;
+        int const bit_width = m_bit_width;
         int const num_samples = 512;
         int i;
         for ( i = 0; i < (1 << bit_width); i += (1 << bit_width) / num_samples )
@@ -849,7 +862,8 @@ public:
     int                     m_mode;                         /**< operational mode */
     int                     m_fixed_mode;                   /**< fixed gamma curve mode */
     int                     m_preset;                       /**< current preset */
-    LutChannel              m_ch;
+    LutChannel              m_ch;                           /**< currently selected channel */
+    int                     m_bit_width;                    /**< width of the lut module (depends on device) */
     
     CubicInterpolation *    m_interpolate[LutChannelMax];       /**< interpolation class */
     CubicInterpolation *    m_final_interpolate[LutChannelMax]; /**< final interpolation class */
@@ -1042,6 +1056,34 @@ void LutBox::setLutFastGamma( const int gamma )
 
     // Emit fast gamma value changed signal
     emit LutFastGammaChanged( gamma );
+}
+
+/******************************************************************************
+ * LutBox::LutBitWidth
+ *****************************************************************************/
+int LutBox::LutBitWidth() const
+{
+    return ( d_data->m_bit_width );
+}
+
+/******************************************************************************
+ * LutBox::setLutBidWidth
+ *****************************************************************************/
+void LutBox::setLutBitWidth( const int width )
+{
+    d_data->m_bit_width = width;
+
+    // Reinitialize data model with new bit width
+    d_data->initDataModel( Master );
+    d_data->initDataModel( Red );
+    d_data->initDataModel( Green );
+    d_data->initDataModel( Blue );
+
+    // Create new item delegate for the table (so that it accapts the new ranges)
+    delete d_data->m_delegate;
+    d_data->m_delegate = new LutDelegate( 0, ((1 << width) - 1));
+    d_data->m_ui->tblSamples->setItemDelegate( d_data->m_delegate );
+    d_data->setDataModel( d_data->m_ch );
 }
 
 /******************************************************************************
@@ -1543,7 +1585,7 @@ void LutBox::onRemoveSampleClicked()
         foreach ( QModelIndex index, list )
         {
             int x = d_data->m_ui->tblSamples->model()->data( index, Qt::DisplayRole ).toInt();
-            if ( (index.row() != 0) && (x != 4095) )
+            if ( (index.row() != 0) && (x != ((1 << LutBitWidth()) - 1)) )
             {
                 d_data->m_ui->tblSamples->model()->removeRow( index.row() );
             }
@@ -1660,8 +1702,8 @@ void LutBox::onImportClicked()
         {
             // Read CSV file
             QVector<QVector<int>> table(2);
-            QVector<QPair<int, int>> boundaries( { QPair<int, int>(0, 4095),
-                                                   QPair<int, int>(0, 4095) });
+            QVector<QPair<int, int>> boundaries( { QPair<int, int>(0, ((1 << LutBitWidth()) - 1)),
+                                                   QPair<int, int>(0, ((1 << LutBitWidth()) - 1)) });
 
             // If no error occurred, paste the data into the table
             if ( loadTableCsv( d_data->m_filename, LUT_TABLE_NO_ROWS, boundaries, table) == 0)
@@ -2272,7 +2314,7 @@ void LutBox::PlotClicked( QMouseEvent * evt, LutChannel ch )
             map.insert( x_, y_ );
         }
 
-        map.insert( (int)(x*4096), (int)(y*4096) );
+        map.insert( (int)(x*(1 << LutBitWidth())), (int)(y*(1 << LutBitWidth())) );
 
         QList<int> xl = map.keys();
         QList<int> yl = map.values();

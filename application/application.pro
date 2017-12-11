@@ -174,7 +174,10 @@ SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
            ../libraries/csv/csvparser.c                                     \
            ../libraries/csv/csvwriter.c                                     \
            mainwindow.cpp                                                   \
-           main.cpp
+           main.cpp \
+    ../dct_widgets/com_ctrl/devices/Condor4kMini07Device.cpp \
+    ../dct_widgets/com_ctrl/devices/Condor4kMini11Device.cpp \
+    ../dct_widgets/com_ctrl/devices/Condor4kMini16Device.cpp
 
 
 HEADERS  += ../libraries/include                                                \
@@ -279,7 +282,10 @@ HEADERS  += ../libraries/include                                                
             ../libraries/include/provideo_protocol/provideo_protocol_playback.h \
             ../libraries/include/provideo_protocol/provideo_protocol_system.h   \
             ../libraries/include/provideo_protocol/provideo_protocol_tflt.h     \
-            mainwindow.h
+            mainwindow.h \
+    ../dct_widgets/com_ctrl/devices/Condor4kMini07Device.h \
+    ../dct_widgets/com_ctrl/devices/Condor4kMini11Device.h \
+    ../dct_widgets/com_ctrl/devices/Condor4kMini16Device.h
 
 FORMS    += ../dct_widgets/mcceqbox/mcceqbox.ui                             \
             ../dct_widgets/wbbox/wbbox.ui                                   \

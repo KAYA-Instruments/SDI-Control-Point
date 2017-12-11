@@ -15,20 +15,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *****************************************************************************/
 /**
- * @file    CooperDevice.cpp
+ * @file    Condor4kMini11Device.cpp
  *
- * @brief
+ * @brief   
  *
  *****************************************************************************/
 #include <cerrno>
 
 #include "common.h"
-#include "CooperDevice.h"
+#include "Condor4kMini11Device.h"
 
 #include <QtDebug>
 
 /******************************************************************************
- * hardware mask
+ * hardware mask 
  *****************************************************************************/
 #define XBOW_FEATURE_CAMERA_LINK         ( 0x00000001u ) /**< camera link device */
 #define XBOW_FEATURE_XPRESS              ( 0x00000002u ) /**< coax-press device */
@@ -65,7 +65,7 @@
 /******************************************************************************
  * hardware mask interpreter
  *****************************************************************************/
-class CooperDevice::HwMaskInterpreter : public MaskInterpreter
+class Condor4kMini11Device::HwMaskInterpreter : public MaskInterpreter
 {
 public:
     QStringList interpret( const uint32_t mask ) override
@@ -73,14 +73,14 @@ public:
         QStringList features;
 
         // system overview
-
-        features << "System: Cooper";
+        
+        features << "System: Condor4k Mini 11";
 
         if ( IS_XBOW_FEATURE_CAMERA_LINK( mask ) )
         {
             features << "- Camera Link";
         }
-
+ 
         if ( IS_XBOW_FEATURE_XPRESS( mask ) )
         {
             features << "- Coaxpress";
@@ -90,7 +90,7 @@ public:
         {
             features << "- Live channel available";
         }
-
+        
         if ( IS_XBOW_FEATURE_CHANNEL_1( mask ) )
         {
             features << "- Playback channel available";
@@ -138,12 +138,12 @@ public:
         {
             features << "- Temporal filter available";
         }
-
+ 
         if ( IS_XBOW_FEATURE_DPCC( mask ) )
         {
             features << "- Defect/Hot pixel correction available";
         }
-
+        
         if ( IS_XBOW_FEATURE_WDR( mask ) )
         {
             features << "- Highlight control/Knee function available";
@@ -156,7 +156,7 @@ public:
 /******************************************************************************
  * software mask interpreter
  *****************************************************************************/
-class CooperDevice::SwMaskInterpreter : public MaskInterpreter
+class Condor4kMini11Device::SwMaskInterpreter : public MaskInterpreter
 {
 public:
     QStringList interpret( const uint32_t mask ) override
@@ -168,9 +168,9 @@ public:
 };
 
 /******************************************************************************
- * CooperDevice::PrivateData
+ * Condor4kMini11Device::PrivateData
  *****************************************************************************/
-class CooperDevice::PrivateData
+class Condor4kMini11Device::PrivateData
 {
 public:
     PrivateData( ComChannel * c, ComProtocol * p )
@@ -178,14 +178,16 @@ public:
         m_protocol      = p;
         m_userCtx       = p->createUserContext();
 
-        m_IspItf        = new IspItf( c, p->clone( ComProtocol::ISP_INSTANCE, m_userCtx ) );
-        m_CprocItf      = new CprocItf( c, p->clone( ComProtocol::CPROC_INSTANCE, m_userCtx ) );
-        m_AutoItf       = new AutoItf( c, p->clone( ComProtocol::AUTO_INSTANCE, m_userCtx ) );
+        m_IspItf        = new IspItf( c, p->clone( ComProtocol::ISP_INSTANCE, m_userCtx ) ); 
+        m_CprocItf      = new CprocItf( c, p->clone( ComProtocol::CPROC_INSTANCE, m_userCtx ) ); 
+        m_AutoItf       = new AutoItf( c, p->clone( ComProtocol::AUTO_INSTANCE, m_userCtx ) ); 
         m_CamItf        = new CamItf( c, p->clone( ComProtocol::CAM_INSTANCE, m_userCtx ) );
         m_MccItf        = new MccItf( c, p->clone( ComProtocol::MCC_INSTANCE, m_userCtx ) );
         m_LutItf        = new LutItf( c, p->clone( ComProtocol::LUT_INSTANCE, m_userCtx ) );
         m_ChainItf      = new ChainItf( c, p->clone( ComProtocol::CHAIN_INSTANCE, m_userCtx ) );
         m_IrisItf       = new IrisItf( c, p->clone( ComProtocol::IRIS_INSTANCE, m_userCtx ) );
+        m_KneeItf       = new KneeItf( c, p->clone( ComProtocol::KNEE_INSTANCE, m_userCtx ) );
+        m_DpccItf       = new DpccItf( c, p->clone( ComProtocol::DPCC_INSTANCE, m_userCtx ) );
 
         // NotifyWhiteBalanceChanged
         QObject::connect( m_AutoItf , SIGNAL(NotifyWhiteBalanceChanged()),
@@ -196,11 +198,11 @@ public:
         // NotifyVideoModeChanged
         QObject::connect( m_ChainItf, SIGNAL(NotifyVideoModeChanged()),
                           m_CamItf  , SLOT(onNotifyVideoModeChange()) );
-
+        
         // NotifyCameraGainChanged
         QObject::connect( m_CamItf  , SIGNAL(NotifyCameraGainChanged()),
                           m_IspItf  , SLOT(onNotifyCameraGainChange()) );
-
+        
     };
 
     ~PrivateData()
@@ -214,6 +216,8 @@ public:
         delete m_LutItf->GetComProtocol();
         delete m_ChainItf->GetComProtocol();
         delete m_IrisItf->GetComProtocol();
+        delete m_KneeItf->GetComProtocol();
+        delete m_DpccItf->GetComProtocol();
 
         // clear interface classes
         delete m_IspItf;
@@ -224,8 +228,10 @@ public:
         delete m_LutItf;
         delete m_ChainItf;
         delete m_IrisItf;
+        delete m_KneeItf;
+        delete m_DpccItf;
 
-        // clear user context
+        // clear user context 
         m_protocol->deleteUserContext( m_userCtx );
         m_userCtx = NULL;
     };
@@ -238,15 +244,17 @@ public:
     LutItf *        m_LutItf;
     ChainItf *      m_ChainItf;
     IrisItf *       m_IrisItf;
+    KneeItf *       m_KneeItf;
+    DpccItf *       m_DpccItf;
 
     ComProtocol *   m_protocol;
     void *          m_userCtx;
 };
 
 /******************************************************************************
- * CooperDevice::CooperDevice()
+ * Condor4kMini11Device::Condor4kMini11Device()
  *****************************************************************************/
-CooperDevice::CooperDevice( ComChannel * c, ComProtocol * p )
+Condor4kMini11Device::Condor4kMini11Device( ComChannel * c, ComProtocol * p )
     : ProVideoDevice( c, p )
 {
     d_data = new PrivateData( c, p );
@@ -257,17 +265,17 @@ CooperDevice::CooperDevice( ComChannel * c, ComProtocol * p )
 }
 
 /******************************************************************************
- * CooperDevice::~CooperDevice()
+ * Condor4kMini11Device::~Condor4kMini11Device()
  *****************************************************************************/
-CooperDevice::~CooperDevice()
+Condor4kMini11Device::~Condor4kMini11Device()
 {
     delete d_data;
 }
 
 /******************************************************************************
- * CooperDevice::getSupportedFeatures()
+ * Condor4kMini11Device::getSupportedFeatures()
  *****************************************************************************/
-CooperDevice::features CooperDevice::getSupportedFeatures()
+Condor4kMini11Device::features Condor4kMini11Device::getSupportedFeatures()
 {
     // Init all features with false
     features deviceFeatures;
@@ -276,9 +284,12 @@ CooperDevice::features CooperDevice::getSupportedFeatures()
     // Set all available features to true
     deviceFeatures.hasCamItf                = true;
     deviceFeatures.hasChainItf              = true;
+    deviceFeatures.hasChainSdi2Mode         = true;
+    deviceFeatures.hasChainGenLock          = true;
     deviceFeatures.hasChainTimeCode         = true;
     deviceFeatures.hasChainTimeCodeHold     = true;
     deviceFeatures.hasChainSdiSettings      = true;
+    deviceFeatures.hasChainSelection        = true;
     deviceFeatures.hasChainFlipVertical     = true;
     deviceFeatures.hasAutoItf               = true;
     deviceFeatures.hasIspItf                = true;
@@ -294,86 +305,119 @@ CooperDevice::features CooperDevice::getSupportedFeatures()
     deviceFeatures.hasMccItf                = true;
     deviceFeatures.hasKneeItf               = true;
     deviceFeatures.hasLutItf                = true;
-    deviceFeatures.hasDpccItf               = true; // Only auto calibration!
-    deviceFeatures.hasDpccFlash             = true; // Not sure, check
+    deviceFeatures.hasDpccItf               = true;
+    deviceFeatures.hasDpccFlash             = true;
     deviceFeatures.hasSystemSaveLoad        = true;
     deviceFeatures.hasSystemUpdate          = true;
     deviceFeatures.hasSystemRuntime         = true;
     deviceFeatures.hasSystemBroadcast       = true;
+    deviceFeatures.hasRS232Interface        = true;
 
-    deviceFeatures.lutBitWidth              = 16;
+    deviceFeatures.lutBitWidth              = 12;
 
     return deviceFeatures;
 }
 
 /******************************************************************************
- * CooperDevice::GetIspItf()
+ * Condor4kMini11Device::GetIspItf()
  *****************************************************************************/
-IspItf * CooperDevice::GetIspItf() const
+IspItf * Condor4kMini11Device::GetIspItf() const
 {
     return ( d_data->m_IspItf );
 }
 
 /******************************************************************************
- * CooperDevice::GetCprocItf()
+ * Condor4kMini11Device::GetCprocItf()
  *****************************************************************************/
-CprocItf * CooperDevice::GetCprocItf() const
+CprocItf * Condor4kMini11Device::GetCprocItf() const
 {
     return ( d_data->m_CprocItf );
 }
 
 /******************************************************************************
- * CooperDevice::GetAutoItf()
+ * Condor4kMini11Device::GetAutoItf()
  *****************************************************************************/
-AutoItf * CooperDevice::GetAutoItf() const
+AutoItf * Condor4kMini11Device::GetAutoItf() const
 {
     return ( d_data->m_AutoItf );
 }
 
 /******************************************************************************
- * CooperDevice::GetCamItf()
+ * Condor4kMini11Device::GetCamItf()
  *****************************************************************************/
-CamItf * CooperDevice::GetCamItf() const
+CamItf * Condor4kMini11Device::GetCamItf() const
 {
     return ( d_data->m_CamItf );
 }
 
 /******************************************************************************
- * CooperDevice::GetMccItf()
+ * Condor4kMini11Device::GetMccItf()
  *****************************************************************************/
-MccItf * CooperDevice::GetMccItf() const
+MccItf * Condor4kMini11Device::GetMccItf() const
 {
     return ( d_data->m_MccItf );
 }
 
 /******************************************************************************
- * CooperDevice::GetLutItf()
+ * Condor4kMini11Device::GetLutItf()
  *****************************************************************************/
-LutItf * CooperDevice::GetLutItf() const
+LutItf * Condor4kMini11Device::GetLutItf() const
 {
     return ( d_data->m_LutItf );
 }
 
 /******************************************************************************
- * CooperDevice::GetChainItf()
+ * Condor4kMini11Device::GetChainItf()
  *****************************************************************************/
-ChainItf * CooperDevice::GetChainItf() const
+ChainItf * Condor4kMini11Device::GetChainItf() const
 {
     return ( d_data->m_ChainItf );
 }
 
 /******************************************************************************
- * CooperDevice::GetIrisItf()
+ * Condor4kMini11Device::GetIrisItf()
  *****************************************************************************/
-IrisItf * CooperDevice::GetIrisItf() const
+IrisItf * Condor4kMini11Device::GetIrisItf() const
 {
     return ( d_data->m_IrisItf );
 }
 
 /******************************************************************************
- * CooperDevice::setComChannel()
+ * Condor4kMini11Device::GetKneeItf()
  *****************************************************************************/
-void CooperDevice::setComChannel( ComChannel * c )
+KneeItf * Condor4kMini11Device::GetKneeItf() const
+{
+    return ( d_data->m_KneeItf );
+}
+
+/******************************************************************************
+ * Condor4kMini11Device::GetDpccItf()
+ *****************************************************************************/
+DpccItf * Condor4kMini11Device::GetDpccItf() const
+{
+    return ( d_data->m_DpccItf );
+}
+
+///******************************************************************************
+// * Condor4kMini11Device::CopyFlag()
+// *****************************************************************************/
+//bool Condor4kMini11Device::GetCopyFlag() const
+//{
+//    return ( d_data->m_protocol->CopyFlag( d_data->m_userCtx ) );
+//}
+
+///******************************************************************************
+// * Condor4kMini11Device::setCopyFlag()
+// *****************************************************************************/
+//void Condor4kMini11Device::SetCopyFlag( const bool flag )
+//{
+//    return ( d_data->m_protocol->setCopyFlag( d_data->m_userCtx, flag ) );
+//}
+
+/******************************************************************************
+ * Condor4kMini11Device::setComChannel()
+ *****************************************************************************/
+void Condor4kMini11Device::setComChannel( ComChannel * c )
 {
     ProVideoDevice::setComChannel( c );
 
@@ -385,12 +429,14 @@ void CooperDevice::setComChannel( ComChannel * c )
     GetLutItf()     ->SetComChannel( c );
     GetChainItf()   ->SetComChannel( c );
     GetIrisItf()    ->SetComChannel( c );
+    GetKneeItf()    ->SetComChannel( c );
+    GetDpccItf()    ->SetComChannel( c );
 }
 
 /******************************************************************************
- * CooperDevice::resync()
+ * Condor4kMini11Device::resync()
  *****************************************************************************/
-void CooperDevice::resync()
+void Condor4kMini11Device::resync()
 {
     ProVideoDevice::resync();
 
@@ -402,4 +448,8 @@ void CooperDevice::resync()
     GetLutItf()     ->resync();
     GetChainItf()   ->resync();
     GetIrisItf()    ->resync();
+    GetKneeItf()    ->resync();
+    GetDpccItf()    ->resync();
 }
+
+

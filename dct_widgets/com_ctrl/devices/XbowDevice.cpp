@@ -290,7 +290,8 @@ XbowDevice::features XbowDevice::getSupportedFeatures()
     deviceFeatures.hasChainTimeCodeHold     = true;
     deviceFeatures.hasChainSdiSettings      = true;
     deviceFeatures.hasChainSelection        = true;
-    deviceFeatures.hasChainFlip             = true;
+    deviceFeatures.hasChainFlipVertical     = true;
+    deviceFeatures.hasChainFlipHorizontal   = true;
     deviceFeatures.hasAutoItf               = true;
     deviceFeatures.hasIrisItf               = true;
     deviceFeatures.hasIspItf                = true;
@@ -313,6 +314,8 @@ XbowDevice::features XbowDevice::getSupportedFeatures()
     deviceFeatures.hasSystemRuntime         = true;
     deviceFeatures.hasSystemBroadcast       = true;
     deviceFeatures.hasRS232Interface        = true;
+
+    deviceFeatures.lutBitWidth              = 16;
 
     return deviceFeatures;
 }

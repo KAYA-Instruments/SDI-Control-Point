@@ -102,7 +102,7 @@ public:
     void setGenLockVisible(const bool value);
     void setTimeCodeVisible(const bool groupbox_visible, const bool hold_visible);
     void setSdi2ModeVisible(const bool value);
-    void setFlipModeVisible(const bool value);
+    void setFlipModeVisible(const bool vertical, const bool horizontal);
     void setTestPatternVisible(const bool value);
 
 protected:

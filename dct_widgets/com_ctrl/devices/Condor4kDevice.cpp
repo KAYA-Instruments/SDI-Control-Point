@@ -290,6 +290,7 @@ Condor4kDevice::features Condor4kDevice::getSupportedFeatures()
     deviceFeatures.hasChainTimeCodeHold     = true;
     deviceFeatures.hasChainSdiSettings      = true;
     deviceFeatures.hasChainSelection        = true;
+    deviceFeatures.hasChainFlipVertical     = true;
     deviceFeatures.hasAutoItf               = true;
     deviceFeatures.hasIspItf                = true;
     deviceFeatures.hasIspLsc                = true;
@@ -311,6 +312,8 @@ Condor4kDevice::features Condor4kDevice::getSupportedFeatures()
     deviceFeatures.hasSystemRuntime         = true;
     deviceFeatures.hasSystemBroadcast       = true;
     deviceFeatures.hasRS232Interface        = true;
+
+    deviceFeatures.lutBitWidth              = 12;
 
     return deviceFeatures;
 }

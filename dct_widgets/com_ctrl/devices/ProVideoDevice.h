@@ -59,7 +59,8 @@ public:
         bool hasChainSdiSettings;
         bool hasChainHdmiSettings;
         bool hasChainSelection;
-        bool hasChainFlip;
+        bool hasChainFlipVertical;
+        bool hasChainFlipHorizontal;
         bool hasAutoItf;
         bool hasIrisItf;
         bool hasIspItf;
@@ -87,6 +88,8 @@ public:
         bool hasSystemCopySettings;
         bool hasSystemBroadcast;
         bool hasRS232Interface;
+
+        int lutBitWidth;
     };
 
     explicit ProVideoDevice( ComChannel *, ComProtocol * );

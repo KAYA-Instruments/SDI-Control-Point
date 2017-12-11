@@ -266,7 +266,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
     m_ui->inoutBox->setSdi2ModeVisible(deviceFeatures.hasChainSdi2Mode);
     m_ui->inoutBox->setGenLockVisible(deviceFeatures.hasChainGenLock);
     m_ui->inoutBox->setTimeCodeVisible(deviceFeatures.hasChainTimeCode, deviceFeatures.hasChainTimeCodeHold);
-    m_ui->inoutBox->setFlipModeVisible(deviceFeatures.hasChainFlip);
+    m_ui->inoutBox->setFlipModeVisible(deviceFeatures.hasChainFlipVertical, deviceFeatures.hasChainFlipHorizontal);
     m_ui->inoutBox->setTestPatternVisible(deviceFeatures.hasOsdTestPattern);
 
     // BlackBox Tab
@@ -276,6 +276,9 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
     // WbBox Tab
     m_ui->wbBox->setWhiteBalanceSettingsVisible(deviceFeatures.hasIspAutoWhiteBalance, deviceFeatures.hasIspGain, deviceFeatures.hasIspGreenGain);
     m_ui->wbBox->setColorProcessingSettingsVisible(deviceFeatures.hasCprocItfHue);
+
+    // LutBox Tab
+    m_ui->lutBox->setLutBitWidth(deviceFeatures.lutBitWidth);
 
     // Dpcc Tab
     m_ui->dpccBox->setCameraFlashVisible(deviceFeatures.hasDpccFlash);
@@ -343,7 +346,7 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
             connect( dev->GetChainItf(), SIGNAL(ChainSdi2ModeChanged(int)), m_ui->inoutBox, SLOT(onChainSdi2ModeChange(int)) );
             connect( m_ui->inoutBox, SIGNAL(ChainSdi2ModeChanged(int)), dev->GetChainItf(), SLOT(onChainSdi2ModeChange(int)) );
         }
-        if (deviceFeatures.hasChainFlip)
+        if (deviceFeatures.hasChainFlipVertical || deviceFeatures.hasChainFlipHorizontal)
         {
             connect( dev->GetChainItf(), SIGNAL(ChainFlipModeChanged(int)), m_ui->inoutBox, SLOT(onChainFlipModeChange(int)) );
             connect( m_ui->inoutBox, SIGNAL(ChainFlipModeChanged(int)), dev->GetChainItf(), SLOT(onChainFlipModeChange(int)) );

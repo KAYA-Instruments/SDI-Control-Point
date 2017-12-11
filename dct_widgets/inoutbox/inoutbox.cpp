@@ -216,11 +216,7 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
         addSdi2Mode( GetSdi2ModeName( (enum Sdi2Mode)i ), i );
     }
 
-    // fill flip-mode combo box
-    for ( int i=FlipModeFirst; i<FlipModeMax; i++ )
-    {
-        addFlipMode( GetFlipModeName( (enum FlipMode)i ), i );
-    }
+    // Note: Flip modes depend on the device and are added in "setFlipModeVisible()"
 
     // fill genlock-mode combo box
     for ( int i=GenLockModeFirst; i<GenLockModeMax; i++ )
@@ -983,10 +979,48 @@ void InOutBox::setSdi2ModeVisible(const bool value)
 /******************************************************************************
  * InOutBox::setFlipModeVisible
  *****************************************************************************/
-void InOutBox::setFlipModeVisible(const bool value)
+void InOutBox::setFlipModeVisible(const bool vertical, const bool horizontal)
 {
-    d_data->m_ui->lblFlip->setVisible(value);
-    d_data->m_ui->cbxFlipMode->setVisible(value);
+    // clear flip-mode combo box
+    d_data->m_ui->cbxFlipMode->blockSignals( true );
+    d_data->m_ui->cbxFlipMode->clear();
+    d_data->m_ui->cbxFlipMode->blockSignals( false );
+
+    // if at least one flip mode is available
+    if ( vertical || horizontal )
+    {
+        // add "off" mode to combo box
+        addFlipMode( GetFlipModeName(FlipModeOff), FlipModeOff );
+
+        // if vertical flip is available, add it
+        if ( vertical )
+        {
+            addFlipMode( GetFlipModeName(FlipModeVertical), FlipModeVertical );
+        }
+
+        // if vertical flip is available, add it
+        if ( horizontal )
+        {
+            addFlipMode( GetFlipModeName(FlipModeHorizontal), FlipModeHorizontal );
+        }
+
+        // if both are available, add rotation mode
+        if ( vertical && horizontal )
+        {
+            addFlipMode( GetFlipModeName(FlipModeRotated), FlipModeRotated );
+        }
+
+        // show combo box and label
+        d_data->m_ui->lblFlip->setVisible(true);
+        d_data->m_ui->cbxFlipMode->setVisible(true);
+    }
+    // else if flip is not available
+    else
+    {
+        // hide combo box and label
+        d_data->m_ui->lblFlip->setVisible(false);
+        d_data->m_ui->cbxFlipMode->setVisible(false);
+    }
 }
 
 /******************************************************************************
@@ -1592,25 +1626,31 @@ void InOutBox::updateLscWidgets( void )
     // k
     d_data->m_ui->sbxK->blockSignals( true );
     d_data->m_ui->sbxK->setValue( d_data->m_LscSetup.k );
+    d_data->m_ui->sbxK->setEnabled( d_data->m_LscSetup.enable );
     d_data->m_ui->sbxK->blockSignals( false );
     d_data->m_ui->sldK->blockSignals( true );
     d_data->m_ui->sldK->setValue( (int)(d_data->m_LscSetup.k * 100.0f) );
+    d_data->m_ui->sldK->setEnabled( d_data->m_LscSetup.enable );
     d_data->m_ui->sldK->blockSignals( false );
 
     // offset
     d_data->m_ui->sbxOffset->blockSignals( true );
     d_data->m_ui->sbxOffset->setValue( d_data->m_LscSetup.offset );
+    d_data->m_ui->sbxOffset->setEnabled( d_data->m_LscSetup.enable );
     d_data->m_ui->sbxOffset->blockSignals( false );
     d_data->m_ui->sldOffset->blockSignals( true );
     d_data->m_ui->sldOffset->setValue( (int)(d_data->m_LscSetup.offset * 100.0f) );
+    d_data->m_ui->sldOffset->setEnabled( d_data->m_LscSetup.enable );
     d_data->m_ui->sldOffset->blockSignals( false );
 
     // slope
     d_data->m_ui->sbxSlope->blockSignals( true );
     d_data->m_ui->sbxSlope->setValue( d_data->m_LscSetup.slope );
+    d_data->m_ui->sbxSlope->setEnabled( d_data->m_LscSetup.enable );
     d_data->m_ui->sbxSlope->blockSignals( false );
     d_data->m_ui->sldSlope->blockSignals( true );
     d_data->m_ui->sldSlope->setValue( (int)(d_data->m_LscSetup.slope * 100.0f) );
+    d_data->m_ui->sldSlope->setEnabled( d_data->m_LscSetup.enable );
     d_data->m_ui->sldSlope->blockSignals( false );
 }
 
@@ -1859,7 +1899,7 @@ void InOutBox::onIrisAptError( void )
  *****************************************************************************/
 void InOutBox::onLscChange( QVector<uint> values )
 {
-    if ( values.count() == 5 )
+    if ( values.count() == 4 )
     {
         d_data->m_LscSetup.enable = (bool)values[0];
 
@@ -1881,6 +1921,8 @@ void InOutBox::onCbxLscEnableChange( int value )
     bool enable = (value == Qt::Checked) ? true : false;
 
     d_data->m_LscSetup.enable = enable;
+
+    updateLscWidgets();
 
     setWaitCursor();
     emit LscChanged( createLscVector() );
