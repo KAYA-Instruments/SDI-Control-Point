@@ -336,6 +336,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionConnect"/>
+   <addaction name="actionSettings"/>
    <addaction name="separator"/>
    <addaction name="actionSaveSettings"/>
    <addaction name="actionLoadSettings"/>
@@ -494,7 +495,7 @@
     <string>Applies the Settings of the currently selected Camera to all Cameras in the current Broadcast-Group</string>
    </property>
   </action>
-  <action name="actionsettings">
+  <action name="actionSettings">
    <property name="icon">
     <iconset resource="../resource/resource.qrc">
      <normaloff>:/icons/cog-64.png</normaloff>:/icons/cog-64.png</iconset>

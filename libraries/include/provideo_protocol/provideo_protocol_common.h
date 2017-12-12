@@ -289,6 +289,20 @@ int get_param_string
 );
 
 /******************************************************************************
+ * @brief Sends a given set-command to provideo device and transmitts a string
+ *
+ * @param[in]   channel         control channel to use
+ * @param[in]   cmd_set         formatted command string
+ * @param[in]   string          string that shall be send after cmd
+ *****************************************************************************/
+int set_param_string
+(
+    ctrl_channel_handle_t const channel,
+    char * const                cmd_set,
+    char * const                string
+);
+
+/******************************************************************************
  * @brief Sends a given get-command to provideo device and parses device 
  *        response for a variable number of integer values
  *

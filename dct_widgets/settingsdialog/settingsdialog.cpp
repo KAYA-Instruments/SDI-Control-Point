@@ -21,6 +21,7 @@
  *
  *****************************************************************************/
 #include <QMessageBox>
+#include <QValidator>
 
 #include <com_ctrl/ComChannelRSxxx.h>
 
@@ -55,6 +56,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     m_ui->cbxRS485Baudrate->setCurrentIndex( m_ui->cbxRS485Baudrate->findData( CTRL_CHANNEL_BAUDRATE_DEFAULT ) );
 
     // connect system settings
+    connect (m_ui->btnApplyDeviceName, SIGNAL(clicked(bool)), this, SLOT(onApplyDeviceNameClicked()) );
     connect( m_ui->btnResetToDefaults, SIGNAL(clicked(bool)), this, SLOT(onBtnResetToDefaultsClicked()) );
     connect( m_ui->btnApplySerialPortSettings, SIGNAL(clicked(bool)), this, SLOT(onBtnApplySerialPortSettingsClicked()) );
 
@@ -141,13 +143,52 @@ void SettingsDialog::onBroadcastChange( bool enable )
      * devices will be reset to the same devie address, making them unnaccessible */
     m_ui->btnResetToDefaults->setEnabled( !enable );
 
-    /* All serial interface settings if broadcast mode is active, otherwise the
+    /* Disable serial interface settings if broadcast mode is active, otherwise the
      * same address could be set to multiple devices! */
     m_ui->cbxRS232Baudrate->setEnabled( !enable );
     m_ui->cbxRS485Baudrate->setEnabled( !enable );
     m_ui->sbxRS485Address->setEnabled( !enable );
     m_ui->sbxRS485BroadcastAddress->setEnabled( !enable );
     m_ui->btnApplySerialPortSettings->setEnabled( !enable );
+
+    this->adjustSize();
+}
+
+/******************************************************************************
+ * SettingsDialog::onResetToDefaultsClicked
+ *****************************************************************************/
+void SettingsDialog::onApplyDeviceNameClicked()
+{
+    // Get device name string from line edit
+    QString name = m_ui->letDeviceName->text();
+
+    // Get amount of words in string
+    int numWords = name.split(QRegExp("(\\s|\\n|\\r)+"), QString::SkipEmptyParts).count();
+
+    // If the name has more than 32 characters or 5 words, its invalid
+    if ( name.length() > 32 || numWords > 5 )
+    {
+        // Show message box
+        QMessageBox msgBox;
+        msgBox.setWindowTitle( "Device Name is invalid!" );
+        msgBox.setIcon( QMessageBox::Warning );
+        msgBox.setText( "Please choose a different device name.\n\n"
+                        "The device name can have a maximum length of 32 characters and it "
+                        "can consist of up to 5 words separated by spaces.\n\n" );
+        msgBox.exec();
+
+        // Set focus to line edit so user can edit it
+        m_ui->letDeviceName->setFocus();
+    }
+    else
+    {
+        QApplication::setOverrideCursor( Qt::WaitCursor );
+
+        // Send device name changed event
+        emit DeviceNameChanged( m_ui->letDeviceName->text() );
+
+        QApplication::setOverrideCursor( Qt::ArrowCursor );
+    }
 }
 
 /******************************************************************************
@@ -204,4 +245,17 @@ void SettingsDialog::onBtnApplySerialPortSettingsClicked()
 void SettingsDialog::onCbxEngineeringModeChange( int value )
 {
     emit EngineeringModeChanged( (Qt::Unchecked == value) ? false : true );
+}
+
+/******************************************************************************
+ * ConnectDialog::accept
+ *****************************************************************************/
+void SettingsDialog::accept()
+{
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+
+    // Send device name changed event
+    emit SaveSettings();
+
+    QApplication::setOverrideCursor( Qt::ArrowCursor );
 }

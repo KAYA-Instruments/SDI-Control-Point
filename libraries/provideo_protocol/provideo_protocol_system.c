@@ -153,6 +153,15 @@
 #define CMD_GET_RUNTIME_NO_PARMS                ( 1 )
 
 /******************************************************************************
+ * @brief command "runtime"
+ *****************************************************************************/
+#define CMD_GET_NAME                            ( "name\n" )
+#define CMD_GET_NAME_REPLY                      ( "name %[^\t\r\n]\n" )
+#define CMD_SET_NAME                            ( "name %s\n" )
+#define CMD_SYNC_NAME                           ( "name " )
+#define CMD_GET_NAME_NO_PARMS                   ( 1 )
+
+/******************************************************************************
  * @brief command "reboot" 
  *****************************************************************************/
 #define CMD_REBOOT                              ( "reboot\n" )
@@ -433,8 +442,7 @@ static int get_device_name
     }
 
     // command call to get a string from provideo system
-    res = get_param_string( channel, CMD_GET_VERSION_NUM_RESPONSE_LINES,
-            CMD_GET_VERSION, CMD_SYNC_VERSION_DEV_NAME, CMD_VERSION_DEV_NAME, (char *)name );
+    res = get_param_string( channel, 1, CMD_GET_NAME, CMD_SYNC_NAME, CMD_GET_NAME_REPLY, (char *)name );
 
     // return error code
     if ( res < 0 )
@@ -443,7 +451,7 @@ static int get_device_name
     }
 
     // return -EFAULT if number of parameter not matching
-    else if ( res != CMD_GET_DEV_NAME_NO_PARMS )
+    else if ( res != CMD_GET_NAME_NO_PARMS )
     {
         return ( -EFAULT );
     }
@@ -451,6 +459,38 @@ static int get_device_name
     return ( 0 );
 }
 
+/******************************************************************************
+ * get_device_name
+ *****************************************************************************/
+static int set_device_name
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    int const                   no,
+    uint8_t * const             name
+)
+{
+    (void) ctx;
+
+    int res;
+
+    // parameter check
+    if ( !no || !name || (no > (int)sizeof(ctrl_protocol_system_desc_t)) )
+    {
+        return ( -EINVAL );
+    }
+
+    // command call to get a string from provideo system
+    res = set_param_string( channel, CMD_SET_NAME, (char *)name );
+
+    // return error code
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
+    return ( 0 );
+}
 
 /******************************************************************************
  * get_system_id
@@ -1447,6 +1487,7 @@ static ctrl_protocol_sys_drv_t provideo_sys_drv =
     .get_system_info              = get_system_info,
     .get_system_platform          = get_system_platform,
     .get_device_name              = get_device_name,
+    .set_device_name              = set_device_name,
     .get_system_id                = get_system_id,
     .get_system_validity          = get_system_validity,
     .get_bitstream_version        = get_bitstream_version,

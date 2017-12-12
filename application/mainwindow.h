@@ -31,6 +31,7 @@
 #include <dct_widgets_base.h>
 #include "ProVideoDevice.h"
 #include "connectdialog.h"
+#include "settingsdialog.h"
 
 namespace Ui {
     class MainWindow;
@@ -46,6 +47,7 @@ public:
 
     void connectToDevice(ProVideoDevice * );
     void setConnectDlg( ConnectDialog * );
+    void setSettingsDlg( SettingsDialog * );
 
 signals:
     // chain selection status
@@ -68,6 +70,7 @@ private slots:
     void onSystemSettingsChange( int rs232Baudrate, int rs485Baudrate, int rs485Address, int rs485BroadcastAddress );
 
     void onConnectClicked();
+    void onSettingsClicked();
     void onSelectSdi1Clicked();
     void onSelectSdi2Clicked();
     void onCopyChain1To2Clicked();
@@ -95,7 +98,8 @@ private slots:
 
 private:
     Ui::MainWindow *        m_ui;
-    ConnectDialog *         m_dlg;
+    ConnectDialog *         m_ConnectDlg;
+    SettingsDialog *        m_SettingsDlg;
     QComboBox *             m_cbxConnectedDevices;
     ProVideoDevice *        m_dev;
     QString                 m_filename;

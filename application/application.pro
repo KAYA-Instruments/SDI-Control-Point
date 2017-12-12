@@ -55,9 +55,10 @@ INCLUDEPATH += ../libraries/include ..              \
                ../dct_widgets/com_ctrl/devices      \
                ../dct_widgets/csvwrapper            \
                ../dct_widgets/connectdialog         \
+               ../dct_widgets/settingsdialog        \
                ../dct_widgets/btnarraybox           \
                ../dct_widgets/singlechannelknobbox  \
-               ../dct_widgets/triplechannelknobbox \
+               ../dct_widgets/triplechannelknobbox  \
                ../dct_widgets/fmtspinbox            \
                ../dct_widgets/skinneddial           \
                ../dct_widgets/piesegmentselect      \

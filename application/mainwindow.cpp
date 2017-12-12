@@ -56,18 +56,21 @@ static bool fileExists( QString & path )
 MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
     : QMainWindow( parent )
     , m_ui( new Ui::MainWindow )
-    , m_dlg( NULL )
+    , m_ConnectDlg( NULL )
+    , m_SettingsDlg( NULL )
     , m_cbxConnectedDevices( NULL )
     , m_dev ( NULL )
 {
     // create ui
     m_ui->setupUi( this );
 
-    // Connect with dialog
+    // Connect with dialogs
     setConnectDlg(connectDialog);
+    setSettingsDlg(new SettingsDialog(this));
     
     // connect actions
     connect( m_ui->actionConnect        , SIGNAL( triggered() ), this, SLOT( onConnectClicked() ) );
+    connect( m_ui->actionSettings       , SIGNAL( triggered() ), this, SLOT( onSettingsClicked() ) );
     connect( m_ui->actionLoadSettings   , SIGNAL( triggered() ), this, SLOT( onLoadSettingsClicked() ) );
     connect( m_ui->actionSaveSettings   , SIGNAL( triggered() ), this, SLOT( onSaveSettingsClicked() ) );
     connect( m_ui->actionSelectSdi1     , SIGNAL( triggered() ), this, SLOT( onSelectSdi1Clicked() ) );
@@ -89,6 +92,7 @@ MainWindow::~MainWindow()
     // When the main window closes, disable broadcast mode (this disables the broadcast master)
     emit BroadcastChanged( false );
 
+    delete m_SettingsDlg;
     delete m_ui;
 }
 
@@ -106,6 +110,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
 
     // Add only those actions that are supported by the device
     m_ui->toolBar->addAction(m_ui->actionConnect);
+    m_ui->toolBar->addAction(m_ui->actionSettings);
 
     if (deviceFeatures.hasSystemSaveLoad)
     {
@@ -136,8 +141,8 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
     m_ui->toolBar->addAction(m_ui->actionLoadFromFile);
 
     // Add a combo box for device selection if the connect dialog has a list
-    QVector<ConnectDialog::detectedRS485Device> connectedRS485Devices = m_dlg->getDetectedRS485Devices();
-    int currentRS485DeviceIndex = m_dlg->getCurrentRs485DeviceIndex();
+    QVector<ConnectDialog::detectedRS485Device> connectedRS485Devices = m_ConnectDlg->getDetectedRS485Devices();
+    int currentRS485DeviceIndex = m_ConnectDlg->getCurrentRs485DeviceIndex();
     if ( !connectedRS485Devices.empty() )
     {
         // Create a new label
@@ -251,7 +256,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
     m_ui->tabWidget->addTab(m_ui->tabInfo, QIcon(":/images/tab/info.png"), "");
 
     // Only enable the update tab, if the device is connected over RS485 (Bootloader does not support RS232)
-    if (deviceFeatures.hasSystemUpdate && m_dlg->getActiveInterface() == ConnectDialog::Rs485 )
+    if (deviceFeatures.hasSystemUpdate && m_ConnectDlg->getActiveInterface() == ConnectDialog::Rs485 )
     {
         m_activeWidgets.append(m_ui->updBox);
         m_ui->tabWidget->addTab(m_ui->tabUpdate, QIcon(":/images/tab/update.png"), "");
@@ -291,8 +296,10 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
 
     // Info Tab
     m_ui->infoBox->setRuntimeVisible(deviceFeatures.hasSystemRuntime);
-    m_ui->infoBox->setBroadcastSettingsVisible(deviceFeatures.hasSystemBroadcast);
-    m_ui->infoBox->setRS232SettingsVisible(deviceFeatures.hasRS232Interface);
+
+    // Settings Dialog
+    m_SettingsDlg->setBroadcastSettingsVisible(deviceFeatures.hasRS232Interface);
+    m_SettingsDlg->setRS232SettingsVisible(deviceFeatures.hasRS232Interface);
 }
 
 /******************************************************************************
@@ -721,39 +728,6 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         connect( dev->GetProVideoSystemItf(), SIGNAL(RunTimeChanged(uint32_t)), m_ui->infoBox, SLOT(onRunTimeChange(uint32_t)) );
     }
 
-    // reset to factory defaults
-    connect( m_ui->infoBox, SIGNAL(ResetToDefaultsClicked()), dev->GetProVideoSystemItf(), SLOT(onResetSettings()) );
-    connect( m_ui->infoBox, SIGNAL(ResyncRequest()), this, SLOT(onResyncRequest()) );
-
-    // system settings (serial connection) changed
-    if (deviceFeatures.hasRS232Interface)
-    {
-        connect( m_dlg, SIGNAL(RS232BaudrateChanged(uint32_t)), dev->GetProVideoSystemItf(), SLOT(onRS232BaudRateChange(uint32_t)) );
-        connect( dev->GetProVideoSystemItf(), SIGNAL(RS232BaudRateChanged(uint32_t)), m_ui->infoBox, SLOT(onRS232BaudrateChange(uint32_t)) );
-    }
-
-    connect( m_dlg, SIGNAL(RS485BaudrateChanged(uint32_t)), dev->GetProVideoSystemItf(), SLOT(onRS485BaudRateChange(uint32_t)) );
-    connect( dev->GetProVideoSystemItf(), SIGNAL(RS485BaudRateChanged(uint32_t)), m_ui->infoBox, SLOT(onRS485BaudrateChange(uint32_t)) );
-
-    connect( m_dlg, SIGNAL(RS485AddressChanged(uint32_t)), dev->GetProVideoSystemItf(), SLOT(onRS485AddressChange(uint32_t)) );
-    connect( dev->GetProVideoSystemItf(), SIGNAL(RS485AddressChanged(uint32_t)), m_ui->infoBox, SLOT(onRS485AddressChange(uint32_t)) );
-
-    if (deviceFeatures.hasSystemBroadcast)
-    {
-        connect( m_dlg, SIGNAL(RS485BroadcastAddressChanged(uint32_t)), dev->GetProVideoSystemItf(), SLOT(onRS485BroadcastAddressChange(uint32_t)) );
-        connect( dev->GetProVideoSystemItf(), SIGNAL(RS485BroadcastAddressChanged(uint32_t)), m_ui->infoBox, SLOT(onRS485BroadcastAddressChange(uint32_t)) );
-
-        connect( m_dlg, SIGNAL(RS485BroadcastMasterChanged(int32_t)), dev->GetProVideoSystemItf(), SLOT(onRS485BroadcastMasterChange(int32_t)) );
-    }
-
-    connect( m_ui->infoBox, SIGNAL(SystemSettingsChanged(int,int,int,int)), this, SLOT(onSystemSettingsChange(int,int,int,int)) );
-
-    // copy flag
-    connect( m_ui->infoBox, SIGNAL(CopyFlagChanged(bool)), this, SLOT(onCopyFlagChange(bool)) );
-
-    // engineering mode
-    connect( m_ui->infoBox, SIGNAL(EngineeringModeChanged(bool)), this, SLOT(onEngineeringModeChange(bool)) );
-    
     //////////////////////////
     // update
     //////////////////////////
@@ -764,13 +738,13 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         connect( dev->GetProVideoSystemItf(), SIGNAL(PromptChanged(uint8_t)), m_ui->updBox, SLOT(onPromptChange(uint8_t)) );
         connect( m_ui->updBox, SIGNAL(BootIntoUpdateMode()), dev->GetProVideoSystemItf(), SLOT(onBootIntoUpdateMode()) );
 
-        connect( m_ui->updBox, SIGNAL(CloseSerialConnection()), m_dlg, SLOT(onCloseSerialConnection()) );
-        connect( m_ui->updBox, SIGNAL(ReopenSerialConnection()), m_dlg, SLOT(onReopenSerialConnection()) );
+        connect( m_ui->updBox, SIGNAL(CloseSerialConnection()), m_ConnectDlg, SLOT(onCloseSerialConnection()) );
+        connect( m_ui->updBox, SIGNAL(ReopenSerialConnection()), m_ConnectDlg, SLOT(onReopenSerialConnection()) );
 
         connect( m_ui->updBox, SIGNAL(LockCurrentTabPage(bool)), this, SLOT(onLockCurrentTabPage(bool)) );
 
-        m_ui->updBox->setPortname( m_dlg->getActiveChannel()->getSystemPortName() );
-        m_ui->updBox->setBaudrate( m_dlg->getActiveChannel()->getBaudRate() );
+        m_ui->updBox->setPortname( m_ConnectDlg->getActiveChannel()->getSystemPortName() );
+        m_ui->updBox->setBaudrate( m_ConnectDlg->getActiveChannel()->getBaudRate() );
     }
     
     //////////////////////////
@@ -803,9 +777,49 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         connect( dev->GetProVideoSystemItf(), SIGNAL(RS485BroadcastMasterChanged(uint8_t)), this, SLOT(onBroadcastChange(uint8_t)) );
         /* The broadcast mode can not be set directly on the device, because before that some changes in the serial connection
          * have to be made. Therefore we let the connecion dialog handle this */
-        connect( this, SIGNAL(BroadcastChanged(bool)), m_dlg, SLOT(onBroadcastChange(bool)) );
-        connect( this, SIGNAL(BroadcastChanged(bool)), m_ui->infoBox, SLOT(onBroadcastChange(bool)) );
+        connect( this, SIGNAL(BroadcastChanged(bool)), m_ConnectDlg, SLOT(onBroadcastChange(bool)) );
+        connect( this, SIGNAL(BroadcastChanged(bool)), m_SettingsDlg, SLOT(onBroadcastChange(bool)) );
     }
+
+    //////////////////////////
+    // settings dialog
+    //////////////////////////
+    // connect system interface slots
+    connect( m_SettingsDlg, SIGNAL(DeviceNameChanged(QString)), dev->GetProVideoSystemItf(), SLOT(onDeviceNameChange(QString)) );
+    connect( dev->GetProVideoSystemItf(), SIGNAL(DeviceNameChanged(QString)), m_SettingsDlg, SLOT(onDeviceNameChange(QString)) );
+
+    // reset to factory defaults
+    connect( m_SettingsDlg, SIGNAL(ResetToDefaultsClicked()), dev->GetProVideoSystemItf(), SLOT(onResetSettings()) );
+    connect( m_SettingsDlg, SIGNAL(ResyncRequest()), this, SLOT(onResyncRequest()) );
+
+    // system settings (serial connection) changed
+    if (deviceFeatures.hasRS232Interface)
+    {
+        connect( m_ConnectDlg, SIGNAL(RS232BaudrateChanged(uint32_t)), dev->GetProVideoSystemItf(), SLOT(onRS232BaudRateChange(uint32_t)) );
+        connect( dev->GetProVideoSystemItf(), SIGNAL(RS232BaudRateChanged(uint32_t)), m_SettingsDlg, SLOT(onRS232BaudrateChange(uint32_t)) );
+    }
+
+    connect( m_ConnectDlg, SIGNAL(RS485BaudrateChanged(uint32_t)), dev->GetProVideoSystemItf(), SLOT(onRS485BaudRateChange(uint32_t)) );
+    connect( dev->GetProVideoSystemItf(), SIGNAL(RS485BaudRateChanged(uint32_t)), m_SettingsDlg, SLOT(onRS485BaudrateChange(uint32_t)) );
+
+    connect( m_ConnectDlg, SIGNAL(RS485AddressChanged(uint32_t)), dev->GetProVideoSystemItf(), SLOT(onRS485AddressChange(uint32_t)) );
+    connect( dev->GetProVideoSystemItf(), SIGNAL(RS485AddressChanged(uint32_t)), m_SettingsDlg, SLOT(onRS485AddressChange(uint32_t)) );
+
+    if (deviceFeatures.hasSystemBroadcast)
+    {
+        connect( m_ConnectDlg, SIGNAL(RS485BroadcastAddressChanged(uint32_t)), dev->GetProVideoSystemItf(), SLOT(onRS485BroadcastAddressChange(uint32_t)) );
+        connect( dev->GetProVideoSystemItf(), SIGNAL(RS485BroadcastAddressChanged(uint32_t)), m_SettingsDlg, SLOT(onRS485BroadcastAddressChange(uint32_t)) );
+
+        connect( m_ConnectDlg, SIGNAL(RS485BroadcastMasterChanged(int32_t)), dev->GetProVideoSystemItf(), SLOT(onRS485BroadcastMasterChange(int32_t)) );
+    }
+
+    connect( m_SettingsDlg, SIGNAL(SystemSettingsChanged(int,int,int,int)), this, SLOT(onSystemSettingsChange(int,int,int,int)) );
+
+    // engineering mode
+    connect( m_SettingsDlg, SIGNAL(EngineeringModeChanged(bool)), this, SLOT(onEngineeringModeChange(bool)) );
+
+    // save settings
+    connect( m_SettingsDlg, SIGNAL(SaveSettings()), this, SLOT( onSaveSettingsClicked() ) );
 
     //////////////////////////
     // other signals
@@ -879,15 +893,28 @@ void MainWindow::onLockCurrentTabPage( bool lock )
  *****************************************************************************/
 void MainWindow::setConnectDlg( ConnectDialog * dlg )
 {
-    m_dlg = dlg;
+    m_ConnectDlg = dlg;
 
-    if ( m_dlg )
+    if ( m_ConnectDlg )
     {
         // React if a new device is connected to this window
-        connect( m_dlg, SIGNAL(DeviceConnected( ProVideoDevice *)), this, SLOT(onDeviceConnected(ProVideoDevice *)) );
+        connect( m_ConnectDlg, SIGNAL(DeviceConnected( ProVideoDevice *)), this, SLOT(onDeviceConnected(ProVideoDevice *)) );
 
         // React if the connect dialog has to be re-shown
-        connect( m_dlg, SIGNAL(OpenConnectDialog()), this, SLOT(onConnectClicked()) );
+        connect( m_ConnectDlg, SIGNAL(OpenConnectDialog()), this, SLOT(onConnectClicked()) );
+    }
+}
+
+/******************************************************************************
+ * MainWindow::setSettingsDlg
+ *****************************************************************************/
+void MainWindow::setSettingsDlg( SettingsDialog * dlg )
+{
+    m_SettingsDlg = dlg;
+
+    if ( m_SettingsDlg )
+    {
+        // TODO
     }
 }
 
@@ -905,11 +932,11 @@ void MainWindow::onDeviceConnected(ProVideoDevice * device)
 void MainWindow::onDeviceSelectionChange( int index )
 {
     // Try to connect to the selected device
-    if ( !m_dlg->connectToRS485DeviceByIndex(index) )
+    if ( !m_ConnectDlg->connectToRS485DeviceByIndex(index) )
     {
-        m_dlg->exec();
+        m_ConnectDlg->exec();
 
-        if ( m_dlg->result() == QDialog::Rejected )
+        if ( m_ConnectDlg->result() == QDialog::Rejected )
         {
             close();
         }
@@ -922,11 +949,11 @@ void MainWindow::onDeviceSelectionChange( int index )
 void MainWindow::onSystemSettingsChange( int rs232Baudrate, int rs485Baudrate, int rs485Address, int rs485BroadcastAddress )
 {
     // Change the comport settings on the device and in the connect dialog
-    m_dlg->changeComportSettings(rs232Baudrate, rs485Baudrate, rs485Address, rs485BroadcastAddress);
+    m_ConnectDlg->changeComportSettings(rs232Baudrate, rs485Baudrate, rs485Address, rs485BroadcastAddress);
 
     // Adjust the devices list
-    QVector<ConnectDialog::detectedRS485Device> connectedRS485Devices = m_dlg->getDetectedRS485Devices();
-    int currentRS485DeviceIndex = m_dlg->getCurrentRs485DeviceIndex();
+    QVector<ConnectDialog::detectedRS485Device> connectedRS485Devices = m_ConnectDlg->getDetectedRS485Devices();
+    int currentRS485DeviceIndex = m_ConnectDlg->getCurrentRs485DeviceIndex();
     if ( !connectedRS485Devices.empty() && m_cbxConnectedDevices != NULL)
     {
         // Block signals from combo box
@@ -963,14 +990,25 @@ void MainWindow::onSystemSettingsChange( int rs232Baudrate, int rs485Baudrate, i
  *****************************************************************************/
 void MainWindow::onConnectClicked()
 {
-    if ( m_dlg )
+    if ( m_ConnectDlg )
     {
-        m_dlg->exec();
+        m_ConnectDlg->exec();
 
-        if ( m_dlg->result() == QDialog::Rejected )
+        if ( m_ConnectDlg->result() == QDialog::Rejected )
         {
             close();
         }
+    }
+}
+
+/******************************************************************************
+ * MainWindow::onSettingsClicked
+ *****************************************************************************/
+void MainWindow::onSettingsClicked()
+{
+    if ( m_SettingsDlg )
+    {
+        m_SettingsDlg->exec();
     }
 }
 

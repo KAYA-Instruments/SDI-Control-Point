@@ -6,9 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>418</width>
-    <height>502</height>
+    <width>530</width>
+    <height>600</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>530</width>
+    <height>0</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>System Settings</string>
@@ -36,7 +48,7 @@
       <item>
        <widget class="QLabel" name="lblNote">
         <property name="text">
-         <string>Note: This Settings can not be changed in Broadcast Mode.</string>
+         <string>Note: The Serial Interface settings can not be changed in Multi-Camera-Mode as this would result in address collisions. Please keep in mind that if you change the device name, all devices will have the same name.</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
@@ -67,12 +79,15 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="maxLength">
+           <number>32</number>
+          </property>
          </widget>
         </item>
        </layout>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="btnApplyDeviceName">
         <property name="text">
          <string>Apply Device Name</string>
         </property>
@@ -248,12 +263,22 @@
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Note: Please click the save Button below to permanetly save your changes in the device's flash memory. Alternatively you can use the save button in the main window.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Close</set>
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Save</set>
      </property>
     </widget>
    </item>

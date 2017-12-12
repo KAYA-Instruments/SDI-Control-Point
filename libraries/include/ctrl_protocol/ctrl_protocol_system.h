@@ -157,6 +157,24 @@ int ctrl_protocol_get_device_name
 );
 
 /**************************************************************************//**
+ * @brief Set the device name.
+ *
+ * @param[in]  channel  control channel instance
+ * @param[in]  protocol control protocol instance
+ * @param[in]  no       number of values (sizeof(ctrl_protocol_device_id_t))
+ * @param[in]  values   points to buffer
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_set_device_name
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint8_t * const              values
+);
+
+/**************************************************************************//**
  * @brief Device identifier object
  *****************************************************************************/
 typedef struct ctrl_protocol_device_id_s
@@ -687,6 +705,7 @@ typedef struct ctrl_protocol_sys_drv_s
     ctrl_protocol_uint8_array_t     get_system_info;
     ctrl_protocol_uint8_array_t     get_system_platform;
     ctrl_protocol_uint8_array_t     get_device_name;
+    ctrl_protocol_uint8_array_t     set_device_name;
     ctrl_protocol_uint8_array_t     get_system_id;
     ctrl_protocol_uint8_array_t     get_system_validity;
     ctrl_protocol_get_uint32_t      get_bitstream_version;

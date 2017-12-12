@@ -147,6 +147,7 @@ signals:
     void RunTimeChanged( uint32_t cnt );
 
 public slots:
+    void onDeviceNameChange( QString name );
     void onRS232BaudRateChange( uint32_t baudrate );
     void onRS485BaudRateChange( uint32_t baudrate );
     void onRS485AddressChange( uint32_t address );

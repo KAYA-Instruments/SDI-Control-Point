@@ -38,8 +38,6 @@ public:
 
     // Show or hide UI elements
     void setRuntimeVisible( const bool value );
-    void setBroadcastSettingsVisible( const bool value );
-    void setRS232SettingsVisible( const bool value );
 
 protected:
     void prepareMode( const Mode mode ) Q_DECL_OVERRIDE;
@@ -47,14 +45,6 @@ protected:
     void loadSettings( QSettings & s ) Q_DECL_OVERRIDE;
     void saveSettings( QSettings & s ) Q_DECL_OVERRIDE;
     void applySettings( void ) Q_DECL_OVERRIDE;
-
-signals:
-    void CopyFlagChanged( bool flag );
-    void ResetToDefaultsClicked();
-    void SystemSettingsChanged( int rs232Baudrate, int rs485Baudrate, int rs485Address, int rs485BroadcastAddress );
-    void EngineeringModeChanged( bool flag );
-
-    void ResyncRequest( void );
 
 public slots:
     // system interface slots
@@ -70,16 +60,8 @@ public slots:
     void onFeatureMaskHwListChange( QStringList features );
     void onFeatureMaskSwChange( uint32_t mask );
     void onRunTimeChange( uint32_t seconds );
-    void onRS232BaudrateChange( uint32_t baudrate );
-    void onRS485BaudrateChange( uint32_t baudrate );
-    void onRS485AddressChange( uint32_t address );
-    void onRS485BroadcastAddressChange( uint32_t address );
-    void onBroadcastChange( bool enable );
 
 private slots:
-    void onBtnResetToDefaultsClicked();
-    void onBtnApplySerialPortSettingsClicked();
-    void onCbxEngineeringModeChange( int value );
     void onShowLicenseClicked();
     void onShowThirdPartyLicensesClicked();
 

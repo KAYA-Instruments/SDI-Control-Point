@@ -88,6 +88,24 @@ int ctrl_protocol_get_device_name
 }
 
 /******************************************************************************
+ * ctrl_protocol_set_device_name
+ *****************************************************************************/
+int ctrl_protocol_set_device_name
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint8_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), set_device_name );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( values );
+    return ( SYS_DRV(protocol->drv)->set_device_name( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
  * ctrl_protocol_get_system_id
  *****************************************************************************/
 int ctrl_protocol_get_system_id

@@ -24,6 +24,7 @@
 #define SETTINGSDIALOG_H
 
 #include <QDialog>
+#include <QValidator>
 
 namespace Ui {
     class SettingsDialog;
@@ -42,13 +43,18 @@ public:
     void setRS232SettingsVisible( const bool value );
 
 signals:
+    void DeviceNameChanged( QString name );
     void ResetToDefaultsClicked();
     void SystemSettingsChanged( int rs232Baudrate, int rs485Baudrate, int rs485Address, int rs485BroadcastAddress );
     void EngineeringModeChanged( bool flag );
 
     void ResyncRequest( void );
+    void SaveSettings( void );
 
 public slots:
+    // standard buttons
+    void accept();
+
     // system interface slots
     void onDeviceNameChange( QString name );
     void onRS232BaudrateChange( uint32_t baudrate );
@@ -58,6 +64,7 @@ public slots:
     void onBroadcastChange( bool enable );
 
 private slots:
+    void onApplyDeviceNameClicked();
     void onBtnResetToDefaultsClicked();
     void onBtnApplySerialPortSettingsClicked();
     void onCbxEngineeringModeChange( int value );
