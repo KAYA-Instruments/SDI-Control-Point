@@ -108,6 +108,8 @@ public:
     void changeComportSettings( int rs232Baudrate, int rs485Baudrate, int rs485Address , int rs485BroadcastAddress );
     // Connect to a device from the m_detectedRS485Devices list
     bool connectToRS485DeviceByIndex( int index );
+    // Update the name of the currently connected device (e.g. after name was changed by user)
+    void updateCurrentDeviceName();
 
 signals:
     // connected to a new device

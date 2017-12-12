@@ -1007,6 +1007,17 @@ bool ConnectDialog::connectToRS485DeviceByIndex( int index )
 }
 
 /******************************************************************************
+ * ConnectDialog::updateCurrentDeviceName
+ *****************************************************************************/
+void ConnectDialog::updateCurrentDeviceName()
+{
+    m_connectedDevice->GetProVideoSystemItf()->GetDeviceName();
+    QString deviceName = m_connectedDevice->getDeviceName();
+
+    m_detectedRS485Devices[m_currentRS485DeviceIndex].name = deviceName;
+}
+
+/******************************************************************************
  * ConnectDialog::openInterface
  *****************************************************************************/
 int ConnectDialog::openInterface()

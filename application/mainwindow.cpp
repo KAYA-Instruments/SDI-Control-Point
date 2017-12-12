@@ -66,7 +66,7 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
 
     // Connect with dialogs
     setConnectDlg(connectDialog);
-    setSettingsDlg(new SettingsDialog(this));
+    m_SettingsDlg = new SettingsDialog( this );
     
     // connect actions
     connect( m_ui->actionConnect        , SIGNAL( triggered() ), this, SLOT( onConnectClicked() ) );
@@ -85,7 +85,7 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
 }
 
 /******************************************************************************
- * MainWindow::MainWindow
+ * MainWindow::~MainWindow
  *****************************************************************************/
 MainWindow::~MainWindow()
 {
@@ -96,6 +96,9 @@ MainWindow::~MainWindow()
     delete m_ui;
 }
 
+/******************************************************************************
+ * MainWindow::setupUI
+ *****************************************************************************/
 void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
 {
     //////////////////////////
@@ -152,7 +155,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
         // Create new combo box
         QComboBox * cbxConnectedDevices = new QComboBox( m_ui->toolBar );
 
-        // Set size adjust policyto auto adjust to react to changing device names
+        // Set size adjust policy to auto adjust to react to changing device names
         cbxConnectedDevices->setSizeAdjustPolicy( cbxConnectedDevices->AdjustToContents );
         cbxConnectedDevices->setMaximumWidth( 300 );
 
@@ -300,6 +303,45 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
     // Settings Dialog
     m_SettingsDlg->setBroadcastSettingsVisible(deviceFeatures.hasRS232Interface);
     m_SettingsDlg->setRS232SettingsVisible(deviceFeatures.hasRS232Interface);
+}
+
+/******************************************************************************
+ * MainWindow::updateDeviceList
+ *****************************************************************************/
+void MainWindow::updateDeviceList()
+{
+    // Adjust the devices list
+    QVector<ConnectDialog::detectedRS485Device> connectedRS485Devices = m_ConnectDlg->getDetectedRS485Devices();
+    int currentRS485DeviceIndex = m_ConnectDlg->getCurrentRs485DeviceIndex();
+    if ( !connectedRS485Devices.empty() && m_cbxConnectedDevices != NULL )
+    {
+        // Block signals from combo box
+        m_cbxConnectedDevices->blockSignals( true );
+
+        // Clear combo box
+        m_cbxConnectedDevices->clear();
+
+        // Add entries to combo box
+        for (int i = 0; i < connectedRS485Devices.count(); i++ )
+        {
+            QString broadcastMaster = "";
+            if ( connectedRS485Devices[i].isBroadcastMaster )
+            {
+                broadcastMaster = QString("(Master) ");
+
+            }
+            m_cbxConnectedDevices->addItem( QString(" %1 / %2: %3 %4").arg(connectedRS485Devices[i].config.dev_addr)
+                                                                      .arg(connectedRS485Devices[i].broadcastAddress)
+                                                                      .arg(connectedRS485Devices[i].name)
+                                                                      .arg(broadcastMaster), i) ;
+        }
+
+        // Set index of the combo box to the currently selected device
+        m_cbxConnectedDevices->setCurrentIndex( currentRS485DeviceIndex );
+
+        // Unblock signals
+        m_cbxConnectedDevices->blockSignals( false );
+    }
 }
 
 /******************************************************************************
@@ -786,6 +828,7 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
     //////////////////////////
     // connect system interface slots
     connect( m_SettingsDlg, SIGNAL(DeviceNameChanged(QString)), dev->GetProVideoSystemItf(), SLOT(onDeviceNameChange(QString)) );
+    connect( m_SettingsDlg, SIGNAL(DeviceNameChanged(QString)), this, SLOT(onDeviceNameChange()) );
     connect( dev->GetProVideoSystemItf(), SIGNAL(DeviceNameChanged(QString)), m_SettingsDlg, SLOT(onDeviceNameChange(QString)) );
 
     // reset to factory defaults
@@ -906,19 +949,6 @@ void MainWindow::setConnectDlg( ConnectDialog * dlg )
 }
 
 /******************************************************************************
- * MainWindow::setSettingsDlg
- *****************************************************************************/
-void MainWindow::setSettingsDlg( SettingsDialog * dlg )
-{
-    m_SettingsDlg = dlg;
-
-    if ( m_SettingsDlg )
-    {
-        // TODO
-    }
-}
-
-/******************************************************************************
  * MainWindow::onDeviceConnected
  *****************************************************************************/
 void MainWindow::onDeviceConnected(ProVideoDevice * device)
@@ -944,6 +974,18 @@ void MainWindow::onDeviceSelectionChange( int index )
 }
 
 /******************************************************************************
+ * MainWindow::onDeviceSelectionChange
+ *****************************************************************************/
+void MainWindow::onDeviceNameChange()
+{
+    // Make the connect dialog get the new name from the device
+    m_ConnectDlg->updateCurrentDeviceName();
+
+    // Update combo box
+    updateDeviceList();
+}
+
+/******************************************************************************
  * MainWindow::onSystemSettingsChange
  *****************************************************************************/
 void MainWindow::onSystemSettingsChange( int rs232Baudrate, int rs485Baudrate, int rs485Address, int rs485BroadcastAddress )
@@ -951,38 +993,8 @@ void MainWindow::onSystemSettingsChange( int rs232Baudrate, int rs485Baudrate, i
     // Change the comport settings on the device and in the connect dialog
     m_ConnectDlg->changeComportSettings(rs232Baudrate, rs485Baudrate, rs485Address, rs485BroadcastAddress);
 
-    // Adjust the devices list
-    QVector<ConnectDialog::detectedRS485Device> connectedRS485Devices = m_ConnectDlg->getDetectedRS485Devices();
-    int currentRS485DeviceIndex = m_ConnectDlg->getCurrentRs485DeviceIndex();
-    if ( !connectedRS485Devices.empty() && m_cbxConnectedDevices != NULL)
-    {
-        // Block signals from combo box
-        m_cbxConnectedDevices->blockSignals( true );
-
-        // Clear combo box
-        m_cbxConnectedDevices->clear();
-
-        // Add entries to combo box
-        for (int i = 0; i < connectedRS485Devices.count(); i++ )
-        {
-            QString broadcastMaster = "";
-            if ( connectedRS485Devices[i].isBroadcastMaster )
-            {
-                broadcastMaster = QString("(Master) ");
-
-            }
-            m_cbxConnectedDevices->addItem( QString(" %1 / %2: %3 %4").arg(connectedRS485Devices[i].config.dev_addr)
-                                                                      .arg(connectedRS485Devices[i].broadcastAddress)
-                                                                      .arg(connectedRS485Devices[i].name)
-                                                                      .arg(broadcastMaster), i) ;
-        }
-
-        // Set index of the combo box to the currently selected device
-        m_cbxConnectedDevices->setCurrentIndex( currentRS485DeviceIndex );
-
-        // Unblock signals
-        m_cbxConnectedDevices->blockSignals( false );
-    }
+    // Update combo box
+    updateDeviceList();
 }
 
 /******************************************************************************
