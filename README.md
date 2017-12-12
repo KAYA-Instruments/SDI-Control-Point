@@ -5,9 +5,9 @@ The master-branch of this project contains the most recent GUI version used for 
 
 * **master:**
   * ATOM one (xbow) - Small 2k broadcast camera
-  * ATOM one Mini (cooper) - Tiny 2k broadcast camera
+  * ATOM one mini (cooper) - Tiny 2k broadcast camera
   * ATOM one 4k (condor4k) - Small 4k broadcast camera
-  * ATOM one 4k Mini (condor4k_mini) - Even smaller 4k broadcast camera
+  * ATOM one 4k mini (condor4k_mini) - Even smaller 4k broadcast camera
   * Cameleon (cameleon) - Image processor box
 
 Development by Dream Chip is done in the *dct_development* branch which will be pushed to the master when new features are ready. Other developers are encouraged to create their own branches and issue merge requests.
