@@ -79,7 +79,7 @@ public:
         bool hasKneeItf;
         bool hasLutItf;
         bool hasDpccItf;
-        bool hasDpccFlash;
+        bool hasDpccFullFeautureSet;
         bool hasOsdItf;
         bool hasOsdTestPattern;
         bool hasSystemSaveLoad;

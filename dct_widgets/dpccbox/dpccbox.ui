@@ -41,7 +41,7 @@
            </widget>
           </item>
           <item>
-           <widget class="Line" name="line_3">
+           <widget class="Line" name="lineTop">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -126,7 +126,7 @@
            </widget>
           </item>
           <item>
-           <widget class="Line" name="line_2">
+           <widget class="Line" name="lineBottom">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -221,7 +221,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QLabel" name="label">
+        <widget class="QLabel" name="lblInformation">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
            <horstretch>0</horstretch>

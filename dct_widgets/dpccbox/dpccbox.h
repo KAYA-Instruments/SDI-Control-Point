@@ -40,7 +40,7 @@ public:
     ~DpccBox();
 
     // Show or hide UI elements
-    void setCameraFlashVisible(bool visible);
+    void setFullDpccFeatureSetVisible( bool visible );
 
     // Clear table (usefull when connecting to new device)
     void clearDpccTable();

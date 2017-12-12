@@ -1014,7 +1014,10 @@ void ConnectDialog::updateCurrentDeviceName()
     m_connectedDevice->GetProVideoSystemItf()->GetDeviceName();
     QString deviceName = m_connectedDevice->getDeviceName();
 
-    m_detectedRS485Devices[m_currentRS485DeviceIndex].name = deviceName;
+    if ( !m_detectedRS485Devices.empty() && m_currentRS485DeviceIndex < m_detectedRS485Devices.count() )
+    {
+        m_detectedRS485Devices[m_currentRS485DeviceIndex].name = deviceName;
+    }
 }
 
 /******************************************************************************

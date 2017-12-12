@@ -289,7 +289,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
     m_ui->lutBox->setLutBitWidth(deviceFeatures.lutBitWidth);
 
     // Dpcc Tab
-    m_ui->dpccBox->setCameraFlashVisible(deviceFeatures.hasDpccFlash);
+    m_ui->dpccBox->setFullDpccFeatureSetVisible(deviceFeatures.hasDpccFullFeautureSet);
      // Clear old table, otherwise user might see a "your table is not valid" message on device switch
     m_ui->dpccBox->clearDpccTable();
 
@@ -683,32 +683,33 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         connect( dev->GetDpccItf(), SIGNAL(DpccEnableChanged(int)), m_ui->dpccBox, SLOT(onDpccEnableChanged(int)) );
         connect( m_ui->dpccBox, SIGNAL(DpccEnableChanged(int)), dev->GetDpccItf(), SLOT(onDpccEnableChange(int)) );
 
-        // correction mode
-        connect( dev->GetDpccItf(), SIGNAL(DpccCorrectionModeChanged(int)), m_ui->dpccBox, SLOT(onDpccCorrectionModeChanged(int)) );
-        connect( m_ui->dpccBox, SIGNAL(DpccCorrectionModeChanged(int)), dev->GetDpccItf(), SLOT(onDpccCorrectionModeChange(int)) );
-
-        // detection level
-        connect( dev->GetDpccItf(), SIGNAL(DpccDetectionLevelChanged(int)), m_ui->dpccBox, SLOT(onDpccDetectionLevelChanged(int)) );
-        connect( m_ui->dpccBox, SIGNAL(DpccDetectionLevelChanged(int)), dev->GetDpccItf(), SLOT(onDpccDetectionLevelChange(int)) );
-
         // test mode
         connect( dev->GetDpccItf(), SIGNAL(DpccTestModeChanged(int)), m_ui->dpccBox, SLOT(onDpccTestModeChanged(int)) );
         connect( m_ui->dpccBox, SIGNAL(DpccTestModeChanged(int)), dev->GetDpccItf(), SLOT(onDpccTestModeChange(int)) );
 
-        // position table
-        connect( dev->GetDpccItf(), SIGNAL(DpccTableChanged(QVector<int>,QVector<int>)), m_ui->dpccBox, SLOT(onDpccTableFromCameraLoaded(QVector<int>,QVector<int>)) );
-        connect( m_ui->dpccBox, SIGNAL(DpccLoadTableFromRam()), dev->GetDpccItf(), SLOT(onDpccGetTable()) );
-        connect( m_ui->dpccBox, SIGNAL(DpccWriteTableToRam(QVector<int>&,QVector<int>&)), dev->GetDpccItf(), SLOT(onDpccSetTable(QVector<int>&,QVector<int>&)) );
-
-        // Store / Restore in camera Flash memory
-        if (deviceFeatures.hasDpccFlash)
-        {
-            connect( m_ui->dpccBox, SIGNAL(DpccStoreTableInFlash()), dev->GetDpccItf(), SLOT(onDpccSaveTable()) );
-            connect( m_ui->dpccBox, SIGNAL(DpccRestoreTableFromFlash()), dev->GetDpccItf(), SLOT(onDpccLoadTable()) );
-        }
-
         // Automatically load / fill the dpcc table
         connect( m_ui->dpccBox, SIGNAL(DpccAutoLoadTable()), dev->GetDpccItf(), SLOT(onDpccAutoLoadTable()) );
+
+        // Full dpcc feature set available
+        if (deviceFeatures.hasDpccFullFeautureSet)
+        {
+            // correction mode
+            connect( dev->GetDpccItf(), SIGNAL(DpccCorrectionModeChanged(int)), m_ui->dpccBox, SLOT(onDpccCorrectionModeChanged(int)) );
+            connect( m_ui->dpccBox, SIGNAL(DpccCorrectionModeChanged(int)), dev->GetDpccItf(), SLOT(onDpccCorrectionModeChange(int)) );
+
+            // detection level
+            connect( dev->GetDpccItf(), SIGNAL(DpccDetectionLevelChanged(int)), m_ui->dpccBox, SLOT(onDpccDetectionLevelChanged(int)) );
+            connect( m_ui->dpccBox, SIGNAL(DpccDetectionLevelChanged(int)), dev->GetDpccItf(), SLOT(onDpccDetectionLevelChange(int)) );
+
+            // Store / Restore in camera Flash memory
+            connect( m_ui->dpccBox, SIGNAL(DpccStoreTableInFlash()), dev->GetDpccItf(), SLOT(onDpccSaveTable()) );
+            connect( m_ui->dpccBox, SIGNAL(DpccRestoreTableFromFlash()), dev->GetDpccItf(), SLOT(onDpccLoadTable()) );
+
+            // position table
+            connect( dev->GetDpccItf(), SIGNAL(DpccTableChanged(QVector<int>,QVector<int>)), m_ui->dpccBox, SLOT(onDpccTableFromCameraLoaded(QVector<int>,QVector<int>)) );
+            connect( m_ui->dpccBox, SIGNAL(DpccLoadTableFromRam()), dev->GetDpccItf(), SLOT(onDpccGetTable()) );
+            connect( m_ui->dpccBox, SIGNAL(DpccWriteTableToRam(QVector<int>&,QVector<int>&)), dev->GetDpccItf(), SLOT(onDpccSetTable(QVector<int>&,QVector<int>&)) );
+        }
 
         // video mode
         connect( dev->GetChainItf(), SIGNAL(ChainVideoModeChanged(int)), m_ui->dpccBox, SLOT(onDpccVideoModeChanged(int)) );

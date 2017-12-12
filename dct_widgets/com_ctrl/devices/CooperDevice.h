@@ -47,7 +47,8 @@ public:
     MccItf *        GetMccItf() const override;
     LutItf *        GetLutItf() const override;
     ChainItf *      GetChainItf() const override;
-    IrisItf *       GetIrisItf() const override;
+    KneeItf *       GetKneeItf() const override;
+    DpccItf *       GetDpccItf() const override;
 
     features getSupportedFeatures() override;
 

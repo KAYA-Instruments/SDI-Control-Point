@@ -306,7 +306,7 @@ Condor4kMini11Device::features Condor4kMini11Device::getSupportedFeatures()
     deviceFeatures.hasKneeItf               = true;
     deviceFeatures.hasLutItf                = true;
     deviceFeatures.hasDpccItf               = true;
-    deviceFeatures.hasDpccFlash             = true;
+    deviceFeatures.hasDpccFullFeautureSet   = true;
     deviceFeatures.hasSystemSaveLoad        = true;
     deviceFeatures.hasSystemUpdate          = true;
     deviceFeatures.hasSystemRuntime         = true;

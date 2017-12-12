@@ -481,19 +481,31 @@ void DpccBox::setDpccTestMode( const int mode )
     emit DpccCorrectionModeChanged( mode );
 }
 
+
 /******************************************************************************
- * DpccBox::setCameraFlashVisible
- * @brief Make the Buttons and Labels for storing / restoring data from the
- *        camera RAM to the Flash visible or invisible.
- * @param visible Boolean that defines the visibility
+ * DpccBox::setUserEditableTableVisible
  *****************************************************************************/
-void DpccBox::setCameraFlashVisible(bool visible)
+void DpccBox::setFullDpccFeatureSetVisible( bool visible )
 {
-    if ( !visible )
-    {
-        d_data->m_ui->cbxSaveTablePermanently->setChecked( visible );
-    }
-    d_data->m_ui->cbxSaveTablePermanently->setVisible( visible );
+    /* Note: Some devices only have a reduced DPCC module which only allows
+     * auto load and changing the test mode. */
+
+    // Show / hide position table
+    d_data->m_ui->gbxPositionTable->setVisible( visible );
+
+    // Show / hide data transmission box
+    d_data->m_ui->gbxDataTransmission->setVisible( visible );
+
+    // Show / hide correction mode elements
+    d_data->m_ui->lblCorrectionMode->setVisible( visible );
+    d_data->m_ui->cbxCorrectionMode->setVisible( visible );
+
+    // Show / hide detection level elements
+    d_data->m_ui->lblLevel->setVisible( visible );
+    d_data->m_ui->sbxLevel->setVisible( visible );
+
+    // Show / hide information label
+    d_data->m_ui->lblInformation->setVisible( visible );
 }
 
 /******************************************************************************

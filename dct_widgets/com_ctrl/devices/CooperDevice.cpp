@@ -185,7 +185,8 @@ public:
         m_MccItf        = new MccItf( c, p->clone( ComProtocol::MCC_INSTANCE, m_userCtx ) );
         m_LutItf        = new LutItf( c, p->clone( ComProtocol::LUT_INSTANCE, m_userCtx ) );
         m_ChainItf      = new ChainItf( c, p->clone( ComProtocol::CHAIN_INSTANCE, m_userCtx ) );
-        m_IrisItf       = new IrisItf( c, p->clone( ComProtocol::IRIS_INSTANCE, m_userCtx ) );
+        m_KneeItf       = new KneeItf( c, p->clone( ComProtocol::KNEE_INSTANCE, m_userCtx ) );
+        m_DpccItf       = new DpccItf( c, p->clone( ComProtocol::DPCC_INSTANCE, m_userCtx ) );
 
         // NotifyWhiteBalanceChanged
         QObject::connect( m_AutoItf , SIGNAL(NotifyWhiteBalanceChanged()),
@@ -213,7 +214,8 @@ public:
         delete m_MccItf->GetComProtocol();
         delete m_LutItf->GetComProtocol();
         delete m_ChainItf->GetComProtocol();
-        delete m_IrisItf->GetComProtocol();
+        delete m_KneeItf->GetComProtocol();
+        delete m_DpccItf->GetComProtocol();
 
         // clear interface classes
         delete m_IspItf;
@@ -223,7 +225,8 @@ public:
         delete m_MccItf;
         delete m_LutItf;
         delete m_ChainItf;
-        delete m_IrisItf;
+        delete m_KneeItf;
+        delete m_DpccItf;
 
         // clear user context
         m_protocol->deleteUserContext( m_userCtx );
@@ -237,7 +240,8 @@ public:
     MccItf *        m_MccItf;
     LutItf *        m_LutItf;
     ChainItf *      m_ChainItf;
-    IrisItf *       m_IrisItf;
+    KneeItf *       m_KneeItf;
+    DpccItf *       m_DpccItf;
 
     ComProtocol *   m_protocol;
     void *          m_userCtx;
@@ -294,8 +298,7 @@ CooperDevice::features CooperDevice::getSupportedFeatures()
     deviceFeatures.hasMccItf                = true;
     deviceFeatures.hasKneeItf               = true;
     deviceFeatures.hasLutItf                = true;
-    deviceFeatures.hasDpccItf               = true; // Only auto calibration!
-    deviceFeatures.hasDpccFlash             = true; // Not sure, check
+    deviceFeatures.hasDpccItf               = true;
     deviceFeatures.hasSystemSaveLoad        = true;
     deviceFeatures.hasSystemUpdate          = true;
     deviceFeatures.hasSystemRuntime         = true;
@@ -363,11 +366,19 @@ ChainItf * CooperDevice::GetChainItf() const
 }
 
 /******************************************************************************
- * CooperDevice::GetIrisItf()
+ * CooperDevice::GetKneeItf()
  *****************************************************************************/
-IrisItf * CooperDevice::GetIrisItf() const
+KneeItf * CooperDevice::GetKneeItf() const
 {
-    return ( d_data->m_IrisItf );
+    return ( d_data->m_KneeItf );
+}
+
+/******************************************************************************
+ * CooperDevice::GetDpccItf()
+ *****************************************************************************/
+DpccItf * CooperDevice::GetDpccItf() const
+{
+    return ( d_data->m_DpccItf );
 }
 
 /******************************************************************************
@@ -384,7 +395,8 @@ void CooperDevice::setComChannel( ComChannel * c )
     GetMccItf()     ->SetComChannel( c );
     GetLutItf()     ->SetComChannel( c );
     GetChainItf()   ->SetComChannel( c );
-    GetIrisItf()    ->SetComChannel( c );
+    GetKneeItf()    ->SetComChannel( c );
+    GetDpccItf()    ->SetComChannel( c );
 }
 
 /******************************************************************************
@@ -401,5 +413,6 @@ void CooperDevice::resync()
     GetMccItf()     ->resync();
     GetLutItf()     ->resync();
     GetChainItf()   ->resync();
-    GetIrisItf()    ->resync();
+    GetKneeItf()    ->resync();
+    GetDpccItf()    ->resync();
 }
