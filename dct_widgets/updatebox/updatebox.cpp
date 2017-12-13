@@ -137,7 +137,7 @@ const update_config_t cooper_bs_update =
 {
     .type      = cooper_bs,
     .baudrate  = 0u,        // use automatic baudrate detection of flashloader
-    .sector    = 16u,
+    .sector    = 4u,
     .extension = "bin",
     .content   = true,      // needed to distinguish between firmare and bitstream
     .reversal  = false,
@@ -620,9 +620,6 @@ void UpdateBox::onFsmTimer( )
     {
         // switch to update state, so the device stays in fw update mode and the user can try again
         setSystemState( UpdateState );
-
-        // Call FSM timer again to restart update procedure
-        onFsmTimer();
     }
 
     // IV. update running or error state
@@ -944,8 +941,14 @@ void UpdateBox::onSystemId( qint32 id )
     // is system detected
     if ( ( id > SYSTEM_ID_INVALID) && ( id < SYSTEM_ID_MAX ) )
     {
+        // go to update state
         setSystemState( UpdateState );
         d_data->m_id = id;
+    }
+    else
+    {
+        // call onFlashLoaderError function with version mismatch error
+        onFlashLoaderError( -EPROTO );
     }
 }
 
