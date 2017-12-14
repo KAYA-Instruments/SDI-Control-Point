@@ -5,9 +5,9 @@ The master-branch of this project contains the most recent GUI version used for 
 
 * **master:**
   * ATOM one (xbow) - Small 2k broadcast camera
-  * ATOM one Mini (cooper) - Tiny 2k broadcast camera
+  * ATOM one mini (cooper) - Tiny 2k broadcast camera
   * ATOM one 4k (condor4k) - Small 4k broadcast camera
-  * ATOM one 4k Mini (condor4k_mini) - Even smaller 4k broadcast camera
+  * ATOM one 4k mini (condor4k_mini) - Even smaller 4k broadcast camera
   * Cameleon (cameleon) - Image processor box
 
 Development by Dream Chip is done in the *dct_development* branch which will be pushed to the master when new features are ready. Other developers are encouraged to create their own branches and issue merge requests.
@@ -30,7 +30,7 @@ The project contains four folders with multiple sub-directories:
 # Working on the Project
 ## Development Environment
 The easiest way to edit the software is by using the Qt Creator, which is available for free for open source development at https://info.qt.io/download-qt-for-application-development    
-It is recommended to use the latest version of Qt Creator and the Qt framework. The last tested version is Qt Creator 4.4.1 based on Qt 5.9.2.
+It is recommended to use the latest version of Qt Creator and the Qt framework. The last tested version is Qt Creator 4.5.0 based on Qt 5.10.0.
 
 ## Unit Tests for C-Libraries
 The unit tests are written using an open source framework called embUnit which is available here: https://sourceforge.net/projects/embunit/  
@@ -81,7 +81,7 @@ For deployment on Linux see [this page of the Qt Wiki](https://wiki.qt.io/Deploy
 
 * Download the deployment tool app-image from [here](https://github.com/probonopd/linuxdeployqt/releases)
 * Copy the deployment tool and your compiled "ProVideo" application file to a new folder
-* Add qmake to the PATH variable, e.g.: ```export PATH=/opt/Qt/5.9.1/gcc_64/bin/:$PATH```
+* Add qmake to the PATH variable, e.g.: ```export PATH=/opt/Qt/5.10.0/gcc_64/bin/:$PATH```
 * Run the deployment tool: ```./linuxdeployqt-continuous-x86_64.AppImage ProVideo```
 * The tool will copy all files needed to run the application into the folder
 
