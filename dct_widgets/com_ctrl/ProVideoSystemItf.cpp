@@ -35,6 +35,9 @@
  *****************************************************************************/
 void ProVideoSystemItf::resync()
 {
+    // make sure device buffers are flushed
+    flushDeviceBuffers();
+
     // sync system info
     GetSystemInfo();
     // sync RS232 bausrate 
@@ -540,11 +543,32 @@ bool ProVideoSystemItf::isConnected()
 {
     uint8_t flag = 0u;
 
-    // read current prompt configuration 
+    // read current prompt configuration
     int res = ctrl_protocol_get_prompt( GET_PROTOCOL_INSTANCE(this),
                     GET_CHANNEL_INSTANCE(this), &flag );
 
     return ( res ? false : true );
+}
+
+/******************************************************************************
+ * ProVideoSystemItf::flushDeviceBuffers
+ *****************************************************************************/
+void ProVideoSystemItf::flushDeviceBuffers()
+{
+    int res = 0;
+    uint8_t flag = 0u;
+
+    // Loop until prompt can be read successfully
+    do
+    {
+        // Read prompt 5 times to make sure buffers are empty
+        for ( int i = 0; i < 5; i++ )
+        {
+            // read current prompt configuration
+            res = ctrl_protocol_get_prompt( GET_PROTOCOL_INSTANCE(this),
+                        GET_CHANNEL_INSTANCE(this), &flag );
+        }
+    } while ( res != 0 );
 }
 
 /******************************************************************************

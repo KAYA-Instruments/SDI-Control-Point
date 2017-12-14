@@ -115,6 +115,9 @@ public:
     // check for connection to device
     bool isConnected();
 
+    // flush device buffers
+    void flushDeviceBuffers();
+
     // set mask interpreter (hardware mask)
     void SetMaskHwInterpreter( MaskInterpreter * );
     
