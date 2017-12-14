@@ -4,13 +4,21 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
+Version **1.0.9** - 14.12.2017
+
+* GUI now fully supports the new ATOM one mini (cooper)
+* Resync after firmware updates is now more stable
+* Moved system settings from info page to new dialog which can be accessed from the main window
+* The device name can now be changed from the new settins dialog
+* The lut box now works with variable lut bit-widhts
+
+## Older Releases:
+
 Version **1.0.8** - 07.11.2017
 
 * Use new flashloader tool with automatic baudrate detection
 * In case of a genlock error after changing genlock settings, an error message is displayed
 * Implemented a "fast gamma" knob which controls the new fast gamma function which allows easy gamma changes on the fly
-
-## Older Releases:
 
 Version **1.0.7** - 06.10.2017
 
