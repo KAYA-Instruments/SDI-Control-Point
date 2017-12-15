@@ -98,7 +98,7 @@ const update_config_t condor4k_fw_update =
     .baudrate  = 0u,        // use automatic baudrate detection of flashloader
     .sector    = 1u,
     .extension = "bin",
-    .content   = true,      // needed to distinguish between firmare and bitstream
+    .content   = true,      // needed to distinguish between firmware and bitstream
     .reversal  = false,
     .file      = QString::null
 };
@@ -110,7 +110,7 @@ const update_config_t condor4k_bs_update =
     .baudrate  = 0u,        // use automatic baudrate detection of flashloader
     .sector    = 144u,
     .extension = "bin",
-    .content   = true,      // needed to distinguish between firmare and bitstream
+    .content   = true,      // needed to distinguish between firmware and bitstream
     .reversal  = false,
     .file      = QString::null
 };
@@ -127,7 +127,7 @@ const update_config_t cooper_fw_update =
     .baudrate  = 0u,        // use automatic baudrate detection of flashloader
     .sector    = 1u,
     .extension = "bin",
-    .content   = true,      // needed to distinguish between firmare and bitstream
+    .content   = true,      // needed to distinguish between firmware and bitstream
     .reversal  = false,
     .file      = QString::null
 };
@@ -139,7 +139,7 @@ const update_config_t cooper_bs_update =
     .baudrate  = 0u,        // use automatic baudrate detection of flashloader
     .sector    = 4u,
     .extension = "bin",
-    .content   = true,      // needed to distinguish between firmare and bitstream
+    .content   = true,      // needed to distinguish between firmware and bitstream
     .reversal  = false,
     .file      = QString::null
 };
@@ -589,7 +589,7 @@ void UpdateBox::onFsmTimer( )
     // I. CommandState: not connected with flashloader
     if ( state == CommandState )
     {
-        // set baudrate
+        // set baudrate and reversal
         d_data->m_application->setBaudrate( d_data->m_upd_config[updateIndex].baudrate );
         d_data->m_application->setReverse( d_data->m_upd_config[updateIndex].reversal );
 
@@ -605,6 +605,10 @@ void UpdateBox::onFsmTimer( )
     // II. UpdateState: initiate update run
     else if ( state == UpdateState )
     {
+        // set baudrate and reversal
+        d_data->m_application->setBaudrate( d_data->m_upd_config[updateIndex].baudrate );
+        d_data->m_application->setReverse( d_data->m_upd_config[updateIndex].reversal );
+
         d_data->m_erase_cnt     = 0u;
         d_data->m_program_cnt   = 0u;
         d_data->m_verify_cnt    = 0u;
@@ -787,7 +791,7 @@ void UpdateBox::onRunClicked()
     {
         SystemStates state = getSystemState();
 
-        // CommandState, UpdateState -> Start update
+        // CommandState, UpdateState, ErrorState -> Start update
         if ( (state == CommandState) ||
              (state == UpdateState)  ||
              (state == ErrorState) )
@@ -816,7 +820,10 @@ void UpdateBox::onRunClicked()
             d_data->m_ui->progressBar->setFormat( "%p%" );
             d_data->m_ui->progressBar->setValue( 0 );
 
-            // IV. start FSM timer
+            // IV: if in error state, switch to update state
+            setSystemState( UpdateState );
+
+            // V. start FSM timer
             d_data->m_FsmTimer->start( dT );
         }
 
