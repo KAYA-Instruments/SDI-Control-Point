@@ -33,9 +33,6 @@
 #include <ProVideoDevice.h>
 #include <XbowDevice.h>
 #include <Condor4kDevice.h>
-#include <Condor4kMini07Device.h>
-#include <Condor4kMini11Device.h>
-#include <Condor4kMini16Device.h>
 #include <CameleonDevice.h>
 #include <CooperDevice.h>
 
@@ -271,21 +268,9 @@ bool ConnectDialog::connectWithDevice()
         {
             connectedDevice = new XbowDevice( getActiveChannel(), new ProVideoProtocol() );
         }
-        else if ( systemPlatform == KNOWN_DEVICE_CONDOR4K || systemPlatform == KNOWN_DEVICE_CONDOR4K_MINI /* Legacy for compatibility */ )
+        else if ( systemPlatform == KNOWN_DEVICE_CONDOR4K || systemPlatform == KNOWN_DEVICE_CONDOR4K_MINI )
         {
             connectedDevice = new Condor4kDevice( getActiveChannel(), new ProVideoProtocol() );
-        }
-        else if ( systemPlatform == KNOWN_DEVICE_CONDOR4K_MINI07 )
-        {
-            connectedDevice = new Condor4kMini07Device( getActiveChannel(), new ProVideoProtocol() );
-        }
-        else if ( systemPlatform == KNOWN_DEVICE_CONDOR4K_MINI11 )
-        {
-            connectedDevice = new Condor4kMini11Device( getActiveChannel(), new ProVideoProtocol() );
-        }
-        else if ( systemPlatform == KNOWN_DEVICE_CONDOR4K_MINI16 )
-        {
-            connectedDevice = new Condor4kMini16Device( getActiveChannel(), new ProVideoProtocol() );
         }
         else if ( systemPlatform == KNOWN_DEVICE_CAMELEON )
         {

@@ -88,9 +88,6 @@ const update_config_t xbow_update =
 // NOTE: condor4k and condor4k_mini, bitstream and firmware are seperate
 #define PLATFORM_CONDOR_4K          ( "condor4k" )      // platform-name
 #define PLATFORM_CONDOR_4K_MINI     ( "condor4k_mini" ) // platform-name
-#define PLATFORM_CONDOR_4K_MINI07   ( "condor4k_mini07" ) // platform-name
-#define PLATFORM_CONDOR_4K_MINI11   ( "condor4k_mini11" ) // platform-name
-#define PLATFORM_CONDOR_4K_MINI16   ( "condor4k_mini16" ) // platform-name
 #define PLATFORM_CONDOR_4K_SP       ( 0x2001C000u )     // stack-pointer
 #define PLATFORM_CONDOR_4K_PC       ( 0x08030000u )     // program counter
 
@@ -902,9 +899,7 @@ void UpdateBox::onSystemPlatformChange( QString name )
         d_data->m_upd_config.append( xbow_update );
     }
     
-    else if ( name == PLATFORM_CONDOR_4K        || name == PLATFORM_CONDOR_4K_MINI   ||
-              name == PLATFORM_CONDOR_4K_MINI07 || name == PLATFORM_CONDOR_4K_MINI11 ||
-              name == PLATFORM_CONDOR_4K_MINI16 )
+    else if ( name == PLATFORM_CONDOR_4K || name == PLATFORM_CONDOR_4K_MINI )
     {
         // first file is firmware update
         d_data->m_upd_config.append( condor4k_fw_update );

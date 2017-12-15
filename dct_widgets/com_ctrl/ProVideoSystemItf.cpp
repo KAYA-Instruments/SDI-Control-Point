@@ -558,6 +558,8 @@ void ProVideoSystemItf::flushDeviceBuffers()
     int res = 0;
     uint8_t flag = 0u;
 
+    int retries = 5;
+
     // Loop until prompt can be read successfully
     do
     {
@@ -568,7 +570,10 @@ void ProVideoSystemItf::flushDeviceBuffers()
             res = ctrl_protocol_get_prompt( GET_PROTOCOL_INSTANCE(this),
                         GET_CHANNEL_INSTANCE(this), &flag );
         }
-    } while ( res != 0 );
+
+        // Decrement retry counter
+        retries--;
+    } while ( res != 0 && retries > 0 );
 }
 
 /******************************************************************************
