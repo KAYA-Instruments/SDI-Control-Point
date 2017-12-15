@@ -4,7 +4,7 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
-Version **1.0.9** - 14.12.2017
+Version **1.0.9** - 15.12.2017
 
 * GUI now fully supports the new ATOM one mini (cooper)
 * Resync after firmware updates is now more stable
