@@ -95,13 +95,13 @@
 #define CMD_SAVE_DPCC_TABLE_TMO             ( 30000 )
 
 /******************************************************************************
- * @brief command "load_settings" 
+ * @brief command "dpc_load"
  *****************************************************************************/
 #define CMD_LOAD_DPCC_TABLE                 ( "dpc_load\n" )
 #define CMD_LOAD_DPCC_TABLE_TMO             ( 30000 )
 
 /******************************************************************************
- * @brief command "load_settings"
+ * @brief command "dpc_auto_load"
  *****************************************************************************/
 #define CMD_AUTO_LOAD_DPCC_TABLE            ( "dpc_auto_load\n" )
 #define CMD_AUTO_LOAD_DPCC_TABLE_TMO        ( 10000 )
@@ -114,7 +114,7 @@
 #define CMD_SET_DPCC_TEST_MODE_WITH_COPY_FLAG   ( "dpc_test_mode %i %i\n" )
 #define CMD_SYNC_DPCC_TEST_MODE                 ( "dpc_test_mode " )
 #define CMD_GET_DPCC_TEST_MODE_NO_PARMS         ( 1 )
-#define CMD_SAVE_DPCC_TEST_MODE_TMO             ( 20000 )
+#define CMD_SET_DPCC_TEST_MODE_TMO              ( 300 )
 
 /******************************************************************************
  * get_dpcc_enable - Get enable status of defect pixel cluster correction
@@ -589,10 +589,10 @@ static int set_dpcc_test_mode
     if ( user  && user->use_copy_flag )
     {
         return ( set_param_int_X_with_tmo( channel, CMD_SET_DPCC_TEST_MODE_WITH_COPY_FLAG,
-                                           CMD_SAVE_DPCC_TEST_MODE_TMO, INT( mode ), INT( user->use_copy_flag ) ) );
+                                           CMD_SET_DPCC_TEST_MODE_TMO, INT( mode ), INT( user->use_copy_flag ) ) );
     }
 
-    return ( set_param_int_X_with_tmo( channel, CMD_SET_DPCC_TEST_MODE, CMD_SAVE_DPCC_TEST_MODE_TMO, INT( mode ) ) );
+    return ( set_param_int_X_with_tmo( channel, CMD_SET_DPCC_TEST_MODE, CMD_SET_DPCC_TEST_MODE_TMO, INT( mode ) ) );
 }
 
 /******************************************************************************

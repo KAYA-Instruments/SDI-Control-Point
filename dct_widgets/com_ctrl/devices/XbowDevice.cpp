@@ -315,7 +315,7 @@ XbowDevice::features XbowDevice::getSupportedFeatures()
     deviceFeatures.hasSystemBroadcast       = true;
     deviceFeatures.hasRS232Interface        = true;
 
-    deviceFeatures.lutBitWidth              = 16;
+    deviceFeatures.lutBitWidth              = 12;
 
     return deviceFeatures;
 }

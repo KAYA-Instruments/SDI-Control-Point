@@ -284,6 +284,7 @@ CooperDevice::features CooperDevice::getSupportedFeatures()
     deviceFeatures.hasChainTimeCodeHold     = true;
     deviceFeatures.hasChainSdiSettings      = true;
     deviceFeatures.hasChainFlipVertical     = true;
+    deviceFeatures.hasChainFlipHorizontal   = true;
     deviceFeatures.hasAutoItf               = true;
     deviceFeatures.hasIspItf                = true;
     deviceFeatures.hasIspLsc                = true;
