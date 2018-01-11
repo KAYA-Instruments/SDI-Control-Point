@@ -4,6 +4,15 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
+Version **1.0.10** - 11.01.2018
+
+* Fixed a bug where a firmware update file for the software would overwrite the FPGA bitstream (only occured for debug builds of the software)
+* The update tab now has an additional field which contains information on the type of update which is currently being flashed
+* Some of the UI elements in the update tab have been renamed to make their meaning and usage more clear
+* ATOM one mini devices (cooper) now support horizontal image flip
+
+## Older Releases:
+
 Version **1.0.9** - 15.12.2017
 
 * GUI now fully supports the new ATOM one mini (cooper)
@@ -11,8 +20,6 @@ Version **1.0.9** - 15.12.2017
 * Moved system settings from info page to new dialog which can be accessed from the main window
 * The device name can now be changed from the new settins dialog
 * The lut box now works with variable lut bit-widhts
-
-## Older Releases:
 
 Version **1.0.8** - 07.11.2017
 
