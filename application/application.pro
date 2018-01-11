@@ -12,7 +12,7 @@ DEFINES += VERSION_STRING=\\\"1.0.10\\\"
 QMAKE_TARGET_COMPANY = "Dream Chip Technologies GmbH"
 QMAKE_TARGET_PRODUCT = "ProVideo GUI"
 QMAKE_TARGET_DESCRIPTION = "GUI to control ProVideo cameras and image processors"
-QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2017, Dream Chip Technologies GmbH"
+QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2018, Dream Chip Technologies GmbH"
 
 RC_ICONS = ../resource/icons/dct_icon.ico
 

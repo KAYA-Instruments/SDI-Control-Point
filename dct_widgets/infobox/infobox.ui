@@ -726,7 +726,7 @@
         <item>
          <widget class="QLabel" name="lblCopyright">
           <property name="text">
-           <string>Copyright (C) 2017  Dream Chip Technologies GmbH
+           <string>Copyright (C) 2018  Dream Chip Technologies GmbH
 
 This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you are welcome to redistribute it under certain conditions. See above license for more details.
 

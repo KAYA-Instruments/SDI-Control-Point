@@ -46,9 +46,9 @@ namespace Ui {
 /******************************************************************************
  * definitions
  *****************************************************************************/
-#define SYSTEM_STATE_COMMAND        ( "Device in operation. " )
-#define SYSTEM_STATE_UPDATE         ( "Device waiting for update. " )
-#define SYSTEM_STATE_FLASHING       ( "Device is updating. " )
+#define SYSTEM_STATE_COMMAND        ( "Device in operation." )
+#define SYSTEM_STATE_UPDATE         ( "Device is waiting for update." )
+#define SYSTEM_STATE_FLASHING       ( "Device is being updated." )
 
 /******************************************************************************
  * update configuration structure
@@ -170,7 +170,7 @@ static bool fileTypeMatches( const updateType type, const QString & fn )
 
     if ( !f.open( QIODevice::ReadOnly ) )
     {
-        return ( invalid );
+        return ( false );
     }
 
     quint32 d[2];
@@ -443,6 +443,7 @@ void UpdateBox::setSystemState( SystemStates state )
         else if ( state == FlashState )
         {
             // flash tate, set run botton text to abort, so that user can stop the update
+            d_data->m_ui->letSystemMode->setText( SYSTEM_STATE_FLASHING );
             d_data->m_ui->btnRun->setText( "Abort" );
         }
 
