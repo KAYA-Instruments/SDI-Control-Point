@@ -81,7 +81,7 @@ void ProVideoSystemItf::GetSystemInfo()
 
     // emit a DeviceIdChanged signal
     emit DeviceIdChanged( system_info.system_id[0], system_info.system_id[1],
-                          system_info.system_id[2], system_info.system_id[2] );
+                          system_info.system_id[2], system_info.system_id[3] );
 
     // emit a SystemValidityChanged signal
     emit SystemValidityChanged( QString((char *)system_info.system_validity) );

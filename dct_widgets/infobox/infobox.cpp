@@ -145,7 +145,7 @@ void InfoBox::onDeviceNameChange( QString name )
 void InfoBox::onDeviceIdChange( uint32_t id0, uint32_t id1, uint32_t id2, uint32_t id3 )
 {
     QString s;
-    s.sprintf( "0x%08x-0x%08x-0x%08x-0x%08x", id0, id1, id2, id3 );
+    s.sprintf( "%08X-%08X-%08X-%08X", id0, id1, id2, id3 );
     d_data->m_ui->letSystemId->setText( s );
 }
 
