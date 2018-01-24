@@ -19,7 +19,7 @@ Version **1.0.9** - 15.12.2017
 * Resync after firmware updates is now more stable
 * Moved system settings from info page to new dialog which can be accessed from the main window
 * The device name can now be changed from the new settins dialog
-* The lut box now works with variable lut bit-widhts
+* The lut box now works with variable lut bit-widths
 
 Version **1.0.8** - 07.11.2017
 
