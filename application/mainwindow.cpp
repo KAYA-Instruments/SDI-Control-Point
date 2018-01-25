@@ -61,14 +61,17 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
     , m_cbxConnectedDevices( NULL )
     , m_dev ( NULL )
 {
-    // create ui
+    // Create ui
     m_ui->setupUi( this );
 
-    // Connect with dialogs
+    // Set and connect dialogs
     setConnectDlg(connectDialog);
-    m_SettingsDlg = new SettingsDialog( this );
+    setSettingsDlg(new SettingsDialog( this ));
+
+    // GUI has to be locked down during update procedure
+    connect( m_ui->updBox, SIGNAL(LockCurrentTabPage(bool)), this, SLOT(onLockCurrentTabPage(bool)) );
     
-    // connect actions
+    // Connect toolbar actions
     connect( m_ui->actionConnect        , SIGNAL( triggered() ), this, SLOT( onConnectClicked() ) );
     connect( m_ui->actionSettings       , SIGNAL( triggered() ), this, SLOT( onSettingsClicked() ) );
     connect( m_ui->actionLoadSettings   , SIGNAL( triggered() ), this, SLOT( onLoadSettingsClicked() ) );
@@ -781,11 +784,6 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         connect( dev->GetProVideoSystemItf(), SIGNAL(PromptChanged(uint8_t)), m_ui->updBox, SLOT(onPromptChange(uint8_t)) );
         connect( m_ui->updBox, SIGNAL(BootIntoUpdateMode()), dev->GetProVideoSystemItf(), SLOT(onBootIntoUpdateMode()) );
 
-        connect( m_ui->updBox, SIGNAL(CloseSerialConnection()), m_ConnectDlg, SLOT(onCloseSerialConnection()) );
-        connect( m_ui->updBox, SIGNAL(ReopenSerialConnection()), m_ConnectDlg, SLOT(onReopenSerialConnection()) );
-
-        connect( m_ui->updBox, SIGNAL(LockCurrentTabPage(bool)), this, SLOT(onLockCurrentTabPage(bool)) );
-
         m_ui->updBox->setPortname( m_ConnectDlg->getActiveChannel()->getSystemPortName() );
         m_ui->updBox->setBaudrate( m_ConnectDlg->getActiveChannel()->getBaudRate() );
     }
@@ -818,10 +816,6 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
     if (deviceFeatures.hasSystemBroadcast)
     {
         connect( dev->GetProVideoSystemItf(), SIGNAL(RS485BroadcastMasterChanged(uint8_t)), this, SLOT(onBroadcastChange(uint8_t)) );
-        /* The broadcast mode can not be set directly on the device, because before that some changes in the serial connection
-         * have to be made. Therefore we let the connecion dialog handle this */
-        connect( this, SIGNAL(BroadcastChanged(bool)), m_ConnectDlg, SLOT(onBroadcastChange(bool)) );
-        connect( this, SIGNAL(BroadcastChanged(bool)), m_SettingsDlg, SLOT(onBroadcastChange(bool)) );
     }
 
     //////////////////////////
@@ -829,12 +823,10 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
     //////////////////////////
     // connect system interface slots
     connect( m_SettingsDlg, SIGNAL(DeviceNameChanged(QString)), dev->GetProVideoSystemItf(), SLOT(onDeviceNameChange(QString)) );
-    connect( m_SettingsDlg, SIGNAL(DeviceNameChanged(QString)), this, SLOT(onDeviceNameChange()) );
     connect( dev->GetProVideoSystemItf(), SIGNAL(DeviceNameChanged(QString)), m_SettingsDlg, SLOT(onDeviceNameChange(QString)) );
 
     // reset to factory defaults
     connect( m_SettingsDlg, SIGNAL(ResetToDefaultsClicked()), dev->GetProVideoSystemItf(), SLOT(onResetSettings()) );
-    connect( m_SettingsDlg, SIGNAL(ResyncRequest()), this, SLOT(onResyncRequest()) );
 
     // system settings (serial connection) changed
     if (deviceFeatures.hasRS232Interface)
@@ -857,20 +849,11 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         connect( m_ConnectDlg, SIGNAL(RS485BroadcastMasterChanged(int32_t)), dev->GetProVideoSystemItf(), SLOT(onRS485BroadcastMasterChange(int32_t)) );
     }
 
-    connect( m_SettingsDlg, SIGNAL(SystemSettingsChanged(int,int,int,int)), this, SLOT(onSystemSettingsChange(int,int,int,int)) );
-
-    // engineering mode
-    connect( m_SettingsDlg, SIGNAL(EngineeringModeChanged(bool)), this, SLOT(onEngineeringModeChange(bool)) );
-
-    // save settings
-    connect( m_SettingsDlg, SIGNAL(SaveSettings()), this, SLOT( onSaveSettingsClicked() ) );
-
     //////////////////////////
     // other signals
     //////////////////////////
     // Get supported resolutions from the device when the next resync() is called
-    connect( dev->GetProVideoSystemItf(), SIGNAL(ResolutionMaskChanged(uint32_t,uint32_t,uint32_t)),
-             this, SLOT(onResolutionMaskChange(uint32_t,uint32_t,uint32_t)) );
+    connect( dev->GetProVideoSystemItf(), SIGNAL(ResolutionMaskChanged(uint32_t,uint32_t,uint32_t)), this, SLOT(onResolutionMaskChange(uint32_t,uint32_t,uint32_t)) );
 
     //////////////////////////
     // Synchronise with the new device
@@ -946,6 +929,35 @@ void MainWindow::setConnectDlg( ConnectDialog * dlg )
 
         // React if the connect dialog has to be re-shown
         connect( m_ConnectDlg, SIGNAL(OpenConnectDialog()), this, SLOT(onConnectClicked()) );
+
+        // Send broadcast mode changed event to connect dialog when the button is pressed in the toolbar
+        /* The broadcast mode can not be set directly on the device, because before that some changes in the serial connection
+         * have to be made. Therefore we let the connecion dialog handle this */
+        connect( this, SIGNAL(BroadcastChanged(bool)), m_ConnectDlg, SLOT(onBroadcastChange(bool)) );
+
+        // The connect dialog handles serial connection close / reopen during update procedure
+        connect( m_ui->updBox, SIGNAL(CloseSerialConnection()), m_ConnectDlg, SLOT(onCloseSerialConnection()) );
+        connect( m_ui->updBox, SIGNAL(ReopenSerialConnection()), m_ConnectDlg, SLOT(onReopenSerialConnection()) );
+    }
+}
+
+/******************************************************************************
+ * MainWindow::setSettingsDlg
+ *****************************************************************************/
+void MainWindow::setSettingsDlg( SettingsDialog * dlg )
+{
+    m_SettingsDlg = dlg;
+
+    if ( m_SettingsDlg )
+    {
+        // When broadcast mode is changed, some elements in the settings dialog get hiddon or shown
+        connect( this, SIGNAL(BroadcastChanged(bool)), m_SettingsDlg, SLOT(onBroadcastChange(bool)) );
+
+        connect( m_SettingsDlg, SIGNAL(DeviceNameChanged(QString)), this, SLOT(onDeviceNameChange()) );
+        connect( m_SettingsDlg, SIGNAL(ResyncRequest()), this, SLOT(onResyncRequest()) );
+        connect( m_SettingsDlg, SIGNAL(SystemSettingsChanged(int,int,int,int)), this, SLOT(onSystemSettingsChange(int,int,int,int)) );
+        connect( m_SettingsDlg, SIGNAL(EngineeringModeChanged(bool)), this, SLOT(onEngineeringModeChange(bool)) );
+        connect( m_SettingsDlg, SIGNAL(SaveSettings()), this, SLOT( onSaveSettingsClicked() ) );
     }
 }
 

@@ -46,7 +46,6 @@ public:
     ~MainWindow();
 
     void connectToDevice(ProVideoDevice * );
-    void setConnectDlg( ConnectDialog * );
 
 signals:
     // chain selection status
@@ -105,6 +104,8 @@ private:
     QString                 m_filename;
     QList<DctWidgetBox *>   m_activeWidgets;
 
+    void setConnectDlg( ConnectDialog * );
+    void setSettingsDlg( SettingsDialog * );
     void setupUI(ProVideoDevice::features deviceFeatures);
 
     void updateDeviceList();
