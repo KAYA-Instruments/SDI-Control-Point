@@ -46,7 +46,6 @@ public:
     ~MainWindow();
 
     void connectToDevice(ProVideoDevice * );
-    void setConnectDlg( ConnectDialog * );
 
 signals:
     // chain selection status
@@ -66,7 +65,7 @@ signals:
 private slots:
     void onDeviceConnected( ProVideoDevice * device );
     void onDeviceSelectionChange( int index );
-    void onDeviceNameChange();
+    void onUpdateDeviceName();
     void onSystemSettingsChange( int rs232Baudrate, int rs485Baudrate, int rs485Address, int rs485BroadcastAddress );
 
     void onConnectClicked();
@@ -105,6 +104,8 @@ private:
     QString                 m_filename;
     QList<DctWidgetBox *>   m_activeWidgets;
 
+    void setConnectDlg( ConnectDialog * );
+    void setSettingsDlg( SettingsDialog * );
     void setupUI(ProVideoDevice::features deviceFeatures);
 
     void updateDeviceList();

@@ -44,6 +44,7 @@ public:
 
 signals:
     void DeviceNameChanged( QString name );
+    void UpdateDeviceName();
     void ResetToDefaultsClicked();
     void SystemSettingsChanged( int rs232Baudrate, int rs485Baudrate, int rs485Address, int rs485BroadcastAddress );
     void EngineeringModeChanged( bool flag );
