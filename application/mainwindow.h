@@ -65,7 +65,7 @@ signals:
 private slots:
     void onDeviceConnected( ProVideoDevice * device );
     void onDeviceSelectionChange( int index );
-    void onDeviceNameChange();
+    void onUpdateDeviceName();
     void onSystemSettingsChange( int rs232Baudrate, int rs485Baudrate, int rs485Address, int rs485BroadcastAddress );
 
     void onConnectClicked();

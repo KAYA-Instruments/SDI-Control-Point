@@ -168,6 +168,25 @@ void ProVideoSystemItf::GetDeviceName()
 }
 
 /******************************************************************************
+ * ProVideoSystemItf::onDeviceNameChange
+ *****************************************************************************/
+void ProVideoSystemItf::onDeviceNameChange( QString name )
+{
+    // Copy device name to array
+    ctrl_protocol_system_desc_t device_name;
+    memset( device_name, 0, sizeof(device_name) );
+
+    std::string str = name.toStdString();
+
+    strcpy( (char*)device_name, str.c_str());
+
+    // send device name to device
+    int res = ctrl_protocol_set_device_name( GET_PROTOCOL_INSTANCE(this),
+                    GET_CHANNEL_INSTANCE(this), name.length(), (uint8_t *)device_name );
+    HANDLE_ERROR( res );
+}
+
+/******************************************************************************
  * ProVideoSystemItf::GetDeviceId
  *****************************************************************************/
 void ProVideoSystemItf::GetDeviceId()
@@ -413,25 +432,6 @@ void ProVideoSystemItf::GetRS232BaudRate()
         // emit a RS232BaudRateChanged signal
         emit RS232BaudRateChanged( baudrate );
     }
-}
-
-/******************************************************************************
- * ProVideoSystemItf::onRS232BaudRateChange
- *****************************************************************************/
-void ProVideoSystemItf::onDeviceNameChange( QString name )
-{
-    // Copy device name to array
-    ctrl_protocol_system_desc_t device_name;
-    memset( device_name, 0, sizeof(device_name) );
-
-    std::string str = name.toStdString();
-
-    strcpy( (char*)device_name, str.c_str());
-
-    // send device name to device
-    int res = ctrl_protocol_set_device_name( GET_PROTOCOL_INSTANCE(this),
-                    GET_CHANNEL_INSTANCE(this), name.length(), (uint8_t *)device_name );
-    HANDLE_ERROR( res );
 }
 
 /******************************************************************************

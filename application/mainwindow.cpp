@@ -37,7 +37,7 @@
  * Settings
  *****************************************************************************/
 #define MAIN_SETTINGS_SECTION_NAME          ( "MAIN" )
-#define MAIN_SETTINGS_DEVICE_NAME           ( "device" )
+#define MAIN_SETTINGS_SYSTEM_PLATFORM       ( "platform" )
 
 /******************************************************************************
  * fileExists
@@ -953,7 +953,7 @@ void MainWindow::setSettingsDlg( SettingsDialog * dlg )
         // When broadcast mode is changed, some elements in the settings dialog get hiddon or shown
         connect( this, SIGNAL(BroadcastChanged(bool)), m_SettingsDlg, SLOT(onBroadcastChange(bool)) );
 
-        connect( m_SettingsDlg, SIGNAL(DeviceNameChanged(QString)), this, SLOT(onDeviceNameChange()) );
+        connect( m_SettingsDlg, SIGNAL(UpdateDeviceName()), this, SLOT(onUpdateDeviceName()) );
         connect( m_SettingsDlg, SIGNAL(ResyncRequest()), this, SLOT(onResyncRequest()) );
         connect( m_SettingsDlg, SIGNAL(SystemSettingsChanged(int,int,int,int)), this, SLOT(onSystemSettingsChange(int,int,int,int)) );
         connect( m_SettingsDlg, SIGNAL(EngineeringModeChanged(bool)), this, SLOT(onEngineeringModeChange(bool)) );
@@ -987,9 +987,9 @@ void MainWindow::onDeviceSelectionChange( int index )
 }
 
 /******************************************************************************
- * MainWindow::onDeviceSelectionChange
+ * MainWindow::onUpdateDeviceName
  *****************************************************************************/
-void MainWindow::onDeviceNameChange()
+void MainWindow::onUpdateDeviceName()
 {
     // Make the connect dialog get the new name from the device
     m_ConnectDlg->updateCurrentDeviceName();
@@ -1170,7 +1170,7 @@ void MainWindow::onLoadFromFileClicked()
     m_filename = dialog.getOpenFileName(
         this, tr("Load Multi-Color Profile"),
         directory,
-        "Select Profile Files (*.dct);;All files (*.*)"
+        "Setting Files (*.dct);;All files (*.*)"
     );
 
     if ( NULL != m_filename )
@@ -1185,18 +1185,18 @@ void MainWindow::onLoadFromFileClicked()
         {
             QSettings settings( m_filename, QSettings::IniFormat );
 
-            // Load the device name from the settings file
+            // Load the device name and platform from the settings file
             settings.beginGroup( MAIN_SETTINGS_SECTION_NAME );
-            QString deviceName = settings.value( MAIN_SETTINGS_DEVICE_NAME ).toString();
+            QString systemPlatform = settings.value( MAIN_SETTINGS_SYSTEM_PLATFORM ).toString();
             settings.endGroup();
 
-            // Check if devices match
-            if ( deviceName != m_dev->getDeviceName() )
+            // Check if platform matches
+            if ( systemPlatform != m_dev->getSystemPlatform() )
             {
                 QApplication::setOverrideCursor( Qt::ArrowCursor );
                 QMessageBox msgBox;
                 msgBox.setWindowTitle( "Error Loading Settings" );
-                QString msgText = QString( "Settings can not be loaded, because the devices mismatch. The file\n\n'%1'\n\ncontains settings for a '%2' device, but the GUI is currently connected to a '%3' device." ).arg( m_filename ).arg( deviceName ).arg( m_dev->getDeviceName() );
+                QString msgText = QString( "Settings can not be loaded, because the devices mismatch. The file\n\n'%1'\n\ncontains settings for a '%2' device, but the GUI is currently connected to a '%3' device." ).arg( m_filename ).arg( systemPlatform ).arg( m_dev->getSystemPlatform() );
                 msgBox.setText( msgText );
                 msgBox.exec();
             }
@@ -1232,6 +1232,9 @@ void MainWindow::onLoadFromFileClicked()
 void MainWindow::onSaveToFileClicked()
 {
     QString directory = QDir::currentPath();
+    directory.append("/");
+    directory.append(m_dev->getDeviceName());
+    directory.append(".dct");
 
     // NOTE: It can fail on gtk-systems when an empty filename is given
     //       in the native dialog-box, because GTK sends a SIGSEGV-signal
@@ -1242,7 +1245,7 @@ void MainWindow::onSaveToFileClicked()
     m_filename = dialog.getSaveFileName(
         this, tr("Save Setting Profile"),
         directory,
-        "Select Profile Files (*.dct);;All files (*.*)"
+        "Setting Files (*.dct);;All files (*.*)"
     );
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -1256,9 +1259,9 @@ void MainWindow::onSaveToFileClicked()
 
         QSettings settings( m_filename, QSettings::IniFormat );
 
-        // Write the device name into the settings file
+        // Write the device name and platform into the settings file
         settings.beginGroup( MAIN_SETTINGS_SECTION_NAME );
-        settings.setValue( MAIN_SETTINGS_DEVICE_NAME, m_dev->getDeviceName() );
+        settings.setValue( MAIN_SETTINGS_SYSTEM_PLATFORM, m_dev->getSystemPlatform() );
         settings.endGroup();
 
         // Save the settings of all active widgets

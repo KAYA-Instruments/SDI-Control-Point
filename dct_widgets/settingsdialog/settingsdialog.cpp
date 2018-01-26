@@ -184,8 +184,11 @@ void SettingsDialog::onApplyDeviceNameClicked()
     {
         QApplication::setOverrideCursor( Qt::WaitCursor );
 
-        // Send device name changed event
+        // Send device name changed event to change name on the device
         emit DeviceNameChanged( m_ui->letDeviceName->text() );
+
+        // Emit update device name event
+        emit UpdateDeviceName();
 
         QApplication::setOverrideCursor( Qt::ArrowCursor );
     }
