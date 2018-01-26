@@ -4,14 +4,20 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
+Version **1.0.11** - 26.01.2018
+
+* Fixed a bug where the device ID was not correctly displayed in the info tab (the third and fourth id field were identical)
+* Fixed a bug where the settings dialog could trigger events like setting the device name multiple times if the GUI had been reconnected before
+* Fixed a bug where load / store of the device settings did not work because the device name did not match. We now check whether the platform ID matches.
+
+## Older Releases:
+
 Version **1.0.10** - 11.01.2018
 
 * Fixed a bug where a firmware update file for the software would overwrite the FPGA bitstream (only occured for debug builds of the software)
 * The update tab now has an additional field which contains information on the type of update which is currently being flashed
 * Some of the UI elements in the update tab have been renamed to make their meaning and usage more clear
 * ATOM one mini devices (cooper) now support horizontal image flip
-
-## Older Releases:
 
 Version **1.0.9** - 15.12.2017
 
