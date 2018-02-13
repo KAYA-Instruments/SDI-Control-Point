@@ -58,6 +58,8 @@ public:
     void setAecEnable( const bool value );
     int AecSetPoint() const;
     void setAecSetPoint( const int value );
+    int AecMaxIso() const;
+    void setAecMaxIso( const int value );
     int AecControlSpeed() const;
     void setAecControlSpeed( const int value );
     int AecFlickerFrequency() const;
@@ -206,6 +208,10 @@ private slots:
     void onSldSetPointChange( int value );
     void onSldSetPointReleased();
     void onSbxSetPointChange( int value );
+
+    void onSldMaxIsoChange( int value );
+    void onSldMaxIsoReleased();
+    void onSbxMaxIsoChange( int value );
     
     void onSldControlSpeedChange( int value );
     void onSldControlSpeedReleased();
@@ -240,8 +246,8 @@ private:
     class PrivateData;
     PrivateData * d_data;
 
-    int gainToIso( int gain );
-    int isoToGain( int iso );
+    int gainToIso( int gain ) const;
+    int isoToGain( int iso ) const;
 
 };
 

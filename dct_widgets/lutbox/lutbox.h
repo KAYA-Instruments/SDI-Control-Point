@@ -167,7 +167,8 @@ signals:
     void LutFastGammaChanged( int );
 
 public slots:
-    void onLutEnableChange( int, int );
+    void onSdiOutChange( int );
+    void onLutEnableChange( int index, int value );
     void onLutModeChange( int );
     void onLutFixedModeChange( int );
     void onLutPresetChange( int );

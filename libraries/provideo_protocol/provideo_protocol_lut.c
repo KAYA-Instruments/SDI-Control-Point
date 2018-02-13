@@ -716,6 +716,11 @@ static int get_lut_enable
         res = evaluate_error_response( data, res );
     }
 
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
     return ( 0 );
 }
 

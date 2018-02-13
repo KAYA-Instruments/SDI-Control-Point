@@ -801,6 +801,9 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         // chain selection
         connect( dev->GetChainItf(), SIGNAL(ChainSelectedChainChanged(int)), this, SLOT(onSdiOutChange(int)) );
         connect( this, SIGNAL(SdiOutChanged(int)), dev->GetChainItf(), SLOT(onChainSelectedChainChange(int)) );
+
+        // the lut box also needs to know the current chain, because each chain has its own lut
+        connect( dev->GetChainItf(), SIGNAL(ChainSelectedChainChanged(int)), m_ui->lutBox, SLOT(onSdiOutChange(int)) );
     }
     if (deviceFeatures.hasIspSplitScreen)
     {

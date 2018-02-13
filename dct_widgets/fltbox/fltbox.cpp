@@ -269,9 +269,9 @@ int FltBox::DenoiseLevel3d() const
  *****************************************************************************/
 void FltBox::setDenoiseLevel3d( const int level )
 {
-    d_data->m_ui->kbxDenoiseLevel2d->blockSignals( true );
-    d_data->m_ui->kbxDenoiseLevel2d->setValue( level );
-    d_data->m_ui->kbxDenoiseLevel2d->blockSignals( false );
+    d_data->m_ui->kbxDenoiseLevel3d->blockSignals( true );
+    d_data->m_ui->kbxDenoiseLevel3d->setValue( level );
+    d_data->m_ui->kbxDenoiseLevel3d->blockSignals( false );
 
     emit TfltDenoiseLevelChanged( level );
 }

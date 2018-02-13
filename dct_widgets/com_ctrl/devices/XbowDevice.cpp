@@ -425,8 +425,8 @@ void XbowDevice::setComChannel( ComChannel * c )
 
     GetIspItf()     ->SetComChannel( c );
     GetCprocItf()   ->SetComChannel( c );
-    GetAutoItf()    ->SetComChannel( c );
     GetCamItf()     ->SetComChannel( c );
+    GetAutoItf()    ->SetComChannel( c );
     GetMccItf()     ->SetComChannel( c );
     GetLutItf()     ->SetComChannel( c );
     GetChainItf()   ->SetComChannel( c );
@@ -444,8 +444,8 @@ void XbowDevice::resync()
 
     GetIspItf()     ->resync();
     GetCprocItf()   ->resync();
-    GetAutoItf()    ->resync();
     GetCamItf()     ->resync();
+    GetAutoItf()    ->resync();
     GetMccItf()     ->resync();
     GetLutItf()     ->resync();
     GetChainItf()   ->resync();
