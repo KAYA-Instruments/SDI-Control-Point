@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
+#include <time.h>
 
 #include <ctrl_channel/ctrl_channel.h>
 
@@ -153,13 +154,23 @@
 #define CMD_GET_RUNTIME_NO_PARMS                ( 1 )
 
 /******************************************************************************
- * @brief command "runtime"
+ * @brief command "name"
  *****************************************************************************/
 #define CMD_GET_NAME                            ( "name\n" )
 #define CMD_GET_NAME_REPLY                      ( "name %[^\t\r\n]\n" )
 #define CMD_SET_NAME                            ( "name %s\n" )
 #define CMD_SYNC_NAME                           ( "name " )
 #define CMD_GET_NAME_NO_PARMS                   ( 1 )
+
+/******************************************************************************
+ * @brief command "identify"
+ *****************************************************************************/
+#define CMD_GET_DEVICE_LIST                     ( "identify\n" )
+#define CMD_GET_DEVICE_LIST_REPLY               ( "id: %s %u %u %u %[^\t\r\n]\n%n" )
+#define CMD_SYNC_DEVIE_LIST                     ( "id: ")
+#define CMD_GET_DEVICE_LIST_NO_PARAMS           ( 5 )
+#define CMD_DEVICE_LIST_MAX_DEVICES             ( 99 )
+#define CMD_GET_DEVICE_LIST_TMO                 ( 1200 )
 
 /******************************************************************************
  * @brief command "reboot" 
@@ -1226,6 +1237,142 @@ static int set_rs485_bc_master
     return ( set_param_int_X( channel, CMD_SET_RS485_BC_MASTER, INT( master_address ) ) );
 }
 
+/******************************************************************************
+ * get_device_list - gets the list of devices which are connected to this com
+ *                   port
+ *****************************************************************************/
+static int get_device_list
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    int const                   no,
+    uint8_t * const             buffer
+)
+{
+    (void) ctx;
+
+    char command[CMD_SINGLE_LINE_COMMAND_SIZE];
+    char buf[CMD_SINGLE_LINE_RESPONSE_SIZE];
+    char data[CMD_SINGLE_LINE_RESPONSE_SIZE*2];
+
+    struct timespec start, now;
+    int loop = 1;
+    int cnt = 0;
+
+    if ( (no != sizeof(ctrl_protocol_device_t) * CMD_DEVICE_LIST_MAX_DEVICES) || !buffer )
+    {
+        return ( -EINVAL );
+    }
+
+    ctrl_protocol_device_t * device_list = (ctrl_protocol_device_t *)buffer;
+
+    // clear command buffer
+    memset( command, 0, sizeof(command) );
+
+    // create command to send
+    sprintf( command, CMD_GET_DEVICE_LIST );
+
+    // send get-command to control channel
+    ctrl_channel_send_request( channel, (uint8_t *)command, strlen(command) );
+
+    // clear data buffer
+    memset( data, 0, sizeof(data) );
+    data[0] = '\0';
+
+    // counter to check for buffer overflow
+    unsigned int data_count = 0;
+
+    // start timer
+    get_time_monotonic( &start );
+
+    // wait for answer from COM-Port
+    while ( loop )
+    {
+        int n;
+
+        // poll for data (NOTE: reserve last byte for '\0')
+        n = ctrl_channel_receive_response( channel, (uint8_t *)buf, (sizeof(buf) - 1u) );
+
+        // evaluate number of received data
+        if ( n > 0 )
+        {
+            // always put a "null" at the end of a string
+            buf[n] = '\0';
+
+            // increment data counter and check for overflow
+            data_count += n;
+            if ( data_count >= sizeof(data) )
+            {
+                return ( -ENOMEM );
+            }
+
+            // append poll buffer to receive buffer
+            strcat( data, buf );
+
+            // consume all commands from buffer
+            // (get start position of first command therefoe)
+            char * s = strstr( data, CMD_SYNC_DEVIE_LIST );
+            while ( s )
+            {
+                // parse command
+                int offset = 0;
+                ctrl_protocol_device_t device;
+                int res = sscanf( s, CMD_GET_DEVICE_LIST_REPLY, device.device_platform,
+                                                                &device.rs485_address,
+                                                                &device.rs485_bc_address,
+                                                                &device.rs485_bc_master,
+                                                                device.device_name,
+                                                                &offset);
+
+                if ( (res == CMD_GET_DEVICE_LIST_NO_PARAMS) && (s[offset-1] == '\n') )
+                {
+                    if ( cnt >= CMD_DEVICE_LIST_MAX_DEVICES )
+                    {
+                        return ( -ENOMEM );
+                    }
+
+                    memcpy(  &device_list[cnt], &device, sizeof(device) );
+                    cnt++;
+
+                    // move out the processed command
+                    // Note: Use memmove instead of strncpy, because dst and src overlap!
+                    memmove( data, (s+offset), sizeof(data) - (s+offset-data) );
+
+                    // decrement data counter by bytes taken out
+                    data_count -= offset;
+
+                    // search next command in buffer
+                    s = strstr( data, CMD_SYNC_DEVIE_LIST );
+                }
+                else
+                {
+                    s = NULL;
+                }
+            }
+        }
+        else
+        {
+            // timeout handling
+            get_time_monotonic( &now );
+            int diff_ms = (now.tv_sec - start.tv_sec) * 1000 + (now.tv_nsec - start.tv_nsec) / 1000000;
+            loop = (diff_ms > CMD_GET_DEVICE_LIST_TMO) ? 0 : 1;
+        }
+    }
+
+    // check if last id answer was complete and valid
+    if ( strstr( data, CMD_OK ) )
+    {
+        return ( 0 );
+    }
+
+    // check if last id answer was complete and error-message
+    else if ( strstr( data, CMD_FAIL ) )
+    {
+        return ( evaluate_error_response( data, -EINVAL ) );
+    }
+
+    return ( -EILSEQ );
+}
 
 /******************************************************************************
  * get_prompt - to get the enable state of console prompt
@@ -1508,6 +1655,7 @@ static ctrl_protocol_sys_drv_t provideo_sys_drv =
     .set_rs485_bc_addr            = set_rs485_bc_addr,
     .get_rs485_bc_master          = get_rs485_bc_master,
     .set_rs485_bc_master          = set_rs485_bc_master,
+    .get_device_list              = get_device_list,
     .get_prompt                   = get_prompt,
     .set_prompt                   = set_prompt,
     .get_debug                    = get_debug,

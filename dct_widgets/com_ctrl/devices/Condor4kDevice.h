@@ -40,6 +40,9 @@ public:
     // resync all settings
     void resync() override;
 
+    // resync only chain specific settings
+    void resyncChainSpecific() override;
+
     IspItf *        GetIspItf() const override;
     CprocItf *      GetCprocItf() const override;
     AutoItf *       GetAutoItf() const override;

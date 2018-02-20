@@ -430,6 +430,24 @@ int ctrl_protocol_set_rs485_bc_master
 }
 
 /******************************************************************************
+ * ctrl_protocol_set_rs485_addr
+ *****************************************************************************/
+int ctrl_protocol_get_device_list
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint8_t * const              buffer
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_device_list );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( buffer );
+    return ( SYS_DRV(protocol->drv)->get_device_list( protocol->ctx, channel, no, buffer ) );
+}
+
+/******************************************************************************
  * ctrl_protocol_get_prompt
  *****************************************************************************/
 int ctrl_protocol_get_prompt

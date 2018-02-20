@@ -148,7 +148,6 @@
 #define KNOWN_DEVICE_XBOW               ( "xbow" )
 #define KNOWN_DEVICE_CONDOR4K           ( "condor4k" )
 #define KNOWN_DEVICE_CONDOR4K_MINI      ( "condor4k_mini" )
-#define KNOWN_DEVICE_CAMELEON           ( "cameleon" )
 #define KNOWN_DEVICE_COOPER             ( "cooper" )
 
 enum KnownDevice
@@ -157,7 +156,6 @@ enum KnownDevice
     KnownDeviceXbow,
     KnownDeviceCondor4k,
     KnownDeviceCondor4kMini,
-    KnownDeviceCameleon,
     KnownDeviceCooper,
     KnownDeviceMax,
 };
@@ -167,7 +165,6 @@ static QString gKnownDevices[KnownDeviceMax] =
     KNOWN_DEVICE_XBOW,
     KNOWN_DEVICE_CONDOR4K,
     KNOWN_DEVICE_CONDOR4K_MINI,
-    KNOWN_DEVICE_CAMELEON,
     KNOWN_DEVICE_COOPER
 };
 

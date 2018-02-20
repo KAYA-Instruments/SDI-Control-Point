@@ -452,4 +452,11 @@ void Condor4kDevice::resync()
     GetDpccItf()    ->resync();
 }
 
-
+/******************************************************************************
+ * Condor4kDevice::resyncChainSpecific()
+ *****************************************************************************/
+void Condor4kDevice::resyncChainSpecific()
+{
+    GetIspItf()     ->resync();
+    GetLutItf()     ->resync();
+}

@@ -6,8 +6,8 @@
 
 # This version number is shown in the Application, it should be
 # updated before each release!
-VERSION = 1.0.11
-DEFINES += VERSION_STRING=\\\"1.0.11\\\"
+VERSION = 1.0.12
+DEFINES += VERSION_STRING=\\\"1.0.12\\\"
 
 QMAKE_TARGET_COMPANY = "Dream Chip Technologies GmbH"
 QMAKE_TARGET_PRODUCT = "ProVideo GUI"
@@ -56,6 +56,7 @@ INCLUDEPATH += ../libraries/include ..              \
                ../dct_widgets/csvwrapper            \
                ../dct_widgets/connectdialog         \
                ../dct_widgets/settingsdialog        \
+               ../dct_widgets/infodialog            \
                ../dct_widgets/btnarraybox           \
                ../dct_widgets/singlechannelknobbox  \
                ../dct_widgets/triplechannelknobbox  \
@@ -94,6 +95,7 @@ SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
            ../dct_widgets/dpccbox/dpccbox.cpp                               \
            ../dct_widgets/connectdialog/connectdialog.cpp                   \
            ../dct_widgets/settingsdialog/settingsdialog.cpp                 \
+           ../dct_widgets/infodialog/infodialog.cpp                         \
            ../dct_widgets/btnarraybox/btnarraybox.cpp                       \
            ../dct_widgets/singlechannelknobbox/singlechannelknobbox.cpp     \
            ../dct_widgets/triplechannelknobbox/triplechannelknobbox.cpp     \
@@ -127,7 +129,6 @@ SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
            ../dct_widgets/com_ctrl/OsdItf.cpp                               \
            ../dct_widgets/com_ctrl/devices/ProVideoDevice.cpp               \
            ../dct_widgets/com_ctrl/devices/XbowDevice.cpp                   \
-           ../dct_widgets/com_ctrl/devices/CameleonDevice.cpp               \
            ../dct_widgets/com_ctrl/devices/Condor4kDevice.cpp               \
            ../dct_widgets/com_ctrl/devices/CooperDevice.cpp                 \
            ../dct_widgets/csvwrapper/csvwrapper.cpp                         \
@@ -205,10 +206,10 @@ HEADERS  += ../libraries/include                                                
             ../dct_widgets/qcustomplot/qcustomplot.h                            \
             ../dct_widgets/connectdialog/connectdialog.h                        \
             ../dct_widgets/settingsdialog/settingsdialog.h                      \
+            ../dct_widgets/infodialog/infodialog.h                              \
             ../dct_widgets/com_ctrl/devices/ProVideoDevice.h                    \
             ../dct_widgets/com_ctrl/devices/XbowDevice.h                        \
             ../dct_widgets/com_ctrl/devices/Condor4kDevice.h                    \
-            ../dct_widgets/com_ctrl/devices/CameleonDevice.h                    \
             ../dct_widgets/com_ctrl/devices/CooperDevice.h                      \
             ../dct_widgets/com_ctrl/ProVideoItf.h                               \
             ../dct_widgets/com_ctrl/ProVideoSystemItf.h                         \
@@ -298,6 +299,7 @@ FORMS    += ../dct_widgets/mcceqbox/mcceqbox.ui                             \
             ../dct_widgets/triplechannelknobbox/triplechannelknobbox.ui     \
             ../dct_widgets/connectdialog/connectdialog.ui                   \
             ../dct_widgets/settingsdialog/settingsdialog.ui                 \
+            ../dct_widgets/infodialog/infodialog.ui                         \
             ../dct_widgets/textviewer/textviewer.ui                         \
             mainwindow.ui
 

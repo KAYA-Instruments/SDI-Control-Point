@@ -537,6 +537,56 @@ void ProVideoSystemItf::GetRS485BroadcastMaster()
 }
 
 /******************************************************************************
+ * ProVideoSystemItf::GetDeviceList
+ *****************************************************************************/
+void ProVideoSystemItf::GetDeviceList()
+{
+    // Is there a signal listener
+    if ( receivers(SIGNAL(DeviceListChanged(QList<rs485Device>))) > 0 )
+    {
+        // Up to 99 devices can be detected
+        ctrl_protocol_device_t devices[99];
+
+        memset( &devices, 0, sizeof(devices) );
+
+        // read device list
+        int res = ctrl_protocol_get_device_list( GET_PROTOCOL_INSTANCE(this),
+                        GET_CHANNEL_INSTANCE(this),
+                        sizeof(devices), (uint8_t *)&devices );
+
+        // Convert to QList
+        QList<rs485Device> deviceList;
+        for ( int i = 0; i < 99; i++ )
+        {
+            // If entry contains a valid device
+            if ( devices[i].device_platform[0] != 0u )
+            {
+                // Add it to list
+                rs485Device device;
+                device.device_name = QString::fromLocal8Bit( (char*)devices[i].device_name );
+                device.device_platform = QString::fromLocal8Bit( (char*)devices[i].device_platform );
+                device.rs485_address = devices[i].rs485_address;
+                device.rs485_bc_address = devices[i].rs485_bc_address;
+                device.rs485_bc_master = devices[i].rs485_bc_master;
+                deviceList.append( device );
+            }
+            // Else: Last valid device was found, stop iterating over the array
+            else
+            {
+                break;
+            }
+        }
+
+        // emit a DeviceIdChanged signal
+        emit DeviceListChanged( deviceList );
+
+        /* Handle error at the end of this function, so that DeviceListChanged
+         * is always emitted, even if the list is empty */
+        HANDLE_ERROR( res );
+    }
+}
+
+/******************************************************************************
  * ProVideoSystemItf::isConnected
  *****************************************************************************/
 bool ProVideoSystemItf::isConnected()

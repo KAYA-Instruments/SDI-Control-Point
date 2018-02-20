@@ -71,6 +71,7 @@ class OutBox::PrivateData
 public:
     PrivateData()
         : m_ui( new Ui::UI_OutBox )
+        , m_active_chain_idx( 0 )
         , m_sdiMode( SdiModeFirst )
         , m_csMode( ColorSpaceModeFirst )
     {
@@ -154,11 +155,12 @@ public:
         m_ui->sbxCr->blockSignals( false );
     }
 
-    Ui::UI_OutBox *   m_ui;         /**< ui handle */
-    SdiMode           m_sdiMode;    /**< current sdi mode */
-    ColorSpaceMode    m_csMode;     /**< current color space mode */
+    Ui::UI_OutBox *   m_ui;                 /**< ui handle */
+    int               m_active_chain_idx;   /**< index of the currently active chain */
+    SdiMode           m_sdiMode;            /**< current sdi mode */
+    ColorSpaceMode    m_csMode;             /**< current color space mode */
     
-    QString           m_filename;   /**< Matrix profile name */
+    QString           m_filename;           /**< Matrix profile name */
 };
 
 /******************************************************************************
@@ -413,7 +415,7 @@ void OutBox::setRawModeVisible(const bool value)
  *****************************************************************************/
 void OutBox::loadSettings( QSettings & s )
 {
-    s.beginGroup( OUT_SETTINGS_SECTION_NAME );
+    s.beginGroup( QString(OUT_SETTINGS_SECTION_NAME) + QString::number(d_data->m_active_chain_idx) );
 
     setRedCoefficient( s.value( OUT_SETTINGS_RED_COEFFICIENT).toInt() );
     setBlueCoefficient( s.value( OUT_SETTINGS_BLUE_COEFFICIENT).toInt() );
@@ -430,7 +432,7 @@ void OutBox::loadSettings( QSettings & s )
  *****************************************************************************/
 void OutBox::saveSettings( QSettings & s )
 {
-    s.beginGroup( OUT_SETTINGS_SECTION_NAME );
+    s.beginGroup( QString(OUT_SETTINGS_SECTION_NAME) + QString::number(d_data->m_active_chain_idx) );
 
     s.setValue( OUT_SETTINGS_RED_COEFFICIENT , RedCoefficient() );
     s.setValue( OUT_SETTINGS_BLUE_COEFFICIENT, BlueCoefficient() );
@@ -500,6 +502,17 @@ void OutBox::addColorSpaceMode( QString name, int id )
     d_data->m_ui->cbxCsMode->blockSignals( true );
     d_data->m_ui->cbxCsMode->addItem( name, id );
     d_data->m_ui->cbxCsMode->blockSignals( false );
+}
+
+/******************************************************************************
+ * OutBox::onSdiOutChange
+ *****************************************************************************/
+void OutBox::onSdiOutChange( int value )
+{
+    if ( value > 0 && value <= MAX_NUM_CHAINS )
+    {
+        d_data->m_active_chain_idx = value - 1;
+    }
 }
 
 /******************************************************************************

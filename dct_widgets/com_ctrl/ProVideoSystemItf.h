@@ -29,6 +29,16 @@
 
 #include "ProVideoItf.h"
 
+// Struct that contains connection information about a device
+typedef struct rs485Device
+{
+    QString device_platform;
+    QString device_name;
+    uint8_t rs485_address;
+    uint8_t rs485_bc_address;
+    uint8_t rs485_bc_master;
+} rs485Device;
+
 class MaskInterpreter
 {
 public:
@@ -102,6 +112,9 @@ public:
 
     // RS485 broadcast master
     void GetRS485BroadcastMaster();
+
+    // list of connected devices
+    void GetDeviceList();
     
     // prompt enable status
     void GetPrompt();
@@ -145,6 +158,7 @@ signals:
     void RS485AddressChanged( uint32_t address );
     void RS485BroadcastAddressChanged( uint32_t broadcast_address );
     void RS485BroadcastMasterChanged( uint8_t is_master );
+    void DeviceListChanged( QList<rs485Device> device_list );
     void PromptChanged( uint8_t flag );
     void DebugLevelChanged( uint8_t level );
     void RunTimeChanged( uint32_t cnt );

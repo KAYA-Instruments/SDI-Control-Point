@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>530</width>
-    <height>600</height>
+    <height>644</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -47,6 +47,12 @@
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
        <widget class="QLabel" name="lblNote">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Note: The Serial Interface settings can not be changed in Multi-Camera-Mode as this would result in address collisions. Please keep in mind that if you change the device name, all devices will have the same name.</string>
         </property>
@@ -158,7 +164,7 @@
            </size>
           </property>
           <property name="maximum">
-           <number>65535</number>
+           <number>99</number>
           </property>
           <property name="value">
            <number>1</number>
@@ -181,7 +187,7 @@
            </sizepolicy>
           </property>
           <property name="maximum">
-           <number>65535</number>
+           <number>99</number>
           </property>
          </widget>
         </item>
@@ -264,6 +270,12 @@
    </item>
    <item>
     <widget class="QLabel" name="label_2">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
       <string>Note: Please click the save Button below to permanetly save your changes in the device's flash memory. Alternatively you can use the save button in the main window.</string>
      </property>

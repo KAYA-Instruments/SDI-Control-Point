@@ -1111,7 +1111,7 @@ void LutBox::loadSettings( QSettings & s )
     QVector<int> x;
     QVector<int> y;
     
-    s.beginGroup( LUT_SETTINGS_SECTION_NAME );
+    s.beginGroup( QString(LUT_SETTINGS_SECTION_NAME) + QString::number(d_data->m_active_chain_idx) );
 
     // set lut enable
     setLutEnable( s.value(LUT_SETTINGS_ENABLE).toBool() );
@@ -1234,7 +1234,7 @@ void LutBox::saveSettings( QSettings & s )
     // before storing, get current preset storage number, because it will be iterated in the save loop
     int currentPreset = LutPresetStorage();
 
-    s.beginGroup( LUT_SETTINGS_SECTION_NAME );
+    s.beginGroup( QString(LUT_SETTINGS_SECTION_NAME) + QString::number(d_data->m_active_chain_idx) );
 
     // Store general lut settings
     s.setValue( LUT_SETTINGS_ENABLE    , LutEnable() );
@@ -1322,7 +1322,8 @@ void LutBox::applySettings( void )
     QVector<int> x;
     QVector<int> y;
 
-    // general lut settins
+    // general lut settings
+    emit LutEnableChanged( d_data->m_active_chain_idx, LutEnable() );
     emit LutModeChanged( LutMode() );
     emit LutFixedModeChanged( LutFixedMode() );
     emit LutFastGammaChanged( LutFastGamma() );
@@ -1548,6 +1549,9 @@ void LutBox::onLutModeChange( int mode )
  *****************************************************************************/
 void LutBox::onLutFixedModeChange( int mode )
 {
+    // Store mode
+    d_data->m_fixed_mode = mode;
+
     // Check if lut is in fixed mode
     if ( LutMode() != LUT_MODE_FIXED )
     {
@@ -1572,9 +1576,6 @@ void LutBox::onLutFixedModeChange( int mode )
     {
         d_data->m_ui->rbFixedHLG->setChecked( true );
     }
-
-    // Store mode
-    d_data->m_fixed_mode = mode;
 
     // Draw the plot
     d_data->drawFixedModePlot( Master, LutFixedMode() );

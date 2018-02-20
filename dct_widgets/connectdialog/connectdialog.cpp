@@ -33,8 +33,8 @@
 #include <ProVideoDevice.h>
 #include <XbowDevice.h>
 #include <Condor4kDevice.h>
-#include <CameleonDevice.h>
 #include <CooperDevice.h>
+#include <infodialog.h>
 
 #include "connectdialog.h"
 #include "ui_connectdialog.h"
@@ -271,10 +271,6 @@ bool ConnectDialog::connectWithDevice()
         else if ( systemPlatform == KNOWN_DEVICE_CONDOR4K || systemPlatform == KNOWN_DEVICE_CONDOR4K_MINI )
         {
             connectedDevice = new Condor4kDevice( getActiveChannel(), new ProVideoProtocol() );
-        }
-        else if ( systemPlatform == KNOWN_DEVICE_CAMELEON )
-        {
-            connectedDevice = new CameleonDevice( getActiveChannel(), new ProVideoProtocol() );
         }
         else if ( systemPlatform == KNOWN_DEVICE_COOPER )
         {
@@ -1070,6 +1066,137 @@ bool ConnectDialog::scanAndConnect()
         return false;
     }
 
+    // select RS485 as the active interface
+    setActiveInterface( Rs485 );
+
+    // clear list of found devices (needed if we try to reconnect, otherwise old items stay in list)
+    m_detectedRS485Devices.clear();
+
+    // create initial open configuration with values from the GUI
+    ctrl_channel_rs4xx_open_config_t openCfg = getRs485Config();
+
+    // open the com port with initial settings
+    if (  getActiveChannel()->Open((void *)&openCfg, sizeof(openCfg)) )
+    {
+        qDebug() << "Can not open RS485 channel for port " << openCfg.idx << ", address " << openCfg.dev_addr << " and baudrate " << openCfg.baudrate;
+
+        // Show a message box
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Can not open Com-Port");
+        msgBox.setText("The given Com-Port could not be opened. Please rescan the ports or try using a different port or protocol.");
+        msgBox.exec();
+
+        return false;
+    }
+
+    // Show a message box to indicate device scan is ongoing
+    InfoDialog infoDlg( QString(":/icons/connect_64x64.png"), QString("Detecting Devices..."), this->parentWidget() );
+    infoDlg.show();
+
+    // sleep for 100ms and process events, this ensures that the message box is correctly shown under linux
+    QThread::msleep( 100 );
+    QApplication::processEvents(QEventLoop::WaitForMoreEvents);
+
+    // create a generic device and pass the com port to it
+    ProVideoDevice genericDevice ( getActiveChannel(), new ProVideoProtocol() );
+
+    // Find connected devices
+    // Set address to the fail safe address, all devices will answer on that address
+    openCfg.dev_addr = 100;
+    ((ComChannelRS4xx*)getActiveChannel())->setDeviceAddress( openCfg.dev_addr );
+
+    // Get the device list for this baudrate
+    genericDevice.GetProVideoSystemItf()->GetDeviceList();
+    QList<rs485Device> deviceList = genericDevice.getDeviceList();
+
+    // Loop over the device list and add the devices to the list of connected devices
+    for ( int i = 0; i < deviceList.count(); i++ )
+    {
+        if ( DeviceIsKnown(deviceList.at(i).device_platform) )
+        {
+            // If the device is known, add it to the list of detected RS485 devices
+            detectedRS485Device detectedDevice;
+
+            // Store device parameters in struct
+            detectedDevice.name = deviceList.at(i).device_name;
+            detectedDevice.platform = deviceList.at(i).device_platform;
+            detectedDevice.config = openCfg;
+            detectedDevice.config.dev_addr = deviceList.at(i).rs485_address;
+
+            // Get broadcast address and broadcast master flag
+            detectedDevice.broadcastAddress = deviceList.at(i).rs485_bc_address;
+            detectedDevice.isBroadcastMaster = deviceList.at(i).rs485_bc_master;
+
+            // If the broadcast address equals the device address, this is the broadcast channel, do not add the device
+            if ( detectedDevice.config.dev_addr == detectedDevice.broadcastAddress )
+            {
+                getActiveChannel()->Close();
+                qDebug() << "Address " << openCfg.dev_addr << " with baudrate " << openCfg.baudrate << " is a broadcast address, the device is skipped";
+                continue;
+            }
+
+            // Add device to list of detected devices
+            m_detectedRS485Devices.append( detectedDevice );
+            qDebug() << "Found a " << detectedDevice.platform << "device with the name" << detectedDevice.name << " connected at address " << detectedDevice.config.dev_addr << " with baudrate " << detectedDevice.config.baudrate;
+        }
+        else
+        {
+            qDebug() << "Device " << deviceList.at(i).device_platform << " which is connected at address " << deviceList.at(i).rs485_address << " with baudrate " << openCfg.baudrate << " is unknown";
+            continue;
+        }
+    }
+
+    // Close message box and re-enable ui elements
+    infoDlg.close();
+
+    // Open first device in list and connect to it (if list not empty)
+    if ( !m_detectedRS485Devices.empty() )
+    {
+        // Get config and adjust UI elements with new config
+        openCfg = m_detectedRS485Devices.first().config;
+        setRs485Config( openCfg );
+
+        // Set current device index to 0 (we connected with first device in list)
+        setCurrentRs485DeviceIndex( 0 );
+
+        // connect with the device
+        return connectWithDevice();
+    }
+    else
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle( "Auto-Detection failed" );
+        msgBox.setWindowIcon( QIcon(":/icons/disconnect_64x64.png") );
+        msgBox.setText( "The Auto-Detection could not find any devices which use the RS485 protocol.\n\n"
+                        "Try using a different port, baudrate or protocol and make sure that each device has a unique address.\n\n"
+                        "Note: After a baudrate change the automatic detection might fail due to garbage in the device buffers. "
+                        "In such cases please try starting the automtaic detection again.");
+        msgBox.exec();
+    }
+
+    return false;
+}
+
+#if 0
+/******************************************************************************
+ * ConnectDialog::scanAndConnectOld
+ *****************************************************************************/
+bool ConnectDialog::scanAndConnectOld()
+{
+    // Check if there is at least one com port available
+    if ( QSerialPortInfo::availablePorts().count() == 0 )
+    {
+        // Show error message
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("No Com-Port detected");
+        msgBox.setText("There is no Com-Port available in your System. Please connect a USB-to-Serial adapter or equivalent "
+                       "device and rescan for new Com-Ports.");
+        msgBox.exec();
+
+        // Return false to indicate connection could not be established
+        return false;
+    }
+
     // Constants
     const int numAddresses = 20;
     const int numBaudrates = 2;
@@ -1255,6 +1382,7 @@ bool ConnectDialog::scanAndConnect()
 
     return false;
 }
+#endif
 
 /******************************************************************************
  * ConnectDialog::changeComportSettings

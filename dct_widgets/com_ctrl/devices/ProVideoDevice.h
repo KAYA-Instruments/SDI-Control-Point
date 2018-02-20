@@ -106,6 +106,9 @@ public:
 
     // resync all settings
     virtual void resync();
+
+    // resync only chain specific settings
+    virtual void resyncChainSpecific();
     
     // check for connection
     bool isConnected();
@@ -115,6 +118,7 @@ public:
     QString getDeviceName();
     unsigned int getBroadcastAddress();
     bool getBroadcastMasterMode();
+    QList<rs485Device> getDeviceList();
 
     // Get the supported features of this device.
     virtual features getSupportedFeatures();
@@ -142,6 +146,7 @@ private slots:
     void onDeviceNameChange( QString name );
     void onBroadcastAddressChange( uint32_t broadcastAddress );
     void onBroadcastMasterModeChange( uint8_t isBroadcastMaster );
+    void onDeviceListChange( QList<rs485Device> deviceList );
 
 private:
     class PrivateData;

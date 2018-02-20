@@ -530,6 +530,37 @@ int ctrl_protocol_set_rs485_bc_master
 );
 
 /**************************************************************************//**
+ * @brief Connection information about a device
+ *****************************************************************************/
+typedef struct ctrl_protocol_device_s
+{
+    ctrl_protocol_system_desc_t device_platform;
+    ctrl_protocol_system_desc_t device_name;
+    unsigned int rs485_address;
+    unsigned int rs485_bc_address;
+    unsigned int rs485_bc_master;
+} ctrl_protocol_device_t;
+
+/**************************************************************************//**
+ * @brief Get the device name which can be set by the user.
+ *
+ * @param[in]  channel  control channel instance
+ * @param[in]  protocol control protocol instance
+ * @param[in]  no       size of the buffer, as we can detect a maximum of 99
+ *                      devices it has to be sizeof(ctrl_protocol_device_t) * 99
+ * @param[in]  buffer   points to buffer
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_device_list
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint8_t * const              buffer
+);
+
+/**************************************************************************//**
  * @brief Get the current enable status of console prompt
  *
  * @param[in]  channel  control channel instance
@@ -726,6 +757,7 @@ typedef struct ctrl_protocol_sys_drv_s
     ctrl_protocol_set_uint32_t      set_rs485_bc_addr;
     ctrl_protocol_get_uint8_t       get_rs485_bc_master;
     ctrl_protocol_set_int32_t       set_rs485_bc_master;
+    ctrl_protocol_uint8_array_t     get_device_list;
     ctrl_protocol_get_uint8_t       get_prompt;
     ctrl_protocol_set_uint8_t       set_prompt;
     ctrl_protocol_get_uint8_t       get_debug;

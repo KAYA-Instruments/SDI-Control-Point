@@ -454,4 +454,11 @@ void XbowDevice::resync()
     GetDpccItf()    ->resync();
 }
 
-
+/******************************************************************************
+ * XbowDevice::resyncChainSpecific()
+ *****************************************************************************/
+void XbowDevice::resyncChainSpecific()
+{
+    GetIspItf()     ->resync();
+    GetLutItf()     ->resync();
+}
