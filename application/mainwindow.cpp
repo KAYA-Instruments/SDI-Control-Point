@@ -1063,7 +1063,7 @@ void MainWindow::onSelectSdi1Clicked()
         m_ui->actionSelectSdi1->setChecked( true );
         m_ui->actionSelectSdi2->setChecked( false );
         emit SdiOutChanged( 1 );
-        m_dev->resync();
+        m_dev->resyncChainSpecific();
         QApplication::setOverrideCursor( Qt::ArrowCursor );
     }
 }
@@ -1099,7 +1099,7 @@ void MainWindow::onCopyChain1To2Clicked()
         // resync, if chain 2 is the active chain
         if ( m_ui->actionSelectSdi2->isChecked() )
         {
-            m_dev->resync();
+            m_dev->resyncChainSpecific();
         }
 
         QApplication::setOverrideCursor( Qt::ArrowCursor );
@@ -1121,7 +1121,7 @@ void MainWindow::onCopyChain2To1Clicked()
         // Resync, if chain 1 is the active chain
         if ( m_ui->actionSelectSdi1->isChecked() )
         {
-            m_dev->resync();
+            m_dev->resyncChainSpecific();
         }
 
         QApplication::setOverrideCursor( Qt::ArrowCursor );
@@ -1406,7 +1406,7 @@ void MainWindow::onSaveToFileClicked()
             }
 
             // Resync settings of this chain
-            m_dev->resync();
+            m_dev->resyncChainSpecific();
 
             // Save lutbox settings for other chain
             if ( m_activeWidgets.contains(m_ui->lutBox) )
@@ -1434,7 +1434,7 @@ void MainWindow::onSaveToFileClicked()
             {
                 emit SdiOutChanged( 2 );
             }
-            m_dev->resync();
+            m_dev->resyncChainSpecific();
         }
 
         // Set dialog to 100%
@@ -1504,7 +1504,7 @@ void MainWindow::onSyncSettingsClicked()
     }
 
     // Create progress dialog
-    QProgressDialog progressDialog( "Synchronising Settings...", "", 0, m_activeWidgets.length(), this );
+    QProgressDialog progressDialog( "Synchronising Settings...", "", 0, progressSteps, this );
     progressDialog.setCancelButton( NULL );
     progressDialog.setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowTitleHint);
     progressDialog.show();
