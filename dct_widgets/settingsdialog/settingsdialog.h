@@ -72,6 +72,8 @@ private slots:
 
 private:
     Ui::SettingsDialog *        m_ui;   // GUI instance
+
+    void showEvent( QShowEvent* event );
 };
 
 #endif // SETTINGSDIALOG_H

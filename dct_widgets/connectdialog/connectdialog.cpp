@@ -95,12 +95,14 @@ ConnectDialog::ConnectDialog( QWidget * parent )
     }
 
     // add a rescan button to the button box
-    m_rescan = new QPushButton( tr("Sc&an COM-Ports") );
+    m_rescan = new QPushButton( tr("&Find COM-Ports") );
     m_rescan->setToolTip( "Searches for connected serial port devices." );
     connect( m_rescan, SIGNAL(clicked()), this, SLOT(rescan()) );
     m_ui->buttonBox->addButton( m_rescan, QDialogButtonBox::ResetRole );
 
     // connect other internal signals
+    // Detect Button on RS485 page
+    connect( m_ui->btDetect, SIGNAL(clicked()), this, SLOT(onDetectButtonClick()) );
     // Scan Button on RS485 page
     connect( m_ui->btScan, SIGNAL(clicked()), this, SLOT(onScanButtonClick()) );
 
@@ -131,6 +133,19 @@ ConnectDialog::~ConnectDialog()
     {
         delete m_connectedDevice;
     }
+}
+
+/******************************************************************************
+ * ConnectDialog::~showEvent
+ *****************************************************************************/
+void ConnectDialog::showEvent( QShowEvent* event )
+{
+    // Call inherited function
+    QDialog::showEvent( event );
+
+    // Resize window to minimum size
+    QApplication::processEvents();
+    this->resize( this->minimumSizeHint() );
 }
 
 /******************************************************************************
@@ -1048,9 +1063,9 @@ int ConnectDialog::openInterface()
 }
 
 /******************************************************************************
- * ConnectDialog::scanAndConnect
+ * ConnectDialog::detectAndConnect
  *****************************************************************************/
-bool ConnectDialog::scanAndConnect()
+bool ConnectDialog::detectAndConnect()
 {
     // Check if there is at least one com port available
     if ( QSerialPortInfo::availablePorts().count() == 0 )
@@ -1177,11 +1192,10 @@ bool ConnectDialog::scanAndConnect()
     return false;
 }
 
-#if 0
 /******************************************************************************
- * ConnectDialog::scanAndConnectOld
+ * ConnectDialog::scanAndConnect
  *****************************************************************************/
-bool ConnectDialog::scanAndConnectOld()
+bool ConnectDialog::scanAndConnect()
 {
     // Check if there is at least one com port available
     if ( QSerialPortInfo::availablePorts().count() == 0 )
@@ -1382,7 +1396,6 @@ bool ConnectDialog::scanAndConnectOld()
 
     return false;
 }
-#endif
 
 /******************************************************************************
  * ConnectDialog::changeComportSettings
@@ -1451,6 +1464,18 @@ void ConnectDialog::changeComportSettings( int rs232Baudrate, int rs485Baudrate,
         m_currentRS485DeviceIndex = std::find_if( m_detectedRS485Devices.begin(), m_detectedRS485Devices.end(),
                                                   [rs485Address](const detectedRS485Device & a)
                                                   { return a.config.dev_addr == rs485Address; } ) - m_detectedRS485Devices.begin();
+    }
+}
+
+/******************************************************************************
+ * ConnectDialog::onDetectButtonClick
+ *****************************************************************************/
+void ConnectDialog::onDetectButtonClick()
+{
+    if ( detectAndConnect() )
+    {
+        // call derived function to close
+        QDialog::accept();
     }
 }
 

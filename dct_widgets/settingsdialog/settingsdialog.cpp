@@ -73,6 +73,19 @@ SettingsDialog::~SettingsDialog()
 }
 
 /******************************************************************************
+ * SettingsDialog::~showEvent
+ *****************************************************************************/
+void SettingsDialog::showEvent( QShowEvent* event )
+{
+    // Call inherited function
+    QDialog::showEvent( event );
+
+    // Resize window to minimum size
+    QApplication::processEvents();
+    this->resize( this->minimumSizeHint() );
+}
+
+/******************************************************************************
  * SettingsDialog::onDeviceNameChange
  *****************************************************************************/
 void SettingsDialog::onDeviceNameChange( QString name )
