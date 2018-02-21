@@ -23,6 +23,7 @@
 #include <QMessageBox>
 #include <QValidator>
 
+#include <defines.h>
 #include <com_ctrl/ComChannelRSxxx.h>
 
 #include "settingsdialog.h"
@@ -62,6 +63,10 @@ SettingsDialog::SettingsDialog(QWidget *parent)
 
     // connect control settings
     connect( m_ui->cbxEngineeringMode, SIGNAL(stateChanged(int)), this, SLOT(onCbxEngineeringModeChange(int)) );
+
+    // Set device ID ranges
+    m_ui->sbxRS485Address->setRange( 0, MAX_DEVICE_ID );
+    m_ui->sbxRS485BroadcastAddress->setRange( 0, MAX_DEVICE_ID );
 }
 
 /******************************************************************************

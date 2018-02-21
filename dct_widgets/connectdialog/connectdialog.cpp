@@ -479,7 +479,7 @@ void ConnectDialog::setChannelRS485( ComChannelSerial * c )
         m_ui->cbxStopbitsRS485->addItem( QString::number(CTRL_CHANNEL_STOP_BITS_2), CTRL_CHANNEL_STOP_BITS_2 );
         m_ui->cbxStopbitsRS485->setCurrentIndex( m_ui->cbxStopbitsRS485->findData( CTRL_CHANNEL_STOP_BITS_DEFAULT ) );
 
-        m_ui->sbxDevAddrRS485->setRange( 1, 99 );
+        m_ui->sbxDevAddrRS485->setRange( 0, MAX_DEVICE_ID );
         m_ui->sbxDevAddrRS485->setValue( 1 );
     }
 }
@@ -1212,7 +1212,7 @@ bool ConnectDialog::scanAndConnect()
     }
 
     // Constants
-    const int numAddresses = 20;
+    const int numAddresses = MAX_DEVICE_ID + 1; // 0 is a valid address to, thus: +1
     const int numBaudrates = 2;
 
     // Array that holds all baudrates that will be scanned
@@ -1252,7 +1252,7 @@ bool ConnectDialog::scanAndConnect()
 
     // Show a progress bar
     this->setEnabled(false);
-    QProgressDialog progressDialog( "Scanning for Devices...", "Abort Scan", 0, numAddresses * numBaudrates, this );
+    QProgressDialog progressDialog( "Scanning...\nDevices found: 0", "Stop Scan", 0, numAddresses * numBaudrates, this );
     progressDialog.setWindowFlags( Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowTitleHint );
 
     // sleep for 100ms and refresh progress bar, this ensures that the progress bar is correctly shown under linux
@@ -1269,10 +1269,10 @@ bool ConnectDialog::scanAndConnect()
         progressDialog.move( screen.center() - progressDialog.rect().center() );
     }
 
-    progressDialog.show();
+    progressDialog.open();
 
-    // Scan address 0 to 20 for connected devices
-    for ( int address = 0; address <= numAddresses; address++ )
+    // Scan address 0 to numAddresses for connected devices
+    for ( int address = 0; address < numAddresses; address++ )
     {
         // Scan all available baudrates
         for ( int baudrateIndex = 0; baudrateIndex < numBaudrates; baudrateIndex++ )
@@ -1281,6 +1281,7 @@ bool ConnectDialog::scanAndConnect()
             progressDialog.setValue( (address - 1) * numBaudrates + baudrateIndex );
             QApplication::processEvents();
 
+            // check if scan was aborted
             if ( progressDialog.wasCanceled() )
             {
                 // break to outer loop, check cancel there as well
@@ -1347,15 +1348,17 @@ bool ConnectDialog::scanAndConnect()
             m_detectedRS485Devices.append( detectedDevice );
             qDebug() << "Found a " << systemPlatform << "device with the name" << deviceName << " connected at address " << openCfg.dev_addr << " with baudrate " << openCfg.baudrate;
 
+            // Update progress dialog text
+            progressDialog.setLabelText( QString("Scanning...\nDevices found: %1").arg(m_detectedRS485Devices.count()) );
+            QApplication::processEvents();
+
             // If a device was found for this address, do not scan the other baudrates (there can not be two device with the same address)
             break;
-            }
+        }
 
         // check if scan was aborted
         if ( progressDialog.wasCanceled() )
         {
-            // Clear list of found devices, as it is incomplete
-            m_detectedRS485Devices.clear();
             break;
         }
     }

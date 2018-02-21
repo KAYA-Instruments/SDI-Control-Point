@@ -169,7 +169,7 @@
 #define CMD_GET_DEVICE_LIST_REPLY               ( "id: %s %u %u %u %[^\t\r\n]\n%n" )
 #define CMD_SYNC_DEVIE_LIST                     ( "id: ")
 #define CMD_GET_DEVICE_LIST_NO_PARAMS           ( 5 )
-#define CMD_DEVICE_LIST_MAX_DEVICES             ( 99 )
+#define CMD_DEVICE_LIST_MAX_DEVICES             ( 100 )     // Has to be equal to (MAX_DEVICE_ID + 1) which is defined in defines.h
 #define CMD_GET_DEVICE_LIST_TMO                 ( 1200 )
 
 /******************************************************************************

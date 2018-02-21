@@ -23,6 +23,7 @@
 #include <cerrno>
 #include <cstring>
 
+#include <defines.h>
 #include <ctrl_protocol/ctrl_protocol_system.h>
 
 #include "common.h"
@@ -544,8 +545,8 @@ void ProVideoSystemItf::GetDeviceList()
     // Is there a signal listener
     if ( receivers(SIGNAL(DeviceListChanged(QList<rs485Device>))) > 0 )
     {
-        // Up to 99 devices can be detected
-        ctrl_protocol_device_t devices[99];
+        // Up to MAX_DEVICE_ID + 1 devices can be detected (because 0 is a valid address too)
+        ctrl_protocol_device_t devices[MAX_DEVICE_ID + 1];
 
         memset( &devices, 0, sizeof(devices) );
 
@@ -556,7 +557,7 @@ void ProVideoSystemItf::GetDeviceList()
 
         // Convert to QList
         QList<rs485Device> deviceList;
-        for ( int i = 0; i < 99; i++ )
+        for ( int i = 0; i <= MAX_DEVICE_ID; i++ )
         {
             // If entry contains a valid device
             if ( devices[i].device_platform[0] != 0u )

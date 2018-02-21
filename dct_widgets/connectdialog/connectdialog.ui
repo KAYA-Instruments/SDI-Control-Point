@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>393</width>
-    <height>516</height>
+    <height>556</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -265,13 +265,13 @@
        <item>
         <widget class="QLabel" name="label_3">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Scan ports 0 to 20 for all supported baudrates. This is slower than the automatic detection but works for all devices:</string>
+          <string>Scan the full port range (0 - 99) for all supported baudrates:.</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -285,6 +285,22 @@
          </property>
          <property name="text">
           <string>Scan All Baudrates for Devices</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_4">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>This is slower than the automatic detection but works for all devices. You can abort the process at anytime</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -313,7 +329,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Or Select a Specific Device for Manual Connection:  </string>
+          <string>Select a Specific Device for Manual Connection:  </string>
          </property>
          <property name="scaledContents">
           <bool>false</bool>

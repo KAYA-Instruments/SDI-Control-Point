@@ -29,6 +29,7 @@
  * general defines
  *****************************************************************************/
 #define MAX_NUM_CHAINS                  ( 2 )
+#define MAX_DEVICE_ID                   ( 99 )
 
 /******************************************************************************
  * lens shading correction segmentation mode
