@@ -313,7 +313,8 @@ Condor4kDevice::features Condor4kDevice::getSupportedFeatures()
     deviceFeatures.hasSystemBroadcast       = true;
     deviceFeatures.hasRS232Interface        = true;
 
-    deviceFeatures.lutBitWidth              = 12;
+    deviceFeatures.lutBitWidth              = 16;
+    deviceFeatures.numTempSensors           = 2;
 
     return deviceFeatures;
 }

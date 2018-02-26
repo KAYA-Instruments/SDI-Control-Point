@@ -84,7 +84,7 @@
 #define CMD_SYNC_VERSION_SW_BUILD_DATE          ( "sw-build-date" )
 #define CMD_VERSION_SW_BUILD_DATE               ( "sw-build-date : %[^\t\r\n]\n" )
 #define CMD_GET_SW_BUILD_DATE_NO_PARMS          ( 1 )
-                                               
+
 #define CMD_GET_VERSION_NUM_RESPONSE_LINES      ( 13 )
 
 /******************************************************************************
@@ -149,9 +149,38 @@
  * @brief command "runtime" 
  *****************************************************************************/
 #define CMD_GET_RUNTIME                         ( "runtime\n" )
-#define CMD_SET_RUNTIME                         ( "runtime %i\n" )
 #define CMD_SYNC_RUNTIME                        ( "runtime " )
+#define CMD_GET_RUNTIME_RESPONSE                ( "runtime %i\n" )
 #define CMD_GET_RUNTIME_NO_PARMS                ( 1 )
+
+/******************************************************************************
+ * @brief command "temp"
+ *****************************************************************************/
+#define CMD_GET_TEMP                            ( "temp %i\n" )
+#define CMD_SYNC_TEMP                           ( "temp " )
+#define CMD_GET_TEMP_RESPONSE                   ( "temp %i %i.%i %s\n" )
+#define CMD_GET_TEMP_NO_PARMS                   ( 4 )
+
+/******************************************************************************
+ * @brief command "max_temp"
+ *****************************************************************************/
+#define CMD_GET_MAX_TEMP                        ( "max_temp\n" )
+#define CMD_SYNC_MAX_TEMP                       ( "max_temp " )
+#define CMD_GET_MAX_TEMP_RESPONSE               ( "max_temp %i\n")
+#define CMD_GET_MAX_TEMP_NO_PARAMS              ( 1 )
+
+/******************************************************************************
+ * @brief command "max_temp_reset"
+ *****************************************************************************/
+#define CMD_MAX_TEMP_RESET                      ( "max_temp_reset\n" )
+
+/******************************************************************************
+ * @brief command "over_temp_count"
+ *****************************************************************************/
+#define CMD_GET_OVER_TEMP_COUNT                 ( "over_temp_count\n" )
+#define CMD_SYNC_OVER_TEMP_COUNT                ( "over_temp_count " )
+#define CMD_GET_OVER_TEMP_COUNT_RESPONSE        ( "over_temp_count %i\n")
+#define CMD_GET_OVER_TEMP_COUNT_NO_PARAMS       ( 1 )
 
 /******************************************************************************
  * @brief command "name"
@@ -1491,7 +1520,7 @@ static int set_debug
 }
 
 /******************************************************************************
- * get_runtime - to get the tuntime counter
+ * get_runtime - function to get the runtime counter
  *****************************************************************************/
 static int get_runtime
 (
@@ -1513,7 +1542,7 @@ static int get_runtime
 
     // command call to get 1 parameter from provideo system
     res = get_param_int_X( channel, 2,
-            CMD_GET_RUNTIME, CMD_SYNC_RUNTIME, CMD_SET_RUNTIME, &value );
+            CMD_GET_RUNTIME, CMD_SYNC_RUNTIME, CMD_GET_RUNTIME_RESPONSE, &value );
 
     // return error code
     if ( res < 0 )
@@ -1534,7 +1563,178 @@ static int get_runtime
 }
 
 /******************************************************************************
- * reboot - reboot the connected device 
+ * get_temp - function to get the value of a temperature sensor
+ *****************************************************************************/
+static int get_temp
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    int const                   no,
+    uint8_t * const             values
+)
+{
+    (void) ctx;
+
+    char command[CMD_SINGLE_LINE_COMMAND_SIZE];
+    char data[2*CMD_SINGLE_LINE_RESPONSE_SIZE];
+
+    ctrl_protocol_temp_t * temp;
+
+    int res;
+
+    // parameter check
+    if ( !no || !values || (sizeof(*temp) != no) )
+    {
+        return ( -EINVAL );
+    }
+
+    temp = (ctrl_protocol_temp_t *)values;
+
+    // clear command buffer
+    memset( command, 0, sizeof(command) );
+
+    sprintf( command, CMD_GET_TEMP, temp->id );
+
+    // send command to COM port
+    ctrl_channel_send_request( channel, (uint8_t *)command, strlen(command) );
+
+    // read response from provideo device
+    res = evaluate_get_response( channel, data, sizeof(data) );
+    if ( !res )
+    {
+        char * s = strstr( data, CMD_SYNC_TEMP );
+        if ( s )
+        {
+            int id, integer, fractional;
+            char name[16];
+            res = sscanf( s, CMD_GET_TEMP_RESPONSE, &id, &integer, &fractional, name );
+            if ( (res == CMD_GET_TEMP_NO_PARMS) && (UINT32(id) == temp->id) )
+            {
+                temp->temp = (float)(INT32(integer)) + ((float)(UINT32(fractional))) / 10.0f;
+                strcpy( temp->name, name );
+                return ( 0 );
+            }
+            else
+            {
+                return ( -EINVAL );
+            }
+        }
+    }
+    else
+    {
+        res = evaluate_error_response( data, res );
+    }
+
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
+    return ( 0 );
+}
+
+/******************************************************************************
+ * get_max_temp - function to get the maximum logged temperature
+ *****************************************************************************/
+static int get_max_temp
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    int32_t * const             max_temp
+)
+{
+    (void) ctx;
+
+    int value;
+    int res;
+
+    // parameter check
+    if ( !max_temp )
+    {
+        return ( -EINVAL );
+    }
+
+    // command call to get 1 parameter from provideo system
+    res = get_param_int_X( channel, 2,
+            CMD_GET_MAX_TEMP, CMD_SYNC_MAX_TEMP, CMD_GET_MAX_TEMP_RESPONSE, &value );
+
+    // return error code
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
+    // return -EFAULT if number of parameter not matching
+    else if ( res != CMD_GET_RUNTIME_NO_PARMS )
+    {
+        return ( -EFAULT );
+    }
+
+    // type-cast to range
+    *max_temp = INT32( value );
+
+    return ( 0 );
+}
+
+/******************************************************************************
+ * max_temp_reset - reset the maximum logged temperature to the current temp
+ *****************************************************************************/
+static int max_temp_reset
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel
+)
+{
+    (void) ctx;
+    
+    return ( set_param_0( channel, CMD_MAX_TEMP_RESET ) );
+}
+
+/******************************************************************************
+ * get_max_temp - function to get the maximum logged temperature
+ *****************************************************************************/
+static int get_over_temp_count
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    uint32_t * const            count
+)
+{
+    (void) ctx;
+
+    int value;
+    int res;
+
+    // parameter check
+    if ( !count )
+    {
+        return ( -EINVAL );
+    }
+
+    // command call to get 1 parameter from provideo system
+    res = get_param_int_X( channel, 2,
+            CMD_GET_OVER_TEMP_COUNT, CMD_SYNC_OVER_TEMP_COUNT, CMD_GET_OVER_TEMP_COUNT_RESPONSE, &value );
+
+    // return error code
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
+    // return -EFAULT if number of parameter not matching
+    else if ( res != CMD_GET_RUNTIME_NO_PARMS )
+    {
+        return ( -EFAULT );
+    }
+
+    // type-cast to range
+    *count = UINT32( value );
+
+    return ( 0 );
+}
+
+/******************************************************************************
+ * reboot - reboot the connected device
  *****************************************************************************/
 static int reboot
 (
@@ -1543,7 +1743,7 @@ static int reboot
 )
 {
     (void) ctx;
-    
+
     return ( set_param_0( channel, CMD_REBOOT ) );
 }
 
@@ -1661,6 +1861,10 @@ static ctrl_protocol_sys_drv_t provideo_sys_drv =
     .get_debug                    = get_debug,
     .set_debug                    = set_debug,
     .get_runtime                  = get_runtime,
+    .get_temp                     = get_temp,
+    .get_max_temp                 = get_max_temp,
+    .max_temp_reset               = max_temp_reset,
+    .get_over_temp_count          = get_over_temp_count,
     .reboot                       = reboot,
     .update                       = update,
     .save_settings                = save_settings,
@@ -1680,4 +1884,3 @@ int provideo_protocol_sys_init
 {
     return ( ctrl_protocol_sys_register( handle, ctx, &provideo_sys_drv ) );
 }
-

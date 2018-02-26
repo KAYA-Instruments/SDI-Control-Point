@@ -44,7 +44,7 @@ extern "C" {
 #define MAX_NO_SAMPLE_POINTS    ( 24u )
 
 /**************************************************************************//**
- * @brief sample point settings
+ * @brief lut enable struct
  *****************************************************************************/
 typedef struct ctrl_protocol_enable_s
 {
@@ -70,7 +70,8 @@ typedef struct ctrl_protocol_rec709_s
  *
  * @param[in]   channel  control channel instance
  * @param[in]   protocol control protocol instance
- * @param[in]   no       number of values to read
+ * @param[in]   no       number of values to read, has to be
+ *                       sizeof(ctrl_protocol_enable_t)
  * @param[out]  values   current enable struct (@see ctrl_protocol_enable_t)
  *
  * @return      0 on success, error-code otherwise

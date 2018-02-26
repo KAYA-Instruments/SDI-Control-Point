@@ -80,8 +80,11 @@ public:
     void GetChainGenlockTermination();
     
     // timecode
-    void GetTimecode();
-    void GetTimecodeHold();
+    void GetChainTimecode();
+    void GetChainTimecodeHold();
+
+    // audio
+    void GetChainAudioEnable();
 
 signals:
     // chain selection status
@@ -118,8 +121,11 @@ signals:
     void ChainGenlockTerminationChanged( int value );
 
     // timecode
-    void TimecodeChanged( QVector<int> value );
-    void TimecodeHoldChanged( bool enable );
+    void ChainTimecodeChanged( QVector<int> value );
+    void ChainTimecodeHoldChanged( bool enable );
+
+    // audio
+    void ChainAudioEnableChanged( bool enable );
 
     // new video mode is set
     // This is used to synchronize other interface components.
@@ -137,9 +143,10 @@ public slots:
     void onChainGenlockModeChange( int value );
     void onChainGenlockOffsetChange( int vertical, int horizontal );
     void onChainGenlockTerminationChange( int value );
-    void onTimecodeChange( QVector<int> value );
-    void onTimecodeGetRequest( );
-    void onTimecodeHoldChange( bool enable );
+    void onChainTimecodeChange( QVector<int> value );
+    void onChainTimecodeGetRequest();
+    void onChainTimecodeHoldChange( bool enable );
+    void onChainAudioEnableChange( bool enable );
 };
 
 #define CONNECT_CHAIN_INTERFACE(x, y)                               \

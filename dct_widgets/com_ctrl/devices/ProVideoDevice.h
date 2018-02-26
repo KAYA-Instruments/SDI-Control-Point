@@ -61,6 +61,7 @@ public:
         bool hasChainSelection;
         bool hasChainFlipVertical;
         bool hasChainFlipHorizontal;
+        bool hasChainAudio;
         bool hasAutoItf;
         bool hasIrisItf;
         bool hasIspItf;
@@ -90,6 +91,7 @@ public:
         bool hasRS232Interface;
 
         int lutBitWidth;
+        int numTempSensors;
     };
 
     explicit ProVideoDevice( ComChannel *, ComProtocol * );

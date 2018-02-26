@@ -78,7 +78,7 @@ SettingsDialog::~SettingsDialog()
 }
 
 /******************************************************************************
- * SettingsDialog::~showEvent
+ * SettingsDialog::showEvent
  *****************************************************************************/
 void SettingsDialog::showEvent( QShowEvent* event )
 {

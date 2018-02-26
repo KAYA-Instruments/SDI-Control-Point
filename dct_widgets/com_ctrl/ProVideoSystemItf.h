@@ -125,6 +125,11 @@ public:
     // run-time counter
     void GetRunTime();
 
+    // temperature
+    void GetTemp( uint8_t id );
+    void GetMaxTemp();
+    void GetOverTempCount();
+
     // check for connection to device
     bool isConnected();
 
@@ -162,6 +167,9 @@ signals:
     void PromptChanged( uint8_t flag );
     void DebugLevelChanged( uint8_t level );
     void RunTimeChanged( uint32_t cnt );
+    void TempChanged( uint8_t id, float temp, QString name );
+    void MaxTempChanged( int32_t max_temp );
+    void OverTempCountChanged( uint32_t count );
 
 public slots:
     void onDeviceNameChange( QString name );
@@ -172,6 +180,10 @@ public slots:
     void onRS485BroadcastMasterChange( int32_t master_address );
     void onPromptChange( uint8_t flag );
     void onDebugLevelChange( uint8_t level );
+    void onGetTempRequest( uint8_t id );
+    void onGetMaxTempRequest();
+    void onMaxTempReset();
+    void onGetOverTempCountRequest();
     void onBootIntoUpdateMode();
     void onSaveSettings();
     void onLoadSettings();

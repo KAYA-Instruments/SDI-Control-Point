@@ -280,6 +280,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
     m_ui->inoutBox->setTimeCodeVisible(deviceFeatures.hasChainTimeCode, deviceFeatures.hasChainTimeCodeHold);
     m_ui->inoutBox->setFlipModeVisible(deviceFeatures.hasChainFlipVertical, deviceFeatures.hasChainFlipHorizontal);
     m_ui->inoutBox->setTestPatternVisible(deviceFeatures.hasOsdTestPattern);
+    m_ui->inoutBox->setAudioEnableVisible(deviceFeatures.hasChainAudio);
 
     // BlackBox Tab
     m_ui->blackBox->setFlareLevelVisible(deviceFeatures.hasIspFlare);
@@ -427,13 +428,18 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         if (deviceFeatures.hasChainTimeCode)
         {
             // Timecode
-            connect( dev->GetChainItf(), SIGNAL(TimecodeChanged(QVector<int>)), m_ui->inoutBox, SLOT(onTimecodeChange(QVector<int>)) );
-            connect( m_ui->inoutBox, SIGNAL(TimecodeSet(QVector<int>)), dev->GetChainItf(), SLOT(onTimecodeChange(QVector<int>)) );
+            connect( dev->GetChainItf(), SIGNAL(ChainTimecodeChanged(QVector<int>)), m_ui->inoutBox, SLOT(onChainTimecodeChange(QVector<int>)) );
+            connect( m_ui->inoutBox, SIGNAL(ChainTimecodeSetChanged(QVector<int>)), dev->GetChainItf(), SLOT(onChainTimecodeChange(QVector<int>)) );
 
-            connect( m_ui->inoutBox, SIGNAL(TimecodeGet()), dev->GetChainItf(), SLOT(onTimecodeGetRequest()) );
+            connect( m_ui->inoutBox, SIGNAL(ChainTimecodeGetRequested()), dev->GetChainItf(), SLOT(onChainTimecodeGetRequest()) );
 
-            connect( dev->GetChainItf(), SIGNAL(TimecodeHoldChanged(bool)), m_ui->inoutBox, SLOT(onTimecodeHoldChange(bool)) );
-            connect( m_ui->inoutBox, SIGNAL(TimecodeHold(bool)), dev->GetChainItf(), SLOT(onTimecodeHoldChange(bool)) );
+            connect( dev->GetChainItf(), SIGNAL(ChainTimecodeHoldChanged(bool)), m_ui->inoutBox, SLOT(onChainTimecodeHoldChange(bool)) );
+            connect( m_ui->inoutBox, SIGNAL(ChainTimecodeHoldChanged(bool)), dev->GetChainItf(), SLOT(onChainTimecodeHoldChange(bool)) );
+        }
+        if (deviceFeatures.hasChainAudio)
+        {
+            connect( dev->GetChainItf(), SIGNAL(ChainAudioEnableChanged(bool)), m_ui->inoutBox, SLOT(onChainAudioEnableChange(bool)) );
+            connect( m_ui->inoutBox, SIGNAL(ChainAudioEnableChanged(bool)), dev->GetChainItf(), SLOT(onChainAudioEnableChange(bool)) );
         }
     }
 
@@ -777,6 +783,19 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
     connect( dev->GetProVideoSystemItf(), SIGNAL(FeatureMaskHwListChanged(QStringList)), m_ui->infoBox, SLOT(onFeatureMaskHwListChange(QStringList)) );
     connect( dev->GetProVideoSystemItf(), SIGNAL(FeatureMaskSwChanged(uint32_t)), m_ui->infoBox, SLOT(onFeatureMaskSwChange(uint32_t)) );
 
+    // connect temperature info
+    connect( dev->GetProVideoSystemItf(), SIGNAL(TempChanged(uint8_t,float,QString)), m_ui->infoBox, SLOT(onTempChange(uint8_t,float,QString)) );
+    connect( dev->GetProVideoSystemItf(), SIGNAL(MaxTempChanged(int32_t)), m_ui->infoBox, SLOT(onMaxTempChange(int32_t)) );
+    connect( dev->GetProVideoSystemItf(), SIGNAL(OverTempCountChanged(uint32_t)), m_ui->infoBox, SLOT(onOverTempCountChange(uint32_t)) );
+
+    connect( m_ui->infoBox, SIGNAL(GetTempRequest(uint8_t)), dev->GetProVideoSystemItf(), SLOT(onGetTempRequest(uint8_t)) );
+    connect( m_ui->infoBox, SIGNAL(GetMaxTempRequest()), dev->GetProVideoSystemItf(), SLOT(onGetMaxTempRequest()) );
+    connect( m_ui->infoBox, SIGNAL(GetOverTempCountRequest()), dev->GetProVideoSystemItf(), SLOT(onGetOverTempCountRequest()) );
+    connect( m_ui->infoBox, SIGNAL(MaxTempReset()), dev->GetProVideoSystemItf(), SLOT(onMaxTempReset()) );
+
+    m_ui->infoBox->setNumTempSensors( deviceFeatures.numTempSensors );
+
+    // connect system runtime
     if (deviceFeatures.hasSystemRuntime)
     {
         connect( dev->GetProVideoSystemItf(), SIGNAL(RunTimeChanged(uint32_t)), m_ui->infoBox, SLOT(onRunTimeChange(uint32_t)) );

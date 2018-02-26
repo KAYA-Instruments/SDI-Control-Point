@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>700</width>
-    <height>950</height>
+    <height>942</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -569,13 +569,13 @@
       <string>Output Configuration</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="5" column="1">
-       <widget class="QComboBox" name="cbxFlipMode">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
+      <item row="1" column="4">
+       <widget class="QCheckBox" name="cbxAudioEnable">
+        <property name="toolTip">
+         <string>Enable to embed audio from the internal microphine in the SDI signal</string>
+        </property>
+        <property name="text">
+         <string/>
         </property>
        </widget>
       </item>
@@ -598,29 +598,6 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QComboBox" name="cbxVideoMode">
-        <property name="minimumSize">
-         <size>
-          <width>200</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="1">
-       <widget class="QCheckBox" name="cbxTestPattern">
-        <property name="text">
-         <string>(show Color Chart when no Input detected)</string>
-        </property>
-       </widget>
-      </item>
       <item row="6" column="0">
        <widget class="QLabel" name="lblTestPattern">
         <property name="minimumSize">
@@ -640,6 +617,22 @@
         </property>
        </widget>
       </item>
+      <item row="5" column="1">
+       <widget class="QComboBox" name="cbxFlipMode">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
       <item row="5" column="0">
        <widget class="QLabel" name="lblFlip">
         <property name="minimumSize">
@@ -656,6 +649,35 @@
         </property>
         <property name="text">
          <string>Flip</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QLabel" name="lblAudioEnable">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Audio</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QCheckBox" name="cbxTestPattern">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Enable to show a Color Chart when no Input is detected</string>
+        </property>
+        <property name="text">
+         <string/>
         </property>
        </widget>
       </item>
@@ -694,10 +716,42 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="2">
+      <item row="1" column="1">
+       <widget class="QComboBox" name="cbxVideoMode">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="5">
        <spacer name="horizontalSpacer_2">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>0</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="2">
+       <spacer name="horizontalSpacer_4">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -805,7 +859,7 @@
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>40</width>
+          <width>0</width>
           <height>20</height>
          </size>
         </property>
@@ -1029,7 +1083,7 @@ Note: This will only hold the timecode in the SDI output, the timecode on the de
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>221</width>
+          <width>0</width>
           <height>20</height>
          </size>
         </property>
@@ -1054,15 +1108,22 @@ Note: This will only hold the timecode in the SDI output, the timecode on the de
   </layout>
  </widget>
  <tabstops>
+  <tabstop>cbxBayerPattern</tabstop>
   <tabstop>sbxExposure</tabstop>
   <tabstop>sbxIso</tabstop>
   <tabstop>sbxAperture</tabstop>
   <tabstop>cbxAecEnable</tabstop>
   <tabstop>sbxSetPoint</tabstop>
+  <tabstop>sbxMaxIso</tabstop>
   <tabstop>sbxControlSpeed</tabstop>
   <tabstop>rdbTaf50Hz</tabstop>
   <tabstop>rdbTaf60Hz</tabstop>
+  <tabstop>cbxLscEnable</tabstop>
+  <tabstop>sbxK</tabstop>
+  <tabstop>sbxOffset</tabstop>
+  <tabstop>sbxSlope</tabstop>
   <tabstop>cbxVideoMode</tabstop>
+  <tabstop>cbxAudioEnable</tabstop>
   <tabstop>cbxSdi2Mode</tabstop>
   <tabstop>cbxFlipMode</tabstop>
   <tabstop>cbxTestPattern</tabstop>
@@ -1071,6 +1132,9 @@ Note: This will only hold the timecode in the SDI output, the timecode on the de
   <tabstop>sbxGenlockOffsetHorizontal</tabstop>
   <tabstop>cbxGenLockTermination</tabstop>
   <tabstop>tmeTimecode</tabstop>
+  <tabstop>btnSetTimecode</tabstop>
+  <tabstop>btnGetTimecode</tabstop>
+  <tabstop>btnHoldTimecode</tabstop>
  </tabstops>
  <resources/>
  <connections/>

@@ -742,8 +742,106 @@ void ProVideoSystemItf::GetRunTime()
                     GET_CHANNEL_INSTANCE(this), &cnt ); 
         HANDLE_ERROR( res );
 
-        // emit a DebugLevelChanged signal
+        // emit a RunTimeChanged signal
         emit RunTimeChanged( cnt );
+    }
+}
+
+/******************************************************************************
+ * ProVideoSystemItf::GetTemp
+ *****************************************************************************/
+void ProVideoSystemItf::GetTemp( uint8_t id )
+{
+    // Is there a signal listener
+    if ( receivers(SIGNAL(TempChanged(uint8_t,float,QString))) > 0 )
+    {
+        ctrl_protocol_temp_t temp;
+        temp.id = id;
+        temp.temp = 0;
+        strcpy( temp.name, "" );
+
+        // read current temperature of the given id
+        int res = ctrl_protocol_get_temp( GET_PROTOCOL_INSTANCE(this),
+                    GET_CHANNEL_INSTANCE(this), sizeof(temp), (uint8_t *)&temp );
+        HANDLE_ERROR( res );
+
+        // emit a TempChanged signal
+        emit TempChanged( temp.id, temp.temp, QString::fromLocal8Bit(temp.name) );
+    }
+}
+
+/******************************************************************************
+ * ProVideoSystemItf::onGetTempRequest
+ *****************************************************************************/
+void ProVideoSystemItf::onGetTempRequest( uint8_t id )
+{
+    GetTemp( id );
+}
+
+/******************************************************************************
+ * ProVideoSystemItf::GetMaxTemp
+ *****************************************************************************/
+void ProVideoSystemItf::GetMaxTemp()
+{
+    // Is there a signal listener
+    if ( receivers(SIGNAL(MaxTempChanged(int32_t))) > 0 )
+    {
+        int32_t max_temp = 0u;
+
+        // read maximum logged temperature
+        int res = ctrl_protocol_get_max_temp( GET_PROTOCOL_INSTANCE(this),
+                    GET_CHANNEL_INSTANCE(this), &max_temp );
+        HANDLE_ERROR( res );
+
+        // emit a MaxTempChanged signal
+        emit MaxTempChanged( max_temp );
+    }
+}
+
+/******************************************************************************
+ * ProVideoSystemItf::onGetMaxTempRequest
+ *****************************************************************************/
+void ProVideoSystemItf::onGetMaxTempRequest()
+{
+    GetMaxTemp();
+}
+
+/******************************************************************************
+ * ProVideoSystemItf::onMaxTempReset
+ *****************************************************************************/
+void ProVideoSystemItf::onMaxTempReset()
+{
+    // reset maximum temperature
+    int res = ctrl_protocol_max_temp_reset( GET_PROTOCOL_INSTANCE(this),
+                    GET_CHANNEL_INSTANCE(this) );
+    HANDLE_ERROR( res );
+}
+
+/******************************************************************************
+ * ProVideoSystemItf::onGetOverTempCountRequest
+ *****************************************************************************/
+void ProVideoSystemItf::onGetOverTempCountRequest()
+{
+    GetOverTempCount();
+}
+
+/******************************************************************************
+ * ProVideoSystemItf::GetOverTempCount
+ *****************************************************************************/
+void ProVideoSystemItf::GetOverTempCount()
+{
+    // Is there a signal listener
+    if ( receivers(SIGNAL(OverTempCountChanged(uint32_t))) > 0 )
+    {
+        uint32_t count = 0u;
+
+        // read maximum logged temperature
+        int res = ctrl_protocol_get_over_temp_count( GET_PROTOCOL_INSTANCE(this),
+                    GET_CHANNEL_INSTANCE(this), &count );
+        HANDLE_ERROR( res );
+
+        // emit a OverTempCountChanged signal
+        emit OverTempCountChanged( count );
     }
 }
 
@@ -752,7 +850,7 @@ void ProVideoSystemItf::GetRunTime()
  *****************************************************************************/
 void ProVideoSystemItf::onBootIntoUpdateMode()
 {
-    // write debug level 
+    // boot into update mode
     int res = ctrl_protocol_update( GET_PROTOCOL_INSTANCE(this),
                     GET_CHANNEL_INSTANCE(this) );
     HANDLE_ERROR( res );

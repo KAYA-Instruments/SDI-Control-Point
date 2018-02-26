@@ -44,7 +44,8 @@ class InfoBox::PrivateData
 {
 public:
     PrivateData()
-        : m_ui( new Ui::UI_InfoBox )
+        : m_ui( new Ui::UI_InfoBox ),
+          m_numTempSensors( 0 )
     {
         // do nothing
     };
@@ -55,6 +56,7 @@ public:
     };
 
     Ui::UI_InfoBox *    m_ui;                   /**< ui handle */
+    unsigned int        m_numTempSensors;       /**< number of Temperature sensors which are available */
 };
 
 /******************************************************************************
@@ -76,10 +78,21 @@ InfoBox::InfoBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->letFeatureMaskSw->setVisible( false );
     d_data->m_ui->lblFeatureMaskHw->setVisible( false );
     d_data->m_ui->letFeatureMaskHw->setVisible( false );
+    d_data->m_ui->lstFeatureMaskHw->setVisible( false );
+
+    // fill temperature line edits
+    d_data->m_ui->letTemp0->setText("N/A");
+    d_data->m_ui->letTemp1->setText("N/A");
+    d_data->m_ui->letMaxTemp->setText("N/A");
+    d_data->m_ui->letOverTemp->setText("N/A");
+
+    // connect temperature refresh and reset buttons
+    connect( d_data->m_ui->btnRefreshTemp, SIGNAL(clicked(bool)), this, SLOT(onRefreshTempClicked()) );
+    connect( d_data->m_ui->btnResetMaxTemp, SIGNAL(clicked(bool)), this, SLOT(onResetMaxTempClicked()) );
 
     // connect software license dialogs
-    connect ( d_data->m_ui->btnShowLicense, SIGNAL(clicked(bool)), this, SLOT(onShowLicenseClicked()) );
-    connect ( d_data->m_ui->btnShowThirdPartyLicenses, SIGNAL(clicked(bool)), this, SLOT(onShowThirdPartyLicensesClicked()) );
+    connect( d_data->m_ui->btnShowLicense, SIGNAL(clicked(bool)), this, SLOT(onShowLicenseClicked()) );
+    connect( d_data->m_ui->btnShowThirdPartyLicenses, SIGNAL(clicked(bool)), this, SLOT(onShowThirdPartyLicensesClicked()) );
 }
 
 /******************************************************************************
@@ -88,6 +101,18 @@ InfoBox::InfoBox( QWidget * parent ) : DctWidgetBox( parent )
 InfoBox::~InfoBox()
 {
     delete d_data;
+}
+
+/******************************************************************************
+ * InfoBox::showEvent
+ *****************************************************************************/
+void InfoBox::showEvent( QShowEvent* event )
+{
+    // Call inherited function
+    DctWidgetBox::showEvent( event );
+
+    // Refresh temperature readouts
+    onRefreshTempClicked();
 }
 
 /******************************************************************************
@@ -129,6 +154,34 @@ void InfoBox::setRuntimeVisible( const bool value )
 {
     d_data->m_ui->lblRuntime->setVisible(value);
     d_data->m_ui->tetRuntime->setVisible(value);
+}
+
+/******************************************************************************
+ * InfoBox::setNumTempSensors
+ *****************************************************************************/
+void InfoBox::setNumTempSensors( const unsigned int tempSensorCount )
+{
+    d_data->m_numTempSensors = tempSensorCount;
+
+    /* If no temp sensor is available, hide the temperature eval group box */
+    if ( tempSensorCount == 0 )
+    {
+        d_data->m_ui->gpxTemperature->setVisible( false );
+    }
+    else
+    {
+        d_data->m_ui->gpxTemperature->setVisible( true );
+    }
+
+    /* If only one sensor is available, hide the second sensor readout label */
+    if ( tempSensorCount == 1 )
+    {
+        d_data->m_ui->letTemp1->setVisible( false );
+    }
+    else if ( tempSensorCount >= 2 )
+    {
+        d_data->m_ui->letTemp1->setVisible( true );
+    }
 }
 
 /******************************************************************************
@@ -237,6 +290,68 @@ void InfoBox::onRunTimeChange( uint32_t seconds )
 {
     QTime t( 0, 0 , 0 );
     d_data->m_ui->tetRuntime->setTime( t.addSecs( seconds ) );
+}
+
+/******************************************************************************
+ * InfoBox::onTempChange
+ *****************************************************************************/
+void InfoBox::onTempChange( uint8_t id, float temp, QString name )
+{
+    QString tempString;
+    tempString.sprintf( "%.1f °C", temp );
+
+    if ( id == 0u )
+    {
+        d_data->m_ui->letTemp0->setText( QStringLiteral("%1 (%2)").arg(tempString).arg(name) );
+    }
+    else if ( id == 1u )
+    {
+        d_data->m_ui->letTemp1->setText( QStringLiteral("%1 (%2)").arg(tempString).arg(name) );
+    }
+}
+
+/******************************************************************************
+ * InfoBox::onMaxTempChange
+ *****************************************************************************/
+void InfoBox::onMaxTempChange( int32_t max_temp )
+{
+    d_data->m_ui->letMaxTemp->setText( QStringLiteral("%1.0 °C").arg(max_temp) );
+}
+
+/******************************************************************************
+ * InfoBox::onOverTempCountChange
+ *****************************************************************************/
+void InfoBox::onOverTempCountChange( uint32_t count )
+{
+    d_data->m_ui->letOverTemp->setText( QString::number(count) );
+}
+
+/******************************************************************************
+ * InfoBox::onRefreshTempClicked
+ *****************************************************************************/
+void InfoBox::onRefreshTempClicked()
+{
+    if ( d_data->m_numTempSensors > 0 )
+    {
+        emit GetTempRequest( 0u );
+
+        if ( d_data->m_numTempSensors >= 2 )
+        {
+            emit GetTempRequest( 1u );
+        }
+
+        emit GetMaxTempRequest();
+        emit GetOverTempCountRequest();
+    }
+}
+
+/******************************************************************************
+ * InfoBox::onResetMaxTempClicked
+ *****************************************************************************/
+void InfoBox::onResetMaxTempClicked()
+{
+    emit MaxTempReset();
+    emit GetMaxTempRequest();
 }
 
 /******************************************************************************

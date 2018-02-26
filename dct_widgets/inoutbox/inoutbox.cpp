@@ -96,6 +96,7 @@ public:
 #define INOUT_SETTINGS_SDI2_MODE                    ( "sdi2_mode" )
 #define INOUT_SETTINGS_FLIP_MODE                    ( "flip_mode" )
 #define INOUT_SETTINGS_TEST_PATTERN                 ( "test_pattern" )
+#define INOUT_SETTINGS_AUDIO_ENABLE                 ( "audio_enable" )
 
 #define INOUT_SETTINGS_GENLOCK_MODE                 ( "genlock_mode" )
 #define INOUT_SETTINGS_GENLOCK_OFFSET_VERTICAL      ( "genlock_offset_vertical" )
@@ -260,6 +261,9 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->cbxSdi2Mode    , SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxSdi2ModeChange(int)) );
     connect( d_data->m_ui->cbxFlipMode    , SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxFlipModeChange(int)) );
     connect( d_data->m_ui->cbxTestPattern , SIGNAL(stateChanged(int)), this, SLOT(onCbxTestPatternChange(int)) );
+
+    // audio
+    connect( d_data->m_ui->cbxAudioEnable , SIGNAL(stateChanged(int)), this, SLOT(onCbxAudioEnableChange(int)) );
     
     // genlock
     connect( d_data->m_ui->cbxGenLockMode , SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxGenlockModeChange(int)) );
@@ -706,6 +710,26 @@ void InOutBox::setTestPattern( const bool value )
 }
 
 /******************************************************************************
+ * InOutBox::AudioEnable
+ *****************************************************************************/
+bool InOutBox::AudioEnable() const
+{
+    return ( d_data->m_ui->cbxAudioEnable->isChecked() );
+}
+
+/******************************************************************************
+ * InOutBox::setAudioEnable
+ *****************************************************************************/
+void InOutBox::setAudioEnable( const bool value )
+{
+    d_data->m_ui->cbxAudioEnable->blockSignals( true );
+    d_data->m_ui->cbxAudioEnable->setChecked( value ? Qt::Checked : Qt::Unchecked );
+    d_data->m_ui->cbxAudioEnable->blockSignals( false );
+
+    emit ChainAudioEnableChanged( value ? 1 : 0 );
+}
+
+/******************************************************************************
  * InOutBox::GenLockMode
  *****************************************************************************/
 QString InOutBox::GenLockMode() const
@@ -811,6 +835,7 @@ void InOutBox::loadSettings( QSettings & s )
     setSdi2Mode( s.value( INOUT_SETTINGS_SDI2_MODE ).toString() );
     setFlipMode( s.value( INOUT_SETTINGS_FLIP_MODE ).toString() );
     setTestPattern( s.value( INOUT_SETTINGS_TEST_PATTERN ).toBool() );
+    setAudioEnable( s.value( INOUT_SETTINGS_AUDIO_ENABLE ).toBool() );
 
     setBayerPattern( s.value( INOUT_SETTINGS_BAYER_PATTERN ).toInt() );
     setCameraIso( s.value( INOUT_SETTINGS_CAMERA_ISO ).toInt() );
@@ -864,6 +889,7 @@ void InOutBox::saveSettings( QSettings & s )
     s.setValue( INOUT_SETTINGS_SDI2_MODE                    , Sdi2Mode() );
     s.setValue( INOUT_SETTINGS_FLIP_MODE                    , FlipMode() );
     s.setValue( INOUT_SETTINGS_TEST_PATTERN                 , TestPattern() );
+    s.setValue( INOUT_SETTINGS_AUDIO_ENABLE                 , AudioEnable() );
 
     s.setValue( INOUT_SETTINGS_GENLOCK_MODE                 , GenLockMode() );
     s.setValue( INOUT_SETTINGS_GENLOCK_OFFSET_VERTICAL      , GenLockOffsetVertical() );
@@ -883,6 +909,7 @@ void InOutBox::applySettings( void )
     emit ChainSdi2ModeChanged( d_data->m_ui->cbxSdi2Mode->currentData().toInt() );
     emit ChainFlipModeChanged( d_data->m_ui->cbxFlipMode->currentData().toInt() );
     emit OsdTestPatternChanged( TestPattern() );
+    emit ChainAudioEnableChanged( AudioEnable() );
 
     emit BayerPatternChanged( BayerPattern() );
     emit CameraGainChanged( gainToIso(CameraIso()) );
@@ -1073,6 +1100,16 @@ void InOutBox::setTestPatternVisible(const bool value)
 }
 
 /******************************************************************************
+ * InOutBox::setAudioEnableVisible
+ *****************************************************************************/
+void InOutBox::setAudioEnableVisible(const bool value)
+{
+    d_data->m_ui->lblAudioEnable->setVisible(value);
+    d_data->m_ui->cbxAudioEnable->setVisible(value);
+}
+
+
+/******************************************************************************
  * InOutBox::onBayerPatternChange
  *****************************************************************************/
 void InOutBox::onBayerPatternChange( int value )
@@ -1202,6 +1239,18 @@ void InOutBox::onOsdTestPatternChange( int value )
     d_data->m_ui->cbxTestPattern->setCheckState( value ? Qt::Checked : Qt::Unchecked );
     d_data->m_ui->cbxTestPattern->blockSignals( false );
 }
+
+/******************************************************************************
+ * InOutBox::onChainAudioEnableChange
+ *****************************************************************************/
+void InOutBox::onChainAudioEnableChange( bool enable )
+{
+    // set value of checkbox
+    d_data->m_ui->cbxAudioEnable->blockSignals( true );
+    d_data->m_ui->cbxAudioEnable->setCheckState( enable ? Qt::Checked : Qt::Unchecked );
+    d_data->m_ui->cbxAudioEnable->blockSignals( false );
+}
+
 
 /******************************************************************************
  * InOutBox::onChainGenlockModeChange
@@ -1381,6 +1430,16 @@ void InOutBox::onCbxTestPatternChange( int value )
 {
     setWaitCursor();
     emit OsdTestPatternChanged( (value == Qt::Checked) ? 1 : 0 );
+    setNormalCursor();
+}
+
+/******************************************************************************
+ * InOutBox::onCbxAudioEnableChange
+ *****************************************************************************/
+void InOutBox::onCbxAudioEnableChange( int value )
+{
+    setWaitCursor();
+    emit ChainAudioEnableChanged( (value == Qt::Checked) ? true : false );
     setNormalCursor();
 }
 
@@ -1844,7 +1903,7 @@ void InOutBox::onBtnTimecodeSetClicked()
     v_time[2] = time.second();
 
     setWaitCursor();
-    emit TimecodeSet( v_time );
+    emit ChainTimecodeSetChanged( v_time );
     setNormalCursor();
 }
 
@@ -1854,7 +1913,7 @@ void InOutBox::onBtnTimecodeSetClicked()
 void InOutBox::onBtnTimecodeGetClicked()
 {
     setWaitCursor();
-    emit TimecodeGet();
+    emit ChainTimecodeGetRequested();
     setNormalCursor();
 }
 
@@ -1864,22 +1923,22 @@ void InOutBox::onBtnTimecodeGetClicked()
 void InOutBox::onBtnTimecodeHoldClicked( bool checked )
 {
     setWaitCursor();
-    emit TimecodeHold( checked );
+    emit ChainTimecodeHoldChanged( checked );
     setNormalCursor();
 }
 
 /******************************************************************************
- * InOutBox::onTimecodeChange
+ * InOutBox::onChainTimecodeChange
  *****************************************************************************/
-void InOutBox::onTimecodeChange( QVector<int> time )
+void InOutBox::onChainTimecodeChange( QVector<int> time )
 {
     d_data->m_ui->tmeTimecode->setTime( QTime(time[0], time[1], time[2]) );
 }
 
 /******************************************************************************
- * InOutBox::onTimecodeHoldChange
+ * InOutBox::onChainTimecodeHoldChange
  *****************************************************************************/
-void InOutBox::onTimecodeHoldChange( bool enable )
+void InOutBox::onChainTimecodeHoldChange( bool enable )
 {
     d_data->m_ui->btnHoldTimecode->blockSignals( true );
     d_data->m_ui->btnHoldTimecode->setChecked( enable );

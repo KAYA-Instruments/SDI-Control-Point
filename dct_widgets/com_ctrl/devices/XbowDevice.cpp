@@ -316,6 +316,7 @@ XbowDevice::features XbowDevice::getSupportedFeatures()
     deviceFeatures.hasRS232Interface        = true;
 
     deviceFeatures.lutBitWidth              = 12;
+    deviceFeatures.numTempSensors           = 2;
 
     return deviceFeatures;
 }

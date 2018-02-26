@@ -526,6 +526,70 @@ int ctrl_protocol_get_runtime
 }
 
 /******************************************************************************
+ * ctrl_protocol_get_temp
+ *****************************************************************************/
+int ctrl_protocol_get_temp
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint8_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_temp );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( values );
+    return ( SYS_DRV(protocol->drv)->get_temp( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_max_temp
+ *****************************************************************************/
+int ctrl_protocol_get_max_temp
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int32_t * const              max_temp
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_max_temp );
+    CHECK_NOT_NULL( max_temp );
+    return ( SYS_DRV(protocol->drv)->get_max_temp( protocol->ctx, channel, max_temp ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_max_temp_reset
+ *****************************************************************************/
+int ctrl_protocol_max_temp_reset
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), max_temp_reset );
+    return ( SYS_DRV(protocol->drv)->max_temp_reset( protocol->ctx, channel ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_over_temp_count
+ *****************************************************************************/
+int ctrl_protocol_get_over_temp_count
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint32_t * const             count
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_over_temp_count );
+    CHECK_NOT_NULL( count );
+    return ( SYS_DRV(protocol->drv)->get_over_temp_count( protocol->ctx, channel, count ) );
+}
+
+/******************************************************************************
  * ctrl_protocol_reboot
  *****************************************************************************/
 int ctrl_protocol_reboot
@@ -646,4 +710,3 @@ int ctrl_protocol_sys_unregister
 
     return ( 0 );
 }
-
