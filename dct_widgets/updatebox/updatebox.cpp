@@ -34,6 +34,7 @@
 #include <QUrl>
 #include <QTemporaryDir>
 #include <QCryptographicHash>
+#include <QDesktopServices>
 
 #include <common.h>
 
@@ -58,13 +59,14 @@ namespace Ui {
 #define SYSTEM_STATE_UPDATE         ( "Device is waiting for update." )
 #define SYSTEM_STATE_FLASHING       ( "Device is being updated." )
 
-#define VERSION_DOWNLOAD_SYNC       ( "version: ")
-#define VERSION_DOWNLOAD_PARSE      ( "version: V%d_%d_%d\n")
+#define VERSION_DOWNLOAD_SYNC       ( "version: " )
+#define VERSION_DOWNLOAD_PARSE      ( "version: V%d_%d_%d\n" )
 #define FILE0_DOWNLOAD_SYNC         ( "file0: ")
-#define FILE0_DOWNLOAD_PARSE        ( "file0: %s %s\n")
+#define FILE0_DOWNLOAD_PARSE        ( "file0: %s %s\n" )
 #define FILE1_DOWNLOAD_SYNC         ( "file1: ")
-#define FILE1_DOWNLOAD_PARSE        ( "file1: %s %s\n")
+#define FILE1_DOWNLOAD_PARSE        ( "file1: %s %s\n" )
 #define DOWNLOAD_SERVER             ( "https://gitlab.com/dreamchip/provideo-downloads/raw/master/auto_update/" )
+#define GUI_DOWNLOAD_PAGE           ( "https://gitlab.com/dreamchip/provideo-downloads/wikis/provideo-gui" )
 
 /******************************************************************************
  * update configuration structure
@@ -239,8 +241,10 @@ public:
         , m_application ( new FlashLoader() )
         , m_state( InvalidState )
         , m_state_sema(1)
-        , m_current_version({0, 0, 0})
-        , m_server_version({0, 0, 0})
+        , m_current_fw_version({0, 0, 0})
+        , m_server_fw_version({0, 0, 0})
+        , m_current_gui_version({0, 0, 0})
+        , m_server_gui_version({0, 0, 0})
         , m_network_manager( new QNetworkAccessManager( parent) )
         , m_download_dir( NULL )
     {
@@ -248,8 +252,16 @@ public:
         m_ui->setupUi( parent );
 
         // set version labels to default
-        m_ui->letCurrentVersion->setText( "Not checked yet" );
-        m_ui->letServerVersion->setText( "Not checked yet" );
+        m_ui->letCurrentFirmwareVersion->setText( "Not checked yet" );
+        m_ui->letServerFirmwareVersion->setText( "Not checked yet" );
+        m_ui->letCurrentGuiVersion->setText( "V" + QString(VERSION_STRING) );
+        m_ui->letServerGuiVersion->setText( "Not checked yet" );
+
+        // get current gui version
+        sscanf( VERSION_STRING, "%d.%d.%d",
+                      &m_current_gui_version.major_release,
+                      &m_current_gui_version.minor_release,
+                      &m_current_gui_version.patch_level );
 
         // set progress bar to 0%
         m_ui->progressBar->setValue( 0u );
@@ -282,7 +294,8 @@ public:
         QObject::connect( m_application, SIGNAL(UpdateFinished()), parent, SLOT(onUpdateFinished()) );
 
         // connect buttons and checkboxes
-        QObject::connect( m_ui->btnCheckUpdate, SIGNAL(clicked()), parent, SLOT(onCheckUpdateClicked()) );
+        QObject::connect( m_ui->btnCheckFirmwareUpdate, SIGNAL(clicked()), parent, SLOT(onCheckFirmwareUpdateClicked()) );
+        QObject::connect( m_ui->btnCheckGuiUpdate, SIGNAL(clicked()), parent, SLOT(onCheckGuiUpdateClicked()) );
         QObject::connect( m_ui->btnFilename, SIGNAL(clicked()), parent, SLOT(onFileNameClicked()) );
         QObject::connect( m_ui->btnRun, SIGNAL(clicked()), parent, SLOT(onRunClicked()) );
         QObject::connect( m_ui->cbxVerify, SIGNAL(stateChanged(int)), parent, SLOT(onVerifyChanged(int)) );
@@ -327,8 +340,10 @@ public:
 
     QSemaphore                  m_state_sema;           /**< semaphore to protect the access to get / set state */
 
-    version_t                   m_current_version;      /**< firmware version which is currently installed on the device */
-    version_t                   m_server_version;       /**< firmware version which is available online */
+    version_t                   m_current_fw_version;    /**< firmware version which is currently installed on the device */
+    version_t                   m_server_fw_version;     /**< firmware version which is available online */
+    version_t                   m_current_gui_version;   /**< GUI version which is currently being used */
+    version_t                   m_server_gui_version;    /**< GUI version which is available online */
 
     QNetworkAccessManager *     m_network_manager;      /**< network access manager used to download updates from the internet */
     QByteArray                  m_downloaded_data;      /**< data which has been downloaded by the network manager */
@@ -471,7 +486,7 @@ void UpdateBox::setSystemState( SystemStates state )
             d_data->m_ui->btnFilename->setEnabled( true );
             d_data->m_ui->progressBar->setFormat( "%p%" );
             d_data->m_ui->progressBar->setValue( 0 );
-            d_data->m_ui->btnCheckUpdate->setEnabled( true );
+            d_data->m_ui->btnCheckFirmwareUpdate->setEnabled( true );
             enable = false;
         }
         else if ( state == UpdateState )
@@ -482,7 +497,7 @@ void UpdateBox::setSystemState( SystemStates state )
             d_data->m_ui->btnRun->setEnabled( (!fn.isEmpty()) && (fileExists(fn)) ? true : false );
             d_data->m_ui->cbxVerify->setEnabled( (!fn.isEmpty()) && (fileExists(fn)) ? true : false );
             d_data->m_ui->btnFilename->setEnabled( false );
-            d_data->m_ui->btnCheckUpdate->setEnabled( false );
+            d_data->m_ui->btnCheckFirmwareUpdate->setEnabled( false );
             enable = true;
         }
         else if ( state == ErrorState )
@@ -694,16 +709,16 @@ void UpdateBox::onDownloadFinished( QNetworkReply * reply )
 }
 
 /******************************************************************************
- * UpdateBox::onCheckUpdateClicked
+ * UpdateBox::onCheckFirmwareUpdateClicked
  *****************************************************************************/
-void UpdateBox::onCheckUpdateClicked()
+void UpdateBox::onCheckFirmwareUpdateClicked()
 {
     // Show a info dialog to indicate
     InfoDialog infoDlg( QString(":/images/tab/update.png"), QString("Contacting Update Server..."), this->parentWidget() );
     infoDlg.show();
 
     // Create URL request for file download
-    QUrl url = QString( DOWNLOAD_SERVER + d_data->m_system_platform + "/update_info.txt" );
+    QUrl url = QString( QString(DOWNLOAD_SERVER) + d_data->m_system_platform + "/update_info.txt" );
     QNetworkRequest request( url );
 
     // Create a timer which will be used to timeout the dowload
@@ -748,13 +763,13 @@ void UpdateBox::onCheckUpdateClicked()
         if ( data )
         {
             res = sscanf( data, VERSION_DOWNLOAD_PARSE,
-                              &server_version.major_release,
-                              &server_version.minor_release,
-                              &server_version.patch_level );
+                          &server_version.major_release,
+                          &server_version.minor_release,
+                          &server_version.patch_level );
         }
         if ( res != 3 )
         {
-            d_data->m_ui->letServerVersion->setText( "No valid Update found" );
+            d_data->m_ui->letServerFirmwareVersion->setText( "No valid Update found" );
             server_version.major_release = 0;
             server_version.minor_release = 0;
             server_version.patch_level = 0;
@@ -764,12 +779,12 @@ void UpdateBox::onCheckUpdateClicked()
         else
         {
             // Store server version
-            d_data->m_server_version = server_version;
+            d_data->m_server_fw_version = server_version;
 
             // Set version in GUI
-            d_data->m_ui->letServerVersion->setText( QString("V%1.%2.%3").arg(server_version.major_release)
-                                                                         .arg(server_version.minor_release)
-                                                                         .arg(server_version.patch_level) );
+            d_data->m_ui->letServerFirmwareVersion->setText( QString("V%1.%2.%3").arg(server_version.major_release)
+                                                                                 .arg(server_version.minor_release)
+                                                                                 .arg(server_version.patch_level) );
 
             /* Get the update file names */
             // Clear list
@@ -810,8 +825,8 @@ void UpdateBox::onCheckUpdateClicked()
             /* Check if update is valid and ask user for download */
             if ( d_data->m_download_files.count() > 0)
             {
-                // Check if the server version is newer than the updated version
-                if ( isNewVersion(d_data->m_server_version, d_data->m_current_version) )
+                // Check if the server version is newer than the current version
+                if ( isNewVersion(d_data->m_server_fw_version, d_data->m_current_fw_version) )
                 {
                     QMessageBox::StandardButton reply;
                     reply = QMessageBox::question( this,
@@ -834,17 +849,21 @@ void UpdateBox::onCheckUpdateClicked()
             }
         }
     }
+    else
+    {
+        QMessageBox::warning( this, QString("Update Check failed"), QString("No valid update file was found on the server. Update is not possible.") );
+    }
 
     // If update is invalid, cleanup
     if ( d_data->m_downloaded_data.length() == 0 ||
          d_data->m_download_files.count() == 0 )
     {
         // Reset server version
-        d_data->m_ui->letServerVersion->setText( "No valid Update found" );
-        d_data->m_server_version.major_release = 0;
-        d_data->m_server_version.minor_release = 0;
-        d_data->m_server_version.patch_level = 0;
-  }
+        d_data->m_ui->letServerFirmwareVersion->setText( "No valid Update found" );
+        d_data->m_server_fw_version.major_release = 0;
+        d_data->m_server_fw_version.minor_release = 0;
+        d_data->m_server_fw_version.patch_level = 0;
+    }
 }
 
 /******************************************************************************
@@ -853,7 +872,7 @@ void UpdateBox::onCheckUpdateClicked()
 void UpdateBox::downloadUpdate()
 {
     // Check if the server version is newer than the updated version
-    if ( !isNewVersion(d_data->m_server_version, d_data->m_current_version) )
+    if ( !isNewVersion(d_data->m_server_fw_version, d_data->m_current_fw_version) )
     {
         QMessageBox::StandardButton reply;
         reply = QMessageBox::question( this,
@@ -893,7 +912,7 @@ void UpdateBox::downloadUpdate()
     for ( int i = 0; i < d_data->m_download_files.count(); i++ )
     {
         // Create URL request for file download
-        QUrl url = QString( DOWNLOAD_SERVER + d_data->m_system_platform + "/" + d_data->m_download_files.at(i));
+        QUrl url = QString( QString(DOWNLOAD_SERVER) + d_data->m_system_platform + "/" + d_data->m_download_files.at(i));
         QNetworkRequest request( url );
 
         // Create a timer which will be used to timeout the dowload
@@ -992,14 +1011,127 @@ void UpdateBox::downloadUpdate()
         d_data->m_download_dir = NULL;
 
         // Reset server version
-        d_data->m_ui->letServerVersion->setText( "No valid Update found" );
-        d_data->m_server_version.major_release = 0;
-        d_data->m_server_version.minor_release = 0;
-        d_data->m_server_version.patch_level = 0;
+        d_data->m_ui->letServerFirmwareVersion->setText( "No valid Update found" );
+        d_data->m_server_fw_version.major_release = 0;
+        d_data->m_server_fw_version.minor_release = 0;
+        d_data->m_server_fw_version.patch_level = 0;
 
         // reset update counter and index
         setUpdateCounter( 0 );
         getNextUpdateIndex();   // this will not find a index, thus clear the file path line edit
+    }
+}
+
+/******************************************************************************
+ * UpdateBox::onCheckGuiUpdateClicked
+ *****************************************************************************/
+void UpdateBox::onCheckGuiUpdateClicked()
+{
+    // Show a info dialog to indicate
+    InfoDialog infoDlg( QString(":/images/tab/update.png"), QString("Contacting Update Server..."), this->parentWidget() );
+    infoDlg.show();
+
+    // Create URL request for file download
+    QUrl url = QString( QString(DOWNLOAD_SERVER) + "provideo_gui/update_info.txt" );
+    QNetworkRequest request( url );
+
+    // Create a timer which will be used to timeout the dowload
+    QTimer timer;
+    timer.setSingleShot(true);
+
+    // Connect the download finished and the timer timeout event with
+    QEventLoop loop;
+    connect( this, SIGNAL(FileDownloaded()), &loop, SLOT (quit()) );
+    connect( &timer, SIGNAL(timeout()), &loop, SLOT(quit()) );
+
+    // Start the timer, download request and event loop, wait for maximum 5s for the download to finish
+    timer.start( 5000 );
+    QNetworkReply * reply = d_data->m_network_manager->get( request );
+    QObject::connect(this, SIGNAL(CancelDownload()), reply, SLOT(abort()));
+
+    loop.exec();
+
+    // Stop download, if not already finished
+    if ( !timer.isActive() )
+    {
+        timer.stop();
+        emit CancelDownload();
+    }
+
+    // delete the reply
+    delete reply;
+
+    // Close info dialog
+    infoDlg.close();
+
+    // Check if a valid file was downloaded
+    if( d_data->m_downloaded_data.length() > 0 )
+    {
+        /* Get the version and check for new update */
+        // Read server version from downloaded data
+        version_t server_version;
+        const char * data = d_data->m_downloaded_data.constData();
+
+        data = strstr( data, VERSION_DOWNLOAD_SYNC );
+        int res = 0;
+        if ( data )
+        {
+            res = sscanf( data, VERSION_DOWNLOAD_PARSE,
+                          &server_version.major_release,
+                          &server_version.minor_release,
+                          &server_version.patch_level );
+        }
+        if ( res != 3 )
+        {
+            d_data->m_ui->letServerGuiVersion->setText( "No valid Version found" );
+            server_version.major_release = 0;
+            server_version.minor_release = 0;
+            server_version.patch_level = 0;
+
+            QMessageBox::warning( this, QString("Update Check failed"), QString("No valid version file was found on the server. Update check is not possible.") );
+        }
+        else
+        {
+            // Store server version
+            d_data->m_server_gui_version = server_version;
+
+            // Set version in GUI
+            d_data->m_ui->letServerGuiVersion->setText( QString("V%1.%2.%3").arg(server_version.major_release)
+                                                                            .arg(server_version.minor_release)
+                                                                            .arg(server_version.patch_level) );
+
+            // Check if the server version is newer than the current version
+            if ( isNewVersion(d_data->m_server_gui_version, d_data->m_current_gui_version) )
+            {
+                QMessageBox::StandardButton reply;
+                reply = QMessageBox::question( this,
+                                               "New GUI available",
+                                               "A new GUI version is available on the download server.\n\n"
+                                               "Would you like to visit the download page now?",
+                                               QMessageBox::Yes|QMessageBox::No );
+
+                if (reply == QMessageBox::Yes)
+                {
+                    if ( !QDesktopServices::openUrl(QUrl(GUI_DOWNLOAD_PAGE)) )
+                    {
+                        QMessageBox::information( this,
+                                                  "Can not open Browser",
+                                                  "The web browser can not be opened.\n\nPlease visit " + QString(GUI_DOWNLOAD_PAGE) + "to download the latest GUI version." );
+                    }
+                }
+            }
+            else
+            {
+                QMessageBox::information( this,
+                                          "No Update avialable",
+                                          "Your GUI version is already up-to-date, there is no newer version available." );
+            }
+        }
+    }
+    else
+    {
+        d_data->m_ui->letServerGuiVersion->setText( "No valid Version found" );
+        QMessageBox::warning( this, QString("Update Check failed"), QString("No valid version file was found on the server. Update check is not possible.") );
     }
 }
 
@@ -1400,17 +1532,17 @@ void UpdateBox::onApplicationVersionChange( QString version )
 
     if ( res != 3 )
     {
-        d_data->m_ui->letCurrentVersion->setText( "Unrecognized Version (" + version + ")"  );
+        d_data->m_ui->letCurrentFirmwareVersion->setText( "Unrecognized Version (" + version + ")"  );
         currentVersion.major_release = 0;
         currentVersion.minor_release = 0;
         currentVersion.patch_level = 0;
     }
     else
     {
-        d_data->m_ui->letCurrentVersion->setText( version );
+        d_data->m_ui->letCurrentFirmwareVersion->setText( version );
     }
 
-    d_data->m_current_version = currentVersion;
+    d_data->m_current_fw_version = currentVersion;
 }
 
 /******************************************************************************

@@ -102,7 +102,8 @@ public slots:
 
 private slots:
     void onDownloadFinished( QNetworkReply * reply );
-    void onCheckUpdateClicked();
+    void onCheckFirmwareUpdateClicked();
+    void onCheckGuiUpdateClicked();
 
     void onFsmTimer();
     

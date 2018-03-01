@@ -244,7 +244,7 @@ bool ConnectDialog::connectWithDevice()
     // Close the active connection first (in case we try to reconnect)
     getActiveChannel()->Close();
     bOpen = ( openInterface() == 0 ) ? true : false;
-    qDebug() << "open     : " << bOpen;
+    qDebug() << "open     :" << bOpen;
 
     // II. Create a generic device and try to connect with it
     ProVideoDevice genericDevice ( getActiveChannel(), new ProVideoProtocol() );
@@ -253,12 +253,12 @@ bool ConnectDialog::connectWithDevice()
         int retryCount = 0;
         while ( !bConnected && retryCount < 5 )
         {
-            qDebug() << "Trying to connect to device, retry count: " << retryCount;
+            qDebug() << "Trying to connect to device, retry count:" << retryCount;
             bConnected = genericDevice.isConnected();
             retryCount++;
         }
     }
-    qDebug() << "connected: " << bConnected;
+    qDebug() << "connected:" << bConnected;
 
     // III. Check for known device
     if ( bConnected )
@@ -272,7 +272,7 @@ bool ConnectDialog::connectWithDevice()
         // Close the connection
         getActiveChannel()->Close();
     }
-    qDebug() << "known    : " << bIsKnown;
+    qDebug() << "known    :" << bIsKnown;
 
     // IV. Create and initialize a specialized device which matches the HW
     QString systemPlatform = genericDevice.getSystemPlatform();
@@ -291,7 +291,7 @@ bool ConnectDialog::connectWithDevice()
         {
             connectedDevice = new CooperDevice( getActiveChannel(), new ProVideoProtocol() );
         }
-        qDebug() << "connected with: " << systemPlatform;
+        qDebug() << "connected with:" << systemPlatform;
 
         if ( connectedDevice != NULL )  // This check should never fail
         {
@@ -320,7 +320,7 @@ bool ConnectDialog::connectWithDevice()
     }
     else
     {
-        qDebug() << "Unknown device connected: " << systemPlatform;
+        qDebug() << "Unknown device connected:" << systemPlatform;
     }
 
     // Set cursor to normal again
@@ -1146,17 +1146,17 @@ bool ConnectDialog::detectAndConnect()
             if ( detectedDevice.config.dev_addr == detectedDevice.broadcastAddress )
             {
                 getActiveChannel()->Close();
-                qDebug() << "Address " << openCfg.dev_addr << " with baudrate " << openCfg.baudrate << " is a broadcast address, the device is skipped";
+                qDebug() << "Address" << openCfg.dev_addr << "with baudrate" << openCfg.baudrate << "is a broadcast address, the device is skipped";
                 continue;
             }
 
             // Add device to list of detected devices
             m_detectedRS485Devices.append( detectedDevice );
-            qDebug() << "Found a " << detectedDevice.platform << "device with the name" << detectedDevice.name << " connected at address " << detectedDevice.config.dev_addr << " with baudrate " << detectedDevice.config.baudrate;
+            qDebug() << "Found a" << detectedDevice.platform << "device with the name" << detectedDevice.name << "connected at address" << detectedDevice.config.dev_addr << "with baudrate " << detectedDevice.config.baudrate;
         }
         else
         {
-            qDebug() << "Device " << deviceList.at(i).device_platform << " which is connected at address " << deviceList.at(i).rs485_address << " with baudrate " << openCfg.baudrate << " is unknown";
+            qDebug() << "Device" << deviceList.at(i).device_platform << "which is connected at address" << deviceList.at(i).rs485_address << "with baudrate" << openCfg.baudrate << "is unknown";
             continue;
         }
     }
@@ -1236,7 +1236,7 @@ bool ConnectDialog::scanAndConnect()
     // open the com port with initial settings
     if (  getActiveChannel()->Open((void *)&openCfg, sizeof(openCfg)) )
     {
-        qDebug() << "Can not open RS485 channel for port " << openCfg.idx << ", address " << openCfg.dev_addr << " and baudrate " << openCfg.baudrate;
+        qDebug() << "Can not open RS485 channel for port" << openCfg.idx << ", address" << openCfg.dev_addr << "and baudrate" << openCfg.baudrate;
 
         // Show a message box
         QMessageBox msgBox;
@@ -1305,7 +1305,7 @@ bool ConnectDialog::scanAndConnect()
             }
             if ( retryCount >= numRetrys )
             {
-                qDebug() << "No device connected at address " << openCfg.dev_addr << " with baudrate " << openCfg.baudrate;
+                qDebug() << "No device connected at address" << openCfg.dev_addr << "with baudrate" << openCfg.baudrate;
                 continue;
             }
 
@@ -1314,7 +1314,7 @@ bool ConnectDialog::scanAndConnect()
             QString systemPlatform = genericDevice.getSystemPlatform();
             if ( !DeviceIsKnown(systemPlatform) )
             {
-                qDebug() << "Device " << systemPlatform << " which is connected at address " << openCfg.dev_addr << " with baudrate " << openCfg.baudrate << " is unknown";
+                qDebug() << "Device" << systemPlatform << "which is connected at address" << openCfg.dev_addr << "with baudrate" << openCfg.baudrate << "is unknown";
                 continue;
             }
 
@@ -1340,13 +1340,13 @@ bool ConnectDialog::scanAndConnect()
             if ( detectedDevice.config.dev_addr == detectedDevice.broadcastAddress )
             {
                 getActiveChannel()->Close();
-                qDebug() << "Address " << openCfg.dev_addr << " with baudrate " << openCfg.baudrate << " is a broadcast address, the device is skipped";
+                qDebug() << "Address" << openCfg.dev_addr << "with baudrate" << openCfg.baudrate << "is a broadcast address, the device is skipped";
                 continue;
             }
 
             // Add device to list of detected devices
             m_detectedRS485Devices.append( detectedDevice );
-            qDebug() << "Found a " << systemPlatform << "device with the name" << deviceName << " connected at address " << openCfg.dev_addr << " with baudrate " << openCfg.baudrate;
+            qDebug() << "Found a" << systemPlatform << "device with the name" << deviceName << "connected at address" << openCfg.dev_addr << "with baudrate" << openCfg.baudrate;
 
             // Update progress dialog text
             progressDialog.setLabelText( QString("Scanning...\nDevices found: %1").arg(m_detectedRS485Devices.count()) );
