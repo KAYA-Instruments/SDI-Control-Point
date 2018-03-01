@@ -6,8 +6,8 @@
 
 # This version number is shown in the Application, it should be
 # updated before each release!
-VERSION = 1.0.12
-DEFINES += VERSION_STRING=\\\"1.0.12\\\"
+VERSION = 1.1.0
+DEFINES += VERSION_STRING=\\\"1.1.0\\\"
 
 QMAKE_TARGET_COMPANY = "Dream Chip Technologies GmbH"
 QMAKE_TARGET_PRODUCT = "ProVideo GUI"
@@ -18,7 +18,7 @@ RC_ICONS = ../resource/icons/dct_icon.ico
 
 CONFIG  += c++11
 # CONFIG  += debug
-QT      += core serialport widgets
+QT      += core serialport network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

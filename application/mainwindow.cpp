@@ -809,6 +809,7 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         // connect update interface slots
         connect( dev->GetProVideoSystemItf(), SIGNAL(SystemPlatformChanged(QString)), m_ui->updBox, SLOT(onSystemPlatformChange(QString)) );
         connect( dev->GetProVideoSystemItf(), SIGNAL(PromptChanged(uint8_t)), m_ui->updBox, SLOT(onPromptChange(uint8_t)) );
+        connect( dev->GetProVideoSystemItf(), SIGNAL(ApplicationVersionChanged(QString)), m_ui->updBox, SLOT(onApplicationVersionChange(QString)) );
         connect( m_ui->updBox, SIGNAL(BootIntoUpdateMode()), dev->GetProVideoSystemItf(), SLOT(onBootIntoUpdateMode()) );
 
         m_ui->updBox->setPortname( m_ConnectDlg->getActiveChannel()->getSystemPortName() );

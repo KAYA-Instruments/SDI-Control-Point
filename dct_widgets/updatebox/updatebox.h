@@ -23,6 +23,8 @@
 #ifndef __UPDATE_BOX_H__
 #define __UPDATE_BOX_H__
 
+#include <QNetworkReply>
+
 #include <dct_widgets_base.h>
 
 /******************************************************************************
@@ -59,25 +61,49 @@ protected:
     void applySettings( void ) Q_DECL_OVERRIDE;
 
 private:
+    /******************************************************************************
+     * Firmware version structure
+     *
+     * @brief Represents the version of a firmware. Example: V1.2.3 where major
+     *        release is 1, minor release is 2 and patch level is 3.
+     *****************************************************************************/
+    typedef struct version_s
+    {
+        int major_release;
+        int minor_release;
+        int patch_level;
+    } version_t;
+
     SystemStates getSystemState( void );
     void setSystemState( SystemStates state );
+
     unsigned int getTotalNumUpdates();
     void setUpdateCounter( unsigned int updCnt );
     void incrementUpdateCounter();
     void getFirstUpdateIndex();
     void getNextUpdateIndex();
 
+    bool isNewVersion( version_t server_version, version_t current_version );
+    void checkUpdateDirectory( QString updateDirectory );
+    void downloadUpdate();
+
 signals:
     void BootIntoUpdateMode();
     void CloseSerialConnection();
     void ReopenSerialConnection();
     void LockCurrentTabPage( bool );
+    void FileDownloaded();
+    void CancelDownload();
 
 public slots:
     void onPromptChange( uint8_t flag );
     void onSystemPlatformChange( QString name );
+    void onApplicationVersionChange( QString version );
 
 private slots:
+    void onDownloadFinished( QNetworkReply * reply );
+    void onCheckUpdateClicked();
+
     void onFsmTimer();
     
     void onFileNameClicked();

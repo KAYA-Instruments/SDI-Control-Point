@@ -28,8 +28,16 @@
 #include <QTimer>
 #include <QThread>
 #include <QSemaphore>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QUrl>
+#include <QTemporaryDir>
+#include <QCryptographicHash>
 
 #include <common.h>
+
+#include <infodialog.h>
 
 #include "id.h"
 #include "flashloader.h"
@@ -49,6 +57,14 @@ namespace Ui {
 #define SYSTEM_STATE_COMMAND        ( "Device in operation." )
 #define SYSTEM_STATE_UPDATE         ( "Device is waiting for update." )
 #define SYSTEM_STATE_FLASHING       ( "Device is being updated." )
+
+#define VERSION_DOWNLOAD_SYNC       ( "version: ")
+#define VERSION_DOWNLOAD_PARSE      ( "version: V%d_%d_%d\n")
+#define FILE0_DOWNLOAD_SYNC         ( "file0: ")
+#define FILE0_DOWNLOAD_PARSE        ( "file0: %s %s\n")
+#define FILE1_DOWNLOAD_SYNC         ( "file1: ")
+#define FILE1_DOWNLOAD_PARSE        ( "file1: %s %s\n")
+#define DOWNLOAD_SERVER             ( "https://gitlab.com/dreamchip/provideo-downloads/raw/master/auto_update/" )
 
 /******************************************************************************
  * update configuration structure
@@ -223,10 +239,19 @@ public:
         , m_application ( new FlashLoader() )
         , m_state( InvalidState )
         , m_state_sema(1)
+        , m_current_version({0, 0, 0})
+        , m_server_version({0, 0, 0})
+        , m_network_manager( new QNetworkAccessManager( parent) )
+        , m_download_dir( NULL )
     {
         // setup ui
         m_ui->setupUi( parent );
 
+        // set version labels to default
+        m_ui->letCurrentVersion->setText( "Not checked yet" );
+        m_ui->letServerVersion->setText( "Not checked yet" );
+
+        // set progress bar to 0%
         m_ui->progressBar->setValue( 0u );
 
         // disable update button as long as no filename selected
@@ -256,39 +281,62 @@ public:
         QObject::connect( m_application, SIGNAL(VerifyProgress(quint32)), parent, SLOT(onVerifyProgress(quint32)) );
         QObject::connect( m_application, SIGNAL(UpdateFinished()), parent, SLOT(onUpdateFinished()) );
 
+        // connect buttons and checkboxes
+        QObject::connect( m_ui->btnCheckUpdate, SIGNAL(clicked()), parent, SLOT(onCheckUpdateClicked()) );
         QObject::connect( m_ui->btnFilename, SIGNAL(clicked()), parent, SLOT(onFileNameClicked()) );
         QObject::connect( m_ui->btnRun, SIGNAL(clicked()), parent, SLOT(onRunClicked()) );
         QObject::connect( m_ui->cbxVerify, SIGNAL(stateChanged(int)), parent, SLOT(onVerifyChanged(int)) );
+
+        // download status
+        QObject::connect( m_network_manager, SIGNAL(finished(QNetworkReply*)), parent, SLOT(onDownloadFinished(QNetworkReply*)) );
     }
 
     ~PrivateData()
     {
+        delete m_network_manager;
         delete m_application;
         delete m_FsmTimer;
         delete m_ui;
+
+        // Usually the temporary download folder is deleted during the update process, if not delete it now
+        if ( m_download_dir )
+        {
+            delete m_download_dir;
+        }
     }
 
-    Ui::UI_UpdateBox *          m_ui;               /**< ui handle */
+    Ui::UI_UpdateBox *          m_ui;                   /**< ui handle */
 
-    QTimer *                    m_FsmTimer;         /**< FSM timer */
-    FlashLoader *               m_application;      /**< flashloader application process */
-    UpdateBox::SystemStates     m_state;            /**< current system state */
+    QTimer *                    m_FsmTimer;             /**< FSM timer */
+    FlashLoader *               m_application;          /**< flashloader application process */
+    UpdateBox::SystemStates     m_state;                /**< current system state */
 
-    qint32                      m_id;               /**< detected system identifier */
-    quint32                     m_no_sec;           /**< number of flash sectors */
-    quint32                     m_first_sec;        /**< id of first writeable sector */
-    quint32                     m_size_sec;         /**< sector size */
-    quint32                     m_reconf_cond;      /**< sector size */
+    qint32                      m_id;                   /**< detected system identifier */
+    quint32                     m_no_sec;               /**< number of flash sectors */
+    quint32                     m_first_sec;            /**< id of first writeable sector */
+    quint32                     m_size_sec;             /**< sector size */
+    quint32                     m_reconf_cond;          /**< sector size */
 
     quint32                     m_erase_cnt;
     quint32                     m_program_cnt;
     quint32                     m_verify_cnt;
-    quint32                     m_upd_cnt;          /**< number of the update currently being flashed (like: "1 of 2") */
-    qint32                      m_upd_idx;          /**< index in m_upd_config of the update that is currently being flashed */
-    QVector<update_config_t>    m_upd_config;       /**< vector of update configurations */
-    QString                     m_upd_dir;          /**< path to the directory that contains binary files */
+    quint32                     m_upd_cnt;              /**< number of the update currently being flashed (like: "1 of 2") */
+    qint32                      m_upd_idx;              /**< index in m_upd_config of the update that is currently being flashed */
+    QVector<update_config_t>    m_upd_config;           /**< vector of update configurations */
+    QString                     m_upd_dir;              /**< path to the directory that contains binary files */
 
-    QSemaphore                  m_state_sema;       /**< semaphore to protect the access to get / set state */
+    QSemaphore                  m_state_sema;           /**< semaphore to protect the access to get / set state */
+
+    version_t                   m_current_version;      /**< firmware version which is currently installed on the device */
+    version_t                   m_server_version;       /**< firmware version which is available online */
+
+    QNetworkAccessManager *     m_network_manager;      /**< network access manager used to download updates from the internet */
+    QByteArray                  m_downloaded_data;      /**< data which has been downloaded by the network manager */
+    QList<QString>              m_download_files;       /**< file names of the update files */
+    QList<QString>              m_download_md5_sums;    /**< md5 checksums of the update files stored in m_download_files */
+
+    QString                     m_system_platform;      /**< system platform string */
+    QTemporaryDir *             m_download_dir;         /**< temporary download directory */
 };
 
 /******************************************************************************
@@ -423,6 +471,7 @@ void UpdateBox::setSystemState( SystemStates state )
             d_data->m_ui->btnFilename->setEnabled( true );
             d_data->m_ui->progressBar->setFormat( "%p%" );
             d_data->m_ui->progressBar->setValue( 0 );
+            d_data->m_ui->btnCheckUpdate->setEnabled( true );
             enable = false;
         }
         else if ( state == UpdateState )
@@ -433,6 +482,7 @@ void UpdateBox::setSystemState( SystemStates state )
             d_data->m_ui->btnRun->setEnabled( (!fn.isEmpty()) && (fileExists(fn)) ? true : false );
             d_data->m_ui->cbxVerify->setEnabled( (!fn.isEmpty()) && (fileExists(fn)) ? true : false );
             d_data->m_ui->btnFilename->setEnabled( false );
+            d_data->m_ui->btnCheckUpdate->setEnabled( false );
             enable = true;
         }
         else if ( state == ErrorState )
@@ -588,6 +638,372 @@ void UpdateBox::getNextUpdateIndex()
 }
 
 /******************************************************************************
+ * UpdateBox::isNewVersion
+ *****************************************************************************/
+bool UpdateBox::isNewVersion( version_t server_version, version_t current_version )
+{
+    // Check if major version is bigger
+    if ( server_version.major_release > current_version.major_release )
+    {
+        return true;
+    }
+    // If major version is equal
+    else if ( server_version.major_release == current_version.major_release )
+    {
+        // Check if minor verison is bigger
+        if ( server_version.minor_release > current_version.minor_release )
+        {
+            return true;
+        }
+        // If minor version is equal
+        else if ( server_version.minor_release == current_version.minor_release )
+        {
+            // Check if patch level is bigger
+            if ( server_version.patch_level > current_version.patch_level )
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+/******************************************************************************
+ * UpdateBox::onCheckUpdateClicked
+ *****************************************************************************/
+void UpdateBox::onDownloadFinished( QNetworkReply * reply )
+{
+    // Check if download was successful
+    if ( reply->error() )
+    {
+        d_data->m_downloaded_data.clear();
+        // Show error message
+        qDebug() << QString("Download via HTTP failed:\n\n%1").arg(reply->errorString());
+//        QMessageBox::information( this, QString("Download Failed"), QString("Download via HTTP failed:\n\n%1").arg(reply->errorString()) );
+    }
+    else
+    {
+        // Copy downloaded data
+        d_data->m_downloaded_data = reply->readAll();
+        reply->deleteLater();
+    }
+
+    // Emit file downloaded signal
+    emit FileDownloaded();
+}
+
+/******************************************************************************
+ * UpdateBox::onCheckUpdateClicked
+ *****************************************************************************/
+void UpdateBox::onCheckUpdateClicked()
+{
+    // Show a info dialog to indicate
+    InfoDialog infoDlg( QString(":/images/tab/update.png"), QString("Contacting Update Server..."), this->parentWidget() );
+    infoDlg.show();
+
+    // Create URL request for file download
+    QUrl url = QString( DOWNLOAD_SERVER + d_data->m_system_platform + "/update_info.txt" );
+    QNetworkRequest request( url );
+
+    // Create a timer which will be used to timeout the dowload
+    QTimer timer;
+    timer.setSingleShot(true);
+
+    // Connect the download finished and the timer timeout event with
+    QEventLoop loop;
+    connect( this, SIGNAL(FileDownloaded()), &loop, SLOT (quit()) );
+    connect( &timer, SIGNAL(timeout()), &loop, SLOT(quit()) );
+
+    // Start the timer, download request and event loop, wait for maximum 5s for the download to finish
+    timer.start( 5000 );
+    QNetworkReply * reply = d_data->m_network_manager->get( request );
+    QObject::connect(this, SIGNAL(CancelDownload()), reply, SLOT(abort()));
+
+    loop.exec();
+
+    // Stop download, if not already finished
+    if ( !timer.isActive() )
+    {
+        timer.stop();
+        emit CancelDownload();
+    }
+
+    // delete the reply
+    delete reply;
+
+    // Close info dialog
+    infoDlg.close();
+
+    // Check if a valid file was downloaded
+    if( d_data->m_downloaded_data.length() > 0 )
+    {
+        /* Get the version and check for new update */
+        // Read server version from downloaded data
+        version_t server_version;
+        const char * data = d_data->m_downloaded_data.constData();
+
+        data = strstr( data, VERSION_DOWNLOAD_SYNC );
+        int res = 0;
+        if ( data )
+        {
+            res = sscanf( data, VERSION_DOWNLOAD_PARSE,
+                              &server_version.major_release,
+                              &server_version.minor_release,
+                              &server_version.patch_level );
+        }
+        if ( res != 3 )
+        {
+            d_data->m_ui->letServerVersion->setText( "No valid Update found" );
+            server_version.major_release = 0;
+            server_version.minor_release = 0;
+            server_version.patch_level = 0;
+
+            QMessageBox::warning( this, QString("Update Check failed"), QString("No valid update file was found on the server. Update is not possible.") );
+        }
+        else
+        {
+            // Store server version
+            d_data->m_server_version = server_version;
+
+            // Set version in GUI
+            d_data->m_ui->letServerVersion->setText( QString("V%1.%2.%3").arg(server_version.major_release)
+                                                                         .arg(server_version.minor_release)
+                                                                         .arg(server_version.patch_level) );
+
+            /* Get the update file names */
+            // Clear list
+            d_data->m_download_files.clear();
+            d_data->m_download_md5_sums.clear();
+
+            // File 0
+            data = strstr( data, FILE0_DOWNLOAD_SYNC );
+            if ( data )
+            {
+                char fileName[128];
+                char md5Sum[33];
+                res = sscanf( data, FILE0_DOWNLOAD_PARSE, fileName, md5Sum );
+
+                if ( res == 2 )
+                {
+                    d_data->m_download_files.append( QString(fileName) );
+                    d_data->m_download_md5_sums.append( QString(md5Sum) );
+                }
+            }
+
+
+            // File 1
+            data = strstr( data, FILE1_DOWNLOAD_SYNC );
+            if ( data )
+            {
+                char fileName[128];
+                char md5Sum[33];
+                res = sscanf( data, FILE1_DOWNLOAD_PARSE, fileName, md5Sum );
+
+                if ( res == 2 )
+                {
+                    d_data->m_download_files.append( QString(fileName) );
+                    d_data->m_download_md5_sums.append( QString(md5Sum) );
+                }
+            }
+
+            /* Check if update is valid and ask user for download */
+            if ( d_data->m_download_files.count() > 0)
+            {
+                // Check if the server version is newer than the updated version
+                if ( isNewVersion(d_data->m_server_version, d_data->m_current_version) )
+                {
+                    QMessageBox::StandardButton reply;
+                    reply = QMessageBox::question( this,
+                                                   "New Firmware available",
+                                                   "A new firmware update is available on the download server.\n\n"
+                                                   "Do you want to download it now?\n\n"
+                                                   "The update file(s) will be stored in a temporary download folder which is deleted after the upate is completed.",
+                                                   QMessageBox::Yes|QMessageBox::No );
+
+                    if (reply == QMessageBox::Yes)
+                    {
+                        // Call download function
+                        downloadUpdate();
+                    }
+                }
+            }
+            else
+            {
+                QMessageBox::warning( this, QString("Update Check failed"), QString("No valid update file was found on the server. Update is not possible.") );
+            }
+        }
+    }
+
+    // If update is invalid, cleanup
+    if ( d_data->m_downloaded_data.length() == 0 ||
+         d_data->m_download_files.count() == 0 )
+    {
+        // Reset server version
+        d_data->m_ui->letServerVersion->setText( "No valid Update found" );
+        d_data->m_server_version.major_release = 0;
+        d_data->m_server_version.minor_release = 0;
+        d_data->m_server_version.patch_level = 0;
+  }
+}
+
+/******************************************************************************
+ * UpdateBox::downloadUpdate
+ *****************************************************************************/
+void UpdateBox::downloadUpdate()
+{
+    // Check if the server version is newer than the updated version
+    if ( !isNewVersion(d_data->m_server_version, d_data->m_current_version) )
+    {
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question( this,
+                                       "Update not needed",
+                                       "The current device firmware is newer or identical to the firmware on the download server. An update is not needed.\n\nDo you really want to download it?",
+                                       QMessageBox::Yes|QMessageBox::No );
+
+        // User choose to abort, so return
+        if (reply == QMessageBox::No)
+        {
+            return;
+        }
+    }
+
+    // Create temporary download directory
+    if ( d_data->m_download_dir )
+    {
+        delete d_data->m_download_dir;
+    }
+    d_data->m_download_dir = new QTemporaryDir();
+
+    // If temporary directory can not be created, abort
+    if ( !d_data->m_download_dir->isValid() )
+    {
+        QMessageBox::warning( this,
+                              "Can not create Download Directory",
+                              "The temporary download directory can not be created, a download is not possible." );
+        return;
+    }
+
+    // Show a info dialog to indicate download is ongoing
+    InfoDialog infoDlg( QString(":/icons/save2.png"), QString("Downloading Update..."), this->parentWidget() );
+    infoDlg.show();
+
+    // Download update files to temporary directory
+    bool checksumError = false;
+    for ( int i = 0; i < d_data->m_download_files.count(); i++ )
+    {
+        // Create URL request for file download
+        QUrl url = QString( DOWNLOAD_SERVER + d_data->m_system_platform + "/" + d_data->m_download_files.at(i));
+        QNetworkRequest request( url );
+
+        // Create a timer which will be used to timeout the dowload
+        QTimer timer;
+        timer.setSingleShot(true);
+
+        // Connect the download finished and the timer timeout event with
+        QEventLoop loop;
+        connect( this, SIGNAL(FileDownloaded()), &loop, SLOT (quit()) );
+        connect( &timer, SIGNAL(timeout()), &loop, SLOT(quit()) );
+
+        // Start the timer, download request and event loop, wait for maximum 20s for the download to finish
+        timer.start( 20000 );
+        d_data->m_network_manager->get( request );
+        QNetworkReply * reply = d_data->m_network_manager->get( request );
+        QObject::connect(this, SIGNAL(CancelDownload()), reply, SLOT(abort()));
+
+        loop.exec();
+
+        // Stop download, if not already finished
+        if ( !timer.isActive() )
+        {
+            timer.stop();
+            emit CancelDownload();
+        }
+
+        // delete the reply
+        delete reply;
+
+        // Check if a valid file was downloaded by evaluating its md5 checksum
+        if( d_data->m_downloaded_data.length() > 0 )
+        {
+            QCryptographicHash hash( QCryptographicHash::Md5 );
+            hash.addData( d_data->m_downloaded_data );
+
+            // If checksum matches
+            if ( QString::compare(QString(hash.result().toHex()), d_data->m_download_md5_sums.at(i)) == 0 )
+            {
+                // Save byte array to file
+                QFile file( d_data->m_download_dir->path() + "/" + d_data->m_download_files.at(i) );
+                file.open( QIODevice::WriteOnly );
+                file.write( d_data->m_downloaded_data );
+                file.close();
+            }
+            else
+            {
+                checksumError = true;
+                break;
+            }
+        }
+    }
+
+    // close info dialog
+    infoDlg.close();
+
+    // If the files were downloaded correctly
+    bool updateValid = false;
+    if ( !checksumError )
+    {
+        // check update files in temp directory
+        /* Note: The  checkUpdateDirectory() function will print an error message if the directory does
+         * not contain valid files, so we do not need to print an error message here */
+        checkUpdateDirectory( d_data->m_download_dir->path() );
+
+        // If the update button is now enabled, the update is valid. Ask user if he wants to update now
+        if ( d_data->m_ui->btnRun->isEnabled() )
+        {
+            updateValid = true;
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::question( this,
+                                           "Update is Ready",
+                                           "The firmware update was downloaded successully.\n\nDo you want to run the update now?",
+                                           QMessageBox::Yes|QMessageBox::No );
+
+            // User choose to abort, so return
+            if (reply == QMessageBox::Yes)
+            {
+                // execute clicked function of the run button
+                onRunClicked();
+            }
+        }
+    }
+    // If a checksum error occured, print a message
+    else
+    {
+        QMessageBox::information( this,
+                                  "Checksum Error",
+                                  "The checksum of the download does not match the reference, which means the file is corrupt.\n\n"
+                                  "Please retry the update check to download the files again." );
+    }
+
+    // If an error occured, cleanup
+    if ( checksumError || !updateValid )
+    {
+        delete d_data->m_download_dir;
+        d_data->m_download_dir = NULL;
+
+        // Reset server version
+        d_data->m_ui->letServerVersion->setText( "No valid Update found" );
+        d_data->m_server_version.major_release = 0;
+        d_data->m_server_version.minor_release = 0;
+        d_data->m_server_version.patch_level = 0;
+
+        // reset update counter and index
+        setUpdateCounter( 0 );
+        getNextUpdateIndex();   // this will not find a index, thus clear the file path line edit
+    }
+}
+
+/******************************************************************************
  * UpdateBox::onFsmTimer
  *****************************************************************************/
 void UpdateBox::onFsmTimer( )
@@ -644,6 +1060,151 @@ void UpdateBox::onFsmTimer( )
 }
 
 /******************************************************************************
+ * UpdateBox::checkUpdateDirectory
+ *****************************************************************************/
+void UpdateBox::checkUpdateDirectory( QString updateDirectory  )
+{
+    // reset data structures
+    for ( int i = 0; i < d_data->m_upd_config.count(); i++ )
+    {
+        d_data->m_upd_config[i].file = QString::null;
+    }
+
+    // check if user selected a directory
+    if ( !updateDirectory.isEmpty() )
+    {
+        // Error flags
+        bool noFileFoundError = true;
+        bool multipleMatchError = false;
+
+        // store new update directory path
+        d_data->m_upd_dir = updateDirectory;
+
+        // loop over all update configs and try to find a matching binary file
+        for ( int i = 0; i < d_data->m_upd_config.count(); i++ )
+        {
+            // loop over all files in the directory and search for a matching binary file
+            QDirIterator binaryFiles( updateDirectory );
+            while ( binaryFiles.hasNext() )
+            {
+                binaryFiles.next();
+
+                if ( binaryFiles.fileInfo().isFile() &&
+                     binaryFiles.fileInfo().suffix() == d_data->m_upd_config[i].extension )
+                {
+                    // if content has to be checked
+                    if ( d_data->m_upd_config[i].content )
+                    {
+                        // check file type matches, if it does not, continue with next file
+                        if ( !fileTypeMatches(d_data->m_upd_config[i].type, binaryFiles.filePath()) )
+                        {
+                            continue;
+                        }
+                    }
+
+                    // If the file path is still empty, copy the file path and increment update counter
+                    if ( d_data->m_upd_config[i].file == QString::null )
+                    {
+                        d_data->m_upd_config[i].file = binaryFiles.filePath();
+                        noFileFoundError = false;
+                    }
+                    // Abort, because more than one matching file was found
+                    else
+                    {
+                        multipleMatchError = true;
+                        break;
+                    }
+                }
+
+                // Stop searching for files if an error occured
+                if ( multipleMatchError )
+                {
+                    break;
+                }
+            }
+        }
+
+        // Handle error multiple matches found
+        if ( multipleMatchError )
+        {
+            // show message for download failed
+            if ( d_data->m_download_dir && d_data->m_download_dir->path() == updateDirectory )
+            {
+                QMessageBox::information( this,
+                                          "Download invalid",
+                                          "The downloaded update is invalid. Update is not possible." );
+            }
+            // show message for error with selected folder
+            else
+            {
+                QMessageBox::information( this,
+                                          "Two many files found",
+                                          "In the given update folder more than one matching update file was found. Please delete duplicate files or specify a different folder." );
+            }
+
+            // reset data structures
+            for ( int i = 0; i < d_data->m_upd_config.count(); i++ )
+            {
+                d_data->m_upd_config[i].file = QString::null;
+            }
+
+            // and disable UI elements
+            d_data->m_ui->btnRun->setEnabled( false );
+            d_data->m_ui->cbxVerify->setEnabled( false );
+        }
+
+        // Handle no file found error
+        else if ( noFileFoundError )
+        {
+            // show message for download failed
+            if ( d_data->m_download_dir && d_data->m_download_dir->path() == updateDirectory )
+            {
+                QMessageBox::information( this,
+                                          "Download invalid",
+                                          "The downloaded update is invalid. Update is not possible." );
+            }
+            // show message for error with selected folder
+            else
+            {
+                QMessageBox::information( this,
+                                          "No file found",
+                                          "The given folder does not contain valid update files, please select a different update folder." );
+            }
+
+            // disable UI elements
+            d_data->m_ui->btnRun->setEnabled( false );
+            d_data->m_ui->cbxVerify->setEnabled( false );
+        }
+
+        // If no error occured, enable ui elements to start update
+        else
+        {
+            // Set update counter and index
+            /*  counter will be incremented in the onUpdateFinished() slot,
+             * which will then restart the timer, if more updates are pending */
+            setUpdateCounter( 1 );
+            getFirstUpdateIndex();
+            d_data->m_ui->btnRun->setEnabled( true );
+            d_data->m_ui->cbxVerify->setEnabled( true );
+        }
+    }
+
+    // User cancelled directory selection
+    else
+    {
+        // reset data structures
+        for ( int i = 0; i < d_data->m_upd_config.count(); i++ )
+        {
+            d_data->m_upd_config[i].file = QString::null;
+        }
+
+        // and disable UI elements
+        d_data->m_ui->btnRun->setEnabled( false );
+        d_data->m_ui->cbxVerify->setEnabled( false );
+    }
+}
+
+/******************************************************************************
  * UpdateBox::onFileNameClicked
  *****************************************************************************/
 void UpdateBox::onFileNameClicked()
@@ -653,14 +1214,8 @@ void UpdateBox::onFileNameClicked()
         QString updateDirectory = d_data->m_upd_dir;
         QString directory;
 
-        // reset data structures
-        for ( int i = 0; i < d_data->m_upd_config.count(); i++ )
-        {
-            d_data->m_upd_config[i].file = QString::null;
-        }
-
         // get update directory
-        if ( updateDirectory != QString::null )
+        if ( updateDirectory != QString::null && QDir(d_data->m_upd_dir).exists() )
         {
             directory = QDir(updateDirectory).absolutePath();
         }
@@ -676,119 +1231,7 @@ void UpdateBox::onFileNameClicked()
             this, tr("Choose Update Directory"), directory, QFileDialog::ShowDirsOnly
         );
 
-        // check if user selected a directory
-        if ( !updateDirectory.isEmpty() )
-        {
-            // Error flags
-            bool noFileFoundError = true;
-            bool multipleMatchError = false;
-
-            // store new update directory path
-            d_data->m_upd_dir = updateDirectory;
-
-            // loop over all update configs and try to find a matching binary file
-            for ( int i = 0; i < d_data->m_upd_config.count(); i++ )
-            {
-                // loop over all files in the directory and search for a matching binary file
-                QDirIterator binaryFiles( updateDirectory );
-                while ( binaryFiles.hasNext() )
-                {
-                    binaryFiles.next();
-                    if ( binaryFiles.fileInfo().isFile() &&
-                         binaryFiles.fileInfo().suffix() == d_data->m_upd_config[i].extension )
-                    {
-                        // if content has to be checked
-                        if ( d_data->m_upd_config[i].content )
-                        {
-                            // check file type matches, if it does not, continue with next file
-                            if ( !fileTypeMatches(d_data->m_upd_config[i].type, binaryFiles.filePath()) )
-                            {
-                                continue;
-                            }
-                        }
-
-                        // If the file path is still empty, copy the file path and increment update counter
-                        if ( d_data->m_upd_config[i].file == QString::null )
-                        {
-                            d_data->m_upd_config[i].file = binaryFiles.filePath();
-                            noFileFoundError = false;
-                        }
-                        // Abort, because more than one matching file was found
-                        else
-                        {
-                            multipleMatchError = true;
-                            break;
-                        }
-                    }
-
-                    // Stop searching for files if an error occured
-                    if ( multipleMatchError )
-                    {
-                        break;
-                    }
-                }
-            }
-
-            // Handle error multiple matches found
-            if ( multipleMatchError )
-            {
-                // show message box
-                QMessageBox msgBox;
-                msgBox.setWindowTitle("Two many files found");
-                msgBox.setText("In the given update folder more than one matching update file was found. Please delete duplicate files or specify a different folder.");
-                msgBox.exec();
-
-                // reset data structures
-                for ( int i = 0; i < d_data->m_upd_config.count(); i++ )
-                {
-                    d_data->m_upd_config[i].file = QString::null;
-                }
-
-                // and disable UI elements
-                d_data->m_ui->btnRun->setEnabled( false );
-                d_data->m_ui->cbxVerify->setEnabled( false );
-            }
-
-            // Handle no file found error
-            else if ( noFileFoundError )
-            {
-                // show message box
-                QMessageBox msgBox;
-                msgBox.setWindowTitle("No file found");
-                msgBox.setText("The given folder does not contain valid update files, please select a different update folder.");
-                msgBox.exec();
-
-                // disable UI elements
-                d_data->m_ui->btnRun->setEnabled( false );
-                d_data->m_ui->cbxVerify->setEnabled( false );
-            }
-
-            // If no error occured, enable ui elements to start update
-            else
-            {
-                // Set update counter and index
-                /*  counter will be incremented in the onUpdateFinished() slot,
-                 * which will then restart the timer, if more updates are pending */
-                setUpdateCounter( 1 );
-                getFirstUpdateIndex();
-                d_data->m_ui->btnRun->setEnabled( true );
-                d_data->m_ui->cbxVerify->setEnabled( true );
-            }
-        }
-
-        // User cancelled directory selection
-        else
-        {
-            // reset data structures
-            for ( int i = 0; i < d_data->m_upd_config.count(); i++ )
-            {
-                d_data->m_upd_config[i].file = QString::null;
-            }
-
-            // and disable UI elements
-            d_data->m_ui->btnRun->setEnabled( false );
-            d_data->m_ui->cbxVerify->setEnabled( false );
-        }
+        checkUpdateDirectory( updateDirectory );
     }
 }
 
@@ -912,6 +1355,9 @@ void UpdateBox::onSystemPlatformChange( QString name )
     // Clear list of update configs
     d_data->m_upd_config.clear();
 
+    // Save platform name
+    d_data->m_system_platform = name;
+
     if ( name == PLATFORM_XBOW )
     {
         d_data->m_upd_config.append( xbow_update );
@@ -939,6 +1385,32 @@ void UpdateBox::onSystemPlatformChange( QString name )
     {
         d_data->m_upd_config.clear();
     }
+}
+
+/******************************************************************************
+ * UpdateBox::onApplicationVersionChange
+ *****************************************************************************/
+void UpdateBox::onApplicationVersionChange( QString version )
+{
+    version_t currentVersion;
+    int res = sscanf( version.toStdString().c_str(), "V%d.%d.%d",
+                      &currentVersion.major_release,
+                      &currentVersion.minor_release,
+                      &currentVersion.patch_level );
+
+    if ( res != 3 )
+    {
+        d_data->m_ui->letCurrentVersion->setText( "Unrecognized Version (" + version + ")"  );
+        currentVersion.major_release = 0;
+        currentVersion.minor_release = 0;
+        currentVersion.patch_level = 0;
+    }
+    else
+    {
+        d_data->m_ui->letCurrentVersion->setText( version );
+    }
+
+    d_data->m_current_version = currentVersion;
 }
 
 /******************************************************************************
@@ -1126,6 +1598,14 @@ void UpdateBox::onUpdateFinished()
                 // reset update counter and index
                 setUpdateCounter( 0 );
                 getNextUpdateIndex();   // this will not find a index, thus clear the file path line edit
+
+                // if updates were installed from a temp dir, delete it and reset the update dir
+                if ( d_data->m_download_dir )
+                {
+                    delete d_data->m_download_dir;
+                    d_data->m_download_dir = NULL;
+                    d_data->m_upd_dir.clear();
+                }
 
                 // send restart command to camera
                 int res = d_data->m_application->runCommand(

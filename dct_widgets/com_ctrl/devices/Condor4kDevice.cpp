@@ -291,7 +291,6 @@ Condor4kDevice::features Condor4kDevice::getSupportedFeatures()
     deviceFeatures.hasChainSdiSettings      = true;
     deviceFeatures.hasChainSelection        = true;
     deviceFeatures.hasChainFlipVertical     = true;
-    deviceFeatures.hasChainAudio            = true;
     deviceFeatures.hasAutoItf               = true;
     deviceFeatures.hasIspItf                = true;
     deviceFeatures.hasIspLsc                = true;
