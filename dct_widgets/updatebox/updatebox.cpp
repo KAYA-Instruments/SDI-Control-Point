@@ -254,7 +254,7 @@ public:
         // set version labels to default
         m_ui->letCurrentFirmwareVersion->setText( "Not checked yet" );
         m_ui->letServerFirmwareVersion->setText( "Not checked yet" );
-        m_ui->letCurrentGuiVersion->setText( "V" + QString(VERSION_STRING) );
+        m_ui->letCurrentGuiVersion->setText( "v" + QString(VERSION_STRING) );
         m_ui->letServerGuiVersion->setText( "Not checked yet" );
 
         // get current gui version
@@ -769,7 +769,7 @@ void UpdateBox::onCheckFirmwareUpdateClicked()
         }
         if ( res != 3 )
         {
-            d_data->m_ui->letServerFirmwareVersion->setText( "No valid Update found" );
+            d_data->m_ui->letServerFirmwareVersion->setText( "No valid Version found" );
             server_version.major_release = 0;
             server_version.minor_release = 0;
             server_version.patch_level = 0;
@@ -782,7 +782,7 @@ void UpdateBox::onCheckFirmwareUpdateClicked()
             d_data->m_server_fw_version = server_version;
 
             // Set version in GUI
-            d_data->m_ui->letServerFirmwareVersion->setText( QString("V%1.%2.%3").arg(server_version.major_release)
+            d_data->m_ui->letServerFirmwareVersion->setText( QString("v%1.%2.%3").arg(server_version.major_release)
                                                                                  .arg(server_version.minor_release)
                                                                                  .arg(server_version.patch_level) );
 
@@ -859,7 +859,7 @@ void UpdateBox::onCheckFirmwareUpdateClicked()
          d_data->m_download_files.count() == 0 )
     {
         // Reset server version
-        d_data->m_ui->letServerFirmwareVersion->setText( "No valid Update found" );
+        d_data->m_ui->letServerFirmwareVersion->setText( "No valid Version found" );
         d_data->m_server_fw_version.major_release = 0;
         d_data->m_server_fw_version.minor_release = 0;
         d_data->m_server_fw_version.patch_level = 0;
@@ -1011,7 +1011,7 @@ void UpdateBox::downloadUpdate()
         d_data->m_download_dir = NULL;
 
         // Reset server version
-        d_data->m_ui->letServerFirmwareVersion->setText( "No valid Update found" );
+        d_data->m_ui->letServerFirmwareVersion->setText( "No valid Version found" );
         d_data->m_server_fw_version.major_release = 0;
         d_data->m_server_fw_version.minor_release = 0;
         d_data->m_server_fw_version.patch_level = 0;
@@ -1096,7 +1096,7 @@ void UpdateBox::onCheckGuiUpdateClicked()
             d_data->m_server_gui_version = server_version;
 
             // Set version in GUI
-            d_data->m_ui->letServerGuiVersion->setText( QString("V%1.%2.%3").arg(server_version.major_release)
+            d_data->m_ui->letServerGuiVersion->setText( QString("v%1.%2.%3").arg(server_version.major_release)
                                                                             .arg(server_version.minor_release)
                                                                             .arg(server_version.patch_level) );
 
@@ -1525,7 +1525,7 @@ void UpdateBox::onSystemPlatformChange( QString name )
 void UpdateBox::onApplicationVersionChange( QString version )
 {
     version_t currentVersion;
-    int res = sscanf( version.toStdString().c_str(), "V%d.%d.%d",
+    int res = sscanf( version.toStdString().c_str(), "v%d.%d.%d",
                       &currentVersion.major_release,
                       &currentVersion.minor_release,
                       &currentVersion.patch_level );
