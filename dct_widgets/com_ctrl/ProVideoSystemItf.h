@@ -29,6 +29,16 @@
 
 #include "ProVideoItf.h"
 
+// Struct that contains connection information about a device
+typedef struct rs485Device
+{
+    QString device_platform;
+    QString device_name;
+    uint8_t rs485_address;
+    uint8_t rs485_bc_address;
+    uint8_t rs485_bc_master;
+} rs485Device;
+
 class MaskInterpreter
 {
 public:
@@ -102,6 +112,9 @@ public:
 
     // RS485 broadcast master
     void GetRS485BroadcastMaster();
+
+    // list of connected devices
+    void GetDeviceList();
     
     // prompt enable status
     void GetPrompt();
@@ -111,6 +124,11 @@ public:
 
     // run-time counter
     void GetRunTime();
+
+    // temperature
+    void GetTemp( uint8_t id );
+    void GetMaxTemp();
+    void GetOverTempCount();
 
     // check for connection to device
     bool isConnected();
@@ -145,9 +163,13 @@ signals:
     void RS485AddressChanged( uint32_t address );
     void RS485BroadcastAddressChanged( uint32_t broadcast_address );
     void RS485BroadcastMasterChanged( uint8_t is_master );
+    void DeviceListChanged( QList<rs485Device> device_list );
     void PromptChanged( uint8_t flag );
     void DebugLevelChanged( uint8_t level );
     void RunTimeChanged( uint32_t cnt );
+    void TempChanged( uint8_t id, float temp, QString name );
+    void MaxTempChanged( int32_t max_temp );
+    void OverTempCountChanged( uint32_t count );
 
 public slots:
     void onDeviceNameChange( QString name );
@@ -158,6 +180,10 @@ public slots:
     void onRS485BroadcastMasterChange( int32_t master_address );
     void onPromptChange( uint8_t flag );
     void onDebugLevelChange( uint8_t level );
+    void onGetTempRequest( uint8_t id );
+    void onGetMaxTempRequest();
+    void onMaxTempReset();
+    void onGetOverTempCountRequest();
     void onBootIntoUpdateMode();
     void onSaveSettings();
     void onLoadSettings();

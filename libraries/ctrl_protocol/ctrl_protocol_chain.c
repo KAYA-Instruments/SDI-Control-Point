@@ -460,6 +460,37 @@ int ctrl_protocol_set_timecode_hold
 }
 
 /******************************************************************************
+ * ctrl_protocol_get_audio_enable
+ *****************************************************************************/
+int ctrl_protocol_get_audio_enable
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t * const              enable
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( CHAIN_DRV(protocol->drv), get_audio_enable );
+    CHECK_NOT_NULL( enable );
+    return ( CHAIN_DRV(protocol->drv)->get_audio_enable( protocol->ctx, channel, enable ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_audio_enable
+ *****************************************************************************/
+int ctrl_protocol_set_audio_enable
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t const                enable
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( CHAIN_DRV(protocol->drv), set_audio_enable );
+    return ( CHAIN_DRV(protocol->drv)->set_audio_enable( protocol->ctx, channel, enable ) );
+}
+
+/******************************************************************************
  * ctrl_protocol_chain_unregister
  *****************************************************************************/
 int ctrl_protocol_chain_unregister

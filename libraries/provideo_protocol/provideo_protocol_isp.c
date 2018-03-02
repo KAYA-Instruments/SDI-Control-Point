@@ -130,6 +130,7 @@
 #define CMD_SET_FILTER_ENABLE_WITH_COPY_FLAG    ( "filter_enable %i %i\n" )
 #define CMD_SYNC_FILTER_ENABLE                  ( "filter_enable " )
 #define CMD_FILTER_ENABLE_NO_PARMS              ( 1 )
+#define CMD_GET_FILTER_TMO                      ( 120 ) // Default 100ms timeout is to short when using slower 57600 baudrate
 
 /******************************************************************************
  * @brief command "filter_detail" 
@@ -978,8 +979,8 @@ static int get_filter_enable
     }
 
     // command call to get 1 parameter from provideo system
-    res = get_param_int_X( channel, 2, CMD_GET_FILTER_ENABLE,
-            CMD_SYNC_FILTER_ENABLE, CMD_SET_FILTER_ENABLE, &value );
+    res = get_param_int_X_with_tmo( channel, 2, CMD_GET_FILTER_ENABLE,
+            CMD_SYNC_FILTER_ENABLE, CMD_SET_FILTER_ENABLE, CMD_GET_FILTER_TMO, &value );
 
     // return error code
     if ( res < 0 )

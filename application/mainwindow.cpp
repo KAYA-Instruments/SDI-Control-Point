@@ -27,6 +27,7 @@
 #include <QProgressDialog>
 
 #include <ProVideoDevice.h>
+#include <infodialog.h>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -163,7 +164,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
         cbxConnectedDevices->setMaximumWidth( 300 );
 
         // Add device names to the combo box
-        for (int i = 0; i < connectedRS485Devices.count(); i++ )
+        for ( int i = 0; i < connectedRS485Devices.count(); i++ )
         {
             cbxConnectedDevices->addItem( QString(" %1 / %2: %3 ").arg(connectedRS485Devices[i].config.dev_addr)
                                                                   .arg(connectedRS485Devices[i].broadcastAddress)
@@ -190,7 +191,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
     }
 
     // If the system supports broadcasting and there is at least one RS485 device connected show the broadcast toggle button
-    if (deviceFeatures.hasSystemBroadcast && !connectedRS485Devices.empty() )
+    if ( deviceFeatures.hasSystemBroadcast && !connectedRS485Devices.empty() )
     {
         m_ui->toolBar->addSeparator();
         m_ui->toolBar->addAction(m_ui->actionBroadcast);
@@ -279,6 +280,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
     m_ui->inoutBox->setTimeCodeVisible(deviceFeatures.hasChainTimeCode, deviceFeatures.hasChainTimeCodeHold);
     m_ui->inoutBox->setFlipModeVisible(deviceFeatures.hasChainFlipVertical, deviceFeatures.hasChainFlipHorizontal);
     m_ui->inoutBox->setTestPatternVisible(deviceFeatures.hasOsdTestPattern);
+    m_ui->inoutBox->setAudioEnableVisible(deviceFeatures.hasChainAudio);
 
     // BlackBox Tab
     m_ui->blackBox->setFlareLevelVisible(deviceFeatures.hasIspFlare);
@@ -352,6 +354,14 @@ void MainWindow::updateDeviceList()
  *****************************************************************************/
 void MainWindow::connectToDevice( ProVideoDevice * dev )
 {
+    // Show a message box to indicate connection is ongoing
+    InfoDialog infoDlg( QString(":/icons/cog-64.png"), QString("Loading Device Settings..."), this->parentWidget() );
+    infoDlg.show();
+
+    // sleep for 100ms and process events, this ensures that the message box is correctly shown under linux
+    QThread::msleep( 100 );
+    QApplication::processEvents(QEventLoop::WaitForMoreEvents);
+
     // Get the features which are supported by this device
     m_dev = dev;
     ProVideoDevice::features deviceFeatures = dev->getSupportedFeatures();
@@ -418,13 +428,18 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         if (deviceFeatures.hasChainTimeCode)
         {
             // Timecode
-            connect( dev->GetChainItf(), SIGNAL(TimecodeChanged(QVector<int>)), m_ui->inoutBox, SLOT(onTimecodeChange(QVector<int>)) );
-            connect( m_ui->inoutBox, SIGNAL(TimecodeSet(QVector<int>)), dev->GetChainItf(), SLOT(onTimecodeChange(QVector<int>)) );
+            connect( dev->GetChainItf(), SIGNAL(ChainTimecodeChanged(QVector<int>)), m_ui->inoutBox, SLOT(onChainTimecodeChange(QVector<int>)) );
+            connect( m_ui->inoutBox, SIGNAL(ChainTimecodeSetChanged(QVector<int>)), dev->GetChainItf(), SLOT(onChainTimecodeChange(QVector<int>)) );
 
-            connect( m_ui->inoutBox, SIGNAL(TimecodeGet()), dev->GetChainItf(), SLOT(onTimecodeGetRequest()) );
+            connect( m_ui->inoutBox, SIGNAL(ChainTimecodeGetRequested()), dev->GetChainItf(), SLOT(onChainTimecodeGetRequest()) );
 
-            connect( dev->GetChainItf(), SIGNAL(TimecodeHoldChanged(bool)), m_ui->inoutBox, SLOT(onTimecodeHoldChange(bool)) );
-            connect( m_ui->inoutBox, SIGNAL(TimecodeHold(bool)), dev->GetChainItf(), SLOT(onTimecodeHoldChange(bool)) );
+            connect( dev->GetChainItf(), SIGNAL(ChainTimecodeHoldChanged(bool)), m_ui->inoutBox, SLOT(onChainTimecodeHoldChange(bool)) );
+            connect( m_ui->inoutBox, SIGNAL(ChainTimecodeHoldChanged(bool)), dev->GetChainItf(), SLOT(onChainTimecodeHoldChange(bool)) );
+        }
+        if (deviceFeatures.hasChainAudio)
+        {
+            connect( dev->GetChainItf(), SIGNAL(ChainAudioEnableChanged(bool)), m_ui->inoutBox, SLOT(onChainAudioEnableChange(bool)) );
+            connect( m_ui->inoutBox, SIGNAL(ChainAudioEnableChanged(bool)), dev->GetChainItf(), SLOT(onChainAudioEnableChange(bool)) );
         }
     }
 
@@ -511,7 +526,6 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
     {
         connect( dev->GetIspItf(), SIGNAL(FilterEnableChanged(int)), m_ui->fltBox, SLOT(onFilterEnableChange(int)) );
         connect( m_ui->fltBox, SIGNAL(FilterEnableChanged(int)), dev->GetIspItf(), SLOT(onFilterEnableChange(int)) );
-
         connect( dev->GetIspItf(), SIGNAL(FilterDetailLevelChanged(int)), m_ui->fltBox, SLOT(onFilterDetailLevelChange(int)) );
         connect( m_ui->fltBox, SIGNAL(FilterDetailLevelChanged(int)), dev->GetIspItf(), SLOT(onFilterDetailLevelChange(int)) );
 
@@ -769,6 +783,19 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
     connect( dev->GetProVideoSystemItf(), SIGNAL(FeatureMaskHwListChanged(QStringList)), m_ui->infoBox, SLOT(onFeatureMaskHwListChange(QStringList)) );
     connect( dev->GetProVideoSystemItf(), SIGNAL(FeatureMaskSwChanged(uint32_t)), m_ui->infoBox, SLOT(onFeatureMaskSwChange(uint32_t)) );
 
+    // connect temperature info
+    connect( dev->GetProVideoSystemItf(), SIGNAL(TempChanged(uint8_t,float,QString)), m_ui->infoBox, SLOT(onTempChange(uint8_t,float,QString)) );
+    connect( dev->GetProVideoSystemItf(), SIGNAL(MaxTempChanged(int32_t)), m_ui->infoBox, SLOT(onMaxTempChange(int32_t)) );
+    connect( dev->GetProVideoSystemItf(), SIGNAL(OverTempCountChanged(uint32_t)), m_ui->infoBox, SLOT(onOverTempCountChange(uint32_t)) );
+
+    connect( m_ui->infoBox, SIGNAL(GetTempRequest(uint8_t)), dev->GetProVideoSystemItf(), SLOT(onGetTempRequest(uint8_t)) );
+    connect( m_ui->infoBox, SIGNAL(GetMaxTempRequest()), dev->GetProVideoSystemItf(), SLOT(onGetMaxTempRequest()) );
+    connect( m_ui->infoBox, SIGNAL(GetOverTempCountRequest()), dev->GetProVideoSystemItf(), SLOT(onGetOverTempCountRequest()) );
+    connect( m_ui->infoBox, SIGNAL(MaxTempReset()), dev->GetProVideoSystemItf(), SLOT(onMaxTempReset()) );
+
+    m_ui->infoBox->setNumTempSensors( deviceFeatures.numTempSensors );
+
+    // connect system runtime
     if (deviceFeatures.hasSystemRuntime)
     {
         connect( dev->GetProVideoSystemItf(), SIGNAL(RunTimeChanged(uint32_t)), m_ui->infoBox, SLOT(onRunTimeChange(uint32_t)) );
@@ -782,6 +809,7 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         // connect update interface slots
         connect( dev->GetProVideoSystemItf(), SIGNAL(SystemPlatformChanged(QString)), m_ui->updBox, SLOT(onSystemPlatformChange(QString)) );
         connect( dev->GetProVideoSystemItf(), SIGNAL(PromptChanged(uint8_t)), m_ui->updBox, SLOT(onPromptChange(uint8_t)) );
+        connect( dev->GetProVideoSystemItf(), SIGNAL(ApplicationVersionChanged(QString)), m_ui->updBox, SLOT(onApplicationVersionChange(QString)) );
         connect( m_ui->updBox, SIGNAL(BootIntoUpdateMode()), dev->GetProVideoSystemItf(), SLOT(onBootIntoUpdateMode()) );
 
         m_ui->updBox->setPortname( m_ConnectDlg->getActiveChannel()->getSystemPortName() );
@@ -801,6 +829,10 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         // chain selection
         connect( dev->GetChainItf(), SIGNAL(ChainSelectedChainChanged(int)), this, SLOT(onSdiOutChange(int)) );
         connect( this, SIGNAL(SdiOutChanged(int)), dev->GetChainItf(), SLOT(onChainSelectedChainChange(int)) );
+
+        // the lut box and out box also need to know the current chain, because each chain has its own lut / out settings
+        connect( dev->GetChainItf(), SIGNAL(ChainSelectedChainChanged(int)), m_ui->lutBox, SLOT(onSdiOutChange(int)) );
+        connect( dev->GetChainItf(), SIGNAL(ChainSelectedChainChanged(int)), m_ui->outBox, SLOT(onSdiOutChange(int)) );
     }
     if (deviceFeatures.hasIspSplitScreen)
     {
@@ -859,6 +891,9 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
     // Synchronise with the new device
     //////////////////////////
     m_dev->resync();
+
+    // Close message box
+    infoDlg.close();
 }
 
 /******************************************************************************
@@ -1048,7 +1083,7 @@ void MainWindow::onSelectSdi1Clicked()
         m_ui->actionSelectSdi1->setChecked( true );
         m_ui->actionSelectSdi2->setChecked( false );
         emit SdiOutChanged( 1 );
-        m_dev->resync();
+        m_dev->resyncChainSpecific();
         QApplication::setOverrideCursor( Qt::ArrowCursor );
     }
 }
@@ -1064,7 +1099,7 @@ void MainWindow::onSelectSdi2Clicked()
         m_ui->actionSelectSdi1->setChecked( false );
         m_ui->actionSelectSdi2->setChecked( true );
         emit SdiOutChanged( 2 );
-        m_dev->resync();
+        m_dev->resyncChainSpecific();
         QApplication::setOverrideCursor( Qt::ArrowCursor );
     }
 }
@@ -1084,7 +1119,7 @@ void MainWindow::onCopyChain1To2Clicked()
         // resync, if chain 2 is the active chain
         if ( m_ui->actionSelectSdi2->isChecked() )
         {
-            m_dev->resync();
+            m_dev->resyncChainSpecific();
         }
 
         QApplication::setOverrideCursor( Qt::ArrowCursor );
@@ -1106,7 +1141,7 @@ void MainWindow::onCopyChain2To1Clicked()
         // Resync, if chain 1 is the active chain
         if ( m_ui->actionSelectSdi1->isChecked() )
         {
-            m_dev->resync();
+            m_dev->resyncChainSpecific();
         }
 
         QApplication::setOverrideCursor( Qt::ArrowCursor );
@@ -1168,7 +1203,7 @@ void MainWindow::onLoadFromFileClicked()
     QFileDialog dialog( this );
     dialog.setDefaultSuffix( "dct" );
     m_filename = dialog.getOpenFileName(
-        this, tr("Load Multi-Color Profile"),
+        this, tr("Load Device Settings"),
         directory,
         "Setting Files (*.dct);;All files (*.*)"
     );
@@ -1183,6 +1218,8 @@ void MainWindow::onLoadFromFileClicked()
 
         if ( fileExists(m_filename) )
         {
+
+            // Open settings
             QSettings settings( m_filename, QSettings::IniFormat );
 
             // Load the device name and platform from the settings file
@@ -1203,7 +1240,23 @@ void MainWindow::onLoadFromFileClicked()
             else
             {
                 // Load the settings of all visible tabs
-                QProgressDialog progressDialog( "Loading Settings...", "", 0, m_activeWidgets.length(), this );
+                // Get number of tabs which settinsg have to be loaded
+                int progressSteps = m_activeWidgets.length();
+                if ( m_dev->getSupportedFeatures().hasChainSelection )
+                {
+                    // Settings for the lutbox and outbox have to be loaded twice (once for each chain)
+                    if ( m_activeWidgets.contains(m_ui->lutBox) )
+                    {
+                        progressSteps++;
+                    }
+                    if ( m_activeWidgets.contains(m_ui->outBox) )
+                    {
+                        progressSteps++;
+                    }
+                }
+
+                // Create progress dialog
+                QProgressDialog progressDialog( "Loading Settings...", "", 0, progressSteps, this );
                 progressDialog.setCancelButton( NULL );
                 progressDialog.setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowTitleHint);
                 progressDialog.show();
@@ -1211,16 +1264,70 @@ void MainWindow::onLoadFromFileClicked()
                 // sleep for 100ms and refresh progress bar, this ensures that the progress bar is correctly shown under linux
                 QThread::msleep( 100 );
                 progressDialog.setValue( 0 );
-                QApplication::processEvents();
+                QApplication::processEvents(QEventLoop::WaitForMoreEvents);
 
-                for ( int i = 0; i < m_activeWidgets.length(); i++ )
+                // Disable updpates of the GUI
+                this->setUpdatesEnabled( false );
+
+                // Load settings for all widgets for the currently active chain
+                int i;
+                for ( i = 0; i < m_activeWidgets.length(); i++ )
                 {
                     progressDialog.setValue( i );
                     QApplication::processEvents();
                     m_activeWidgets[i]->load( settings );
                 }
-                progressDialog.setValue( m_activeWidgets.length() );
+
+                // If this device has a second chain, load settings for it too
+                if ( m_dev->getSupportedFeatures().hasChainSelection )
+                {
+                    // Check which chain is currently used and switch to the other one
+                    if ( m_ui->actionSelectSdi1->isChecked() )
+                    {
+                        emit SdiOutChanged( 2 );
+                    }
+                    else
+                    {
+                        emit SdiOutChanged( 1 );
+                    }
+
+                    // Load lutbox settings for other chain
+                    if ( m_activeWidgets.contains(m_ui->lutBox) )
+                    {
+                        progressDialog.setValue( i );
+                        i++;
+                        QApplication::processEvents();
+                        m_ui->lutBox->load( settings );
+                    }
+
+                    // Load outbox settings for other chain
+                    if ( m_activeWidgets.contains(m_ui->outBox) )
+                    {
+                        progressDialog.setValue( i );
+                        QApplication::processEvents();
+                        m_ui->outBox->load( settings );
+                    }
+
+                    // Return to previous chain
+                    if ( m_ui->actionSelectSdi1->isChecked() )
+                    {
+                        emit SdiOutChanged( 1 );
+                    }
+                    else
+                    {
+                        emit SdiOutChanged( 2 );
+                    }
+                }
+
+                // Resync settings
+                m_dev->resync();
+
+                // Set dialog to 100%
+                progressDialog.setValue( progressSteps );
                 QApplication::processEvents();
+
+                // Re-enable updpates of the GUI
+                this->setUpdatesEnabled( true );
             }
         }
     }
@@ -1243,10 +1350,11 @@ void MainWindow::onSaveToFileClicked()
     dialog.setDefaultSuffix( "dct" );
 
     m_filename = dialog.getSaveFileName(
-        this, tr("Save Setting Profile"),
+        this, tr("Save Device Settings"),
         directory,
         "Setting Files (*.dct);;All files (*.*)"
     );
+    QApplication::processEvents();
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
     if ( NULL != m_filename )
@@ -1257,7 +1365,38 @@ void MainWindow::onSaveToFileClicked()
             m_filename += ".dct";
         }
 
+        // Open settings file and make sure it is clean
         QSettings settings( m_filename, QSettings::IniFormat );
+        settings.clear();
+
+        // Get number of tabs which settinsg have to be saved
+        int progressSteps = m_activeWidgets.length();
+        if ( m_dev->getSupportedFeatures().hasChainSelection )
+        {
+            // Settings for the lutbox and outbox have to be saved twice (once for each chain)
+            if ( m_activeWidgets.contains(m_ui->lutBox) )
+            {
+                progressSteps++;
+            }
+            if ( m_activeWidgets.contains(m_ui->outBox) )
+            {
+                progressSteps++;
+            }
+        }
+
+        // Create progress dialog
+        QProgressDialog progressDialog( "Saving Settings...", "", 0, progressSteps, this );
+        progressDialog.setCancelButton( NULL );
+        progressDialog.setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowTitleHint);
+        progressDialog.show();
+
+        // sleep for 100ms and refresh progress bar, this ensures that the progress bar is correctly shown under linux
+        QThread::msleep( 100 );
+        progressDialog.setValue( 0 );
+        QApplication::processEvents(QEventLoop::WaitForMoreEvents);
+
+        // Disable updpates of the GUI
+        this->setUpdatesEnabled( false );
 
         // Write the device name and platform into the settings file
         settings.beginGroup( MAIN_SETTINGS_SECTION_NAME );
@@ -1265,10 +1404,65 @@ void MainWindow::onSaveToFileClicked()
         settings.endGroup();
 
         // Save the settings of all active widgets
-        for ( int i = 0; i < m_activeWidgets.length(); i++ )
+        int i;
+        for ( i = 0; i < m_activeWidgets.length(); i++ )
         {
+            progressDialog.setValue( i );
+            QApplication::processEvents();
             m_activeWidgets[i]->save( settings );
         }
+
+        // If this device has a second chain, save settings for it too
+        if ( m_dev->getSupportedFeatures().hasChainSelection )
+        {
+            // Check which chain is currently used and switch to the other one
+            if ( m_ui->actionSelectSdi1->isChecked() )
+            {
+                emit SdiOutChanged( 2 );
+            }
+            else
+            {
+                emit SdiOutChanged( 1 );
+            }
+
+            // Resync settings of this chain
+            m_dev->resyncChainSpecific();
+
+            // Save lutbox settings for other chain
+            if ( m_activeWidgets.contains(m_ui->lutBox) )
+            {
+                progressDialog.setValue( i );
+                i++;
+                QApplication::processEvents();
+                m_ui->lutBox->save( settings );
+            }
+
+            // Save outbox settings for other chain
+            if ( m_activeWidgets.contains(m_ui->outBox) )
+            {
+                progressDialog.setValue( i );
+                QApplication::processEvents();
+                m_ui->outBox->save( settings );
+            }
+
+            // Return to previous chain and resync
+            if ( m_ui->actionSelectSdi1->isChecked() )
+            {
+                emit SdiOutChanged( 1 );
+            }
+            else
+            {
+                emit SdiOutChanged( 2 );
+            }
+            m_dev->resyncChainSpecific();
+        }
+
+        // Set dialog to 100%
+        progressDialog.setValue( progressSteps );
+        QApplication::processEvents();
+
+        // Re-enable updpates of the GUI
+        this->setUpdatesEnabled( true );
     }
     QApplication::setOverrideCursor( Qt::ArrowCursor );
 }
@@ -1314,8 +1508,23 @@ void MainWindow::onBroadcastClicked()
  *****************************************************************************/
 void MainWindow::onSyncSettingsClicked()
 {
-    // Apply the settings of all visible tabs
-    QProgressDialog progressDialog( "Synchronising Settings...", "", 0, m_activeWidgets.length(), this );
+    // Get number of tabs which settinsg have to be loaded
+    int progressSteps = m_activeWidgets.length();
+    if ( m_dev->getSupportedFeatures().hasChainSelection )
+    {
+        // Settings for the lutbox and outbox have to be loaded twice (once for each chain)
+        if ( m_activeWidgets.contains(m_ui->lutBox) )
+        {
+            progressSteps++;
+        }
+        if ( m_activeWidgets.contains(m_ui->outBox) )
+        {
+            progressSteps++;
+        }
+    }
+
+    // Create progress dialog
+    QProgressDialog progressDialog( "Synchronising Settings...", "", 0, progressSteps, this );
     progressDialog.setCancelButton( NULL );
     progressDialog.setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowTitleHint);
     progressDialog.show();
@@ -1323,17 +1532,67 @@ void MainWindow::onSyncSettingsClicked()
     // sleep for 100ms and refresh progress bar, this ensures that the progress bar is correctly shown under linux
     QThread::msleep( 100 );
     progressDialog.setValue( 0 );
-    QApplication::processEvents();
+    QApplication::processEvents(QEventLoop::WaitForMoreEvents);
 
-    for ( int i = 0; i < m_activeWidgets.length(); i++ )
+    // Disable updpates of the GUI
+    this->setUpdatesEnabled( false );
+
+    // Apply the settings of all visible tabs
+    int i;
+    for ( i = 0; i < m_activeWidgets.length(); i++ )
     {
         progressDialog.setValue( i );
         QApplication::processEvents();
         m_activeWidgets[i]->apply();
     }
 
-    progressDialog.setValue( m_activeWidgets.length() );
+    // If this device has a second chain, sync settings for it too
+    if ( m_dev->getSupportedFeatures().hasChainSelection )
+    {
+        // Check which chain is currently used and switch to the other one
+        if ( m_ui->actionSelectSdi1->isChecked() )
+        {
+            emit SdiOutChanged( 2 );
+        }
+        else
+        {
+            emit SdiOutChanged( 1 );
+        }
+
+        // Sync lutbox settings for other chain
+        if ( m_activeWidgets.contains(m_ui->lutBox) )
+        {
+            progressDialog.setValue( i );
+            i++;
+            QApplication::processEvents();
+            m_ui->lutBox->apply();
+        }
+
+        // Load outbox settings for other chain
+        if ( m_activeWidgets.contains(m_ui->outBox) )
+        {
+            progressDialog.setValue( i );
+            QApplication::processEvents();
+            m_ui->outBox->apply();
+        }
+
+        // Return to previous chain
+        if ( m_ui->actionSelectSdi1->isChecked() )
+        {
+            emit SdiOutChanged( 1 );
+        }
+        else
+        {
+            emit SdiOutChanged( 2 );
+        }
+    }
+
+    // Set dialog to 100%
+    progressDialog.setValue( progressSteps );
     QApplication::processEvents();
+
+    // Re-enable updpates of the GUI
+    this->setUpdatesEnabled( true );
 }
 
 /******************************************************************************

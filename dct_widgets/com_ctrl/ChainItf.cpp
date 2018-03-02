@@ -50,8 +50,9 @@ void ChainItf::resync()
     GetChainGenlockMode();
     GetChainGenlockOffset();
     GetChainGenlockTermination();
-    GetTimecode();
-    GetTimecodeHold();
+    GetChainTimecode();
+    GetChainTimecodeHold();
+    GetChainAudioEnable();
 }
 
 /******************************************************************************
@@ -275,12 +276,12 @@ void ChainItf::GetChainGenlockTermination()
 }
 
 /******************************************************************************
- * ChainItf::GetTimecode
+ * ChainItf::GetChainTimecode
  *****************************************************************************/
-void ChainItf::GetTimecode()
+void ChainItf::GetChainTimecode()
 {
     // Is there a signal listener
-    if ( receivers(SIGNAL(TimecodeChanged(QVector<int>))) > 0 )
+    if ( receivers(SIGNAL(ChainTimecodeChanged(QVector<int>))) > 0 )
     {
         int32_t value[NO_VALUES_TIMECODE];
     
@@ -296,27 +297,47 @@ void ChainItf::GetTimecode()
         }
 
         // emit a TimecodeChanged signal
-        emit TimecodeChanged( v );
+        emit ChainTimecodeChanged( v );
     }
 }
 
 /******************************************************************************
- * ChainItf::GetTimecodeHold
+ * ChainItf::GetChainTimecodeHold
  *****************************************************************************/
-void ChainItf::GetTimecodeHold()
+void ChainItf::GetChainTimecodeHold()
 {
     // Is there a signal listener
-    if ( receivers(SIGNAL(TimecodeHoldChanged(bool))) > 0 )
+    if ( receivers(SIGNAL(ChainTimecodeHoldChanged(bool))) > 0 )
     {
         uint8_t enable;
 
-        // get auto processing number of white balance presets from device
+        // get timecode hold flag from device
         int res = ctrl_protocol_get_timecode_hold( GET_PROTOCOL_INSTANCE(this),
                     GET_CHANNEL_INSTANCE(this), &enable );
         HANDLE_ERROR( res );
 
         // emit a TimecodeHoldChanged signal
-        emit TimecodeHoldChanged( enable > 0 ? true : false );
+        emit ChainTimecodeHoldChanged( enable > 0 ? true : false );
+    }
+}
+
+/******************************************************************************
+ * ChainItf::GetChainAudioEnable
+ *****************************************************************************/
+void ChainItf::GetChainAudioEnable()
+{
+    // Is there a signal listener
+    if ( receivers(SIGNAL(ChainAudioEnableChanged(bool))) > 0 )
+    {
+        uint8_t enable;
+
+        // get audio enable flag from device
+        int res = ctrl_protocol_get_audio_enable( GET_PROTOCOL_INSTANCE(this),
+                    GET_CHANNEL_INSTANCE(this), &enable );
+        HANDLE_ERROR( res );
+
+        // emit a TimecodeHoldChanged signal
+        emit ChainAudioEnableChanged( enable > 0 ? true : false );
     }
 }
 
@@ -482,9 +503,9 @@ void ChainItf::onChainGenlockTerminationChange( int value )
 }
 
 /******************************************************************************
- * ChainItf::onTimecodeChange
+ * ChainItf::onChainTimecodeChange
  *****************************************************************************/
-void ChainItf::onTimecodeChange( QVector<int> value )
+void ChainItf::onChainTimecodeChange( QVector<int> value )
 {
     int v[NO_VALUES_TIMECODE];
 
@@ -499,19 +520,29 @@ void ChainItf::onTimecodeChange( QVector<int> value )
 }
 
 /******************************************************************************
- * ChainItf::onTimecodeGetRequest
+ * ChainItf::onChainTimecodeGetRequest
  *****************************************************************************/
-void ChainItf::onTimecodeGetRequest( )
+void ChainItf::onChainTimecodeGetRequest( )
 {
-    GetTimecode();
+    GetChainTimecode();
 }
 
 /******************************************************************************
- * ChainItf::onTimecodeHoldChange
+ * ChainItf::onChainTimecodeHoldChange
  *****************************************************************************/
-void ChainItf::onTimecodeHoldChange( bool enable )
+void ChainItf::onChainTimecodeHoldChange( bool enable )
 {
     int res = ctrl_protocol_set_timecode_hold( GET_PROTOCOL_INSTANCE(this),
+            GET_CHANNEL_INSTANCE(this), (uint8_t)enable );
+    HANDLE_ERROR( res );
+}
+
+/******************************************************************************
+ * ChainItf::onChainAudioEnableChange
+ *****************************************************************************/
+void ChainItf::onChainAudioEnableChange( bool enable )
+{
+    int res = ctrl_protocol_set_audio_enable( GET_PROTOCOL_INSTANCE(this),
             GET_CHANNEL_INSTANCE(this), (uint8_t)enable );
     HANDLE_ERROR( res );
 }

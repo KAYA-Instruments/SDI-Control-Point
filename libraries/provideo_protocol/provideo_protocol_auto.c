@@ -40,9 +40,9 @@
 #define CMD_GET_AEC_ENABLE_NO_PARAMS        ( 1 )
 
 #define CMD_GET_AEC_SETUP                   ( "aec\n" )
-#define CMD_SET_AEC_SETUP                   ( "aec %i %i %i %i %i %i %i %i\n" )
+#define CMD_SET_AEC_SETUP                   ( "aec %i %i %i %i %i %i %i %i %i\n" )
 #define CMD_SYNC_AEC_SETUP                  ( "aec " )
-#define CMD_GET_AEC_SETUP_NO_PARAMS         ( 8 )
+#define CMD_GET_AEC_SETUP_NO_PARAMS         ( 9 )
 #define CMD_SET_AEC_SETUP_TMO               ( 200 )
 
 /******************************************************************************
@@ -207,7 +207,8 @@ static int get_aec_setup
     res = get_param_int_X( channel, 2, CMD_GET_AEC_SETUP,
             CMD_SYNC_AEC_SETUP, CMD_SET_AEC_SETUP,
             &values[0], &values[1], &values[2], &values[3],
-            &values[4], &values[5], &values[6], &values[7] ); 
+            &values[4], &values[5], &values[6], &values[7],
+            &values[8] );
 
     // return error code
     if ( res < 0 )
@@ -244,7 +245,8 @@ static int set_aec_setup
 
     return ( set_param_int_X_with_tmo( channel, CMD_SET_AEC_SETUP, CMD_SET_AEC_SETUP_TMO,
         INT( values[0] ), INT( values[1] ), INT( values[2] ), INT( values[3] ),
-        INT( values[4] ), INT( values[5] ), INT( values[6] ), INT( values[7] ) ) );
+        INT( values[4] ), INT( values[5] ), INT( values[6] ), INT( values[7] ),
+        INT( values[8] )) );
 }
 
 /******************************************************************************

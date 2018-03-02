@@ -58,6 +58,7 @@ public:
     QString m_deviceName;
     unsigned int m_broadcastAddress;
     bool m_isBroadcastMaster;
+    QList<rs485Device> m_deviceList;
     ProVideoSystemItf * m_ProVideoSystemItf;
 };
 
@@ -73,6 +74,7 @@ ProVideoDevice::ProVideoDevice( ComChannel * c, ComProtocol * p )
     connect( GetProVideoSystemItf(), SIGNAL(DeviceNameChanged(QString)), this, SLOT(onDeviceNameChange(QString)) );
     connect( GetProVideoSystemItf(), SIGNAL(RS485BroadcastAddressChanged(uint32_t)), this, SLOT(onBroadcastAddressChange(uint32_t)) );
     connect( GetProVideoSystemItf(), SIGNAL(RS485BroadcastMasterChanged(uint8_t)), this, SLOT(onBroadcastMasterModeChange(uint8_t)) );
+    connect( GetProVideoSystemItf(), SIGNAL(DeviceListChanged(QList<rs485Device>)), this, SLOT(onDeviceListChange(QList<rs485Device>)) );
 }
 
 /******************************************************************************
@@ -232,6 +234,14 @@ void ProVideoDevice::resync()
 }
 
 /******************************************************************************
+ * ProVideoDevice::resyncChainSpecific()
+ *****************************************************************************/
+void ProVideoDevice::resyncChainSpecific()
+{
+    // Nothing to be done here, has to be overwritten in device implementations
+}
+
+/******************************************************************************
  * ProVideoDevice::isConnected()
  *****************************************************************************/
 bool ProVideoDevice::isConnected()
@@ -314,3 +324,23 @@ bool ProVideoDevice::getBroadcastMasterMode()
 {
     return d_data->m_isBroadcastMaster;
 }
+
+/******************************************************************************
+ * ProVideoDevice::onDeviceListChange
+ *****************************************************************************/
+void ProVideoDevice::onDeviceListChange( QList<rs485Device> deviceList )
+{
+    d_data->m_deviceList = deviceList;
+}
+
+/******************************************************************************
+ * ProVideoDevice::getDeviceList
+ * @brief This gets the list of connected devices which is stored in the
+ *        class variable of this object. It does not invoke a com command!
+ * @returns The list of connected devices
+ *****************************************************************************/
+QList<rs485Device> ProVideoDevice::getDeviceList()
+{
+    return d_data->m_deviceList;
+}
+

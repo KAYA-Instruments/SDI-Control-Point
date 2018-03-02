@@ -486,6 +486,39 @@ int ctrl_protocol_set_timecode_hold
 );
 
 /**************************************************************************//**
+ * @brief Gets audio enable flag
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[out]  enable   audio enable status
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_audio_enable
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t * const              enable
+);
+
+/**************************************************************************//**
+ * @brief Sets audio enable flag
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[in]   enable   audio enable status
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_set_audio_enable
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t const                enable
+);
+
+
+/**************************************************************************//**
  * @brief CHAIN protocol driver implementation
  *****************************************************************************/
 typedef struct ctrl_protocol_chain_drv_s
@@ -516,6 +549,8 @@ typedef struct ctrl_protocol_chain_drv_s
     ctrl_protocol_int32_array_t  set_timecode;
     ctrl_protocol_get_uint8_t    get_timecode_hold;
     ctrl_protocol_set_uint8_t    set_timecode_hold;
+    ctrl_protocol_get_uint8_t    get_audio_enable;
+    ctrl_protocol_set_uint8_t    set_audio_enable;
 } ctrl_protocol_chain_drv_t;
 
 /**************************************************************************//**

@@ -384,7 +384,7 @@ void DpccBox::saveSettings( QSettings & s )
 //    // NOTE: call qRegisterMetaTypeStreamOperators<QVector<int> >("QVector<int>"); in main.cpp
 //    s.setValue( DPCC_SETTINGS_Y_POSITIONS, QVariant::fromValue<QVector<int>>(yPos) );
 //    s.setValue( DPCC_SETTINGS_X_POSITIONS, QVariant::fromValue<QVector<int>>(xPos) );
-//    s.endGroup();
+    s.endGroup();
 }
 
 /******************************************************************************

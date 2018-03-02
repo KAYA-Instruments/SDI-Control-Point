@@ -315,7 +315,8 @@ XbowDevice::features XbowDevice::getSupportedFeatures()
     deviceFeatures.hasSystemBroadcast       = true;
     deviceFeatures.hasRS232Interface        = true;
 
-    deviceFeatures.lutBitWidth              = 12;
+    deviceFeatures.lutBitWidth              = 16;
+    deviceFeatures.numTempSensors           = 2;
 
     return deviceFeatures;
 }
@@ -425,8 +426,8 @@ void XbowDevice::setComChannel( ComChannel * c )
 
     GetIspItf()     ->SetComChannel( c );
     GetCprocItf()   ->SetComChannel( c );
-    GetAutoItf()    ->SetComChannel( c );
     GetCamItf()     ->SetComChannel( c );
+    GetAutoItf()    ->SetComChannel( c );
     GetMccItf()     ->SetComChannel( c );
     GetLutItf()     ->SetComChannel( c );
     GetChainItf()   ->SetComChannel( c );
@@ -444,8 +445,8 @@ void XbowDevice::resync()
 
     GetIspItf()     ->resync();
     GetCprocItf()   ->resync();
-    GetAutoItf()    ->resync();
     GetCamItf()     ->resync();
+    GetAutoItf()    ->resync();
     GetMccItf()     ->resync();
     GetLutItf()     ->resync();
     GetChainItf()   ->resync();
@@ -454,4 +455,11 @@ void XbowDevice::resync()
     GetDpccItf()    ->resync();
 }
 
-
+/******************************************************************************
+ * XbowDevice::resyncChainSpecific()
+ *****************************************************************************/
+void XbowDevice::resyncChainSpecific()
+{
+    GetIspItf()     ->resync();
+    GetLutItf()     ->resync();
+}

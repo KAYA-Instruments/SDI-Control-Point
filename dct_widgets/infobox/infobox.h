@@ -38,6 +38,7 @@ public:
 
     // Show or hide UI elements
     void setRuntimeVisible( const bool value );
+    void setNumTempSensors( const unsigned int tempSensorCount );
 
 protected:
     void prepareMode( const Mode mode ) Q_DECL_OVERRIDE;
@@ -45,6 +46,12 @@ protected:
     void loadSettings( QSettings & s ) Q_DECL_OVERRIDE;
     void saveSettings( QSettings & s ) Q_DECL_OVERRIDE;
     void applySettings( void ) Q_DECL_OVERRIDE;
+
+signals:
+    void GetTempRequest( uint8_t id );
+    void GetMaxTempRequest();
+    void GetOverTempCountRequest();
+    void MaxTempReset();
 
 public slots:
     // system interface slots
@@ -60,14 +67,21 @@ public slots:
     void onFeatureMaskHwListChange( QStringList features );
     void onFeatureMaskSwChange( uint32_t mask );
     void onRunTimeChange( uint32_t seconds );
+    void onTempChange( uint8_t id, float temp , QString name );
+    void onMaxTempChange( int32_t max_temp );
+    void onOverTempCountChange( uint32_t count );
 
 private slots:
+    void onRefreshTempClicked();
+    void onResetMaxTempClicked();
     void onShowLicenseClicked();
     void onShowThirdPartyLicensesClicked();
 
 private:
     class PrivateData;
     PrivateData * d_data;
+
+    void showEvent( QShowEvent* event );
 };
 
 #endif // __INFO_BOX_H__

@@ -104,7 +104,7 @@ static int clock_gettime_windows(struct timeval *tv)
 /******************************************************************************
  * get_time_monotonic - Platform dependend clock_gettime function
  *****************************************************************************/
-static int get_time_monotonic(struct timespec * time)
+int get_time_monotonic(struct timespec * time)
 {
     int ret = 0;
 

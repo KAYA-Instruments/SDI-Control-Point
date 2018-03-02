@@ -20,27 +20,8 @@
       <string>System Information</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="5" column="2">
-       <widget class="QLabel" name="lblFlashLoaderVersion">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Programmer Version</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1" colspan="3">
-       <widget class="QLineEdit" name="letSystemName">
+      <item row="5" column="3">
+       <widget class="QLineEdit" name="letFlashLoaderVersion">
         <property name="font">
          <font>
           <family>Courier</family>
@@ -68,6 +49,25 @@
         </property>
         <property name="readOnly">
          <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="2">
+       <widget class="QLabel" name="lblFlashLoaderVersion">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Programmer Version</string>
         </property>
        </widget>
       </item>
@@ -106,10 +106,19 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="4">
-       <widget class="Line" name="line">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+      <item row="2" column="1" colspan="3">
+       <widget class="QLineEdit" name="letSystemName">
+        <property name="font">
+         <font>
+          <family>Courier</family>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -151,19 +160,88 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="3">
-       <widget class="QLineEdit" name="letFlashLoaderVersion">
-        <property name="font">
-         <font>
-          <family>Courier</family>
-          <pointsize>10</pointsize>
-         </font>
+      <item row="1" column="0" colspan="4">
+       <widget class="Line" name="line">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
-        <property name="focusPolicy">
-         <enum>Qt::NoFocus</enum>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="gpbOnlineUpdate">
+     <property name="title">
+      <string>Online Update</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="4" column="0">
+       <widget class="QLabel" name="lblCurrentGuiVersion">
+        <property name="text">
+         <string>Current GUI Version</string>
         </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="lblCurrentFirmwareVersion">
+        <property name="text">
+         <string>Current Firmware Version</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QLineEdit" name="letServerGuiVersion"/>
+      </item>
+      <item row="0" column="2">
+       <widget class="QPushButton" name="btnCheckFirmwareUpdate">
+        <property name="text">
+         <string>Check Server for new Firmware</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="lblServerFirmwareVersion">
+        <property name="text">
+         <string>Latest Version on Server</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="2">
+       <widget class="QPushButton" name="btnCheckGuiUpdate">
+        <property name="text">
+         <string>Check Server for new GUI</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="letServerFirmwareVersion">
         <property name="readOnly">
          <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="lblServerGuiVersion">
+        <property name="text">
+         <string>Latest Version on Server</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLineEdit" name="letCurrentGuiVersion"/>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="letCurrentFirmwareVersion">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="3">
+       <widget class="Line" name="line_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
@@ -177,6 +255,20 @@
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="2" column="1">
+       <widget class="QLabel" name="lblFiletype">
+        <property name="text">
+         <string>File Description</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QLabel" name="lblUpdateCount">
+        <property name="text">
+         <string>Progress</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
        <widget class="QLabel" name="lblVerify">
         <property name="minimumSize">
          <size>
@@ -195,14 +287,7 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
-       <widget class="QLabel" name="lblUpdateCount">
-        <property name="text">
-         <string>Progress</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="8">
+      <item row="1" column="8">
        <widget class="QPushButton" name="btnFilename">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -230,24 +315,24 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="5">
+      <item row="3" column="5">
+       <widget class="QCheckBox" name="cbxVerify">
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="5">
        <widget class="QProgressBar" name="progressBar">
         <property name="value">
          <number>24</number>
         </property>
        </widget>
       </item>
-      <item row="4" column="8">
-       <widget class="QPushButton" name="btnRun">
-        <property name="focusPolicy">
-         <enum>Qt::StrongFocus</enum>
-        </property>
-        <property name="text">
-         <string>Update</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
+      <item row="1" column="1">
        <widget class="QLabel" name="lblFilename">
         <property name="minimumSize">
          <size>
@@ -266,17 +351,17 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="5">
-       <widget class="QCheckBox" name="cbxVerify">
+      <item row="5" column="8">
+       <widget class="QPushButton" name="btnRun">
         <property name="focusPolicy">
          <enum>Qt::StrongFocus</enum>
         </property>
         <property name="text">
-         <string/>
+         <string>Update</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="5">
+      <item row="1" column="5">
        <widget class="QLineEdit" name="letFilename">
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
@@ -286,14 +371,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QLabel" name="lblFiletype">
-        <property name="text">
-         <string>File Description</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="5">
+      <item row="2" column="5">
        <widget class="QLineEdit" name="letFiletype">
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>

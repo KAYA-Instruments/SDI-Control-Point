@@ -27,6 +27,8 @@
 extern "C" {
 #endif
 
+#include <time.h>
+
 /******************************************************************************
  * @defgroup command_common common protocol definitions
  * @{
@@ -89,7 +91,7 @@ extern "C" {
 #endif
 
 /******************************************************************************
- * @brief Default command time-out 500 milliseconds
+ * @brief Default command time-out 100 milliseconds
  *****************************************************************************/
 #define DEFAULT_CMD_TIMEOUT                 ( 100 )
 
@@ -157,6 +159,18 @@ extern "C" {
  * @brief command error message "gen-lock error" sent by provideo device
  *****************************************************************************/
 #define CMD_ERROR_GENLOCK                   ( "ERROR: gen-lock error" )
+
+/******************************************************************************
+ * @brief Get a monotinic timestamp
+ *
+ * @param[out]   time    returned timestamp
+ *
+ * @return 0 on success, error code otherwise
+ *****************************************************************************/
+int get_time_monotonic
+(
+    struct timespec * time
+);
 
 /******************************************************************************
  * @brief Evaluate error messages from provideo device with the default timeout

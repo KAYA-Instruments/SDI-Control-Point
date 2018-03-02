@@ -102,6 +102,8 @@ public:
 
     // Returns whether a connection to a device exists
     bool isConnected();
+    // Detects all available RS485 devices with the identfy command, stores them in m_detectedRS485Devices and connects to the first device found
+    bool detectAndConnect();
     // Scans for all available RS485 devices, stores them in m_detectedRS485Devices and connects to the first device found
     bool scanAndConnect();
      // Changes comport settings on the device and in the connect dialog
@@ -137,6 +139,7 @@ public slots:
 
 private slots:
     void rescan();
+    void onDetectButtonClick();
     void onScanButtonClick();
 
 private:
@@ -147,8 +150,9 @@ private:
     ComChannelSerial *           m_active;                  // activated/opened com channel
     QVector<detectedRS485Device> m_detectedRS485Devices;    // list of the RS485 devices which were detected during scan
     int                          m_currentRS485DeviceIndex; // Index of the connected device from the m_detectedRS485Devices list that is currently connected
-
     QPushButton *                m_rescan;                  // rescan button
+
+    void showEvent( QShowEvent* event );
 
     ctrl_channel_rs4xx_open_config_t getRs485Config();
     void setRs485Config( ctrl_channel_rs4xx_open_config_t const config );

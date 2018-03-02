@@ -23,6 +23,7 @@
 #include <QMessageBox>
 #include <QValidator>
 
+#include <defines.h>
 #include <com_ctrl/ComChannelRSxxx.h>
 
 #include "settingsdialog.h"
@@ -62,6 +63,10 @@ SettingsDialog::SettingsDialog(QWidget *parent)
 
     // connect control settings
     connect( m_ui->cbxEngineeringMode, SIGNAL(stateChanged(int)), this, SLOT(onCbxEngineeringModeChange(int)) );
+
+    // Set device ID ranges
+    m_ui->sbxRS485Address->setRange( 0, MAX_DEVICE_ID );
+    m_ui->sbxRS485BroadcastAddress->setRange( 0, MAX_DEVICE_ID );
 }
 
 /******************************************************************************
@@ -70,6 +75,19 @@ SettingsDialog::SettingsDialog(QWidget *parent)
 SettingsDialog::~SettingsDialog()
 {
     delete m_ui;
+}
+
+/******************************************************************************
+ * SettingsDialog::showEvent
+ *****************************************************************************/
+void SettingsDialog::showEvent( QShowEvent* event )
+{
+    // Call inherited function
+    QDialog::showEvent( event );
+
+    // Resize window to minimum size
+    QApplication::processEvents();
+    this->resize( this->minimumSizeHint() );
 }
 
 /******************************************************************************

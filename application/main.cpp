@@ -58,7 +58,8 @@ int main(int argc, char *argv[])
     MainWindow w( &dlg );
 
     // Try to automatically scan an connect
-    bool connected = dlg.scanAndConnect();
+    bool connected = dlg.detectAndConnect();
+    app.processEvents( QEventLoop::WaitForMoreEvents );
 
     // If the connection can be established automatically directly show the main window
     if ( connected )

@@ -103,6 +103,16 @@ typedef struct ctrl_protocol_version_s
 } ctrl_protocol_version_t;
 
 /**************************************************************************//**
+ * @brief system temperature struct
+ *****************************************************************************/
+typedef struct ctrl_protocol_temp_s
+{
+    uint8_t     id;         /**< temperature sensor identifier */
+    float       temp;       /**< sensor value in °C */
+    char        name[16];   /**< name of the sensor, e.g. "CPU" or "FPGA" */
+} ctrl_protocol_temp_t;
+
+/**************************************************************************//**
  * @brief Gets system information
  *
  * @param[in]  channel  control channel instance
@@ -530,6 +540,37 @@ int ctrl_protocol_set_rs485_bc_master
 );
 
 /**************************************************************************//**
+ * @brief Connection information about a device
+ *****************************************************************************/
+typedef struct ctrl_protocol_device_s
+{
+    ctrl_protocol_system_desc_t device_platform;
+    ctrl_protocol_system_desc_t device_name;
+    unsigned int rs485_address;
+    unsigned int rs485_bc_address;
+    unsigned int rs485_bc_master;
+} ctrl_protocol_device_t;
+
+/**************************************************************************//**
+ * @brief Get the device name which can be set by the user.
+ *
+ * @param[in]  channel  control channel instance
+ * @param[in]  protocol control protocol instance
+ * @param[in]  no       size of the buffer, as we can detect a maximum of 99
+ *                      devices it has to be sizeof(ctrl_protocol_device_t) * 99
+ * @param[in]  buffer   points to buffer
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_device_list
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint8_t * const              buffer
+);
+
+/**************************************************************************//**
  * @brief Get the current enable status of console prompt
  *
  * @param[in]  channel  control channel instance
@@ -610,6 +651,71 @@ int ctrl_protocol_get_runtime
 );
 
 /**************************************************************************//**
+ * @brief Gets the value of the gevin temperature sensor
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[in]   no       number of values to read, has to be
+ *                       sizeof(ctrl_protocol_temp_t)
+ * @param[out]  values   current temp struct (@see ctrl_protocol_temp_t)
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_temp
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint8_t * const              values
+);
+
+/**************************************************************************//**
+ * @brief Get the maximum logged temperature in °C
+ *
+ * @param[in]  channel  control channel instance
+ * @param[in]  protocol control protocol instance
+ * @param[out] max_temp maximum logged temperature in °C
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_max_temp
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int32_t * const              max_temp
+);
+
+/**************************************************************************//**
+ * @brief Reset the maximum logged temperature to the current temp value
+ *
+ * @param[in]  channel  control channel instance
+ * @param[in]  protocol control protocol instance
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_max_temp_reset
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel
+);
+
+/**************************************************************************//**
+ * @brief Get the amount of occured over temperature events
+ *
+ * @param[in]  channel  control channel instance
+ * @param[in]  protocol control protocol instance
+ * @param[out] count    number of over temp events that were logged
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_over_temp_count
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint32_t * const             count
+);
+
+/**************************************************************************//**
  * @brief Run the reboot command on device 
  *
  * @note       The control channel needs to be reconnected.
@@ -621,7 +727,7 @@ int ctrl_protocol_get_runtime
  *****************************************************************************/
 int ctrl_protocol_reboot
 (
-    ctrl_protocol_handle_t const handle,
+    ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel
 );
 
@@ -635,7 +741,7 @@ int ctrl_protocol_reboot
  *****************************************************************************/
 int ctrl_protocol_update
 (
-    ctrl_protocol_handle_t const handle,
+    ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel
 );
 
@@ -649,7 +755,7 @@ int ctrl_protocol_update
  *****************************************************************************/
 int ctrl_protocol_save_settings
 (
-    ctrl_protocol_handle_t const handle,
+    ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel
 );
 
@@ -663,7 +769,7 @@ int ctrl_protocol_save_settings
  *****************************************************************************/
 int ctrl_protocol_load_settings
 (
-    ctrl_protocol_handle_t const handle,
+    ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel
 );
 
@@ -677,7 +783,7 @@ int ctrl_protocol_load_settings
  *****************************************************************************/
 int ctrl_protocol_reset_settings
 (
-    ctrl_protocol_handle_t const handle,
+    ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel
 );
 
@@ -726,11 +832,16 @@ typedef struct ctrl_protocol_sys_drv_s
     ctrl_protocol_set_uint32_t      set_rs485_bc_addr;
     ctrl_protocol_get_uint8_t       get_rs485_bc_master;
     ctrl_protocol_set_int32_t       set_rs485_bc_master;
+    ctrl_protocol_uint8_array_t     get_device_list;
     ctrl_protocol_get_uint8_t       get_prompt;
     ctrl_protocol_set_uint8_t       set_prompt;
     ctrl_protocol_get_uint8_t       get_debug;
     ctrl_protocol_set_uint8_t       set_debug;
     ctrl_protocol_get_uint32_t      get_runtime;
+    ctrl_protocol_uint8_array_t     get_temp;
+    ctrl_protocol_get_int32_t       get_max_temp;
+    ctrl_protocol_run_t             max_temp_reset;
+    ctrl_protocol_get_uint32_t      get_over_temp_count;
     ctrl_protocol_run_t             reboot;
     ctrl_protocol_run_t             update;
     ctrl_protocol_run_t             save_settings;

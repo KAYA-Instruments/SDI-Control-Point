@@ -424,12 +424,14 @@ static int get_dpcc_table
                 int res = sscanf( s, CMD_SET_DPCC_PIXELn, &x, &y, &offset );
                 if ( (res == CMD_GET_DPCC_PIXEL_NO_PARMS) && (s[offset-1] == '\n') )
                 {
-                    table->x[cnt] = UINT16( x );
-                    table->y[cnt] = UINT16( y );
-                    if ( cnt++ >= table->size ) 
+                    if ( cnt >= table->size )
                     {
                         return ( -ENOMEM );
                     }
+
+                    table->x[cnt] = UINT16( x );
+                    table->y[cnt] = UINT16( y );
+                    cnt++;
 
                     // move out the processed command
                     // Note: Use memmove instead of strncpy, because dst and src overlap!

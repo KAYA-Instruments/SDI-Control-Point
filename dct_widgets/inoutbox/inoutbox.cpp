@@ -83,6 +83,7 @@ public:
 
 #define INOUT_SETTINGS_AEC_ENABLE                   ( "aec_enable" )
 #define INOUT_SETTINGS_AEC_SETPOINT                 ( "aec_setpoint" )
+#define INOUT_SETTINGS_AEC_MAX_ISO                  ( "aec_max_iso" )
 #define INOUT_SETTINGS_AEC_SPEED                    ( "aec_speed" )
 #define INOUT_SETTINGS_AEC_FLICKER                  ( "aec_flicker" )
 
@@ -95,6 +96,7 @@ public:
 #define INOUT_SETTINGS_SDI2_MODE                    ( "sdi2_mode" )
 #define INOUT_SETTINGS_FLIP_MODE                    ( "flip_mode" )
 #define INOUT_SETTINGS_TEST_PATTERN                 ( "test_pattern" )
+#define INOUT_SETTINGS_AUDIO_ENABLE                 ( "audio_enable" )
 
 #define INOUT_SETTINGS_GENLOCK_MODE                 ( "genlock_mode" )
 #define INOUT_SETTINGS_GENLOCK_OFFSET_VERTICAL      ( "genlock_offset_vertical" )
@@ -106,10 +108,11 @@ typedef struct aec_setup_t {
     int setPoint;
     int speed;
     int ClmTolerance;
-    int cost_gain;
-    int cost_t_int;
-    int cost_aperture;
-    int t_af;
+    int costGain;
+    int costTInt;
+    int costAperture;
+    int tAf;
+    int maxGain;
 } aec_setup_t;
 
 /******************************************************************************
@@ -172,6 +175,9 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
 
     d_data->m_ui->sbxSetPoint->setRange( 50, 3000 );
     d_data->m_ui->sldSetPoint->setRange( 50, 3000 );
+
+    d_data->m_ui->sbxMaxIso->setRange( 80, 400 );
+    d_data->m_ui->sldMaxIso->setRange( 80, 400 );
     
     d_data->m_ui->sbxControlSpeed->setRange( 3, 30 );
     d_data->m_ui->sldControlSpeed->setRange( 3, 30 );
@@ -230,6 +236,7 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->sbxGenLockOffsetVertical  ->setStyle( d_data->m_sbxStyle );
     d_data->m_ui->sbxGenlockOffsetHorizontal->setStyle( d_data->m_sbxStyle );
     d_data->m_ui->sbxSetPoint               ->setStyle( d_data->m_sbxStyle );
+    d_data->m_ui->sbxMaxIso                 ->setStyle( d_data->m_sbxStyle );
     d_data->m_ui->sbxAperture               ->setStyle( d_data->m_sbxStyle );
     d_data->m_ui->sbxK                      ->setStyle( d_data->m_sbxStyle );
     d_data->m_ui->sbxOffset                 ->setStyle( d_data->m_sbxStyle );
@@ -254,6 +261,9 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->cbxSdi2Mode    , SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxSdi2ModeChange(int)) );
     connect( d_data->m_ui->cbxFlipMode    , SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxFlipModeChange(int)) );
     connect( d_data->m_ui->cbxTestPattern , SIGNAL(stateChanged(int)), this, SLOT(onCbxTestPatternChange(int)) );
+
+    // audio
+    connect( d_data->m_ui->cbxAudioEnable , SIGNAL(stateChanged(int)), this, SLOT(onCbxAudioEnableChange(int)) );
     
     // genlock
     connect( d_data->m_ui->cbxGenLockMode , SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxGenlockModeChange(int)) );
@@ -267,6 +277,10 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->sldSetPoint    , SIGNAL(valueChanged(int)), this, SLOT(onSldSetPointChange(int)) );
     connect( d_data->m_ui->sldSetPoint    , SIGNAL(sliderReleased()), this, SLOT(onSldSetPointReleased()) );
     connect( d_data->m_ui->sbxSetPoint    , SIGNAL(valueChanged(int)), this, SLOT(onSbxSetPointChange(int)) );
+
+    connect( d_data->m_ui->sldMaxIso    , SIGNAL(valueChanged(int)), this, SLOT(onSldMaxIsoChange(int)) );
+    connect( d_data->m_ui->sldMaxIso    , SIGNAL(sliderReleased()), this, SLOT(onSldMaxIsoReleased()) );
+    connect( d_data->m_ui->sbxMaxIso    , SIGNAL(valueChanged(int)), this, SLOT(onSbxMaxIsoChange(int)) );
 
     connect( d_data->m_ui->sldControlSpeed, SIGNAL(valueChanged(int)), this, SLOT(onSldControlSpeedChange(int)) );
     connect( d_data->m_ui->sldControlSpeed, SIGNAL(sliderReleased()), this, SLOT(onSldControlSpeedReleased()) );
@@ -316,17 +330,17 @@ InOutBox::~InOutBox()
 /******************************************************************************
  * gain_to_iso
  *****************************************************************************/
-int InOutBox::gainToIso( int gain )
+int InOutBox::gainToIso( int gain ) const
 {
-    return ( (gain * d_data->m_minIso) / 1000 );
+    return ( ((gain * d_data->m_minIso) + 500) / 1000 );
 }
 
 /******************************************************************************
  * isoToGain
  *****************************************************************************/
-int InOutBox::isoToGain( int iso )
+int InOutBox::isoToGain( int iso ) const
 {
-    return ( (iso * 1000) / d_data->m_minIso );
+    return ( ((iso * 1000) + 500) / d_data->m_minIso );
 }
 
 /******************************************************************************
@@ -469,6 +483,34 @@ void InOutBox::setAecSetPoint( const int value )
 }
 
 /******************************************************************************
+ * InOutBox::AecMaxIso
+ *****************************************************************************/
+int InOutBox::AecMaxIso() const
+{
+    return ( gainToIso(d_data->m_AecSetup.maxGain) );
+}
+
+/******************************************************************************
+ * InOutBox::setAecMaxIso
+ *****************************************************************************/
+void InOutBox::setAecMaxIso( const int value )
+{
+    d_data->m_ui->sbxMaxIso->blockSignals( true );
+    d_data->m_ui->sbxMaxIso->setValue( value );
+    d_data->m_ui->sbxMaxIso->blockSignals( false );
+
+    d_data->m_ui->sldMaxIso->blockSignals( true );
+    d_data->m_ui->sldMaxIso->setValue( value );
+    d_data->m_ui->sldMaxIso->blockSignals( false );
+
+    d_data->m_AecSetup.maxGain = isoToGain( value );
+
+    setWaitCursor();
+    emit AecSetupChanged( createAecVector() );
+    setNormalCursor();
+}
+
+/******************************************************************************
  * InOutBox::AecControlSpeed
  *****************************************************************************/
 int InOutBox::AecControlSpeed() const
@@ -501,7 +543,7 @@ void InOutBox::setAecControlSpeed( const int value )
  *****************************************************************************/
 int InOutBox::AecFlickerFrequency() const
 {
-    return ( d_data->m_AecSetup.t_af );
+    return ( d_data->m_AecSetup.tAf );
 }
 
 /******************************************************************************
@@ -511,19 +553,19 @@ void InOutBox::setAecFlickerFrequency( const int value )
 {
     if ( value == 8333 || value == 10000 )
     {
-        d_data->m_AecSetup.t_af = value;
+        d_data->m_AecSetup.tAf = value;
     }
     else
     {
-        d_data->m_AecSetup.t_af = 10000;
+        d_data->m_AecSetup.tAf = 10000;
     }
 
     d_data->m_ui->rdbTaf50Hz->blockSignals( true );
-    d_data->m_ui->rdbTaf50Hz->setChecked( d_data->m_AecSetup.t_af == 10000 );
+    d_data->m_ui->rdbTaf50Hz->setChecked( d_data->m_AecSetup.tAf == 10000 );
     d_data->m_ui->rdbTaf50Hz->blockSignals( false );
     
     d_data->m_ui->rdbTaf60Hz->blockSignals( true );
-    d_data->m_ui->rdbTaf60Hz->setChecked( d_data->m_AecSetup.t_af == 8333 );
+    d_data->m_ui->rdbTaf60Hz->setChecked( d_data->m_AecSetup.tAf == 8333 );
     d_data->m_ui->rdbTaf60Hz->blockSignals( false );
 
     setWaitCursor();
@@ -668,6 +710,26 @@ void InOutBox::setTestPattern( const bool value )
 }
 
 /******************************************************************************
+ * InOutBox::AudioEnable
+ *****************************************************************************/
+bool InOutBox::AudioEnable() const
+{
+    return ( d_data->m_ui->cbxAudioEnable->isChecked() );
+}
+
+/******************************************************************************
+ * InOutBox::setAudioEnable
+ *****************************************************************************/
+void InOutBox::setAudioEnable( const bool value )
+{
+    d_data->m_ui->cbxAudioEnable->blockSignals( true );
+    d_data->m_ui->cbxAudioEnable->setChecked( value ? Qt::Checked : Qt::Unchecked );
+    d_data->m_ui->cbxAudioEnable->blockSignals( false );
+
+    emit ChainAudioEnableChanged( value ? 1 : 0 );
+}
+
+/******************************************************************************
  * InOutBox::GenLockMode
  *****************************************************************************/
 QString InOutBox::GenLockMode() const
@@ -773,12 +835,14 @@ void InOutBox::loadSettings( QSettings & s )
     setSdi2Mode( s.value( INOUT_SETTINGS_SDI2_MODE ).toString() );
     setFlipMode( s.value( INOUT_SETTINGS_FLIP_MODE ).toString() );
     setTestPattern( s.value( INOUT_SETTINGS_TEST_PATTERN ).toBool() );
+    setAudioEnable( s.value( INOUT_SETTINGS_AUDIO_ENABLE ).toBool() );
 
     setBayerPattern( s.value( INOUT_SETTINGS_BAYER_PATTERN ).toInt() );
     setCameraIso( s.value( INOUT_SETTINGS_CAMERA_ISO ).toInt() );
     setCameraExposure( s.value( INOUT_SETTINGS_CAMERA_EXPOSURE ).toInt() );
 
     setAecSetPoint( s.value( INOUT_SETTINGS_AEC_SETPOINT ).toInt() );
+    setAecMaxIso( s.value( INOUT_SETTINGS_AEC_MAX_ISO ).toInt() );
     setAecControlSpeed( s.value( INOUT_SETTINGS_AEC_SPEED ).toInt() );
     setAecFlickerFrequency( s.value( INOUT_SETTINGS_AEC_FLICKER ).toInt() );
     setAecEnable( s.value( INOUT_SETTINGS_AEC_ENABLE ).toBool() );
@@ -812,6 +876,7 @@ void InOutBox::saveSettings( QSettings & s )
     
     s.setValue( INOUT_SETTINGS_AEC_ENABLE                   , AecEnable() );
     s.setValue( INOUT_SETTINGS_AEC_SETPOINT                 , AecSetPoint() );
+    s.setValue( INOUT_SETTINGS_AEC_MAX_ISO                  , AecMaxIso() );
     s.setValue( INOUT_SETTINGS_AEC_SPEED                    , AecControlSpeed() );
     s.setValue( INOUT_SETTINGS_AEC_FLICKER                  , AecFlickerFrequency() );
 
@@ -824,6 +889,7 @@ void InOutBox::saveSettings( QSettings & s )
     s.setValue( INOUT_SETTINGS_SDI2_MODE                    , Sdi2Mode() );
     s.setValue( INOUT_SETTINGS_FLIP_MODE                    , FlipMode() );
     s.setValue( INOUT_SETTINGS_TEST_PATTERN                 , TestPattern() );
+    s.setValue( INOUT_SETTINGS_AUDIO_ENABLE                 , AudioEnable() );
 
     s.setValue( INOUT_SETTINGS_GENLOCK_MODE                 , GenLockMode() );
     s.setValue( INOUT_SETTINGS_GENLOCK_OFFSET_VERTICAL      , GenLockOffsetVertical() );
@@ -843,6 +909,7 @@ void InOutBox::applySettings( void )
     emit ChainSdi2ModeChanged( d_data->m_ui->cbxSdi2Mode->currentData().toInt() );
     emit ChainFlipModeChanged( d_data->m_ui->cbxFlipMode->currentData().toInt() );
     emit OsdTestPatternChanged( TestPattern() );
+    emit ChainAudioEnableChanged( AudioEnable() );
 
     emit BayerPatternChanged( BayerPattern() );
     emit CameraGainChanged( gainToIso(CameraIso()) );
@@ -1033,6 +1100,16 @@ void InOutBox::setTestPatternVisible(const bool value)
 }
 
 /******************************************************************************
+ * InOutBox::setAudioEnableVisible
+ *****************************************************************************/
+void InOutBox::setAudioEnableVisible(const bool value)
+{
+    d_data->m_ui->lblAudioEnable->setVisible(value);
+    d_data->m_ui->cbxAudioEnable->setVisible(value);
+}
+
+
+/******************************************************************************
  * InOutBox::onBayerPatternChange
  *****************************************************************************/
 void InOutBox::onBayerPatternChange( int value )
@@ -1062,6 +1139,15 @@ void InOutBox::onCameraInfoChange( int min_gain, int max_gain, int min_exposure,
     d_data->m_ui->sldIso->blockSignals( true );
     d_data->m_ui->sldIso->setRange( gainToIso(min_gain), gainToIso(max_gain) );
     d_data->m_ui->sldIso->blockSignals( false );
+
+    // Set max iso range for auto exposure control
+    d_data->m_ui->sbxMaxIso->blockSignals( true );
+    d_data->m_ui->sbxMaxIso->setRange( gainToIso(min_gain), gainToIso(max_gain) );
+    d_data->m_ui->sbxMaxIso->blockSignals( false );
+
+    d_data->m_ui->sldMaxIso->blockSignals( true );
+    d_data->m_ui->sldMaxIso->setRange( gainToIso(min_gain), gainToIso(max_gain) );
+    d_data->m_ui->sldMaxIso->blockSignals( false );
 
     // Set exposure range
     d_data->m_ui->sbxExposure->blockSignals( true );
@@ -1153,6 +1239,18 @@ void InOutBox::onOsdTestPatternChange( int value )
     d_data->m_ui->cbxTestPattern->setCheckState( value ? Qt::Checked : Qt::Unchecked );
     d_data->m_ui->cbxTestPattern->blockSignals( false );
 }
+
+/******************************************************************************
+ * InOutBox::onChainAudioEnableChange
+ *****************************************************************************/
+void InOutBox::onChainAudioEnableChange( bool enable )
+{
+    // set value of checkbox
+    d_data->m_ui->cbxAudioEnable->blockSignals( true );
+    d_data->m_ui->cbxAudioEnable->setCheckState( enable ? Qt::Checked : Qt::Unchecked );
+    d_data->m_ui->cbxAudioEnable->blockSignals( false );
+}
+
 
 /******************************************************************************
  * InOutBox::onChainGenlockModeChange
@@ -1336,6 +1434,16 @@ void InOutBox::onCbxTestPatternChange( int value )
 }
 
 /******************************************************************************
+ * InOutBox::onCbxAudioEnableChange
+ *****************************************************************************/
+void InOutBox::onCbxAudioEnableChange( int value )
+{
+    setWaitCursor();
+    emit ChainAudioEnableChanged( (value == Qt::Checked) ? true : false );
+    setNormalCursor();
+}
+
+/******************************************************************************
  * InOutBox::onCbxGenlockModeChange
  *****************************************************************************/
 void InOutBox::onCbxGenlockModeChange( int index )
@@ -1440,16 +1548,17 @@ void InOutBox::onAecEnableChange( int enable )
  *****************************************************************************/
 void InOutBox::onAecSetupChange( QVector<int> values )
 {
-    if ( values.count() == 8 )
+    if ( values.count() == 9 )
     {
-        d_data->m_AecSetup.run           = values[0];
-        d_data->m_AecSetup.setPoint      = values[1];
-        d_data->m_AecSetup.speed         = values[2];
-        d_data->m_AecSetup.ClmTolerance  = values[3];
-        d_data->m_AecSetup.cost_gain     = values[4];
-        d_data->m_AecSetup.cost_t_int    = values[5];
-        d_data->m_AecSetup.cost_aperture = values[6];
-        d_data->m_AecSetup.t_af          = values[7];
+        d_data->m_AecSetup.run          = values[0];
+        d_data->m_AecSetup.setPoint     = values[1];
+        d_data->m_AecSetup.speed        = values[2];
+        d_data->m_AecSetup.ClmTolerance = values[3];
+        d_data->m_AecSetup.costGain     = values[4];
+        d_data->m_AecSetup.costTInt     = values[5];
+        d_data->m_AecSetup.costAperture = values[6];
+        d_data->m_AecSetup.tAf          = values[7];
+        d_data->m_AecSetup.maxGain      = values[8];
 
         updateAecSetupWidgets();
     }
@@ -1500,6 +1609,56 @@ void InOutBox::onSbxSetPointChange( int value )
 
     d_data->m_AecSetup.setPoint = value;
     
+    setWaitCursor();
+    emit AecSetupChanged( createAecVector() );
+    setNormalCursor();
+}
+
+/******************************************************************************
+ * InOutBox::onSldMaxIsoChange
+ *****************************************************************************/
+void InOutBox::onSldMaxIsoChange( int value )
+{
+    d_data->m_ui->sbxMaxIso->blockSignals( true );
+    d_data->m_ui->sbxMaxIso->setValue( value );
+    d_data->m_ui->sbxMaxIso->blockSignals( false );
+
+    d_data->m_AecSetup.maxGain = isoToGain( value );
+
+    if ( (d_data->m_ui->sldMaxIso->isSliderDown()  ) &&
+         (d_data->m_cntEvents++ > d_data->m_maxEvents) )
+    {
+        d_data->m_cntEvents = 0;
+
+        setWaitCursor();
+        emit AecSetupChanged( createAecVector() );
+        setNormalCursor();
+    }
+}
+
+/******************************************************************************
+ * InOutBox::onSldMaxIsoReleased
+ *****************************************************************************/
+void InOutBox::onSldMaxIsoReleased()
+{
+    d_data->m_cntEvents = 0;
+
+    setWaitCursor();
+    emit AecSetupChanged( createAecVector() );
+    setNormalCursor();
+}
+
+/******************************************************************************
+ * InOutBox::onSbxMaxIsoChange
+ *****************************************************************************/
+void InOutBox::onSbxMaxIsoChange( int value )
+{
+    d_data->m_ui->sldMaxIso->blockSignals( true );
+    d_data->m_ui->sldMaxIso->setValue( value );
+    d_data->m_ui->sldMaxIso->blockSignals( false );
+
+    d_data->m_AecSetup.maxGain = isoToGain( value );
+
     setWaitCursor();
     emit AecSetupChanged( createAecVector() );
     setNormalCursor();
@@ -1595,6 +1754,14 @@ void InOutBox::updateAecSetupWidgets( void )
     d_data->m_ui->sldSetPoint->setValue( d_data->m_AecSetup.setPoint );
     d_data->m_ui->sldSetPoint->blockSignals( false );
 
+    // Max ISO
+    d_data->m_ui->sbxMaxIso->blockSignals( true );
+    d_data->m_ui->sbxMaxIso->setValue( gainToIso(d_data->m_AecSetup.maxGain) );
+    d_data->m_ui->sbxMaxIso->blockSignals( false );
+    d_data->m_ui->sldMaxIso->blockSignals( true );
+    d_data->m_ui->sldMaxIso->setValue( gainToIso(d_data->m_AecSetup.maxGain) );
+    d_data->m_ui->sldMaxIso->blockSignals( false );
+
     // Control Speed
     d_data->m_ui->sbxControlSpeed->blockSignals( true );
     d_data->m_ui->sbxControlSpeed->setValue( d_data->m_AecSetup.speed );
@@ -1605,11 +1772,11 @@ void InOutBox::updateAecSetupWidgets( void )
 
     // flicker
     d_data->m_ui->rdbTaf50Hz->blockSignals( true );
-    d_data->m_ui->rdbTaf50Hz->setChecked( d_data->m_AecSetup.t_af == 10000 );
+    d_data->m_ui->rdbTaf50Hz->setChecked( d_data->m_AecSetup.tAf == 10000 );
     d_data->m_ui->rdbTaf50Hz->blockSignals( false );
 
     d_data->m_ui->rdbTaf60Hz->blockSignals( true );
-    d_data->m_ui->rdbTaf60Hz->setChecked( d_data->m_AecSetup.t_af == 8333 );
+    d_data->m_ui->rdbTaf60Hz->setChecked( d_data->m_AecSetup.tAf == 8333 );
     d_data->m_ui->rdbTaf60Hz->blockSignals( false );
 }
 
@@ -1661,8 +1828,13 @@ void InOutBox::enableAecWidgets( bool enable )
 {
     d_data->m_ui->sbxSetPoint->setEnabled( enable );
     d_data->m_ui->sldSetPoint->setEnabled( enable );
+
+    d_data->m_ui->sbxMaxIso->setEnabled( enable );
+    d_data->m_ui->sldMaxIso->setEnabled( enable );
+
     d_data->m_ui->sbxControlSpeed->setEnabled( enable );
     d_data->m_ui->sldControlSpeed->setEnabled( enable );
+
     d_data->m_ui->rdbTaf50Hz->setEnabled( enable );
     d_data->m_ui->rdbTaf60Hz->setEnabled( enable );
 }
@@ -1688,15 +1860,16 @@ void InOutBox::enableCamConfWidgets( bool enable )
 QVector<int> InOutBox::createAecVector( void )
 {
     // pack aec setup values into vector
-    QVector<int> values(8);
+    QVector<int> values(9);
     values[0] = d_data->m_AecSetup.run;
     values[1] = d_data->m_AecSetup.setPoint;
     values[2] = d_data->m_AecSetup.speed;
     values[3] = d_data->m_AecSetup.ClmTolerance;
-    values[4] = d_data->m_AecSetup.cost_gain;
-    values[5] = d_data->m_AecSetup.cost_t_int;
-    values[6] = d_data->m_AecSetup.cost_aperture;
-    values[7] = d_data->m_AecSetup.t_af;
+    values[4] = d_data->m_AecSetup.costGain;
+    values[5] = d_data->m_AecSetup.costTInt;
+    values[6] = d_data->m_AecSetup.costAperture;
+    values[7] = d_data->m_AecSetup.tAf;
+    values[8] = d_data->m_AecSetup.maxGain;
     return ( values );
 }
 
@@ -1730,7 +1903,7 @@ void InOutBox::onBtnTimecodeSetClicked()
     v_time[2] = time.second();
 
     setWaitCursor();
-    emit TimecodeSet( v_time );
+    emit ChainTimecodeSetChanged( v_time );
     setNormalCursor();
 }
 
@@ -1740,7 +1913,7 @@ void InOutBox::onBtnTimecodeSetClicked()
 void InOutBox::onBtnTimecodeGetClicked()
 {
     setWaitCursor();
-    emit TimecodeGet();
+    emit ChainTimecodeGetRequested();
     setNormalCursor();
 }
 
@@ -1750,22 +1923,22 @@ void InOutBox::onBtnTimecodeGetClicked()
 void InOutBox::onBtnTimecodeHoldClicked( bool checked )
 {
     setWaitCursor();
-    emit TimecodeHold( checked );
+    emit ChainTimecodeHoldChanged( checked );
     setNormalCursor();
 }
 
 /******************************************************************************
- * InOutBox::onTimecodeChange
+ * InOutBox::onChainTimecodeChange
  *****************************************************************************/
-void InOutBox::onTimecodeChange( QVector<int> time )
+void InOutBox::onChainTimecodeChange( QVector<int> time )
 {
     d_data->m_ui->tmeTimecode->setTime( QTime(time[0], time[1], time[2]) );
 }
 
 /******************************************************************************
- * InOutBox::onTimecodeHoldChange
+ * InOutBox::onChainTimecodeHoldChange
  *****************************************************************************/
-void InOutBox::onTimecodeHoldChange( bool enable )
+void InOutBox::onChainTimecodeHoldChange( bool enable )
 {
     d_data->m_ui->btnHoldTimecode->blockSignals( true );
     d_data->m_ui->btnHoldTimecode->setChecked( enable );
@@ -1780,12 +1953,12 @@ void InOutBox::onTafToggle( bool )
     if( d_data->m_ui->rdbTaf50Hz->isChecked() )
     {
         // 50 Hz
-        d_data->m_AecSetup.t_af = 10000;
+        d_data->m_AecSetup.tAf = 10000;
     }
     else
     {
         // 60 Hz
-        d_data->m_AecSetup.t_af = 8333;
+        d_data->m_AecSetup.tAf = 8333;
     }
 
     setWaitCursor();

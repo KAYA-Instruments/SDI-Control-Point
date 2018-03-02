@@ -58,6 +58,8 @@ public:
     void setAecEnable( const bool value );
     int AecSetPoint() const;
     void setAecSetPoint( const int value );
+    int AecMaxIso() const;
+    void setAecMaxIso( const int value );
     int AecControlSpeed() const;
     void setAecControlSpeed( const int value );
     int AecFlickerFrequency() const;
@@ -77,6 +79,8 @@ public:
     void setFlipMode( const QString mode );
     bool TestPattern() const;
     void setTestPattern( const bool value );
+    bool AudioEnable() const;
+    void setAudioEnable( const bool value );
 
     QString GenLockMode() const;
     void setGenLockMode( const QString mode );
@@ -104,6 +108,7 @@ public:
     void setSdi2ModeVisible(const bool value);
     void setFlipModeVisible(const bool vertical, const bool horizontal);
     void setTestPatternVisible(const bool value);
+    void setAudioEnableVisible(const bool value);
 
 protected:
     void prepareMode( const Mode ) Q_DECL_OVERRIDE;
@@ -132,6 +137,7 @@ signals:
     void ChainSdi2ModeChanged( int value );
     void ChainFlipModeChanged( int value );
     void OsdTestPatternChanged( int value );
+    void ChainAudioEnableChanged( bool enable );
     
     void ChainGenlockModeChanged( int value );
     void ChainGenlockOffsetChanged( int vertical, int horizontal );
@@ -140,9 +146,9 @@ signals:
     void AecEnableChanged( int value );
     void AecSetupChanged( QVector<int> values );
 
-    void TimecodeGet( void );
-    void TimecodeSet( QVector<int> );
-    void TimecodeHold( bool );
+    void ChainTimecodeGetRequested( void );
+    void ChainTimecodeSetChanged( QVector<int> );
+    void ChainTimecodeHoldChanged( bool );
 
     void IrisAptChanged( int );
 
@@ -159,6 +165,7 @@ public slots:
     void onChainSdi2ModeChange( int value );
     void onChainFlipModeChange( int value );
     void onOsdTestPatternChange( int value );
+    void onChainAudioEnableChange( bool enable );
 
     void onChainGenlockModeChange( int value );
     void onChainGenlockOffsetChange( int vertical , int horizontal );
@@ -171,8 +178,8 @@ public slots:
 
     void onLscChange( QVector<uint> values );
 
-    void onTimecodeChange( QVector<int> time );
-    void onTimecodeHoldChange( bool enable );
+    void onChainTimecodeChange( QVector<int> time );
+    void onChainTimecodeHoldChange( bool enable );
 
     void onIrisAptChange( int value );
     void onIrisAptError( void );
@@ -193,6 +200,7 @@ private slots:
     void onCbxSdi2ModeChange( int value );
     void onCbxFlipModeChange( int value );
     void onCbxTestPatternChange( int value );
+    void onCbxAudioEnableChange( int value );
     
     void onCbxGenlockModeChange( int index );
 
@@ -206,6 +214,10 @@ private slots:
     void onSldSetPointChange( int value );
     void onSldSetPointReleased();
     void onSbxSetPointChange( int value );
+
+    void onSldMaxIsoChange( int value );
+    void onSldMaxIsoReleased();
+    void onSbxMaxIsoChange( int value );
     
     void onSldControlSpeedChange( int value );
     void onSldControlSpeedReleased();
@@ -240,8 +252,8 @@ private:
     class PrivateData;
     PrivateData * d_data;
 
-    int gainToIso( int gain );
-    int isoToGain( int iso );
+    int gainToIso( int gain ) const;
+    int isoToGain( int iso ) const;
 
 };
 

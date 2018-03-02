@@ -25,6 +25,8 @@
 
 #include <ctrl_protocol/ctrl_protocol_lut.h>
 
+#include <defines.h>
+
 #include "common.h"
 #include "LutItf.h"
 
@@ -35,9 +37,13 @@
  *****************************************************************************/
 void LutItf::resync()
 {
-    // enable status
-    GetLutEnable( 0 );
-    GetLutEnable( 1 );
+    // enable status for each chain
+    /* Note: On some devices not all chains will be available, in this case GetLutEnable
+     * will report an error, but that is no problem */
+    for ( int i = 0; i < MAX_NUM_CHAINS; i++ )
+    {
+        GetLutEnable( i );
+    }
 
     // operational mode
     GetLutMode();

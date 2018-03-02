@@ -32,6 +32,8 @@
 #include <csvwrapper.h>
 #include <simple_math/gamma.h>
 
+#include <defines.h>
+
 #include "cubic_interpolation.h"
 #include "lutbox.h"
 #include "ui_lutbox.h"
@@ -231,7 +233,7 @@ public:
     PrivateData( QWidget * parent )
         : m_ui( new Ui::UI_LutBox )
         , m_delegate( new LutDelegate( 0, ((1 << DEFAULT_BIT_WIDTH) - 1)) )
-        , m_enable( true )
+        , m_active_chain_idx( 0 )
         , m_mode( LUT_MODE_INVALID )
         , m_fixed_mode( LUT_FIXED_INVALID )
         , m_preset( 0 )
@@ -240,6 +242,12 @@ public:
     {
         // initialize UI
         m_ui->setupUi( parent );
+
+        // Initialize enable to false for all chains, will be updated when syncronizing with the device
+        for ( int i = 0; i < MAX_NUM_CHAINS; i++ )
+        {
+            m_enable[i] = false;
+        }
 
         // configure REC.709 default
         m_ui->sbxRec709LinContrast->setRange( 
@@ -858,7 +866,8 @@ public:
 
     Ui::UI_LutBox *         m_ui;                           /**< ui handle */
     LutDelegate *           m_delegate;                     /**< delegation class */
-    bool                    m_enable;                       /**< enable status */
+    int                     m_active_chain_idx;             /**< index of the currently active chain */
+    bool                    m_enable[MAX_NUM_CHAINS];       /**< enable status for the lut in each chain */
     int                     m_mode;                         /**< operational mode */
     int                     m_fixed_mode;                   /**< fixed gamma curve mode */
     int                     m_preset;                       /**< current preset */
@@ -967,7 +976,7 @@ LutBox::~LutBox()
  *****************************************************************************/
 bool LutBox::LutEnable() const
 {
-    return ( d_data->m_enable );
+    return ( d_data->m_enable[d_data->m_active_chain_idx] );
 }
 
 /******************************************************************************
@@ -975,7 +984,7 @@ bool LutBox::LutEnable() const
  *****************************************************************************/
 void LutBox::setLutEnable( const bool value )
 {
-    d_data->m_enable = value;
+    d_data->m_enable[d_data->m_active_chain_idx] = value;
 }
 
 /******************************************************************************
@@ -1102,22 +1111,22 @@ void LutBox::loadSettings( QSettings & s )
     QVector<int> x;
     QVector<int> y;
     
-    s.beginGroup( LUT_SETTINGS_SECTION_NAME);
+    s.beginGroup( QString(LUT_SETTINGS_SECTION_NAME) + QString::number(d_data->m_active_chain_idx) );
 
     // set lut enable
-    setLutEnable( s.value( LUT_SETTINGS_ENABLE).toBool() );
+    setLutEnable( s.value(LUT_SETTINGS_ENABLE).toBool() );
 
     // set lut mode
-    setLutMode( s.value( LUT_SETTINGS_MODE).toInt() );
+    setLutMode( s.value(LUT_SETTINGS_MODE).toInt() );
 
     // set fixed mode
-    setLutFixedMode( s.value( LUT_SETTINGS_FIXED_MODE).toInt() );
+    setLutFixedMode( s.value(LUT_SETTINGS_FIXED_MODE).toInt() );
 
     // set lut fast gamma
-    setLutFastGamma( s.value( LUT_SETTINGS_FAST_GAMMA).toInt() );
+    setLutFastGamma( s.value(LUT_SETTINGS_FAST_GAMMA).toInt() );
 
     // get lut preset number and set it
-    int presetStorage = s.value( LUT_SETTINGS_STORAGE).toInt();
+    int presetStorage = s.value(LUT_SETTINGS_STORAGE).toInt();
     setLutPresetStorage( presetStorage );
 
     // disable updates to the view, otherwise the user can see the iterations
@@ -1142,23 +1151,23 @@ void LutBox::loadSettings( QSettings & s )
             switch ( ch )
             {
                 case Red:
-                    name_x = QString( "%1_%2" ).arg( LUT_SETTINGS_SAMPLE_RED_X).arg( preset );
-                    name_y = QString( "%1_%2" ).arg( LUT_SETTINGS_SAMPLE_RED_Y).arg( preset );
+                    name_x = QString( "%1_%2" ).arg(LUT_SETTINGS_SAMPLE_RED_X).arg( preset );
+                    name_y = QString( "%1_%2" ).arg(LUT_SETTINGS_SAMPLE_RED_Y).arg( preset );
                     break;
 
                 case Green:
-                    name_x = QString( "%1_%2" ).arg( LUT_SETTINGS_SAMPLE_GREEN_X).arg( preset );;
-                    name_y = QString( "%1_%2" ).arg( LUT_SETTINGS_SAMPLE_GREEN_Y).arg( preset );;
+                    name_x = QString( "%1_%2" ).arg(LUT_SETTINGS_SAMPLE_GREEN_X).arg( preset );;
+                    name_y = QString( "%1_%2" ).arg(LUT_SETTINGS_SAMPLE_GREEN_Y).arg( preset );;
                     break;
 
                 case Blue:
-                    name_x = QString( "%1_%2" ).arg( LUT_SETTINGS_SAMPLE_BLUE_X).arg( preset );;
-                    name_y = QString( "%1_%2" ).arg( LUT_SETTINGS_SAMPLE_BLUE_Y).arg( preset );;
+                    name_x = QString( "%1_%2" ).arg(LUT_SETTINGS_SAMPLE_BLUE_X).arg( preset );;
+                    name_y = QString( "%1_%2" ).arg(LUT_SETTINGS_SAMPLE_BLUE_Y).arg( preset );;
                     break;
 
                 default:
-                    name_x = QString( "%1_%2" ).arg( LUT_SETTINGS_SAMPLE_X).arg( preset );;
-                    name_y = QString( "%1_%2" ).arg( LUT_SETTINGS_SAMPLE_Y).arg( preset );;
+                    name_x = QString( "%1_%2" ).arg(LUT_SETTINGS_SAMPLE_X).arg( preset );;
+                    name_y = QString( "%1_%2" ).arg(LUT_SETTINGS_SAMPLE_Y).arg( preset );;
                     break;
             }
 
@@ -1225,7 +1234,7 @@ void LutBox::saveSettings( QSettings & s )
     // before storing, get current preset storage number, because it will be iterated in the save loop
     int currentPreset = LutPresetStorage();
 
-    s.beginGroup( LUT_SETTINGS_SECTION_NAME );
+    s.beginGroup( QString(LUT_SETTINGS_SECTION_NAME) + QString::number(d_data->m_active_chain_idx) );
 
     // Store general lut settings
     s.setValue( LUT_SETTINGS_ENABLE    , LutEnable() );
@@ -1313,7 +1322,8 @@ void LutBox::applySettings( void )
     QVector<int> x;
     QVector<int> y;
 
-    // general lut settins
+    // general lut settings
+    emit LutEnableChanged( d_data->m_active_chain_idx, LutEnable() );
     emit LutModeChanged( LutMode() );
     emit LutFixedModeChanged( LutFixedMode() );
     emit LutFastGammaChanged( LutFastGamma() );
@@ -1411,11 +1421,22 @@ void LutBox::saveProfile( QSettings & s )
 }
 
 /******************************************************************************
+ * LutBox::onSdiOutChange
+ *****************************************************************************/
+void LutBox::onSdiOutChange( int value )
+{
+    if ( value > 0 && value <= MAX_NUM_CHAINS )
+    {
+        d_data->m_active_chain_idx = value - 1;
+    }
+}
+
+/******************************************************************************
  * LutBox::onLutEnableChange
  *****************************************************************************/
-void LutBox::onLutEnableChange( int, int value )
+void LutBox::onLutEnableChange( int index, int value )
 {
-    d_data->m_enable = value ? true : false;
+    d_data->m_enable[index] = value ? true : false;
 }
 
 /******************************************************************************
@@ -1528,6 +1549,9 @@ void LutBox::onLutModeChange( int mode )
  *****************************************************************************/
 void LutBox::onLutFixedModeChange( int mode )
 {
+    // Store mode
+    d_data->m_fixed_mode = mode;
+
     // Check if lut is in fixed mode
     if ( LutMode() != LUT_MODE_FIXED )
     {
@@ -1552,9 +1576,6 @@ void LutBox::onLutFixedModeChange( int mode )
     {
         d_data->m_ui->rbFixedHLG->setChecked( true );
     }
-
-    // Store mode
-    d_data->m_fixed_mode = mode;
 
     // Draw the plot
     d_data->drawFixedModePlot( Master, LutFixedMode() );
