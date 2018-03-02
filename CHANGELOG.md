@@ -4,13 +4,25 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
+Version **1.1.0** - 02.03.2018
+
+* Added a slider to change the maximum allowed gain that can be used by the auto exposure
+* Fixed bugs where settings where not saved correctly
+* The GUI will now save the settings for all outputs
+* Removed support for Cameleon devices
+* Added new info dialog which is displayed when the GUI waits for a process to finish
+* Added new device scan mechanism which is a lot faster than the old one but needs devices with an updated firmware. The old mechanism is still available after the new scan failed
+* Added an online update function to the update tab where device updates can be downloaded and installed automatically
+* Added an online check for a new GUI version, but the user has to download the new version manually
+* Added device temperature statistics to the info tab
+
+## Older Releases:
+
 Version **1.0.11** - 26.01.2018
 
 * Fixed a bug where the device ID was not correctly displayed in the info tab (the third and fourth id field were identical)
 * Fixed a bug where the settings dialog could trigger events like setting the device name multiple times if the GUI had been reconnected before
-* Fixed a bug where load / store of the device settings did not work because the device name did not match. We now check whether the platform ID matches.
-
-## Older Releases:
+* Fixed a bug where load / store of the device settings did not work because the device name did not match. We now check whether the platform ID matches
 
 Version **1.0.10** - 11.01.2018
 
