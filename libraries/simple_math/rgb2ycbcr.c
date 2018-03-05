@@ -46,11 +46,11 @@ int cal_YCbCr_coefficients_bt601
     *c3 = -(Cb_MAX * Kr_BT601) / (1.0000f - Kb_BT601);
     *c4 = -(Cb_MAX * Kg_BT601) / (1.0000f - Kb_BT601);
     *c5 =   Cb_MAX;
-    
+
     *c6 =   Cr_MAX;
     *c7 = -(Cr_MAX * Kg_BT601) / (1.0000f - Kr_BT601);
     *c8 = -(Cr_MAX * Kb_BT601) / (1.0000f - Kr_BT601);
-    
+
     return ( 0 );
 }
 
@@ -106,10 +106,40 @@ int cal_YCbCr_coefficients_smpte240M
     *c3 = -(Cb_MAX * Kr_SMPTE240M) / (1.0000f - Kb_SMPTE240M);
     *c4 = -(Cb_MAX * Kg_SMPTE240M) / (1.0000f - Kb_SMPTE240M);
     *c5 =   Cb_MAX;
-    
+
     *c6 =   Cr_MAX;
     *c7 = -(Cr_MAX * Kg_SMPTE240M) / (1.0000f - Kr_SMPTE240M);
     *c8 = -(Cr_MAX * Kb_SMPTE240M) / (1.0000f - Kr_SMPTE240M);
+
+    return ( 0 );
+}
+
+/******************************************************************************
+ * cal_YCbCr_coefficients_bt2020
+ *****************************************************************************/
+int cal_YCbCr_coefficients_bt2020
+(
+    float * c0, float * c1, float * c2,
+    float * c3, float * c4, float * c5,
+    float * c6, float * c7, float * c8
+)
+{
+    if ( !c0 || !c1 || !c2 || !c3 || !c4 || !c5 || !c6 || !c7 || !c8 )
+    {
+        return ( -EINVAL );
+    }
+
+    *c0 =  Kr_BT2020;
+    *c1 =  Kg_BT2020;
+    *c2 =  Kb_BT2020;
+
+    *c3 = -(Cb_MAX * Kr_BT2020) / (1.0000f - Kb_BT2020);
+    *c4 = -(Cb_MAX * Kg_BT2020) / (1.0000f - Kb_BT2020);
+    *c5 =   Cb_MAX;
+
+    *c6 =   Cr_MAX;
+    *c7 = -(Cr_MAX * Kg_BT2020) / (1.0000f - Kr_BT2020);
+    *c8 = -(Cr_MAX * Kb_BT2020) / (1.0000f - Kr_BT2020);
 
     return ( 0 );
 }

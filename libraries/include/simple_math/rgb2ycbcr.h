@@ -45,6 +45,10 @@ extern "C" {
 #define Kb_SMPTE240M    ( 0.0870f )
 #define Kg_SMPTE240M    ( 1.0000f - Kr_SMPTE240M - Kb_SMPTE240M )
 
+#define Kr_BT2020       ( 0.2627f )
+#define Kb_BT2020       ( 0.0593f )
+#define Kg_BT2020       ( 1.0000f - Kr_BT2020 - Kb_BT2020 )
+
 /**************************************************************************//**
  * @brief Computes RGB to YCbCr coefficients (BT.601 Standard).
  *
@@ -90,7 +94,7 @@ int cal_YCbCr_coefficients_bt709
 );
 
 /**************************************************************************//**
- * @brief Computes RGB to YCbCr coefficients (BT.709 Standard).
+ * @brief Computes RGB to YCbCr coefficients (SMPTE 240M Standard).
  *
  * @param[inout] c0     coefficient c0 
  * @param[inout] c1     coefficient c1 
@@ -105,6 +109,28 @@ int cal_YCbCr_coefficients_bt709
  * @return     0 on success, error-code otherwise
  *****************************************************************************/
 int cal_YCbCr_coefficients_smpte240M
+(
+    float * c0, float * c1, float * c2,
+    float * c3, float * c4, float * c5,
+    float * c6, float * c7, float * c8
+);
+
+/**************************************************************************//**
+ * @brief Computes RGB to YCbCr coefficients (BT.2020 Standard).
+ *
+ * @param[inout] c0     coefficient c0
+ * @param[inout] c1     coefficient c1
+ * @param[inout] c2     coefficient c2
+ * @param[inout] c3     coefficient c3
+ * @param[inout] c4     coefficient c4
+ * @param[inout] c5     coefficient c5
+ * @param[inout] c6     coefficient c6
+ * @param[inout] c7     coefficient c7
+ * @param[inout] c8     coefficient c8
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int cal_YCbCr_coefficients_bt2020
 (
     float * c0, float * c1, float * c2,
     float * c3, float * c4, float * c5,

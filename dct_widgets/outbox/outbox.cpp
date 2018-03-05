@@ -254,8 +254,7 @@ OutBox::OutBox( QWidget * parent ) : DctWidgetBox( parent )
 
     // connect preset signals
     connect( d_data->m_ui->btnRec709   , SIGNAL(clicked()), this, SLOT(onBt709Clicked()));
-    connect( d_data->m_ui->btnBt601    , SIGNAL(clicked()), this, SLOT(onBt601Clicked()));
-    connect( d_data->m_ui->btnSmpte240M, SIGNAL(clicked()), this, SLOT(onSmpte240MClicked()));
+    connect( d_data->m_ui->btnBt2020   , SIGNAL(clicked()), this, SLOT(onBt2020Clicked()));
     
     connect( d_data->m_ui->btnLoad     , SIGNAL(clicked()), this, SLOT(onLoadClicked()));
     connect( d_data->m_ui->btnSave     , SIGNAL(clicked()), this, SLOT(onSaveClicked()));
@@ -695,9 +694,9 @@ void OutBox::onBt709Clicked()
 }
 
 /******************************************************************************
- * OutBox::onBt601Clicked
+ * OutBox::onBt2020Clicked
  *****************************************************************************/
-void OutBox::onBt601Clicked()
+void OutBox::onBt2020Clicked()
 {
     float c0, c1, c2;
     float c3, c4, c5;
@@ -707,44 +706,11 @@ void OutBox::onBt601Clicked()
     int c3_, c4_, c5_;
     int c6_, c7_, c8_;
 
-    int res = cal_YCbCr_coefficients_bt601( &c0, &c1, &c2, &c3, &c4, &c5, &c6, &c7, &c8 );
+    int res = cal_YCbCr_coefficients_bt2020( &c0, &c1, &c2, &c3, &c4, &c5, &c6, &c7, &c8 );
     HANDLE_ERROR( res );
     
-    d_data->m_ui->Kred->setValue( (int)(Kr_BT601 * FIX_PRECISION_KRED) );
-    d_data->m_ui->Kblue->setValue( (int)(Kb_BT601 * FIX_PRECISION_KBLUE) );
-    d_data->setCoefficients( c0, c1, c2, c3, c4, c5, c6, c7, c8 );
-
-    c0_ = (int)(c0 * FIX_PRECISION_S0212 + 0.5f);
-    c1_ = (int)(c1 * FIX_PRECISION_S0212 + 0.5f);
-    c2_ = (int)(c2 * FIX_PRECISION_S0212 + 0.5f);
-    c3_ = (int)(c3 * FIX_PRECISION_S0212 + 0.5f);
-    c4_ = (int)(c4 * FIX_PRECISION_S0212 + 0.5f);
-    c5_ = (int)(c5 * FIX_PRECISION_S0212 + 0.5f);
-    c6_ = (int)(c6 * FIX_PRECISION_S0212 + 0.5f);
-    c7_ = (int)(c7 * FIX_PRECISION_S0212 + 0.5f);
-    c8_ = (int)(c8 * FIX_PRECISION_S0212 + 0.5f);
-    
-    emit ColorConversionMatrixChanged( c0_, c1_, c2_, c3_, c4_, c5_, c6_, c7_, c8_ );
-}
-
-/******************************************************************************
- * OutBox::onSmpte240MClicked
- *****************************************************************************/
-void OutBox::onSmpte240MClicked()
-{
-    float c0, c1, c2;
-    float c3, c4, c5;
-    float c6, c7, c8;
-    
-    int c0_, c1_, c2_;
-    int c3_, c4_, c5_;
-    int c6_, c7_, c8_;
-
-    int res = cal_YCbCr_coefficients_smpte240M( &c0, &c1, &c2, &c3, &c4, &c5, &c6, &c7, &c8 );
-    HANDLE_ERROR( res );
-    
-    d_data->m_ui->Kred->setValue( (int)(Kr_SMPTE240M * FIX_PRECISION_KRED) );
-    d_data->m_ui->Kblue->setValue( (int)(Kb_SMPTE240M * FIX_PRECISION_KBLUE) );
+    d_data->m_ui->Kred->setValue( (int)(Kr_BT2020 * FIX_PRECISION_KRED) );
+    d_data->m_ui->Kblue->setValue( (int)(Kb_BT2020 * FIX_PRECISION_KBLUE) );
     d_data->setCoefficients( c0, c1, c2, c3, c4, c5, c6, c7, c8 );
 
     c0_ = (int)(c0 * FIX_PRECISION_S0212 + 0.5f);

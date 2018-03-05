@@ -130,8 +130,7 @@ private slots:
     void onKblueChange( int value );
 
     void onBt709Clicked();
-    void onBt601Clicked();
-    void onSmpte240MClicked();
+    void onBt2020Clicked();
     void onLoadClicked();
     void onSaveClicked();
 
