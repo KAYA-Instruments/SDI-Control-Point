@@ -4,7 +4,7 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
-Version **1.1.0** - 02.03.2018
+Version **1.1.0** - 05.03.2018
 
 * Added a slider to change the maximum allowed gain that can be used by the auto exposure
 * Fixed bugs where settings where not saved correctly
@@ -15,6 +15,7 @@ Version **1.1.0** - 02.03.2018
 * Added an online update function to the update tab where device updates can be downloaded and installed automatically
 * Added an online check for a new GUI version, but the user has to download the new version manually
 * Added device temperature statistics to the info tab
+* Removed deprecated BT.601 and SMPTE 240M color conversion matrix presets from the out tab, added BT.2020 matrix preset for UHD and HDR content
 
 ## Older Releases:
 
