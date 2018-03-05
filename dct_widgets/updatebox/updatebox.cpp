@@ -842,6 +842,12 @@ void UpdateBox::onCheckFirmwareUpdateClicked()
                         downloadUpdate();
                     }
                 }
+                else
+                {
+                    QMessageBox::information( this,
+                                              "No Update available",
+                                              "The latest firmware is already installed, an update is not required." );
+                }
             }
             else
             {
