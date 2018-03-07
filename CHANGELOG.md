@@ -4,7 +4,7 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
-Version **1.1.0** - 05.03.2018
+Version **1.1.0** - 07.03.2018
 
 * Added a slider to change the maximum allowed gain that can be used by the auto exposure
 * Fixed bugs where settings where not saved correctly
