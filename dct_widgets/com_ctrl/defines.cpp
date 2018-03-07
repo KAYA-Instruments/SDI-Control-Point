@@ -29,7 +29,7 @@ bool DeviceIsKnown( const QString & deviceName )
 {
     for ( int i = KnownDeviceFirst; i < KnownDeviceMax; i++ )
     {
-        if ( deviceName == gKnownDevices[i] )
+        if ( deviceName.contains(QString(gKnownDevices[i])) )
         {
             return ( true );
         }

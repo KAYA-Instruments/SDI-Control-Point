@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>719</width>
-    <height>910</height>
+    <height>941</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,7 +26,7 @@
       <string>System Information</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="9" column="1">
+      <item row="10" column="1">
        <widget class="QLineEdit" name="letSoftwareBuildDate">
         <property name="minimumSize">
          <size>
@@ -57,7 +57,7 @@
         </property>
        </widget>
       </item>
-      <item row="10" column="0">
+      <item row="11" column="0">
        <widget class="QLabel" name="lblFeatureMaskHw">
         <property name="minimumSize">
          <size>
@@ -76,14 +76,14 @@
         </property>
        </widget>
       </item>
-      <item row="8" column="0">
+      <item row="9" column="0">
        <widget class="QLabel" name="lblSoftwareReleaseDate">
         <property name="text">
          <string>SW Release Date</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="0">
+      <item row="6" column="0">
        <widget class="QLabel" name="lblLoaderId">
         <property name="minimumSize">
          <size>
@@ -102,7 +102,7 @@
         </property>
        </widget>
       </item>
-      <item row="12" column="1">
+      <item row="13" column="1">
        <widget class="QListWidget" name="lstFeatureMaskHw">
         <property name="minimumSize">
          <size>
@@ -132,7 +132,7 @@
         </property>
        </widget>
       </item>
-      <item row="10" column="1">
+      <item row="11" column="1">
        <widget class="QLineEdit" name="letFeatureMaskHw">
         <property name="minimumSize">
          <size>
@@ -165,7 +165,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
+      <item row="3" column="0">
        <widget class="QLabel" name="lblSystemValidity">
         <property name="minimumSize">
          <size>
@@ -184,14 +184,14 @@
         </property>
        </widget>
       </item>
-      <item row="15" column="0">
+      <item row="16" column="0">
        <widget class="QLabel" name="lblGuiVersion">
         <property name="text">
          <string>GUI Version</string>
         </property>
        </widget>
       </item>
-      <item row="14" column="1">
+      <item row="15" column="1">
        <widget class="QTimeEdit" name="tetRuntime">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -252,7 +252,7 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="1">
+      <item row="6" column="1">
        <widget class="QLineEdit" name="letLoaderId">
         <property name="minimumSize">
          <size>
@@ -285,7 +285,7 @@
         </property>
        </widget>
       </item>
-      <item row="13" column="0">
+      <item row="14" column="0">
        <widget class="QLabel" name="lblFeatureMaskSw">
         <property name="minimumSize">
          <size>
@@ -304,7 +304,7 @@
         </property>
        </widget>
       </item>
-      <item row="14" column="0">
+      <item row="15" column="0">
        <widget class="QLabel" name="lblRuntime">
         <property name="maximumSize">
          <size>
@@ -317,7 +317,7 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="1">
+      <item row="8" column="1">
        <widget class="QLineEdit" name="letSoftwareId">
         <property name="minimumSize">
          <size>
@@ -350,7 +350,7 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
+      <item row="4" column="0">
        <widget class="QLabel" name="lblBitstreamId">
         <property name="minimumSize">
          <size>
@@ -369,7 +369,7 @@
         </property>
        </widget>
       </item>
-      <item row="15" column="1">
+      <item row="16" column="1">
        <widget class="QLineEdit" name="letGuiVersion">
         <property name="minimumSize">
          <size>
@@ -402,7 +402,7 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="4" column="1">
        <widget class="QLineEdit" name="letBitstreamId">
         <property name="minimumSize">
          <size>
@@ -435,7 +435,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
+      <item row="2" column="1">
        <widget class="QLineEdit" name="letSystemId">
         <property name="minimumSize">
          <size>
@@ -471,7 +471,7 @@
         </property>
        </widget>
       </item>
-      <item row="8" column="1">
+      <item row="9" column="1">
        <widget class="QLineEdit" name="letSoftwareReleaseDate">
         <property name="minimumSize">
          <size>
@@ -502,7 +502,7 @@
         </property>
        </widget>
       </item>
-      <item row="13" column="1">
+      <item row="14" column="1">
        <widget class="QLineEdit" name="letFeatureMaskSw">
         <property name="minimumSize">
          <size>
@@ -535,7 +535,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
+      <item row="2" column="0">
        <widget class="QLabel" name="lblSystemId">
         <property name="minimumSize">
          <size>
@@ -554,7 +554,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
+      <item row="3" column="1">
        <widget class="QLineEdit" name="letSystemValidity">
         <property name="minimumSize">
          <size>
@@ -587,7 +587,7 @@
         </property>
        </widget>
       </item>
-      <item row="9" column="0">
+      <item row="10" column="0">
        <widget class="QLabel" name="lblSoftwareBuildDate">
         <property name="text">
          <string>SW Build Date</string>
@@ -627,7 +627,7 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="0">
+      <item row="8" column="0">
        <widget class="QLabel" name="lblSoftwareId">
         <property name="minimumSize">
          <size>
@@ -677,6 +677,44 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="letSystemPlatform">
+        <property name="minimumSize">
+         <size>
+          <width>400</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>400</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>Courier 10 Pitch</family>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="lblSystemPlatform">
+        <property name="text">
+         <string>Platform</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

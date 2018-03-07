@@ -56,6 +56,7 @@ signals:
 public slots:
     // system interface slots
     void onDeviceNameChange( QString name );
+    void onSystemPlatformChange( QString platform );
     void onDeviceIdChange( uint32_t id0, uint32_t id1, uint32_t id2, uint32_t id3 );
     void onSystemValidityChange( QString version );
     void onBitStreamVersionChange( uint32_t version );

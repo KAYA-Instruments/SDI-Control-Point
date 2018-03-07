@@ -772,6 +772,7 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
     //////////////////////////
     // connect system interface slots
     connect( dev->GetProVideoSystemItf(), SIGNAL(DeviceNameChanged(QString)), m_ui->infoBox, SLOT(onDeviceNameChange(QString)) );
+    connect( dev->GetProVideoSystemItf(), SIGNAL(SystemPlatformChanged(QString)), m_ui->infoBox, SLOT(onSystemPlatformChange(QString)) );
     connect( dev->GetProVideoSystemItf(), SIGNAL(DeviceIdChanged(uint32_t,uint32_t,uint32_t,uint32_t)), m_ui->infoBox, SLOT(onDeviceIdChange(uint32_t,uint32_t,uint32_t,uint32_t)) );
     connect( dev->GetProVideoSystemItf(), SIGNAL(SystemValidityChanged(QString)), m_ui->infoBox, SLOT(onSystemValidityChange(QString)) );
     connect( dev->GetProVideoSystemItf(), SIGNAL(BitStreamVersionChanged(uint32_t)), m_ui->infoBox, SLOT(onBitStreamVersionChange(uint32_t)) );

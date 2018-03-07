@@ -193,6 +193,14 @@ void InfoBox::onDeviceNameChange( QString name )
 }
 
 /******************************************************************************
+ * InfoBox::onSystemPlatformChange
+ *****************************************************************************/
+void InfoBox::onSystemPlatformChange( QString platform )
+{
+    d_data->m_ui->letSystemPlatform->setText( platform );
+}
+
+/******************************************************************************
  * InfoBox::onDeviceIdChange
  *****************************************************************************/
 void InfoBox::onDeviceIdChange( uint32_t id0, uint32_t id1, uint32_t id2, uint32_t id3 )

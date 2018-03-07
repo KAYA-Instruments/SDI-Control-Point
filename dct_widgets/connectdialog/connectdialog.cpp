@@ -283,7 +283,7 @@ bool ConnectDialog::connectWithDevice()
         {
             connectedDevice = new XbowDevice( getActiveChannel(), new ProVideoProtocol() );
         }
-        else if ( systemPlatform == KNOWN_DEVICE_CONDOR4K || systemPlatform == KNOWN_DEVICE_CONDOR4K_MINI )
+        else if ( systemPlatform == KNOWN_DEVICE_CONDOR4K || systemPlatform.contains(QString(KNOWN_DEVICE_CONDOR4K_MINI)) )
         {
             connectedDevice = new Condor4kDevice( getActiveChannel(), new ProVideoProtocol() );
         }

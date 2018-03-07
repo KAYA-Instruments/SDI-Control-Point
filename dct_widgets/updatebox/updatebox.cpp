@@ -1501,7 +1501,7 @@ void UpdateBox::onSystemPlatformChange( QString name )
         d_data->m_upd_config.append( xbow_update );
     }
 
-    else if ( name == PLATFORM_CONDOR_4K || name == PLATFORM_CONDOR_4K_MINI )
+    else if ( name == PLATFORM_CONDOR_4K || name.contains(QString(PLATFORM_CONDOR_4K_MINI)) )
     {
         // first file is firmware update
         d_data->m_upd_config.append( condor4k_fw_update );
