@@ -468,6 +468,7 @@ int FlashLoader::stopCommand()
     if ( FLASHLOAD_CMD_INVALID != m_cmd )
     {
         m_process->kill();
+        m_process->waitForFinished();
     }
 
     return ( 0 );

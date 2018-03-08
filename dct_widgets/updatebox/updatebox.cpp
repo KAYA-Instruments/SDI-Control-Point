@@ -806,7 +806,6 @@ void UpdateBox::onCheckFirmwareUpdateClicked()
                 }
             }
 
-
             // File 1
             data = strstr( data, FILE1_DOWNLOAD_SYNC );
             if ( data )
@@ -826,6 +825,7 @@ void UpdateBox::onCheckFirmwareUpdateClicked()
             if ( d_data->m_download_files.count() > 0)
             {
                 // Check if the server version is newer than the current version
+                QMessageBox::StandardButton reply;
                 if ( isNewVersion(d_data->m_server_fw_version, d_data->m_current_fw_version) )
                 {
                     QMessageBox::StandardButton reply;
@@ -844,9 +844,18 @@ void UpdateBox::onCheckFirmwareUpdateClicked()
                 }
                 else
                 {
-                    QMessageBox::information( this,
-                                              "No Update available",
-                                              "The latest firmware is already installed, an update is not required." );
+                    reply = QMessageBox::question( this,
+                                                   "No Update available",
+                                                   "The latest firmware is already installed, an update is not required.\n\n"
+                                                   "Do you want to to download and reinstall the latest update?\n\n"
+                                                   "The update file(s) will be stored in a temporary download folder which is deleted after the upate is completed.",
+                                                   QMessageBox::Yes|QMessageBox::No );
+                }
+
+                if (reply == QMessageBox::Yes)
+                {
+                    // Call download function
+                    downloadUpdate();
                 }
             }
             else
@@ -877,22 +886,6 @@ void UpdateBox::onCheckFirmwareUpdateClicked()
  *****************************************************************************/
 void UpdateBox::downloadUpdate()
 {
-    // Check if the server version is newer than the updated version
-    if ( !isNewVersion(d_data->m_server_fw_version, d_data->m_current_fw_version) )
-    {
-        QMessageBox::StandardButton reply;
-        reply = QMessageBox::question( this,
-                                       "Update not needed",
-                                       "The current device firmware is newer or identical to the firmware on the download server. An update is not needed.\n\nDo you really want to download it?",
-                                       QMessageBox::Yes|QMessageBox::No );
-
-        // User choose to abort, so return
-        if (reply == QMessageBox::No)
-        {
-            return;
-        }
-    }
-
     // Create temporary download directory
     if ( d_data->m_download_dir )
     {
@@ -931,6 +924,7 @@ void UpdateBox::downloadUpdate()
         connect( &timer, SIGNAL(timeout()), &loop, SLOT(quit()) );
 
         // Start the timer, download request and event loop, wait for maximum 20s for the download to finish
+        // TODO: Instead of waiting a fixed 20s, check if download is still ongoing to allow downloads on slow connections
         timer.start( 20000 );
         d_data->m_network_manager->get( request );
         QNetworkReply * reply = d_data->m_network_manager->get( request );
@@ -1051,6 +1045,7 @@ void UpdateBox::onCheckGuiUpdateClicked()
     connect( &timer, SIGNAL(timeout()), &loop, SLOT(quit()) );
 
     // Start the timer, download request and event loop, wait for maximum 5s for the download to finish
+    // TODO: Instead of waiting a fixed 20s, check if download is still ongoing to allow downloads on slow connections
     timer.start( 5000 );
     QNetworkReply * reply = d_data->m_network_manager->get( request );
     QObject::connect(this, SIGNAL(CancelDownload()), reply, SLOT(abort()));
@@ -1442,19 +1437,19 @@ void UpdateBox::onRunClicked()
                  * while user was reading the message and we do not need to cancel */
                 if ( getSystemState() == FlashState )
                 {
-                    // I. reset progress bar and update counter / index
+                    // I. send stop command
+                    int res = d_data->m_application->stopCommand();
+                    HANDLE_ERROR( res );
+
+                    // II. update system state
+                    setSystemState( UpdateState );
+
+                    // III. reset progress bar and update counter / index
                     d_data->m_ui->progressBar->setFormat( "%p%" );
                     d_data->m_ui->progressBar->setValue( 0 );
 
                     setUpdateCounter( 1 );
                     getFirstUpdateIndex();
-
-                    // II. send stop command
-                    int res = d_data->m_application->stopCommand();
-                    HANDLE_ERROR( res );
-
-                    // III. update system state
-                    setSystemState( UpdateState );
                 }
             }
             // User choose no
