@@ -785,6 +785,12 @@ void MccEqBox::onHueSpinBoxChange( double value )
 {
     int activeSegment = d_data->m_active_segment;
 
+    // Check if a segment is currently selected
+    if ( activeSegment < 0 )
+    {
+        return;
+    }
+
     // calculate integer hue value
     int hue = value * MCC_HUE_DIVISOR;
 
@@ -802,6 +808,12 @@ void MccEqBox::onSatSpinBoxChange( double value )
 {
     int activeSegment = d_data->m_active_segment;
 
+    // Check if a segment is currently selected
+    if ( activeSegment < 0 )
+    {
+        return;
+    }
+
     // calculate integer hue value
     int sat = value * MCC_SATURATION_DIVISOR;
 
@@ -817,6 +829,12 @@ void MccEqBox::onSatSpinBoxChange( double value )
  *****************************************************************************/
 void MccEqBox::onResetPhaseClick()
 {
+    // Check if a segment is currently selected
+    if ( d_data->m_active_segment < 0 )
+    {
+        return;
+    }
+
     // Reset active phase
     emit ResetPhase( d_data->m_active_segment );
 }
