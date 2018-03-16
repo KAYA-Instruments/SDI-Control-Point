@@ -114,7 +114,7 @@ public:
     void GetRS485BroadcastMaster();
 
     // list of connected devices
-    void GetDeviceList();
+    void GetDeviceList( uint32_t timeout );
     
     // prompt enable status
     void GetPrompt();

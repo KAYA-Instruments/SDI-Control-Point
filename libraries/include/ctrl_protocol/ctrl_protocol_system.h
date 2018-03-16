@@ -558,7 +558,9 @@ typedef struct ctrl_protocol_device_s
  * @param[in]  protocol control protocol instance
  * @param[in]  no       size of the buffer, as we can detect a maximum of 99
  *                      devices it has to be sizeof(ctrl_protocol_device_t) * 99
- * @param[in]  buffer   points to buffer
+ * @param[in]  buffer   points to buffer. You can write an unsigned integer to
+ *                      this buffer which contains the timeout in ms. If no value is
+ *                      written (0) the default timeout is used.
  *
  * @return     0 on success, error-code otherwise
  *****************************************************************************/

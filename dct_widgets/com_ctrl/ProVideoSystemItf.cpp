@@ -540,7 +540,7 @@ void ProVideoSystemItf::GetRS485BroadcastMaster()
 /******************************************************************************
  * ProVideoSystemItf::GetDeviceList
  *****************************************************************************/
-void ProVideoSystemItf::GetDeviceList()
+void ProVideoSystemItf::GetDeviceList( uint32_t timeout )
 {
     // Is there a signal listener
     if ( receivers(SIGNAL(DeviceListChanged(QList<rs485Device>))) > 0 )
@@ -549,6 +549,9 @@ void ProVideoSystemItf::GetDeviceList()
         ctrl_protocol_device_t devices[MAX_DEVICE_ID + 1];
 
         memset( &devices, 0, sizeof(devices) );
+
+        // Write timeout to buffer, it will be read by the provideo protcol get_device_list() function
+        *((uint32_t*)devices) = timeout;
 
         // read device list
         int res = ctrl_protocol_get_device_list( GET_PROTOCOL_INSTANCE(this),

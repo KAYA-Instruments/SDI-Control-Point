@@ -1120,8 +1120,14 @@ bool ConnectDialog::detectAndConnect()
     openCfg.dev_addr = 100;
     ((ComChannelRS4xx*)getActiveChannel())->setDeviceAddress( openCfg.dev_addr );
 
+
     // Get the device list for this baudrate
-    genericDevice.GetProVideoSystemItf()->GetDeviceList();
+    // The timeout depends on the baudrate
+    uint32_t timeout = 1000;                                        // Default timeout for 115200 baud is 1000ms
+    timeout *= CTRL_CHANNEL_BAUDRATE_115200 / openCfg.baudrate;     // Increase timeout for slower baudrates
+    timeout += 200;                                                 // Add safety margin
+
+    genericDevice.GetProVideoSystemItf()->GetDeviceList( timeout );
     QList<rs485Device> deviceList = genericDevice.getDeviceList();
 
     // Loop over the device list and add the devices to the list of connected devices

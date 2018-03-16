@@ -199,7 +199,7 @@
 #define CMD_SYNC_DEVIE_LIST                     ( "id: ")
 #define CMD_GET_DEVICE_LIST_NO_PARAMS           ( 5 )
 #define CMD_DEVICE_LIST_MAX_DEVICES             ( 100 )     // Has to be equal to (MAX_DEVICE_ID + 1) which is defined in defines.h
-#define CMD_GET_DEVICE_LIST_TMO                 ( 1200 )
+#define CMD_GET_DEVICE_LIST_MAX_TMO             ( 3000 )
 
 /******************************************************************************
  * @brief command "reboot" 
@@ -1293,6 +1293,13 @@ static int get_device_list
         return ( -EINVAL );
     }
 
+    // Read timeout from buffer
+    uint32_t timeout = *((uint32_t*)buffer);
+    if ( timeout == 0 || timeout > CMD_GET_DEVICE_LIST_MAX_TMO)
+    {
+        timeout = CMD_GET_DEVICE_LIST_MAX_TMO;
+    }
+
     ctrl_protocol_device_t * device_list = (ctrl_protocol_device_t *)buffer;
 
     // clear command buffer
@@ -1384,7 +1391,7 @@ static int get_device_list
             // timeout handling
             get_time_monotonic( &now );
             int diff_ms = (now.tv_sec - start.tv_sec) * 1000 + (now.tv_nsec - start.tv_nsec) / 1000000;
-            loop = (diff_ms > CMD_GET_DEVICE_LIST_TMO) ? 0 : 1;
+            loop = (diff_ms > timeout) ? 0 : 1;
         }
     }
 
