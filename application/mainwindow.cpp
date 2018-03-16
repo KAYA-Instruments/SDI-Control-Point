@@ -180,7 +180,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
         m_ui->toolBar->addWidget(cbxConnectedDevices);
 
         // Connect combo box with device changed event
-        connect( cbxConnectedDevices, SIGNAL(currentIndexChanged(int)), this, SLOT(onDeviceSelectionChange(int)) );
+        connect( cbxConnectedDevices, SIGNAL(currentIndexChanged(int)), this, SLOT(onDeviceSelectionChange(int)), Qt::UniqueConnection );
 
         // Store pointer to combo box in class variable
         m_cbxConnectedDevices = cbxConnectedDevices;
@@ -267,6 +267,12 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
     {
         m_activeWidgets.append(m_ui->updBox);
         m_ui->tabWidget->addTab(m_ui->tabUpdate, QIcon(":/images/tab/update.png"), "");
+    }
+
+    // when aec is disabled, exposure, gain and aperture have to be resynced for actual values
+    if (deviceFeatures.hasIspItf && deviceFeatures.hasCamItf)
+    {
+        connect( m_ui->inoutBox, SIGNAL(ResyncRequest()), this, SLOT(onAecResyncRequest()), Qt::UniqueConnection );
     }
 
     // Enable / disable elements inside the tabs
@@ -470,12 +476,6 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         connect( dev->GetIrisItf(), SIGNAL(IrisAptError()), m_ui->inoutBox, SLOT(onIrisAptError()) );
 
         connect( m_ui->inoutBox, SIGNAL(IrisAptChanged(int)), dev->GetIrisItf(), SLOT(onIrisAptChange(int)) );
-    }
-
-    // when aec is disabled, exposure, gain and aperture have to be resynced for actual values
-    if (deviceFeatures.hasIspItf && deviceFeatures.hasCamItf)
-    {
-        connect( m_ui->inoutBox, SIGNAL(ResyncRequest()), this, SLOT(onAecResyncRequest()) );
     }
 
     //////////////////////////
