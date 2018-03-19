@@ -828,19 +828,12 @@ void UpdateBox::onCheckFirmwareUpdateClicked()
                 QMessageBox::StandardButton reply;
                 if ( isNewVersion(d_data->m_server_fw_version, d_data->m_current_fw_version) )
                 {
-                    QMessageBox::StandardButton reply;
                     reply = QMessageBox::question( this,
                                                    "New Firmware available",
                                                    "A new firmware update is available on the download server.\n\n"
                                                    "Do you want to download it now?\n\n"
                                                    "The update file(s) will be stored in a temporary download folder which is deleted after the upate is completed.",
                                                    QMessageBox::Yes|QMessageBox::No );
-
-                    if (reply == QMessageBox::Yes)
-                    {
-                        // Call download function
-                        downloadUpdate();
-                    }
                 }
                 else
                 {

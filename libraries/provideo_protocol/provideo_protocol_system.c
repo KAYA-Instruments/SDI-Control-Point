@@ -1391,7 +1391,7 @@ static int get_device_list
             // timeout handling
             get_time_monotonic( &now );
             int diff_ms = (now.tv_sec - start.tv_sec) * 1000 + (now.tv_nsec - start.tv_nsec) / 1000000;
-            loop = (diff_ms > timeout) ? 0 : 1;
+            loop = (diff_ms > (int)timeout) ? 0 : 1;
         }
     }
 
