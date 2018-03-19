@@ -30,7 +30,7 @@ The project contains four folders with multiple sub-directories:
 # Working on the Project
 ## Development Environment
 The easiest way to edit the software is by using the Qt Creator, which is available for free for open source development at https://info.qt.io/download-qt-for-application-development    
-It is recommended to use the latest version of Qt Creator and the Qt framework. The last tested version is Qt Creator 4.5.0 based on Qt 5.10.0.
+It is recommended to use the latest version of Qt Creator and the Qt framework. The last tested version is Qt Creator 4.5.1 based on Qt 5.10.1.
 
 ## Unit Tests for C-Libraries
 The unit tests are written using an open source framework called embUnit which is available here: https://sourceforge.net/projects/embunit/  
