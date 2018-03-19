@@ -4,6 +4,16 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
+Version **1.1.1** - 19.03.2018
+
+* The timeout for detecting devices using the identfy command is now variable, depending on the baudrate of the COM port
+* Fixed a bug where the resync of the auto exposure parameters could be triggered multiple times after switching between different devices
+* Fixed a bug in the MCC widget that made the programm crash when no phase was selected and the slider ranges were changed
+* Fixed a bug in the update widget where the abort button had to be pressed twice to cancel an update
+* Added a dialog to the update widget which asks the user to re-install an update if the server version is equal to or older than the device version
+
+## Older Releases:
+
 Version **1.1.0** - 07.03.2018
 
 * Added a slider to change the maximum allowed gain that can be used by the auto exposure
@@ -16,8 +26,6 @@ Version **1.1.0** - 07.03.2018
 * Added an online check for a new GUI version, but the user has to download the new version manually
 * Added device temperature statistics to the info tab
 * Removed deprecated BT.601 and SMPTE 240M color conversion matrix presets from the out tab, added BT.2020 matrix preset for UHD and HDR content
-
-## Older Releases:
 
 Version **1.0.11** - 26.01.2018
 
