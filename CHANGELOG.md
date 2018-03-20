@@ -4,7 +4,7 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
-Version **1.1.1** - 19.03.2018
+Version **1.1.1** - 20.03.2018
 
 * The timeout for detecting devices using the identfy command is now variable, depending on the baudrate of the COM port
 * Fixed a bug where the resync of the auto exposure parameters could be triggered multiple times after switching between different devices
