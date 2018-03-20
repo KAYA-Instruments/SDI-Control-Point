@@ -134,8 +134,8 @@
 #define CMD_SET_PROMPT                          ( "prompt %i\n" )
 #define CMD_SYNC_PROMPT                         ( "prompt " )
 #define CMD_GET_PROMPT_NO_PARMS                 ( 1 )
-#define CMD_GET_PROMPT_TMO                      ( 20 )
-#define CMD_SET_PROMPT_TMO                      ( 20 )
+#define CMD_GET_PROMPT_TMO                      ( 30 )
+#define CMD_SET_PROMPT_TMO                      ( 30 )
 
 /******************************************************************************
  * @brief command "debug" 
