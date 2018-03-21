@@ -299,9 +299,6 @@ public:
         QObject::connect( m_ui->btnFilename, SIGNAL(clicked()), parent, SLOT(onFileNameClicked()) );
         QObject::connect( m_ui->btnRun, SIGNAL(clicked()), parent, SLOT(onRunClicked()) );
         QObject::connect( m_ui->cbxVerify, SIGNAL(stateChanged(int)), parent, SLOT(onVerifyChanged(int)) );
-
-        // download status
-        QObject::connect( m_network_manager, SIGNAL(finished(QNetworkReply*)), parent, SLOT(onDownloadFinished(QNetworkReply*)) );
     }
 
     ~PrivateData()
@@ -685,27 +682,72 @@ bool UpdateBox::isNewVersion( version_t server_version, version_t current_versio
 }
 
 /******************************************************************************
- * UpdateBox::onCheckUpdateClicked
+ * UpdateBox::onDownloadProgress
  *****************************************************************************/
-void UpdateBox::onDownloadFinished( QNetworkReply * reply )
+void UpdateBox::onDownloadProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
+    // Emit download progress signal
+    emit DownloadProgress( (int) ((bytesReceived * 100) / bytesTotal) );
+}
+
+/******************************************************************************
+ * UpdateBox::onCheckFirmwareUpdateClicked
+ *****************************************************************************/
+bool UpdateBox::downloadFile( QUrl url )
+{
+    // Return value
+    bool downloadSuccessful = false;
+
+    // Create URL request for file download
+    QNetworkRequest request( url );
+
+    // Create a timer which will be used to timeout the dowload
+    QTimer timer;
+
+    // Create event loop which will quit as soon as the timer expires
+    QEventLoop loop;
+    connect( &timer, SIGNAL(timeout()), &loop, SLOT(quit()) );
+
+    // Start the timer, download request and event loop
+    /* Note: If no data is received within 5 seconds the connection is considered broken
+     * and the download is aborted. */
+    timer.start( 5000 );
+    d_data->m_network_manager->get( request );
+    QNetworkReply * reply = d_data->m_network_manager->get( request );
+
+    // On download process, call onDownloadProgress() which will in turn emit DownloadProgress()
+    connect( reply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(onDownloadProgress(qint64,qint64)) );
+    connect( this, SIGNAL(DownloadProgress(int)), &timer, SLOT(start()) );
+
+    // If the download finishes stop the event loop
+    connect( reply, SIGNAL(finished()), &loop, SLOT(quit()) );
+
+    // If the timer expires, stop the download
+    connect( &timer, SIGNAL(timeout()), reply, SLOT(abort()) );
+
+    // Loop while download in progress
+    loop.exec();
+
     // Check if download was successful
     if ( reply->error() )
     {
-        d_data->m_downloaded_data.clear();
         // Show error message
-        qDebug() << QString("Download via HTTP failed:\n\n%1").arg(reply->errorString());
-//        QMessageBox::information( this, QString("Download Failed"), QString("Download via HTTP failed:\n\n%1").arg(reply->errorString()) );
+        QMessageBox::information( this, QString("Download Failed"), QString("The download via HTTP failed. The following error was reported:\n\n%1").arg(reply->errorString()) );
     }
     else
     {
         // Copy downloaded data
         d_data->m_downloaded_data = reply->readAll();
-        reply->deleteLater();
+
+        // Flag download as successful
+        downloadSuccessful = true;
     }
 
-    // Emit file downloaded signal
-    emit FileDownloaded();
+    // Delete the reply later
+    reply->deleteLater();
+
+    // Return error state
+    return downloadSuccessful;
 }
 
 /******************************************************************************
@@ -719,39 +761,15 @@ void UpdateBox::onCheckFirmwareUpdateClicked()
 
     // Create URL request for file download
     QUrl url = QString( QString(DOWNLOAD_SERVER) + d_data->m_system_platform + "/update_info.txt" );
-    QNetworkRequest request( url );
 
-    // Create a timer which will be used to timeout the dowload
-    QTimer timer;
-    timer.setSingleShot(true);
-
-    // Connect the download finished and the timer timeout event with
-    QEventLoop loop;
-    connect( this, SIGNAL(FileDownloaded()), &loop, SLOT (quit()) );
-    connect( &timer, SIGNAL(timeout()), &loop, SLOT(quit()) );
-
-    // Start the timer, download request and event loop, wait for maximum 5s for the download to finish
-    timer.start( 5000 );
-    QNetworkReply * reply = d_data->m_network_manager->get( request );
-    QObject::connect(this, SIGNAL(CancelDownload()), reply, SLOT(abort()));
-
-    loop.exec();
-
-    // Stop download, if not already finished
-    if ( !timer.isActive() )
-    {
-        timer.stop();
-        emit CancelDownload();
-    }
-
-    // delete the reply
-    delete reply;
+    // Download the file
+    bool downloadSuccessful = downloadFile(url);
 
     // Close info dialog
     infoDlg.close();
 
     // Check if a valid file was downloaded
-    if( d_data->m_downloaded_data.length() > 0 )
+    if( downloadSuccessful && d_data->m_downloaded_data.length() > 0 )
     {
         /* Get the version and check for new update */
         // Read server version from downloaded data
@@ -900,40 +918,17 @@ void UpdateBox::downloadUpdate()
     infoDlg.show();
 
     // Download update files to temporary directory
+    bool downloadError = false;
     bool checksumError = false;
     for ( int i = 0; i < d_data->m_download_files.count(); i++ )
     {
-        // Create URL request for file download
-        QUrl url = QString( QString(DOWNLOAD_SERVER) + d_data->m_system_platform + "/" + d_data->m_download_files.at(i));
-        QNetworkRequest request( url );
-
-        // Create a timer which will be used to timeout the dowload
-        QTimer timer;
-        timer.setSingleShot(true);
-
-        // Connect the download finished and the timer timeout event with
-        QEventLoop loop;
-        connect( this, SIGNAL(FileDownloaded()), &loop, SLOT (quit()) );
-        connect( &timer, SIGNAL(timeout()), &loop, SLOT(quit()) );
-
-        // Start the timer, download request and event loop, wait for maximum 20s for the download to finish
-        // TODO: Instead of waiting a fixed 20s, check if download is still ongoing to allow downloads on slow connections
-        timer.start( 20000 );
-        d_data->m_network_manager->get( request );
-        QNetworkReply * reply = d_data->m_network_manager->get( request );
-        QObject::connect(this, SIGNAL(CancelDownload()), reply, SLOT(abort()));
-
-        loop.exec();
-
-        // Stop download, if not already finished
-        if ( !timer.isActive() )
+        // Download file, break if not succesful
+        QUrl url = QString( QString(DOWNLOAD_SERVER) + d_data->m_system_platform + "/" + d_data->m_download_files.at(i) );
+        if ( !downloadFile( url ) )
         {
-            timer.stop();
-            emit CancelDownload();
+            downloadError = true;
+            break;
         }
-
-        // delete the reply
-        delete reply;
 
         // Check if a valid file was downloaded by evaluating its md5 checksum
         if( d_data->m_downloaded_data.length() > 0 )
@@ -963,7 +958,7 @@ void UpdateBox::downloadUpdate()
 
     // If the files were downloaded correctly
     bool updateValid = false;
-    if ( !checksumError )
+    if ( !checksumError && !downloadError )
     {
         // check update files in temp directory
         /* Note: The  checkUpdateDirectory() function will print an error message if the directory does
@@ -989,7 +984,7 @@ void UpdateBox::downloadUpdate()
         }
     }
     // If a checksum error occured, print a message
-    else
+    else if ( checksumError )
     {
         QMessageBox::information( this,
                                   "Checksum Error",
@@ -1011,6 +1006,7 @@ void UpdateBox::downloadUpdate()
 
         // reset update counter and index
         setUpdateCounter( 0 );
+        d_data->m_upd_idx = -1;
         getNextUpdateIndex();   // this will not find a index, thus clear the file path line edit
     }
 }
@@ -1026,40 +1022,15 @@ void UpdateBox::onCheckGuiUpdateClicked()
 
     // Create URL request for file download
     QUrl url = QString( QString(DOWNLOAD_SERVER) + "provideo_gui/update_info.txt" );
-    QNetworkRequest request( url );
 
-    // Create a timer which will be used to timeout the dowload
-    QTimer timer;
-    timer.setSingleShot(true);
-
-    // Connect the download finished and the timer timeout event with
-    QEventLoop loop;
-    connect( this, SIGNAL(FileDownloaded()), &loop, SLOT (quit()) );
-    connect( &timer, SIGNAL(timeout()), &loop, SLOT(quit()) );
-
-    // Start the timer, download request and event loop, wait for maximum 5s for the download to finish
-    // TODO: Instead of waiting a fixed 20s, check if download is still ongoing to allow downloads on slow connections
-    timer.start( 5000 );
-    QNetworkReply * reply = d_data->m_network_manager->get( request );
-    QObject::connect(this, SIGNAL(CancelDownload()), reply, SLOT(abort()));
-
-    loop.exec();
-
-    // Stop download, if not already finished
-    if ( !timer.isActive() )
-    {
-        timer.stop();
-        emit CancelDownload();
-    }
-
-    // delete the reply
-    delete reply;
+    // Download the file
+    bool downloadSuccessful = downloadFile( url );
 
     // Close info dialog
     infoDlg.close();
 
     // Check if a valid file was downloaded
-    if( d_data->m_downloaded_data.length() > 0 )
+    if( downloadSuccessful && d_data->m_downloaded_data.length() > 0 )
     {
         /* Get the version and check for new update */
         // Read server version from downloaded data

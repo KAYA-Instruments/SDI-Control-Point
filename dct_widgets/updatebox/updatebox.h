@@ -85,6 +85,7 @@ private:
 
     bool isNewVersion( version_t server_version, version_t current_version );
     void checkUpdateDirectory( QString updateDirectory );
+    bool downloadFile( QUrl url );
     void downloadUpdate();
 
 signals:
@@ -92,8 +93,7 @@ signals:
     void CloseSerialConnection();
     void ReopenSerialConnection();
     void LockCurrentTabPage( bool );
-    void FileDownloaded();
-    void CancelDownload();
+    void DownloadProgress( int progressPercent );
 
 public slots:
     void onPromptChange( uint8_t flag );
@@ -101,7 +101,7 @@ public slots:
     void onApplicationVersionChange( QString version );
 
 private slots:
-    void onDownloadFinished( QNetworkReply * reply );
+    void onDownloadProgress( qint64 bytesReceived, qint64 bytesTotal );
     void onCheckFirmwareUpdateClicked();
     void onCheckGuiUpdateClicked();
 
