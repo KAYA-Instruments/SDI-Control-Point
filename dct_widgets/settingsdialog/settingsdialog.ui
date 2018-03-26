@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>550</width>
-    <height>669</height>
+    <height>689</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -254,7 +254,7 @@
       <item>
        <widget class="QLabel" name="lblFactoryReset">
         <property name="text">
-         <string>Factory Reset:</string>
+         <string>Reset Settings:</string>
         </property>
        </widget>
       </item>
@@ -267,7 +267,17 @@
          </size>
         </property>
         <property name="text">
-         <string>Reset to Factory Defaults</string>
+         <string>Reset to Settings to Defaults</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="lblNote2">
+        <property name="text">
+         <string>Note: The Serial Interface Settings and the Device Name will not be reset.</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -361,7 +371,7 @@
     </spacer>
    </item>
    <item>
-    <widget class="QLabel" name="label_2">
+    <widget class="QLabel" name="lblNote3">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
