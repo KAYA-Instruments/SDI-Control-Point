@@ -169,7 +169,9 @@ void SettingsDialog::onBroadcastChange( bool enable )
     m_ui->sbxRS485BroadcastAddress->setEnabled( !enable );
     m_ui->btnApplySerialPortSettings->setEnabled( !enable );
 
-    this->adjustSize();
+    // Resize window to minimum size
+    QApplication::processEvents();
+    this->resize( this->minimumSizeHint() );
 }
 
 /******************************************************************************

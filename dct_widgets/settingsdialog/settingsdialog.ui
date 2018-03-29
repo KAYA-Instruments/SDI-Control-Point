@@ -267,7 +267,7 @@
          </size>
         </property>
         <property name="text">
-         <string>Reset to Settings to Defaults</string>
+         <string>Reset Settings to Defaults</string>
         </property>
        </widget>
       </item>
@@ -362,10 +362,13 @@
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Minimum</enum>
+     </property>
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>20</height>
+       <height>0</height>
       </size>
      </property>
     </spacer>

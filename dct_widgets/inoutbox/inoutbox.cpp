@@ -124,7 +124,7 @@ public:
     PrivateData()
         : m_ui( new Ui::UI_InOutBox )
         , m_cntEvents( 0 )
-        , m_maxEvents( 10 )
+        , m_maxEvents( 5 )
         , m_sbxStyle( new SpinBoxStyle() )
         , m_AptMin( 125 )
         , m_AptMax( 16000 )
@@ -210,6 +210,9 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->sbxGenlockOffsetHorizontal->setRange( -4095, 4095 );
     d_data->m_ui->sbxGenlockOffsetHorizontal->setKeyboardTracking( false );
 
+    // fill exposure time combo box
+
+
     // fill bayer pattern combo box
     for ( int i=BayerPatternFirst; i<BayerPatternMax; i++ )
     {
@@ -250,17 +253,23 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->sldIso, SIGNAL(valueChanged(int)), this, SLOT(onSldIsoChange(int)) );
     connect( d_data->m_ui->sldIso, SIGNAL(sliderReleased()), this, SLOT(onSldIsoReleased()) );
     connect( d_data->m_ui->sbxIso, SIGNAL(valueChanged(int)), this, SLOT(onSbxIsoChange(int)) );
+    connect( d_data->m_ui->cbxIso, SIGNAL(activated(int)), this, SLOT(onCbxIsoChange(int)) );
 
     // exposure
-    connect( d_data->m_ui->sldExposure    , SIGNAL(valueChanged(int)), this, SLOT(onSldExposureChange(int)) );
-    connect( d_data->m_ui->sldExposure    , SIGNAL(sliderReleased()), this, SLOT(onSldExposureReleased()) );
-    connect( d_data->m_ui->sbxExposure    , SIGNAL(valueChanged(int)), this, SLOT(onSbxExposureChange(int)) );
+    connect( d_data->m_ui->sldExposure, SIGNAL(valueChanged(int)), this, SLOT(onSldExposureChange(int)) );
+    connect( d_data->m_ui->sldExposure, SIGNAL(sliderReleased()), this, SLOT(onSldExposureReleased()) );
+    connect( d_data->m_ui->sbxExposure, SIGNAL(valueChanged(int)), this, SLOT(onSbxExposureChange(int)) );
+    connect( d_data->m_ui->cbxExposure, SIGNAL(activated(int)), this, SLOT(onCbxExposureChange(int)) );
+    connect( d_data->m_ui->btnExposureMinus, SIGNAL(clicked()), this, SLOT(onBtnExposureMinusClicked()) );
+    connect( d_data->m_ui->btnExposurePlus, SIGNAL(clicked()), this, SLOT(onBtnExposurePlusClicked()) );
 
     // video
-    connect( d_data->m_ui->cbxVideoMode   , SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxVideoModeChange(int)) );
-    connect( d_data->m_ui->cbxSdi2Mode    , SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxSdi2ModeChange(int)) );
-    connect( d_data->m_ui->cbxFlipMode    , SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxFlipModeChange(int)) );
-    connect( d_data->m_ui->cbxTestPattern , SIGNAL(stateChanged(int)), this, SLOT(onCbxTestPatternChange(int)) );
+    connect( d_data->m_ui->cbxVideoMode, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxVideoModeChange(int)) );
+    connect( d_data->m_ui->cbxSdi2Mode, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxSdi2ModeChange(int)) );
+    connect( d_data->m_ui->cbxFlipMode, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxFlipModeChange(int)) );
+    connect( d_data->m_ui->cbxTestPattern, SIGNAL(stateChanged(int)), this, SLOT(onCbxTestPatternChange(int)) );
+    connect( d_data->m_ui->btnIsoMinus, SIGNAL(clicked()), this, SLOT(onBtnIsoMinusClicked()) );
+    connect( d_data->m_ui->btnIsoPlus, SIGNAL(clicked()), this, SLOT(onBtnIsoPlusClicked()) );
 
     // audio
     connect( d_data->m_ui->cbxAudioEnable , SIGNAL(stateChanged(int)), this, SLOT(onCbxAudioEnableChange(int)) );
@@ -340,7 +349,7 @@ int InOutBox::gainToIso( int gain ) const
  *****************************************************************************/
 int InOutBox::isoToGain( int iso ) const
 {
-    return ( ((iso * 1000) + 500) / d_data->m_minIso );
+    return ( (iso * 1000) / d_data->m_minIso );
 }
 
 /******************************************************************************
@@ -703,7 +712,7 @@ bool InOutBox::TestPattern() const
 void InOutBox::setTestPattern( const bool value )
 {
     d_data->m_ui->cbxTestPattern->blockSignals( true );
-    d_data->m_ui->cbxTestPattern->setChecked( value ? Qt::Checked : Qt::Unchecked );
+    d_data->m_ui->cbxTestPattern->setChecked( value );
     d_data->m_ui->cbxTestPattern->blockSignals( false );
 
     emit OsdTestPatternChanged( value ? 1 : 0 );
@@ -723,7 +732,7 @@ bool InOutBox::AudioEnable() const
 void InOutBox::setAudioEnable( const bool value )
 {
     d_data->m_ui->cbxAudioEnable->blockSignals( true );
-    d_data->m_ui->cbxAudioEnable->setChecked( value ? Qt::Checked : Qt::Unchecked );
+    d_data->m_ui->cbxAudioEnable->setChecked( value );
     d_data->m_ui->cbxAudioEnable->blockSignals( false );
 
     emit ChainAudioEnableChanged( value ? 1 : 0 );
@@ -807,7 +816,7 @@ bool InOutBox::GenLockTermination() const
 void InOutBox::setGenLockTermination( const bool value )
 {
     d_data->m_ui->cbxGenLockTermination->blockSignals( true );
-    d_data->m_ui->cbxGenLockTermination->setChecked( value ? Qt::Checked : Qt::Unchecked );
+    d_data->m_ui->cbxGenLockTermination->setChecked( value );
     d_data->m_ui->cbxGenLockTermination->blockSignals( false );
 
     emit ChainGenlockTerminationChanged( value ? 1 : 0 );
@@ -1131,6 +1140,7 @@ void InOutBox::onCameraInfoChange( int min_gain, int max_gain, int min_exposure,
     // Set min iso in class variable
     d_data->m_minIso = min_iso;
 
+    /* Setup Sliders and Spin Boxes */
     // Set gain / iso range
     d_data->m_ui->sbxIso->blockSignals( true );
     d_data->m_ui->sbxIso->setRange( gainToIso(min_gain), gainToIso(max_gain) );
@@ -1157,6 +1167,75 @@ void InOutBox::onCameraInfoChange( int min_gain, int max_gain, int min_exposure,
     d_data->m_ui->sldExposure->blockSignals( true );
     d_data->m_ui->sldExposure->setRange( min_exposure, max_exposure );
     d_data->m_ui->sldExposure->blockSignals( false );
+
+    /* Setup the ISO combo box */
+    // Clear combo box
+    d_data->m_ui->cbxIso->clear();
+
+    // Add the first item
+    d_data->m_ui->cbxIso->addItem( QString("Select ISO"), 0);
+
+    // Add iso values
+    for ( int i = IsoValueFirst; i < IsoValueMax; i++ )
+    {
+        // Get the iso value
+        int iso = GetIsoValue( (IsoValue)i );
+        int gain = isoToGain( iso );
+
+        // Check if iso value is in valid iso range for this video mode
+        if ( gain < min_gain )
+        {
+            // Gain is below minimum, try next value
+            continue;
+        }
+        else if ( gain > max_gain )
+        {
+            // Gain is above maximum, abort
+            break;
+        }
+        else
+        {
+            // Gain is within range, add iso value to combo box
+            d_data->m_ui->cbxIso->addItem( QString::number(iso), iso );
+        }
+    }
+
+    // Select the first entry in the list (the "Select ISO" entry)
+    d_data->m_ui->cbxIso->setCurrentIndex( 0 );
+
+    /* Setup the exposure combo box */
+    // Clear combo box
+    d_data->m_ui->cbxExposure->clear();
+
+    // Add the first item
+    d_data->m_ui->cbxExposure->addItem( QString("Select Shutter"), 0);
+
+    // Add exposure times
+    for ( int i = ExposureTimeFirst; i < ExposureTimeMax; i++ )
+    {
+        // Get the iso value
+        int exposure = GetExposureTime( (ExposureTime)i );
+
+        // Check if iso value is in valid iso range for this video mode
+        if ( exposure < min_exposure )
+        {
+            // Exposure is below minimum, try next value
+            continue;
+        }
+        else if ( exposure > max_exposure )
+        {
+            // Exposure is above maximum, abort
+            break;
+        }
+        else
+        {
+            // Gain is within range, add to combo box
+            d_data->m_ui->cbxExposure->addItem( GetExposureTimeString((ExposureTime)i), exposure );
+        }
+    }
+
+    // Select the first entry in the list (the "Select ISO" entry)
+    d_data->m_ui->cbxExposure->setCurrentIndex( 0 );
 }
 
 /******************************************************************************
@@ -1171,6 +1250,8 @@ void InOutBox::onCameraGainChange( int value )
     d_data->m_ui->sldIso->blockSignals( true );
     d_data->m_ui->sldIso->setValue( gainToIso(value) );
     d_data->m_ui->sldIso->blockSignals( false );
+
+    UpdateIsoComboBox( gainToIso(value) );
 }
 
 /******************************************************************************
@@ -1185,6 +1266,8 @@ void InOutBox::onCameraExposureChange( int value )
     d_data->m_ui->sldExposure->blockSignals( true );
     d_data->m_ui->sldExposure->setValue( value );
     d_data->m_ui->sldExposure->blockSignals( false );
+
+    UpdateExposureComboBox( value );
 }
 
 /******************************************************************************
@@ -1306,9 +1389,12 @@ void InOutBox::onCbxBayerPatternChange( int index )
  *****************************************************************************/
 void InOutBox::onSldIsoChange( int value )
 {
+    // Set the spin box to new value
     d_data->m_ui->sbxIso->blockSignals( true );
     d_data->m_ui->sbxIso->setValue( value );
     d_data->m_ui->sbxIso->blockSignals( false );
+
+    // Note: the combo box is set with the released() event of the slider
 
     if ( (d_data->m_ui->sldIso->isSliderDown()  ) &&
          (d_data->m_cntEvents++ > d_data->m_maxEvents) )
@@ -1327,6 +1413,10 @@ void InOutBox::onSldIsoChange( int value )
 void InOutBox::onSldIsoReleased()
 {
     d_data->m_cntEvents = 0;
+
+    /* Set the combo box to new value, blocking signals is not needed, as we only use
+     * the activated() event of the combo box which is only triggerd by user interaction */
+    UpdateIsoComboBox( d_data->m_ui->sldIso->value() );
         
     setWaitCursor();
     emit CameraGainChanged( isoToGain(d_data->m_ui->sldIso->value()) );
@@ -1338,9 +1428,14 @@ void InOutBox::onSldIsoReleased()
  *****************************************************************************/
 void InOutBox::onSbxIsoChange( int value )
 {
+    // Set the slider to new value
     d_data->m_ui->sldIso->blockSignals( true );
     d_data->m_ui->sldIso->setValue( value );
     d_data->m_ui->sldIso->blockSignals( false );
+
+    /* Set the combo box to new value, blocking signals is not needed, as we only use
+     * the activated() event of the combo box which is only triggerd by user interaction */
+    UpdateIsoComboBox( value );
 
     setWaitCursor();
     emit CameraGainChanged( isoToGain(value) );
@@ -1348,13 +1443,134 @@ void InOutBox::onSbxIsoChange( int value )
 }
 
 /******************************************************************************
+ * InOutBox::onCbxIsoChange
+ *****************************************************************************/
+void InOutBox::onCbxIsoChange( int index )
+{
+    // Check if a valid entry was selected (not "Select ISO")
+    if ( index == 0)
+    {
+        return;
+    }
+
+    // Get iso value from combo box
+    int iso = d_data->m_ui->cbxIso->currentData().toInt();
+
+    // Set spin box to new iso value
+    d_data->m_ui->sbxIso->blockSignals( true );
+    d_data->m_ui->sbxIso->setValue( iso );
+    d_data->m_ui->sbxIso->blockSignals( false );
+
+    // Set slider to new iso value
+    d_data->m_ui->sldIso->blockSignals( true );
+    d_data->m_ui->sldIso->setValue( iso );
+    d_data->m_ui->sldIso->blockSignals( false );
+
+    // Emit gain changed event
+    setWaitCursor();
+    emit CameraGainChanged( isoToGain(iso) );
+    setNormalCursor();
+}
+
+/******************************************************************************
+ * InOutBox::onBtnIsoMinusClicked
+ *****************************************************************************/
+void InOutBox::onBtnIsoMinusClicked( )
+{
+    // Get current ISO value
+    int currentIso = d_data->m_ui->sbxIso->value();
+
+    // Loop over all available ISO values until the next smaller ISO is found
+    int i;
+    for ( i = d_data->m_ui->cbxIso->count() - 1; i >= 1; i-- )
+    {
+        // Get ISO for this index
+        int iso = d_data->m_ui->cbxIso->itemData(i).toInt();
+
+        // If ISO is smaller than the current ISO, this is the new ISO
+        if ( iso < currentIso )
+        {
+            break;
+        }
+    }
+
+    // Clip to smallest possible ISO (0 is "Select ISO" text)
+    if ( i <= 0 )
+    {
+        i = 1;
+    }
+
+    // Set new ISO value
+    d_data->m_ui->cbxIso->setCurrentIndex( i );
+
+    // Manually call combo box change event
+    onCbxIsoChange( i );
+
+    // Enable / disable the plus minus buttons
+    UpdateIsoPlusMinusButtons();
+
+    // If minus button is now disabled, change focus to the plus button
+    if ( !d_data->m_ui->btnIsoMinus->isEnabled() )
+    {
+         d_data->m_ui->btnIsoPlus->setFocus();
+    }
+}
+
+/******************************************************************************
+ * InOutBox::onBtnIsoPlusClicked
+ *****************************************************************************/
+void InOutBox::onBtnIsoPlusClicked( )
+{
+    // Get current ISO value
+    int currentIso = d_data->m_ui->sbxIso->value();
+
+    // Loop over all available ISO values until the next bigger ISO is found
+    int i;
+    for ( i = 1; i < d_data->m_ui->cbxIso->count(); i++ )
+    {
+        // Get ISO for this index
+        int iso = d_data->m_ui->cbxIso->itemData(i).toInt();
+
+        // If ISO is bigger than the current ISO, this is the new ISO
+        if ( iso > currentIso )
+        {
+            break;
+        }
+    }
+
+    // Clip to smallest possible ISO (0 is "Select ISO" text)
+    if ( i >= d_data->m_ui->cbxIso->count() )
+    {
+        i = d_data->m_ui->cbxIso->count() - 1;
+    }
+
+    // Set new ISO value
+    d_data->m_ui->cbxIso->setCurrentIndex( i );
+
+    // Manually call combo box change event
+    onCbxIsoChange( i );
+
+    // Enable / disable the plus minus buttons
+    UpdateIsoPlusMinusButtons();
+
+    // If plus button is now disabled, change focus to the minus button
+    if ( !d_data->m_ui->btnIsoPlus->isEnabled() )
+    {
+         d_data->m_ui->btnIsoMinus->setFocus();
+    }
+}
+
+/******************************************************************************
  * InOutBox::onSldExposureChange
  *****************************************************************************/
 void InOutBox::onSldExposureChange( int value )
 {
+    // Set the spin box to new value
     d_data->m_ui->sbxExposure->blockSignals( true );
     d_data->m_ui->sbxExposure->setValue( value );
     d_data->m_ui->sbxExposure->blockSignals( false );
+
+    // Note: the combo box is set with the released() event of the slider
 
     if ( (d_data->m_ui->sldExposure->isSliderDown()  ) &&
          (d_data->m_cntEvents++ > d_data->m_maxEvents) )
@@ -1373,6 +1589,10 @@ void InOutBox::onSldExposureChange( int value )
 void InOutBox::onSldExposureReleased()
 {
     d_data->m_cntEvents = 0;
+
+    /* Set the combo box to new value, blocking signals is not needed, as we only use
+     * the activated() event of the combo box which is only triggerd by user interaction */
+    UpdateExposureComboBox( d_data->m_ui->sldExposure->value() );
     
     setWaitCursor();
     emit CameraExposureChanged( d_data->m_ui->sldExposure->value() );
@@ -1384,13 +1604,136 @@ void InOutBox::onSldExposureReleased()
  *****************************************************************************/
 void InOutBox::onSbxExposureChange( int value )
 {
+    // Set the slider to new value
     d_data->m_ui->sldExposure->blockSignals( true );
     d_data->m_ui->sldExposure->setValue( value );
     d_data->m_ui->sldExposure->blockSignals( false );
 
+    /* Set the combo box to new value, blocking signals is not needed, as we only use
+     * the activated() event of the combo box which is only triggerd by user interaction */
+    UpdateExposureComboBox( value );
+
     setWaitCursor();
     emit CameraExposureChanged( value );
     setNormalCursor();
+}
+
+/******************************************************************************
+ * InOutBox::onCbxExposureChange
+ *****************************************************************************/
+void InOutBox::onCbxExposureChange( int index )
+{
+    // Check if a valid entry was selected (not "Select Shutter")
+    if ( index == 0)
+    {
+        return;
+    }
+
+    // Get exposure value from combo box
+    int exposure = d_data->m_ui->cbxExposure->currentData().toInt();
+
+    // Set spin box to new exposure value
+    d_data->m_ui->sbxExposure->blockSignals( true );
+    d_data->m_ui->sbxExposure->setValue( exposure );
+    d_data->m_ui->sbxExposure->blockSignals( false );
+
+    // Set slider to new exposure value
+    d_data->m_ui->sldExposure->blockSignals( true );
+    d_data->m_ui->sldExposure->setValue( exposure );
+    d_data->m_ui->sldExposure->blockSignals( false );
+
+    // Emit exposure changed event
+    setWaitCursor();
+    emit CameraExposureChanged( exposure );
+    setNormalCursor();
+}
+
+/******************************************************************************
+ * InOutBox::onBtnExposureMinusClicked
+ *****************************************************************************/
+void InOutBox::onBtnExposureMinusClicked( )
+{
+    // Get current exposure value
+    int currentExposure = d_data->m_ui->sbxExposure->value();
+
+    // Loop over all available exposures until the next smaller exposure is found
+    int i;
+    for ( i = d_data->m_ui->cbxExposure->count() - 1; i >= 1; i-- )
+    {
+        // Get exposure for this index
+        int exposure = d_data->m_ui->cbxExposure->itemData(i).toInt();
+
+        // If exposure is smaller than the current exposure, this is the new exposure
+        if ( exposure < currentExposure )
+        {
+            break;
+        }
+    }
+
+    // Clip to smallest possible exposure (0 is "Select Shutter" text)
+    if ( i <= 0 )
+    {
+        i = 1;
+    }
+
+    // Set new exposure
+    d_data->m_ui->cbxExposure->setCurrentIndex( i );
+
+    // Manually call combo box change event
+    onCbxExposureChange( i );
+
+    // Enable / disable the plus minus buttons
+    UpdateExposurePlusMinusButtons();
+
+    // If minus button is now disabled, change focus to the plus button
+    if ( !d_data->m_ui->btnExposureMinus->isEnabled() )
+    {
+         d_data->m_ui->btnExposurePlus->setFocus();
+    }
+}
+
+/******************************************************************************
+ * InOutBox::onBtnExposurePlusClicked
+ *****************************************************************************/
+void InOutBox::onBtnExposurePlusClicked( )
+{
+    // Get current exposure value
+    int currentExposure = d_data->m_ui->sbxExposure->value();
+
+    // Loop over all available exposures until the next bigger exposure is found
+    int i;
+    for ( i = 1; i < d_data->m_ui->cbxExposure->count(); i++ )
+    {
+        // Get exposure for this index
+        int exposure = d_data->m_ui->cbxExposure->itemData(i).toInt();
+
+        // If exposure is bigger than the current exposure, this is the new exposure
+        if ( exposure > currentExposure )
+        {
+            break;
+        }
+    }
+
+    // Clip to smallest possible exposure (0 is "Select Shutter" text)
+    if ( i >= d_data->m_ui->cbxExposure->count() )
+    {
+        i = d_data->m_ui->cbxExposure->count() - 1;
+    }
+
+    // Set new exposure
+    d_data->m_ui->cbxExposure->setCurrentIndex( i );
+
+    // Manually call combo box change event
+    onCbxExposureChange( i );
+
+    // Enable / disable the plus minus buttons
+    UpdateExposurePlusMinusButtons();
+
+    // If plus button is now disabled, change focus to the minus button
+    if ( !d_data->m_ui->btnExposurePlus->isEnabled() )
+    {
+         d_data->m_ui->btnExposureMinus->setFocus();
+    }
 }
 
 /******************************************************************************
@@ -1742,6 +2085,114 @@ void InOutBox::onAecStatChange( QVector<int> values )
 }
 
 /******************************************************************************
+ * InOutBox::UpdateIsoPlusMinusButtons
+ *****************************************************************************/
+void InOutBox::UpdateIsoPlusMinusButtons()
+{
+    // Get current ISO value
+    int iso = d_data->m_ui->sbxIso->value();
+
+    // Disable minus button, if the value is smaller than the value of the first combo box item
+    if ( iso <= d_data->m_ui->cbxIso->itemData(1).toInt() )
+    {
+        d_data->m_ui->btnIsoMinus->setEnabled( false );
+    }
+    // Else enable it
+    else
+    {
+        d_data->m_ui->btnIsoMinus->setEnabled( true );
+    }
+
+    // Disable plus button, if this the value is bigger than the value of the last combo box item
+    if ( iso >= d_data->m_ui->cbxIso->itemData(d_data->m_ui->cbxIso->count() - 1).toInt() )
+    {
+        d_data->m_ui->btnIsoPlus->setEnabled( false );
+    }
+    // Else enable it
+    else
+    {
+        d_data->m_ui->btnIsoPlus->setEnabled( true );
+    }
+}
+
+/******************************************************************************
+ * InOutBox::UpdateExposurePlusMinusButtons
+ *****************************************************************************/
+void InOutBox::UpdateExposurePlusMinusButtons()
+{
+    // Get current exposure value
+    int exposure = d_data->m_ui->sbxExposure->value();
+
+    int currentExposure = d_data->m_ui->cbxExposure->itemData(1).toInt();
+
+    // Disable minus button, if the value is smaller than the value of the first combo box item
+    if ( exposure <= currentExposure )
+    {
+        d_data->m_ui->btnExposureMinus->setEnabled( false );
+    }
+    // Else enable it
+    else
+    {
+        d_data->m_ui->btnExposureMinus->setEnabled( true );
+    }
+
+    // Disable plus button, if this the value is bigger than the value of the last combo box item
+    if ( exposure >= d_data->m_ui->cbxExposure->itemData(d_data->m_ui->cbxExposure->count() - 1).toInt() )
+    {
+        d_data->m_ui->btnExposurePlus->setEnabled( false );
+    }
+    // Else enable it
+    else
+    {
+        d_data->m_ui->btnExposurePlus->setEnabled( true );
+    }
+}
+
+/******************************************************************************
+ * InOutBox::UpdateIsoComboBox
+ *****************************************************************************/
+void InOutBox::UpdateIsoComboBox( int iso )
+{
+    // Check if the selected ISO value is one of the fixed ISO values
+    int index = d_data->m_ui->cbxIso->findData( iso );
+
+    /* In case nothing was found, findData() returns -1, in this case set index to 0
+     * to show the default "Select ISO" text in the combo box */
+    if ( index == -1 )
+    {
+        index = 0;
+    }
+
+    // Set the current combo box index
+    d_data->m_ui->cbxIso->setCurrentIndex( index );
+
+    // Enable / disable the plus minus buttons
+    UpdateIsoPlusMinusButtons();
+}
+
+/******************************************************************************
+ * InOutBox::UpdateExposureComboBox
+ *****************************************************************************/
+void InOutBox::UpdateExposureComboBox( int exposure )
+{
+    // Check if the selected exposure value is one of the fixed exposure values
+    int index = d_data->m_ui->cbxExposure->findData( exposure );
+
+    /* In case nothing was found, findData() returns -1, in this case set index to 0
+     * to show the default "Select Shutter" text in the combo box */
+    if ( index == -1 )
+    {
+        index = 0;
+    }
+
+    // Set the current combo box index
+    d_data->m_ui->cbxExposure->setCurrentIndex( index );
+
+    // Enable / disable the plus minus buttons
+    UpdateExposurePlusMinusButtons();
+}
+
+/******************************************************************************
  * InOutBox::updateAecSetupWidgets
  *****************************************************************************/
 void InOutBox::updateAecSetupWidgets( void )
@@ -1846,9 +2297,13 @@ void InOutBox::enableCamConfWidgets( bool enable )
 {
     d_data->m_ui->sbxIso->setEnabled( enable );
     d_data->m_ui->sldIso->setEnabled( enable );
+    d_data->m_ui->cbxIso->setEnabled( enable );
+    UpdateIsoPlusMinusButtons();
     
     d_data->m_ui->sbxExposure->setEnabled( enable );
     d_data->m_ui->sldExposure->setEnabled( enable );
+    d_data->m_ui->cbxExposure->setEnabled( enable );
+    UpdateExposurePlusMinusButtons();
 
     d_data->m_ui->sbxAperture->setEnabled( enable && d_data->m_AptEnable );
     d_data->m_ui->sldAperture->setEnabled( enable && d_data->m_AptEnable );

@@ -291,6 +291,142 @@ void GetVideoModeResolution(const VideoMode mode, int & xRes, int & yRes )
 }
 
 /******************************************************************************
+ * GetExposureTime()
+ *****************************************************************************/
+int GetExposureTime( ExposureTime exposureIndex )
+{
+    switch ( exposureIndex )
+    {
+        case ExposureTime1To8000:
+            return 125;
+        case ExposureTime1To4000:
+            return 250;
+        case ExposureTime1To2000:
+            return 500;
+        case ExposureTime1To1000:
+            return 1000;
+        case ExposureTime1To500:
+            return 2000;
+        case ExposureTime1To250:
+            return 4000;
+        case ExposureTime1To125:
+            return 8000;
+        case ExposureTime1To120:
+            return 8333;
+        case ExposureTime1To100:
+            return 10000;
+        case ExposureTime1To60:
+            return 16667;
+        case ExposureTime1To50:
+            return 20000;
+        case ExposureTime1To33:
+            return 30000;       // Rounded from 30303
+        case ExposureTime1To30:
+            return 33333;
+        case ExposureTime1To25:
+            return 40000;
+        default:
+            return 0;
+    }
+}
+
+/******************************************************************************
+ * GetExposureTimeString()
+ *****************************************************************************/
+QString GetExposureTimeString( ExposureTime exposureIndex )
+{
+    switch ( exposureIndex )
+    {
+        case ExposureTime1To8000:
+            return QString("1/%1").arg(8000);
+        case ExposureTime1To4000:
+            return QString("1/%1").arg(4000);
+        case ExposureTime1To2000:
+            return QString("1/%1").arg(2000);
+        case ExposureTime1To1000:
+            return QString("1/%1").arg(1000);
+        case ExposureTime1To500:
+            return QString("1/%1").arg(500);
+        case ExposureTime1To250:
+            return QString("1/%1").arg(250);
+        case ExposureTime1To125:
+            return QString("1/%1").arg(125);
+        case ExposureTime1To120:
+            return QString("1/%1").arg(120);
+        case ExposureTime1To100:
+            return QString("1/%1").arg(100);
+        case ExposureTime1To60:
+            return QString("1/%1").arg(60);
+        case ExposureTime1To50:
+            return QString("1/%1").arg(50);
+        case ExposureTime1To33:
+            return QString("1/%1").arg(33);
+        case ExposureTime1To30:
+            return QString("1/%1").arg(30);
+        case ExposureTime1To25:
+            return QString("1/%1").arg(25);
+        default:
+            return QString("");
+    }
+}
+
+/******************************************************************************
+ * GetIsoValue()
+ *****************************************************************************/
+int GetIsoValue( IsoValue isoIndex )
+{
+    switch ( isoIndex )
+    {
+        case IsoValue80:
+            return 80;
+        case IsoValue100:
+            return 100;
+        case IsoValue125:
+            return 125;
+        case IsoValue160:
+            return 160;
+        case IsoValue200:
+            return 200;
+        case IsoValue250:
+            return 250;
+        case IsoValue320:
+            return 320;
+        case IsoValue400:
+            return 400;
+        case IsoValue500:
+            return 500;
+        case IsoValue640:
+            return 640;
+        case IsoValue800:
+            return 800;
+        case IsoValue1000:
+            return 1000;
+        case IsoValue1250:
+            return 1250;
+        case IsoValue1600:
+            return 1600;
+        case IsoValue2000:
+            return 2000;
+        case IsoValue2500:
+            return 2500;
+        case IsoValue3200:
+            return 3200;
+        case IsoValue4000:
+            return 4000;
+        case IsoValue5000:
+            return 5000;
+        case IsoValue6400:
+            return 6400;
+        case IsoValue12800:
+            return 12800;
+        case IsoValue25600:
+            return 25600;
+        default:
+            return 0;
+    }
+}
+
+/******************************************************************************
  * GetSdiModeName()
  *****************************************************************************/
 QString GetSdiModeName( SdiMode mode )
@@ -299,10 +435,8 @@ QString GetSdiModeName( SdiMode mode )
     {
         case SdiModeLegal:
             return ( QString(SDI_MODE_NAME_LEGAL) );
-
         case SdiModeExtended:
             return ( QString(SDI_MODE_NAME_EXTENDED) );
-
         default:
             return ( QString::null );
     }
@@ -317,13 +451,10 @@ QString GetColorSpaceModeName( ColorSpaceMode mode )
     {
         case ColorSpaceModeYUV:
             return ( QString(COLOR_SPACE_MODE_NAME_YUV) );
-
         case ColorSpaceModeRAW10:
             return ( QString(COLOR_SPACE_MODE_NAME_RAW10) );
-
         case ColorSpaceModeRAW12:
             return ( QString(COLOR_SPACE_MODE_NAME_RAW12) );
-
         default:
             return ( QString::null );
     }

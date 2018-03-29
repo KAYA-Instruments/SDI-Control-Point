@@ -251,6 +251,60 @@ enum VideoMode
 };
 
 /******************************************************************************
+ * Fixed exposure times
+ *****************************************************************************/
+enum ExposureTime
+{
+    ExposureTimeFirst   = 0,
+    ExposureTime1To8000 = 0,    /**< Exposure 1/8000 = 125us */
+    ExposureTime1To4000 = 1,    /**< Exposure 1/4000 = 250us */
+    ExposureTime1To2000 = 2,    /**< Exposure 1/2000 = 500us */
+    ExposureTime1To1000 = 3,    /**< Exposure 1/1000 = 1000us */
+    ExposureTime1To500  = 4,    /**< Exposure 1/500  = 2000us */
+    ExposureTime1To250  = 5,    /**< Exposure 1/250  = 4000us */
+    ExposureTime1To125  = 6,    /**< Exposure 1/125  = 8000us */
+    ExposureTime1To120  = 7,    /**< Exposure 1/120  = 8333us */
+    ExposureTime1To100  = 8,    /**< Exposure 1/100  = 10000us */
+    ExposureTime1To60   = 9,    /**< Exposure 1/60   = 16667us */
+    ExposureTime1To50   = 10,   /**< Exposure 1/50   = 20000us */
+    ExposureTime1To33   = 11,   /**< Exposure 1/33   = 30303us = ~30000us */
+    ExposureTime1To30   = 12,   /**< Exposure 1/30   = 33333us */
+    ExposureTime1To25   = 13,   /**< Exposure 1/25   = 40000us */
+    ExposureTimeMax             /**< number of normally supported exposure times (end marker) */
+};
+
+/******************************************************************************
+ * Fixed ISO values
+ *****************************************************************************/
+enum IsoValue
+{
+    IsoValueFirst = 0,
+    IsoValue80    = 0,          /**< ISO 80 */
+    IsoValue100   = 1,          /**< ISO 100 */
+    IsoValue125   = 2,          /**< ISO 125 */
+    IsoValue160   = 3,          /**< ISO 160 */
+    IsoValue200   = 4,          /**< ISO 200 */
+    IsoValue250   = 5,          /**< ISO 250 */
+    IsoValue320   = 6,          /**< ISO 320 */
+    IsoValue400   = 7,          /**< ISO 400 */
+    IsoValue500   = 8,          /**< ISO 500 */
+    IsoValue640   = 9,          /**< ISO 640 */
+    IsoValue800   = 10,         /**< ISO 800 */
+    IsoValue1000  = 11,         /**< ISO 1000 */
+    IsoValue1250  = 12,         /**< ISO 1250 */
+    IsoValue1600  = 13,         /**< ISO 1600 */
+    IsoValue2000  = 14,         /**< ISO 2000 */
+    IsoValue2500  = 15,         /**< ISO 2500 */
+    IsoValue3200  = 16,         /**< ISO 3200 */
+    IsoValue4000  = 17,         /**< ISO 4000 */
+    IsoValue5000  = 18,         /**< ISO 5000 */
+    IsoValue6400  = 19,         /**< ISO 6400 */
+    IsoValue12800 = 20,         /**< ISO 12800 */
+    IsoValue25600 = 21,         /**< ISO 25600 */
+    IsoValueMax             /**< number of normally supported exposure times (end marker) */
+};
+
+/******************************************************************************
  * sdi modes
  *****************************************************************************/
 enum SdiMode
@@ -335,6 +389,15 @@ int GetVideoModeSpeed( VideoMode mode );
 
 // return corresponding resolution
 void GetVideoModeResolution(const VideoMode mode, int & xRes, int & yRes );
+
+// return corresponding exposure time
+int GetExposureTime( ExposureTime exposureIndex );
+
+// return corresponding exposure time text string
+QString GetExposureTimeString( ExposureTime exposureIndex );
+
+// return corresponding ISO value
+int GetIsoValue( IsoValue isoIndex );
     
 // return corresponding sdi-mode name 
 QString GetSdiModeName( SdiMode mode );

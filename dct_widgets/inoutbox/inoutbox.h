@@ -117,6 +117,11 @@ protected:
     void saveSettings( QSettings & s ) Q_DECL_OVERRIDE;
     void applySettings( void ) Q_DECL_OVERRIDE;
 
+    void UpdateIsoPlusMinusButtons();
+    void UpdateExposurePlusMinusButtons();
+    void UpdateIsoComboBox( int iso );
+    void UpdateExposureComboBox( int exposure );
+
     void updateAecSetupWidgets( void );
     void updateLscWidgets( void );
     void enableAecWidgets( bool enable );
@@ -191,10 +196,16 @@ private slots:
     void onSldIsoChange( int value );
     void onSldIsoReleased();
     void onSbxIsoChange( int value );
+    void onCbxIsoChange( int index );
+    void onBtnIsoMinusClicked( );
+    void onBtnIsoPlusClicked( );
 
     void onSldExposureChange( int value );
     void onSldExposureReleased();
     void onSbxExposureChange( int value );
+    void onCbxExposureChange( int index );
+    void onBtnExposureMinusClicked( );
+    void onBtnExposurePlusClicked( );
     
     void onCbxVideoModeChange( int value );
     void onCbxSdi2ModeChange( int value );

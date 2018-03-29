@@ -484,6 +484,7 @@ void UpdateBox::setSystemState( SystemStates state )
             d_data->m_ui->progressBar->setFormat( "%p%" );
             d_data->m_ui->progressBar->setValue( 0 );
             d_data->m_ui->btnCheckFirmwareUpdate->setEnabled( true );
+            d_data->m_ui->btnCheckGuiUpdate->setEnabled( true );
             enable = false;
         }
         else if ( state == UpdateState )
@@ -495,6 +496,7 @@ void UpdateBox::setSystemState( SystemStates state )
             d_data->m_ui->cbxVerify->setEnabled( (!fn.isEmpty()) && (fileExists(fn)) ? true : false );
             d_data->m_ui->btnFilename->setEnabled( false );
             d_data->m_ui->btnCheckFirmwareUpdate->setEnabled( false );
+            d_data->m_ui->btnCheckGuiUpdate->setEnabled( false );
             enable = true;
         }
         else if ( state == ErrorState )
