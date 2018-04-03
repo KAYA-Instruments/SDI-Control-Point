@@ -299,9 +299,13 @@ enum IsoValue
     IsoValue4000  = 17,         /**< ISO 4000 */
     IsoValue5000  = 18,         /**< ISO 5000 */
     IsoValue6400  = 19,         /**< ISO 6400 */
-    IsoValue12800 = 20,         /**< ISO 12800 */
-    IsoValue25600 = 21,         /**< ISO 25600 */
-    IsoValueMax             /**< number of normally supported exposure times (end marker) */
+    IsoValue8000  = 20,         /**< ISO 8000 */
+    IsoValue10000 = 21,         /**< ISO 10000 */
+    IsoValue12800 = 22,         /**< ISO 12800 */
+    IsoValue16000 = 23,         /**< ISO 16000 */
+    IsoValue20000 = 24,         /**< ISO 20000 */
+    IsoValue25600 = 25,         /**< ISO 25600 */
+    IsoValueMax                 /**< number of normally supported ISO values (end marker) */
 };
 
 /******************************************************************************

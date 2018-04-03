@@ -2092,8 +2092,10 @@ void InOutBox::UpdateIsoPlusMinusButtons()
     // Get current ISO value
     int iso = d_data->m_ui->sbxIso->value();
 
-    // Disable minus button, if the value is smaller than the value of the first combo box item
-    if ( iso <= d_data->m_ui->cbxIso->itemData(1).toInt() )
+    /* Disable minus button, if the value is smaller than the value of the first combo box item
+     * or the iso spin box is diabled (aec enabled) */
+    if ( iso <= d_data->m_ui->cbxIso->itemData(1).toInt() ||
+         !d_data->m_ui->sbxIso->isEnabled() )
     {
         d_data->m_ui->btnIsoMinus->setEnabled( false );
     }
@@ -2103,8 +2105,10 @@ void InOutBox::UpdateIsoPlusMinusButtons()
         d_data->m_ui->btnIsoMinus->setEnabled( true );
     }
 
-    // Disable plus button, if this the value is bigger than the value of the last combo box item
-    if ( iso >= d_data->m_ui->cbxIso->itemData(d_data->m_ui->cbxIso->count() - 1).toInt() )
+    /* Disable plus button, if this the value is bigger than the value of the last combo box item
+     * or the iso spin box is disabled (aec enabled) */
+    if ( iso >= d_data->m_ui->cbxIso->itemData(d_data->m_ui->cbxIso->count() - 1).toInt() ||
+         !d_data->m_ui->sbxIso->isEnabled() )
     {
         d_data->m_ui->btnIsoPlus->setEnabled( false );
     }
@@ -2125,8 +2129,10 @@ void InOutBox::UpdateExposurePlusMinusButtons()
 
     int currentExposure = d_data->m_ui->cbxExposure->itemData(1).toInt();
 
-    // Disable minus button, if the value is smaller than the value of the first combo box item
-    if ( exposure <= currentExposure )
+    /* Disable minus button, if the value is smaller than the value of the first combo box item
+     * or the exposure spin box is diabled (aec enabled) */
+    if ( exposure <= currentExposure ||
+         !d_data->m_ui->sbxExposure->isEnabled() )
     {
         d_data->m_ui->btnExposureMinus->setEnabled( false );
     }
@@ -2136,8 +2142,10 @@ void InOutBox::UpdateExposurePlusMinusButtons()
         d_data->m_ui->btnExposureMinus->setEnabled( true );
     }
 
-    // Disable plus button, if this the value is bigger than the value of the last combo box item
-    if ( exposure >= d_data->m_ui->cbxExposure->itemData(d_data->m_ui->cbxExposure->count() - 1).toInt() )
+    /* Disable plus button, if this the value is bigger than the value of the last combo box item
+     * or the exposure spin box is diabled (aec enabled) */
+    if ( exposure >= d_data->m_ui->cbxExposure->itemData(d_data->m_ui->cbxExposure->count() - 1).toInt() ||
+         !d_data->m_ui->sbxExposure->isEnabled() )
     {
         d_data->m_ui->btnExposurePlus->setEnabled( false );
     }

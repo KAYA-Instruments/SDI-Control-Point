@@ -417,8 +417,16 @@ int GetIsoValue( IsoValue isoIndex )
             return 5000;
         case IsoValue6400:
             return 6400;
+        case IsoValue8000:
+            return 8000;
+        case IsoValue10000:
+            return 10000;
         case IsoValue12800:
             return 12800;
+        case IsoValue16000:
+            return 16000;
+        case IsoValue20000:
+            return 20000;
         case IsoValue25600:
             return 25600;
         default:
