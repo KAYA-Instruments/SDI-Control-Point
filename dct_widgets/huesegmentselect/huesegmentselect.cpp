@@ -44,7 +44,7 @@ public:
     PrivateData()
         : m_background( new QPixmap( DEFAULT_BACKGROUND ) )
         , m_segmentBorderColor( QColor(255, 255, 255, 255) )
-        , m_paintFlags( QPainter::RenderHint(QPainter::Antialiasing | QPainter::SmoothPixmapTransform || QPainter::HighQualityAntialiasing) )
+        , m_paintFlags( QPainter::Antialiasing | QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing )
         , m_offsetPixel( DEFAULT_PIXEL_OFFSET )
         , m_noSegments( DEFAULT_NO_SEGMENTS )
         , m_factor( DEFAULT_FACTOR )
@@ -66,7 +66,7 @@ public:
 
     QPixmap *               m_background;
     QColor                  m_segmentBorderColor;
-    QPainter::RenderHint    m_paintFlags;
+    QPainter::RenderHints   m_paintFlags;
     
     int                     m_offsetPixel;      /**< red offset in pixel */
     int                     m_noSegments;       /**< number of currently used segments */
