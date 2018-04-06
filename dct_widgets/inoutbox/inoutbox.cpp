@@ -210,9 +210,6 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->sbxGenlockOffsetHorizontal->setRange( -4095, 4095 );
     d_data->m_ui->sbxGenlockOffsetHorizontal->setKeyboardTracking( false );
 
-    // fill exposure time combo box
-
-
     // fill bayer pattern combo box
     for ( int i=BayerPatternFirst; i<BayerPatternMax; i++ )
     {

@@ -35,7 +35,7 @@ TextViewer::TextViewer(const QString &path, const QString &title, QWidget *paren
     ui->setupUi(this);
 
     setAttribute(Qt::WA_DeleteOnClose);
-    setAttribute(Qt::WA_GroupLeader);
+    setWindowModality(Qt::WindowModal);
 
     // Create and set widget layout
     QVBoxLayout *mainLayout = new QVBoxLayout;

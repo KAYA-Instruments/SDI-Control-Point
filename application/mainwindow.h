@@ -32,6 +32,7 @@
 #include "ProVideoDevice.h"
 #include "connectdialog.h"
 #include "settingsdialog.h"
+#include "debugterminal.h"
 
 namespace Ui {
     class MainWindow;
@@ -46,6 +47,9 @@ public:
     ~MainWindow();
 
     void connectToDevice(ProVideoDevice * );
+
+protected:
+    void closeEvent(QCloseEvent *event) override;
 
 signals:
     // chain selection status
@@ -86,6 +90,7 @@ private slots:
     void onSplitScreenChange( bool flag );
     void onCopyFlagChange( bool flag );
     void onEngineeringModeChange( bool flag );
+    void onShowDebugTerminal();
     void onBroadcastChange(uint8_t flag );
 
     void onAecResyncRequest();
@@ -99,6 +104,7 @@ private:
     Ui::MainWindow *        m_ui;
     ConnectDialog *         m_ConnectDlg;
     SettingsDialog *        m_SettingsDlg;
+    DebugTerminal *         m_DebugTerminal;
     QComboBox *             m_cbxConnectedDevices;
     ProVideoDevice *        m_dev;
     QString                 m_filename;
@@ -106,6 +112,7 @@ private:
 
     void setConnectDlg( ConnectDialog * );
     void setSettingsDlg( SettingsDialog * );
+    void setDebugTerminal( DebugTerminal * );
     void setupUI(ProVideoDevice::features deviceFeatures);
 
     void updateDeviceList();

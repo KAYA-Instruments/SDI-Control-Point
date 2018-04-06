@@ -278,6 +278,10 @@ static int ctrl_channel_qtserial_rs232_send_request
         QSerialPort * port = com->getPort();
         if ( port )
         {
+            /* We call the "emit data received" function here, although this is actually a data send.
+             * This is done to have a local echo functionality in the debug terminal. */
+            com->emitDataRecieved( (char *)data );
+
             return ( port->write( (const char *)data, len ) );
         }
     }
@@ -304,7 +308,14 @@ static int ctrl_channel_qtserial_rs232_receive_response
             // Check if bytes are available, otherwise wait 1ms for new data to arrive
             if( port->bytesAvailable() > 0 || port->waitForReadyRead(1) )
             {
-                return ( port->read( (char *)data, len ) );
+                int result = port->read( (char *)data, len );
+
+                /* Call the emitDataReceived function which will emit a dataRecieved signal, if a slot
+                 * is registered for that event. This is used for the debugging terminal, it is not needed
+                 * for communication with the device */
+                com->emitDataRecieved( (char *)data );
+
+                return result;
             }
         }
     }
@@ -539,6 +550,11 @@ static int ctrl_channel_qtserial_rs4xx_send_request
             s.sprintf("%d ", com->getDeviceAddress() );
             port->write( s.toUtf8() );
 
+            /* We call the "emit data received" function here, although this is actually a data send.
+             * This is done to have a local echo functionality in the debug terminal. */
+            com->emitDataRecieved( s.toLocal8Bit().constData() );
+            com->emitDataRecieved( (char *)data );
+
             // send command
             return ( port->write( (const char *)data, len ) );
         }
@@ -568,7 +584,7 @@ static int ctrl_channel_qtserial_rs4xx_receive_response
             if ( port->bytesAvailable() > 0 || port->waitForReadyRead(1) )
             {
                 int result = ( port->read( (char *)data, len ) );
-                /* Mahr: After reading data, wait 1000 us to give the RS485 tx/rx chips time
+                /* Mahr: After reading data, wait 250 us to give the RS485 tx/rx chips time
                  * to switch from write to read. This fixes problems where the device would not
                  * receive some commands.
                  * This problem is related to the baudrate, this fix only works for baudrates down
@@ -576,6 +592,12 @@ static int ctrl_channel_qtserial_rs4xx_receive_response
                  * increased to 30000 us, the problem also seems to be fixed for baudrates down to 9600
                  * but this also increases the latency of the GUI to unreasonable amounts. */
                 QThread::usleep(250);
+
+                /* Call the emitDataReceived function which will emit a dataRecieved signal, if a slot
+                 * is registered for that event. This is used for the debugging terminal, it is not needed
+                 * for communication with the device */
+                com->emitDataRecieved( (char *)data );
+
                 return result;
             }
         }
@@ -597,6 +619,60 @@ int ComChannelSerial::getNoPorts() const
 int ComChannelSerial::getPortName( int idx, ctrl_channel_name_t name )
 {
     return ( ctrl_channel_get_port_name( GetInstance(), idx, name ) );
+}
+
+/******************************************************************************
+ * ComChannelSerial::emitDataRecieved
+ *****************************************************************************/
+void ComChannelSerial::emitDataRecieved( char const * data )
+{
+    if ( receivers(SIGNAL(dataReceived(QString))) > 0 )
+    {
+        emit dataReceived( QString(data) );
+    }
+}
+
+/******************************************************************************
+ * ComChannelSerial::onSendData
+ *****************************************************************************/
+void ComChannelSerial::onSendData( QString data, int responseWaitTime )
+{
+    /* This is used to send debugging data over the COM port, it is not
+     * used for normal device communication. */
+    if (m_port && m_port->isOpen() )
+    {
+        // Write data to port
+        m_port->write( data.toLocal8Bit().constData(), data.length() );
+
+        // Emit data received event for local echo
+        emit dataReceived( data );
+
+        // Get reply from device
+        char buffer[500];
+        memset( buffer, 0, sizeof(buffer) );
+        QString readString;
+
+        // Wait for the given responseWaitTime until there is data available
+        if ( m_port->bytesAvailable() <= 0 )
+        {
+             m_port->waitForReadyRead( responseWaitTime );
+        }
+
+        // Loop while data is received
+        while ( m_port->bytesAvailable() > 0 || m_port->waitForReadyRead( 50 ) )
+        {
+            memset( buffer, 0, sizeof(buffer) );
+            int result = m_port->read( (char *)buffer, sizeof(buffer) );
+
+            if ( result > 0 )
+            {
+                readString.append( buffer );
+            }
+        }
+
+        // Emit data received event
+        emit dataReceived( readString );
+    }
 }
 
 /******************************************************************************
@@ -682,5 +758,3 @@ void ComChannelRS4xx::ReOpen()
         return;
     }
 }
-
-

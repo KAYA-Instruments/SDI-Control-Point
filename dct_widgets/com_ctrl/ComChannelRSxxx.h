@@ -23,6 +23,8 @@
 #ifndef _COM_CHANNEL_RSxxx_H_
 #define _COM_CHANNEL_RSxxx_H_
 
+#include <QObject>
+
 #include <QtSerialPort/QtSerialPort>
 #include <QtSerialPort/QSerialPortInfo>
 
@@ -33,6 +35,8 @@
 
 class ComChannelSerial : public ComChannel
 {
+    Q_OBJECT
+
 public:
     explicit ComChannelSerial() : ComChannel(),
         m_port( NULL ),
@@ -123,6 +127,11 @@ public:
         return ( QString::null );
     }
 
+    void emitDataRecieved( char const * data );
+
+public slots:
+    void onSendData( QString data , int responseWaitTime ) override;
+
 private:
     QSerialPort *   m_port;
 
@@ -136,6 +145,8 @@ private:
 
 class ComChannelRS232 : public ComChannelSerial
 {
+    Q_OBJECT
+
 public:
     explicit ComChannelRS232();
     
@@ -144,6 +155,8 @@ public:
 
 class ComChannelRS4xx: public ComChannelSerial
 {
+    Q_OBJECT
+
 public:
     explicit ComChannelRS4xx( unsigned int dev_addr = 1u );
     

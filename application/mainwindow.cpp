@@ -68,6 +68,7 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
     // Set and connect dialogs
     setConnectDlg(connectDialog);
     setSettingsDlg(new SettingsDialog( this ));
+    setDebugTerminal(new DebugTerminal());      // Do not set parent widget, or the terminal is not shown correctly
 
     // GUI has to be locked down during update procedure
     connect( m_ui->updBox, SIGNAL(LockCurrentTabPage(bool)), this, SLOT(onLockCurrentTabPage(bool)) );
@@ -93,11 +94,23 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
  *****************************************************************************/
 MainWindow::~MainWindow()
 {
+    delete m_SettingsDlg;
+    delete m_DebugTerminal;
+    delete m_ui;
+}
+
+/******************************************************************************
+ * MainWindow::~MainWindow
+ *****************************************************************************/
+void MainWindow::closeEvent (QCloseEvent *event)
+{
+    // Make sure that the debug terminal is cloased
+    m_DebugTerminal->close();
+
     // When the main window closes, disable broadcast mode (this disables the broadcast master)
     emit BroadcastChanged( false );
 
-    delete m_SettingsDlg;
-    delete m_ui;
+    event->accept();
 }
 
 /******************************************************************************
@@ -993,7 +1006,30 @@ void MainWindow::setSettingsDlg( SettingsDialog * dlg )
         connect( m_SettingsDlg, SIGNAL(ResyncRequest()), this, SLOT(onResyncRequest()) );
         connect( m_SettingsDlg, SIGNAL(SystemSettingsChanged(int,int,int,int)), this, SLOT(onSystemSettingsChange(int,int,int,int)) );
         connect( m_SettingsDlg, SIGNAL(EngineeringModeChanged(bool)), this, SLOT(onEngineeringModeChange(bool)) );
-        connect( m_SettingsDlg, SIGNAL(SaveSettings()), this, SLOT( onSaveSettingsClicked() ) );
+        connect( m_SettingsDlg, SIGNAL(SaveSettings()), this, SLOT( onSaveSettingsClicked()) );
+        connect( m_SettingsDlg, SIGNAL(ShowDebugTerminalClicked()), this, SLOT(onShowDebugTerminal()) );
+    }
+}
+
+/******************************************************************************
+ * MainWindow::setDebugTerminal
+ *****************************************************************************/
+void MainWindow::setDebugTerminal( DebugTerminal * dlg )
+{
+    m_DebugTerminal = dlg;
+
+    if ( m_DebugTerminal )
+    {
+        // Connect debug terminal with RS232 channel
+        connect( m_ConnectDlg->getChannelRS232(), SIGNAL(dataReceived(QString)), m_DebugTerminal, SLOT(onDataReceived(QString)) );
+        connect( m_DebugTerminal, SIGNAL(sendData(QString, int)), m_ConnectDlg->getChannelRS232(), SLOT(onSendData(QString, int)) );
+
+        // Connect debug terminal with RS485 channel
+        connect( m_ConnectDlg->getChannelRS485(), SIGNAL(dataReceived(QString)), m_DebugTerminal, SLOT(onDataReceived(QString)) );
+        connect( m_DebugTerminal, SIGNAL(sendData(QString, int)), m_ConnectDlg->getChannelRS485(), SLOT(onSendData(QString, int)) );
+
+        // Set window flags to window
+        m_DebugTerminal->setWindowFlags( Qt::Window );
     }
 }
 
@@ -1641,6 +1677,17 @@ void MainWindow::onEngineeringModeChange( bool value )
     for ( int i = 0; i < m_activeWidgets.length(); i++ )
     {
         m_activeWidgets[i]->setMode( m );
+    }
+}
+
+/******************************************************************************
+ * MainWindow::onShowDebugTerminal
+ *****************************************************************************/
+void MainWindow::onShowDebugTerminal()
+{
+    if ( m_DebugTerminal && !m_DebugTerminal->isVisible() )
+    {
+        m_DebugTerminal->show();
     }
 }
 

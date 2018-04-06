@@ -48,6 +48,7 @@ signals:
     void ResetToDefaultsClicked();
     void SystemSettingsChanged( int rs232Baudrate, int rs485Baudrate, int rs485Address, int rs485BroadcastAddress );
     void EngineeringModeChanged( bool flag );
+    void ShowDebugTerminalClicked();
 
     void ResyncRequest( void );
     void SaveSettings( void );
@@ -69,6 +70,7 @@ private slots:
     void onBtnResetToDefaultsClicked();
     void onBtnApplySerialPortSettingsClicked();
     void onCbxEngineeringModeChange( int value );
+    void onBtnShowDebugTerminalClicked();
 
 private:
     Ui::SettingsDialog *        m_ui;   // GUI instance

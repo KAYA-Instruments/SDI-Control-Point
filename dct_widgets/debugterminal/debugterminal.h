@@ -15,49 +15,56 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *****************************************************************************/
 /**
- * @file    ComChannel.h
+ * @file    debugterminal.h
  *
- * @brief   
+ * @brief   Class definition of debug terminal to display data which is
+ *          send / received over a com port. It can also be used to send debug
+ *          commands.
  *
  *****************************************************************************/
-#ifndef _COM_CHANNEL_H_
-#define _COM_CHANNEL_H_
 
-#include <QObject>
+#ifndef DEBUGTERMINAL_H
+#define DEBUGTERMINAL_H
 
-// generic control channel layer
-#include <ctrl_channel/ctrl_channel.h>
+#include <QWidget>
+#include <QApplication>
 
-class ComChannel : public QObject
+namespace Ui {
+class DebugTerminal;
+}
+
+class DebugTerminal : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit ComChannel();
-    virtual ~ComChannel();
-
-    ctrl_channel_handle_t GetInstance() const
-    {
-        return ( m_channel );
-    }
-
-    int Open( void * param, int size );
-
-    virtual void ReOpen() = 0;
-
-    bool isOpen( ) const;
-
-    void Close();
+    explicit DebugTerminal(QWidget *parent = 0);
+    ~DebugTerminal();
 
 signals:
-    void dataReceived( QString data );
+    void sendData( QString data, int );
 
 public slots:
-    virtual void onSendData( QString data, int responseWaitTime ) = 0;
+    void onDataReceived( QString data );
 
 private:
-    ctrl_channel_handle_t   m_channel;      // control channel instance
+    Ui::DebugTerminal *ui;
+
+    void setWaitCursor()
+    {
+        QApplication::setOverrideCursor( Qt::WaitCursor );
+    }
+
+    void setNormalCursor()
+    {
+        QApplication::setOverrideCursor( Qt::ArrowCursor );
+    }
+
+private slots:
+    void onSendData();
+    void onTextEdited( QString text );
+    void onShowHelpClicked();
+    void onClearTerminalClicked();
 };
 
-#endif // _COM_CHANNEL_H_
-
+#endif // DEBUGTERMINAL_H

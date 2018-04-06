@@ -63,6 +63,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
 
     // connect control settings
     connect( m_ui->cbxEngineeringMode, SIGNAL(stateChanged(int)), this, SLOT(onCbxEngineeringModeChange(int)) );
+    connect( m_ui->btnShowDebugTerminal, SIGNAL(clicked(bool)), this, SLOT(onBtnShowDebugTerminalClicked()) );
 
     // Set device ID ranges
     m_ui->sbxRS485Address->setRange( 0, MAX_DEVICE_ID );
@@ -268,6 +269,14 @@ void SettingsDialog::onBtnApplySerialPortSettingsClicked()
 void SettingsDialog::onCbxEngineeringModeChange( int value )
 {
     emit EngineeringModeChanged( (Qt::Unchecked == value) ? false : true );
+}
+
+/******************************************************************************
+ * SettingsDialog::onBtnShowDebugTerminalClicked()
+ *****************************************************************************/
+void SettingsDialog::onBtnShowDebugTerminalClicked()
+{
+    emit ShowDebugTerminalClicked();
 }
 
 /******************************************************************************

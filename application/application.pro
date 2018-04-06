@@ -77,7 +77,8 @@ INCLUDEPATH += ../libraries/include ..              \
                ../dct_widgets/updatebox             \
                ../dct_widgets/kneebox               \
                ../dct_widgets/dpccbox               \
-               ../dct_widgets/textviewer
+               ../dct_widgets/textviewer            \
+               ../dct_widgets/debugterminal
 
 SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
            ../dct_widgets/wbbox/wbbox.cpp                                   \
@@ -133,6 +134,7 @@ SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
            ../dct_widgets/com_ctrl/devices/CooperDevice.cpp                 \
            ../dct_widgets/csvwrapper/csvwrapper.cpp                         \
            ../dct_widgets/textviewer/textviewer.cpp                         \
+           ../dct_widgets/debugterminal/debugterminal.cpp                   \
            ../libraries/ctrl_channel/ctrl_channel.c                         \
            ../libraries/ctrl_protocol/ctrl_protocol.c                       \
            ../libraries/ctrl_protocol/ctrl_protocol_isp.c                   \
@@ -236,6 +238,7 @@ HEADERS  += ../libraries/include                                                
             ../dct_widgets/com_ctrl/defines.h                                   \
             ../dct_widgets/csvwrapper/csvwrapper.h                              \
             ../dct_widgets/textviewer/textviewer.h                              \
+            ../dct_widgets/debugterminal/debugterminal.h                        \
             ../dct_widgets/dct_widgets_base.h                                   \
             ../libraries/include/csv/csvparser.h                                \
             ../libraries/include/csv/csvwriter.h                                \
@@ -301,6 +304,7 @@ FORMS    += ../dct_widgets/mcceqbox/mcceqbox.ui                             \
             ../dct_widgets/settingsdialog/settingsdialog.ui                 \
             ../dct_widgets/infodialog/infodialog.ui                         \
             ../dct_widgets/textviewer/textviewer.ui                         \
+            ../dct_widgets/debugterminal/debugterminal.ui                   \
             mainwindow.ui
 
 RESOURCES += ../resource/resource.qrc
