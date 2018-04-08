@@ -453,7 +453,7 @@ static int get_fpnc_correction_data
         res = evaluate_error_response( data, res );
     }
 
-    return ( 0 );
+    return ( res );
 }
 
 /******************************************************************************

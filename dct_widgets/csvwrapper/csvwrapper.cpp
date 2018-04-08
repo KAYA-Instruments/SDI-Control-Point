@@ -129,7 +129,7 @@ int saveTableCsv(const QString & path, const QVector<QVector<int>> & cols)
 
             // Convert data to c string
             std::string tempString = std::to_string(value);
-            char* data = new char[tempString.length()];
+            char data[tempString.length()];
             strcpy(data, tempString.c_str());
 
             // Write to the table

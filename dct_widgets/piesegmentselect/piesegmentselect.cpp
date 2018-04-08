@@ -329,7 +329,7 @@ void PieSegmentSelect::mouseMoveEvent( QMouseEvent * evt )
                 idx += d_data->m_noSegments;
             }
 
-            emit moved( index );
+            emit moved( idx );
         }
     }
 } 
