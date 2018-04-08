@@ -6,8 +6,8 @@
 
 # This version number is shown in the Application, it should be
 # updated before each release!
-VERSION = 1.1.2
-DEFINES += VERSION_STRING=\\\"1.1.2\\\"
+VERSION = 1.1.3
+DEFINES += VERSION_STRING=\\\"1.1.3\\\"
 
 QMAKE_TARGET_COMPANY = "Dream Chip Technologies GmbH"
 QMAKE_TARGET_PRODUCT = "ProVideo GUI"
@@ -17,7 +17,6 @@ QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2018, Dream Chip Technologies GmbH"
 RC_ICONS = ../resource/icons/dct_icon.ico
 
 CONFIG  += c++11
-# CONFIG  += debug
 QT      += core serialport network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -50,6 +49,7 @@ DEFINES += "QT_NO_OPENGL"
 DEFINES += "CFG_CSIP_SAMPLE_INT32"
 
 INCLUDEPATH += ../libraries/include ..              \
+               ../libraries/qcustomplot/            \
                ../dct_widgets                       \
                ../dct_widgets/com_ctrl              \
                ../dct_widgets/com_ctrl/devices      \
@@ -65,7 +65,6 @@ INCLUDEPATH += ../libraries/include ..              \
                ../dct_widgets/piesegmentselect      \
                ../dct_widgets/huesegmentselect      \
                ../dct_widgets/mccslider             \
-               ../dct_widgets/qcustomplot           \
                ../dct_widgets/mcceqbox              \
                ../dct_widgets/wbbox                 \
                ../dct_widgets/infobox               \
@@ -105,7 +104,6 @@ SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
            ../dct_widgets/piesegmentselect/piesegmentselect.cpp             \
            ../dct_widgets/huesegmentselect/huesegmentselect.cpp             \
            ../dct_widgets/mccslider/mccslider.cpp                           \
-           ../dct_widgets/qcustomplot/qcustomplot.cpp                       \
            ../dct_widgets/com_ctrl/common.cpp                               \
            ../dct_widgets/com_ctrl/defines.cpp                              \
            ../dct_widgets/com_ctrl/ComProtocol.cpp                          \
@@ -177,6 +175,7 @@ SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
            ../libraries/simple_math/float.c                                 \
            ../libraries/csv/csvparser.c                                     \
            ../libraries/csv/csvwriter.c                                     \
+           ../libraries/qcustomplot/qcustomplot.cpp                         \
            mainwindow.cpp                                                   \
            main.cpp
 
@@ -205,7 +204,6 @@ HEADERS  += ../libraries/include                                                
             ../dct_widgets/piesegmentselect/piesegmentselect.h                  \
             ../dct_widgets/huesegmentselect/huesegmentselect.h                  \
             ../dct_widgets/mccslider/mccslider.h                                \
-            ../dct_widgets/qcustomplot/qcustomplot.h                            \
             ../dct_widgets/connectdialog/connectdialog.h                        \
             ../dct_widgets/settingsdialog/settingsdialog.h                      \
             ../dct_widgets/infodialog/infodialog.h                              \
@@ -242,6 +240,7 @@ HEADERS  += ../libraries/include                                                
             ../dct_widgets/dct_widgets_base.h                                   \
             ../libraries/include/csv/csvparser.h                                \
             ../libraries/include/csv/csvwriter.h                                \
+            ../libraries/qcustomplot/qcustomplot.h                              \
             ../libraries/include/ctrl_channel/ctrl_channel.h                    \
             ../libraries/include/ctrl_channel/ctrl_channel_generic.h            \
             ../libraries/include/ctrl_channel/ctrl_channel_serial.h             \

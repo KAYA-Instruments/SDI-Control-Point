@@ -601,7 +601,7 @@ public:
 
         QCustomPlot * plot = getLutPlot( ch );
 
-        plot->graph( LINEAR_CURVE_ID )->clearData();
+        plot->graph( LINEAR_CURVE_ID )->data()->clear();
 
         x[0] = y[0] = 0.0f;
         x[1] = y[1] = 1.0f;
@@ -620,10 +620,10 @@ public:
         const int scale_factor = (1 << m_bit_width) / num_samples;
 
         // clear all graphs 
-        plot->graph( INTERPOLATION_CURVE_ID )->clearData();
-        plot->graph( FINAL_CURVE_ID )->clearData();
-        plot->graph( SAMPLE_CURVE_ID )->clearData();
-        plot->graph( HIGHLIGHT_CURVE_ID )->clearData();
+        plot->graph( INTERPOLATION_CURVE_ID )->data()->clear();
+        plot->graph( FINAL_CURVE_ID )->data()->clear();
+        plot->graph( SAMPLE_CURVE_ID )->data()->clear();
+        plot->graph( HIGHLIGHT_CURVE_ID )->data()->clear();
 
         // interpolated curve
         QVector<double> x1( num_samples );
@@ -699,7 +699,7 @@ public:
     {
         QCustomPlot * plot = getLutPlot( ch );
 
-        plot->graph( HIGHLIGHT_CURVE_ID )->clearData();
+        plot->graph( HIGHLIGHT_CURVE_ID )->data()->clear();
 
         // sample points 
         QVector<double> x2( x.count() );

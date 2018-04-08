@@ -340,7 +340,7 @@ public:
 
         QCustomPlot * plot = getGammaPlot( ch );
 
-        plot->graph( THRESHOLD_CURVE_ID )->clearData();
+        plot->graph( THRESHOLD_CURVE_ID )->data()->clear();
 
         x[0] = x[1] = DOUBLE( m_threshold[ch] ) / SCALING_FACTOR;
         y[0] = 0.0f;
@@ -356,7 +356,7 @@ public:
         
         QCustomPlot * plot = getGammaPlot( ch );
 
-        plot->graph( LINEAR_CURVE_ID )->clearData();
+        plot->graph( LINEAR_CURVE_ID )->data()->clear();
         
         x[0] = y[0] = DOUBLE( m_linearBrightness[ch] ) / SCALING_FACTOR;
         x[1] = DOUBLE( m_threshold[ch] ) / SCALING_FACTOR;
@@ -374,7 +374,7 @@ public:
         
         QCustomPlot * plot = getGammaPlot( ch );
 
-        plot->graph( NON_LINEAR_CURVE_ID )->clearData();
+        plot->graph( NON_LINEAR_CURVE_ID )->data()->clear();
 
         double d = DOUBLE( SCALING_FACTOR - m_threshold[ch] ) / SCALING_FACTOR / 100;
 

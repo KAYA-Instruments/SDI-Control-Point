@@ -251,7 +251,7 @@ public:
         {
             x[0] = x[1] = x_axis[i+1];
             
-            m_ui->FpncPlot->graph( i+4 )->clearData();
+            m_ui->FpncPlot->graph( i+4 )->data()->clear();
             m_ui->FpncPlot->graph( i+4 )->setData( x, y );
         }
     }
@@ -400,10 +400,10 @@ public:
 
         computeColors( column );
 
-        m_ui->FpncPlot->graph( CURVE_EVEN_LINES_ID )->clearData();
-        m_ui->FpncPlot->graph( CURVE_ODD_LINES_ID )->clearData();
-        m_ui->FpncPlot->graph( CURVE_EVEN_LINES_LOADED_ID )->clearData();
-        m_ui->FpncPlot->graph( CURVE_ODD_LINES_LOADED_ID )->clearData();
+        m_ui->FpncPlot->graph( CURVE_EVEN_LINES_ID )->data()->clear();
+        m_ui->FpncPlot->graph( CURVE_ODD_LINES_ID )->data()->clear();
+        m_ui->FpncPlot->graph( CURVE_EVEN_LINES_LOADED_ID )->data()->clear();
+        m_ui->FpncPlot->graph( CURVE_ODD_LINES_LOADED_ID )->data()->clear();
 
         m_ui->FpncPlot->graph( CURVE_EVEN_LINES_ID )->setData( x_axis, y0 );
         m_ui->FpncPlot->graph( CURVE_ODD_LINES_ID )->setData( x_axis, y1 );
