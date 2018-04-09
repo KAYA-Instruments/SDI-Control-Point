@@ -62,7 +62,7 @@
      <item>
       <widget class="QLabel" name="lblWaitTime">
        <property name="text">
-        <string>Wait Time in ms</string>
+        <string>Response Wait Time in ms</string>
        </property>
       </widget>
      </item>

@@ -26,6 +26,7 @@
 #include "ComChannelRSxxx.h"
 
 #include <QThread>
+#include <QElapsedTimer>
 
 /******************************************************************************
  * ctrl_channel_qtserial_get_no_ports
@@ -652,14 +653,29 @@ void ComChannelSerial::onSendData( QString data, int responseWaitTime )
         memset( buffer, 0, sizeof(buffer) );
         QString readString;
 
+        // Start a timer to measure how long command has been running
+        QElapsedTimer timer;
+        timer.start();
+
         // Wait for the given responseWaitTime until there is data available
         if ( m_port->bytesAvailable() <= 0 )
         {
-             m_port->waitForReadyRead( responseWaitTime );
+            if ( !m_port->waitForReadyRead(responseWaitTime) )
+            {
+                // No data available, return
+                return;
+            }
         }
 
         // Loop while data is received
-        while ( m_port->bytesAvailable() > 0 || m_port->waitForReadyRead( 50 ) )
+        /* Note: Long commands like dpc auto calibration or video mode only send a
+         * newline ('\r\n') and then process for multiple seconds. To also catch the OK
+         * response from those commands we wait for the full response wait time if
+         * we have not received anything but '\r\n'.
+         * Else we stop waiting if nothing new is received for 50ms, this makes the
+         * debug interface more reactive and allows for fast script processing. */
+        while ( m_port->bytesAvailable() > 0 || m_port->waitForReadyRead( 50 ) ||
+                (readString == "\r\n" && timer.elapsed() <= responseWaitTime) )
         {
             memset( buffer, 0, sizeof(buffer) );
             int result = m_port->read( (char *)buffer, sizeof(buffer) );

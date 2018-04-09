@@ -212,13 +212,19 @@ void DebugTerminal::onShowHelpClicked()
     QMessageBox::information( this,
                               "How to Use the Debug Terminal",
                               "The Debug Terminal will show all commands which were sent by the ProVideo GUI.\n\n"
-                              "You can also enter your own commands in the 'Command' field or copy and paste a list of "
+                              "You can enter your own commands in the 'Command' field or copy and paste a list of "
                               "commands from the clip board to that field.\n\n"
+                              "The Debug Console has a command history which you can access by pressing the Arrow Up "
+                              "or Down keys on your keyboard while the 'Command' field is selected.\n\n"
                               "If you want to execute long commands (e.g. defect pixel calibration) increase the "
                               "response wait time, otherwise the command output will not be shown.\n\n"
-                              "Please note, that the Debug Terminal and the GUI have to share the Com Port, this means"
-                              "while a command from the Debug Terminal is executed you should not make changes in the GUI"
-                              "and vice versa." );
+                              "The Debug Terminal and the GUI have to share the Com Port, this means "
+                              "while a command from the Debug Terminal is executed you should not make changes in the "
+                              "GUI and vice versa.\n\n"
+                              "Please note that any changes you make using debug commands will not be shown in the "
+                              "GUI. E.g. changing the video mode from 1080i50 to 1080p30 with a debug command will "
+                              "not change the displayed video mode in the GUI window. You will have to reconnect "
+                              "to the device by using the Conenct Dialog to make such changes visible." );
 }
 
 /******************************************************************************
