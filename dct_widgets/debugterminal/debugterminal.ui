@@ -92,7 +92,7 @@
      <item>
       <widget class="QPushButton" name="btnClearTerminal">
        <property name="text">
-        <string>Clear Terminal</string>
+        <string>Clear Terminal and History</string>
        </property>
       </widget>
      </item>
@@ -104,6 +104,7 @@
   <tabstop>tbTerminal</tabstop>
   <tabstop>letInput</tabstop>
   <tabstop>sbxWaitTime</tabstop>
+  <tabstop>btnShowHelp</tabstop>
   <tabstop>btnClearTerminal</tabstop>
  </tabstops>
  <resources>

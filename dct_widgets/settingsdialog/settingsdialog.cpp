@@ -39,6 +39,9 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     // initialize UI
     m_ui->setupUi(this);
 
+    // Change text of the "Save" button to "Apply and Save"
+    m_ui->buttonBox->button(QDialogButtonBox::Save)->setText("Apply and Save");
+
     // add baudrates to baudrate combo boxes
     /* Note: Slow baudrates below 57600 baud are not supported by the GUI because
      * the delays / wait times get to long for a fluid user experience */
@@ -57,7 +60,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     m_ui->cbxRS485Baudrate->setCurrentIndex( m_ui->cbxRS485Baudrate->findData( CTRL_CHANNEL_BAUDRATE_DEFAULT ) );
 
     // connect system settings
-    connect (m_ui->btnApplyDeviceName, SIGNAL(clicked(bool)), this, SLOT(onApplyDeviceNameClicked()) );
+    connect (m_ui->btnApplyDeviceName, SIGNAL(clicked(bool)), this, SLOT(onBtnApplyDeviceNameClicked()) );
     connect( m_ui->btnResetToDefaults, SIGNAL(clicked(bool)), this, SLOT(onBtnResetToDefaultsClicked()) );
     connect( m_ui->btnApplySerialPortSettings, SIGNAL(clicked(bool)), this, SLOT(onBtnApplySerialPortSettingsClicked()) );
 
@@ -176,9 +179,9 @@ void SettingsDialog::onBroadcastChange( bool enable )
 }
 
 /******************************************************************************
- * SettingsDialog::onResetToDefaultsClicked
+ * SettingsDialog::onBtnApplyDeviceNameClicked
  *****************************************************************************/
-void SettingsDialog::onApplyDeviceNameClicked()
+void SettingsDialog::onBtnApplyDeviceNameClicked()
 {
     // Get device name string from line edit
     QString name = m_ui->letDeviceName->text();
@@ -285,6 +288,10 @@ void SettingsDialog::onBtnShowDebugTerminalClicked()
 void SettingsDialog::accept()
 {
     QApplication::setOverrideCursor( Qt::WaitCursor );
+
+    // Apply device name and serial port settings
+    onBtnApplyDeviceNameClicked();
+    onBtnApplySerialPortSettingsClicked();
 
     // Send device name changed event
     emit SaveSettings();

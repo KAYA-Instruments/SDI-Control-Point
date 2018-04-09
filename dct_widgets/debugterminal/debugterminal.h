@@ -28,6 +28,9 @@
 
 #include <QWidget>
 #include <QApplication>
+#include <QEvent>
+#include <QList>
+#include <QString>
 
 namespace Ui {
 class DebugTerminal;
@@ -47,8 +50,14 @@ signals:
 public slots:
     void onDataReceived( QString data );
 
+protected:
+    void showEvent( QShowEvent* event ) override;
+    bool eventFilter(QObject* obj, QEvent *event);
+
 private:
     Ui::DebugTerminal *ui;
+    QList<QString> commandHistory;
+    int currentHistoryIndex;
 
     void setWaitCursor()
     {
@@ -61,7 +70,7 @@ private:
     }
 
 private slots:
-    void onSendData();
+    void onSendCommand();
     void onTextEdited( QString text );
     void onShowHelpClicked();
     void onClearTerminalClicked();

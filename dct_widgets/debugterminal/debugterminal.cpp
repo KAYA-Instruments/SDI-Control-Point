@@ -25,6 +25,7 @@
 
 #include <QClipboard>
 #include <QMessageBox>
+#include <QKeyEvent>
 
 #include "debugterminal.h"
 #include "ui_debugterminal.h"
@@ -32,14 +33,19 @@
 /******************************************************************************
  * DebugTerminal::DebugTerminal
  *****************************************************************************/
-DebugTerminal::DebugTerminal(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::DebugTerminal)
+DebugTerminal::DebugTerminal( QWidget *parent ) :
+    QWidget( parent ),
+    ui( new Ui::DebugTerminal ),
+    currentHistoryIndex( -1 )
 {
+    // Setup UI
     ui->setupUi(this);
 
+    // Install event filter on line edit to catch arrow up, down events
+    ui->letInput->installEventFilter(this);
+
     // Connect internal signals
-    connect( ui->letInput, SIGNAL(returnPressed()), this, SLOT(onSendData()) );
+    connect( ui->letInput, SIGNAL(returnPressed()), this, SLOT(onSendCommand()) );
     connect( ui->letInput, SIGNAL(textEdited(QString)), this, SLOT(onTextEdited(QString)) );
     connect( ui->btnShowHelp, SIGNAL(clicked()), this, SLOT(onShowHelpClicked()) );
     connect( ui->btnClearTerminal, SIGNAL(clicked()), this, SLOT(onClearTerminalClicked()) );
@@ -51,6 +57,87 @@ DebugTerminal::DebugTerminal(QWidget *parent) :
 DebugTerminal::~DebugTerminal()
 {
     delete ui;
+}
+
+/******************************************************************************
+ * DebugTerminal::showEvent
+ *****************************************************************************/
+void DebugTerminal::showEvent( QShowEvent* event )
+{
+    // Call parents show event
+    QWidget::showEvent( event );
+
+    // Set focus to the line edit
+    ui->letInput->setFocus();
+}
+
+/******************************************************************************
+ * DebugTerminal::eventFilter
+ *****************************************************************************/
+bool DebugTerminal::eventFilter(QObject* obj, QEvent *event)
+{
+    // Filter for the input line edit
+    if (obj == ui->letInput)
+    {
+        if (event->type() == QEvent::KeyPress)
+        {
+            QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
+
+            // UP key was pressed, show older command from the history
+            if (keyEvent->key() == Qt::Key_Up)
+            {
+                // Check if an older command is available in the history
+                if ( currentHistoryIndex < commandHistory.length() - 1 )
+                {
+                    // Select older command
+                    currentHistoryIndex++;
+
+                    // Show command in line edit, block signal to not emit a text changed event
+                    ui->letInput->blockSignals( true );
+                    ui->letInput->setText( commandHistory.at( currentHistoryIndex ) );
+                    ui->letInput->blockSignals( false );
+                }
+
+                // Event was processed succesfully
+                return true;
+            }
+
+            // DOWN key was pressed, show newer command from the history
+            else if(keyEvent->key() == Qt::Key_Down)
+            {
+                // Check if a newer command is available in the history
+                if ( currentHistoryIndex >= 0 )
+                {
+                    // Select newer command
+                    currentHistoryIndex--;
+
+                    // If the index is now -1, show an empty line edit
+                    if ( currentHistoryIndex <= -1 )
+                    {
+                        ui->letInput->blockSignals( true );
+                        ui->letInput->clear();
+                        ui->letInput->blockSignals( false );
+                    }
+                    // Else show command in line edit, block signal to not emit a text changed event
+                    else
+                    {
+                        ui->letInput->blockSignals( true );
+                        ui->letInput->setText( commandHistory.at( currentHistoryIndex ) );
+                        ui->letInput->blockSignals( false );
+                    }
+                }
+
+                // Event was processed succesfully
+                return true;
+            }
+        }
+
+        // Filter did not match the event
+        return false;
+    }
+
+    // Call parent event filter
+    return DebugTerminal::eventFilter(obj, event);
 }
 
 /******************************************************************************
@@ -84,16 +171,32 @@ void DebugTerminal::onTextEdited( QString text )
              emit sendData( line.append('\n'), ui->sbxWaitTime->value() );
         }
     }
+
+    // Check if string is empty, if so, reset current history index to -1
+    if ( text.isEmpty() )
+    {
+        currentHistoryIndex = -1;
+    }
 }
 
 /******************************************************************************
- * DebugTerminal::onSendData
+ * DebugTerminal::onSendCommand
  *****************************************************************************/
-void DebugTerminal::onSendData()
+void DebugTerminal::onSendCommand()
 {
-    // Send string currently stored in the line edit
+    // Get command from line edit
+    QString command = ui->letInput->text();
+
+    // Check if the current command is not the last command in the history
+    if ( commandHistory.isEmpty() || command != commandHistory.first() )
+    {
+        // Add string to the start of the history
+        commandHistory.prepend( ui->letInput->text() );
+    }
+
+    // Send command with tailing new line
     setWaitCursor();
-    emit sendData( ui->letInput->text().append('\n'), ui->sbxWaitTime->value() );
+    emit sendData( command.append('\n'), ui->sbxWaitTime->value() );
     setNormalCursor();
 
     // Clear the line edit
@@ -109,10 +212,13 @@ void DebugTerminal::onShowHelpClicked()
     QMessageBox::information( this,
                               "How to Use the Debug Terminal",
                               "The Debug Terminal will show all commands which were sent by the ProVideo GUI.\n\n"
-                              "You can also enter your own commands in the field above or copy and paste a list of "
+                              "You can also enter your own commands in the 'Command' field or copy and paste a list of "
                               "commands from the clip board to that field.\n\n"
                               "If you want to execute long commands (e.g. defect pixel calibration) increase the "
-                              "response wait time, otherwise the command output might not be shown." );
+                              "response wait time, otherwise the command output will not be shown.\n\n"
+                              "Please note, that the Debug Terminal and the GUI have to share the Com Port, this means"
+                              "while a command from the Debug Terminal is executed you should not make changes in the GUI"
+                              "and vice versa." );
 }
 
 /******************************************************************************
@@ -122,4 +228,8 @@ void DebugTerminal::onClearTerminalClicked()
 {
     // Clear content of terminal
     ui->tbTerminal->clear();
+
+    // Clear history
+    commandHistory.clear();
+    currentHistoryIndex = -1;
 }

@@ -66,7 +66,7 @@ public slots:
     void onBroadcastChange( bool enable );
 
 private slots:
-    void onApplyDeviceNameClicked();
+    void onBtnApplyDeviceNameClicked();
     void onBtnResetToDefaultsClicked();
     void onBtnApplySerialPortSettingsClicked();
     void onCbxEngineeringModeChange( int value );
