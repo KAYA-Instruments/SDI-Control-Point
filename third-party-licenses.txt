@@ -11,10 +11,10 @@ QCustomPlot is licensed under GPLv3, for more information view:
 http://qcustomplot.com/
 
 The license file can be found in:
-./dct_widgets/qcustomplot/GPL.txt
+./libraries/qcustomplot/GPL.txt
 
 This license applies to all files in the following folder:
-./dct_widgets/qcustomplot/
+./libraries/qcustomplot/
 
 -------- csvparser / csvwriter --------
 
