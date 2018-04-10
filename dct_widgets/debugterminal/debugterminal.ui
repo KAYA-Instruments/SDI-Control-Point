@@ -31,8 +31,7 @@
     <widget class="QTextBrowser" name="tbTerminal">
      <property name="font">
       <font>
-       <family>Courier 10 Pitch</family>
-       <pointsize>10</pointsize>
+       <family>Courier</family>
       </font>
      </property>
     </widget>
@@ -54,7 +53,7 @@
     <widget class="QLineEdit" name="letInput">
      <property name="font">
       <font>
-       <family>Courier 10 Pitch</family>
+       <family>Courier</family>
        <pointsize>10</pointsize>
       </font>
      </property>
