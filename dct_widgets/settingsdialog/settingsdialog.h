@@ -51,7 +51,6 @@ signals:
     void DebugTerminalVisibilityChanged( bool visible );
 
     void ResyncRequest( void );
-    void ResizeRequest( void );
     void SaveSettings( void );
 
 public slots:

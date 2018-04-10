@@ -99,10 +99,10 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
 
     // Configure the resize timer
     m_resizeTimer.setSingleShot( true );
-    connect( &m_resizeTimer, SIGNAL(timeout()), this, SLOT(onResizeRequest()) );
+    connect( &m_resizeTimer, SIGNAL(timeout()), this, SLOT(onResizeMainWindow()) );
 
     // Resize to minimum size
-    onResizeRequest();
+    onResizeMainWindow( true );   // Force resize, even if debug terminal is not visible
 }
 
 /******************************************************************************
@@ -978,6 +978,23 @@ void MainWindow::onLockCurrentTabPage( bool lock )
 }
 
 /******************************************************************************
+ * MainWindow::onResizeMainWindow
+ *****************************************************************************/
+void MainWindow::onResizeMainWindow( bool force )
+{
+    /* Do not resize if the window is minimized, otherwise the layout might break.
+     * Also do only resize if the the debug terminal is not visible, or if force
+     * is set to true. */
+    if ( (!this->isMinimized() && !m_DebugTerminal->isVisible()) || force )
+    {
+        // Resize to minimum size
+        this->adjustSize();
+        this->resize( this->minimumSizeHint() );
+        QApplication::processEvents(QEventLoop::WaitForMoreEvents);
+    }
+}
+
+/******************************************************************************
  * MainWindow::setConnectDlg
  *****************************************************************************/
 void MainWindow::setConnectDlg( ConnectDialog * dlg )
@@ -1021,7 +1038,7 @@ void MainWindow::setSettingsDlg( SettingsDialog * dlg )
         connect( m_SettingsDlg, SIGNAL(EngineeringModeChanged(bool)), this, SLOT(onEngineeringModeChange(bool)) );
         connect( m_SettingsDlg, SIGNAL(SaveSettings()), this, SLOT( onSaveSettingsClicked()) );
 
-        connect( m_SettingsDlg, SIGNAL(ResizeRequest()), this, SLOT(onResizeRequest()) );
+//        connect( m_SettingsDlg, SIGNAL(ResizeRequest()), this, SLOT(onResizeRequest()) );
     }
 }
 
@@ -1056,9 +1073,8 @@ void MainWindow::setDebugTerminal( DebugTerminal * dlg )
             connect( m_SettingsDlg, SIGNAL(DebugTerminalVisibilityChanged(bool)), dock, SLOT(setVisible(bool)) );
         }
 
-        connect( dock, SIGNAL(topLevelChanged(bool)), this, SLOT(onResizeRequest()) );
+        connect( dock, SIGNAL(topLevelChanged(bool)), this, SLOT(onDebugTerminalTopLevelChange(bool)) );
         connect( dock, SIGNAL(visibilityChanged(bool)), this, SLOT(onDebugTerminalVisibilityChange(bool)) );
-        connect( dock, SIGNAL(dockLocationChanged(Qt::DockWidgetArea)), this, SLOT(onDebugTerminalLocationChange(Qt::DockWidgetArea)) );
     }
 }
 
@@ -1730,6 +1746,18 @@ void MainWindow::onBroadcastChange( uint8_t flag )
 }
 
 /******************************************************************************
+ * MainWindow::onDebugTerminalTopLevelChange
+ *****************************************************************************/
+void MainWindow::onDebugTerminalTopLevelChange( bool floating )
+{
+    // Resize window to minimum size if dock widget is not docked anymore
+    if ( floating )
+    {
+         onResizeMainWindow( true );   // Force resize
+    }
+}
+
+/******************************************************************************
  * MainWindow::onDebugTerminalVisibilityChange
  *****************************************************************************/
 void MainWindow::onDebugTerminalVisibilityChange( bool visible )
@@ -1741,24 +1769,7 @@ void MainWindow::onDebugTerminalVisibilityChange( bool visible )
          * visibility changed event from the dock widget is emitted, before it is
          * completely closed which causes the main window to think that it still requires
          * space and it is not correctly resized. */
-        m_resizeTimer.start(1);
-    }
-}
-
-/******************************************************************************
- * MainWindow::onDebugTerminalVisibilityChange
- *****************************************************************************/
-void MainWindow::onDebugTerminalLocationChange( Qt::DockWidgetArea location )
-{
-    // Resize window to minimum size if dock widget is not docked anymore
-    if ( location == Qt::NoDockWidgetArea )
-    {
-        onResizeRequest();
-//        /* Note: We have to call the resize request with a short delay because the
-//         * visibility changed event from the dock widget is emitted, before it is
-//         * completely closed which causes the main window to think that it still requires
-//         * space and it is not correctly resized. */
-//        m_resizeTimer.start(1);
+        m_resizeTimer.start( 1 );
     }
 }
 
@@ -1795,20 +1806,5 @@ void MainWindow::onResyncRequest()
         QApplication::setOverrideCursor( Qt::WaitCursor );
         m_dev->resync();
         QApplication::setOverrideCursor( Qt::ArrowCursor );
-    }
-}
-
-/******************************************************************************
- * MainWindow::onResizeRequest
- *****************************************************************************/
-void MainWindow::onResizeRequest()
-{
-    // Do not resize if the window is minimized, otherwise the layout might break
-    if ( !this->isMinimized() )
-    {
-        // Resize to minimum size
-        this->adjustSize();
-        this->resize( this->minimumSizeHint() );
-        QApplication::processEvents(QEventLoop::WaitForMoreEvents);
     }
 }

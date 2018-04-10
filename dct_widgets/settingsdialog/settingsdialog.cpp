@@ -292,12 +292,6 @@ void SettingsDialog::onCbxShowDebugTerminalChange( int value )
 {
     // Show or hide the debug terminal
     emit DebugTerminalVisibilityChanged( (Qt::Unchecked == value) ? false : true );
-
-    // Resize the main window if the terminal got hidden
-    if ( !value )
-    {
-        emit ResizeRequest();
-    }
 }
 
 /******************************************************************************

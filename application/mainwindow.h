@@ -67,10 +67,6 @@ signals:
     // broadcast
     void BroadcastChanged( bool enable );
 
-    // debug terminal
-    void showDebugTerminal();
-    void hideDebugTerminal();
-
 private slots:
     void onDeviceConnected( ProVideoDevice * device );
     void onDeviceSelectionChange( int index );
@@ -96,16 +92,16 @@ private slots:
     void onCopyFlagChange( bool flag );
     void onEngineeringModeChange( bool flag );
     void onBroadcastChange(uint8_t flag );
+    void onDebugTerminalTopLevelChange( bool floating );
     void onDebugTerminalVisibilityChange( bool visible );
-    void onDebugTerminalLocationChange( Qt::DockWidgetArea location );
 
     void onAecResyncRequest();
     void onResyncRequest();
-    void onResizeRequest();
 
     void onResolutionMaskChange( uint32_t id0, uint32_t id1, uint32_t id2 );
 
     void onLockCurrentTabPage( bool lock );
+    void onResizeMainWindow( bool force = false );
 
 private:
     Ui::MainWindow *        m_ui;
