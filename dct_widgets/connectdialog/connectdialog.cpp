@@ -1649,9 +1649,6 @@ void ConnectDialog::onReopenSerialConnection( void )
     // Reconnect was successful
     else
     {
-        // Wait a second before resync, otherwise the first commands might get corrupted
-        QThread::sleep(1);
-
         // Resync connected device
         m_connectedDevice->resync();
 

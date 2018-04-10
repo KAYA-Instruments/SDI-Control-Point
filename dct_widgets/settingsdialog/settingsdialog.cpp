@@ -66,7 +66,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
 
     // connect control settings
     connect( m_ui->cbxEngineeringMode, SIGNAL(stateChanged(int)), this, SLOT(onCbxEngineeringModeChange(int)) );
-    connect( m_ui->btnShowDebugTerminal, SIGNAL(clicked(bool)), this, SLOT(onBtnShowDebugTerminalClicked()) );
+    connect( m_ui->cbxDebugTerminal, SIGNAL(stateChanged(int)), this, SLOT(onCbxShowDebugTerminalChange(int)) );
 
     // Set device ID ranges
     m_ui->sbxRS485Address->setRange( 0, MAX_DEVICE_ID );
@@ -179,6 +179,17 @@ void SettingsDialog::onBroadcastChange( bool enable )
 }
 
 /******************************************************************************
+ * SettingsDialog::onRS485BroadcastAddressChange
+ *****************************************************************************/
+void SettingsDialog::onDebugTerminalVisibilityChange( bool visible )
+{
+    // Set the debug terminal visible checkbox accordingly
+    m_ui->cbxDebugTerminal->blockSignals( true );
+    m_ui->cbxDebugTerminal->setChecked( visible );
+    m_ui->cbxDebugTerminal->blockSignals( false );
+}
+
+/******************************************************************************
  * SettingsDialog::onBtnApplyDeviceNameClicked
  *****************************************************************************/
 void SettingsDialog::onBtnApplyDeviceNameClicked()
@@ -275,11 +286,18 @@ void SettingsDialog::onCbxEngineeringModeChange( int value )
 }
 
 /******************************************************************************
- * SettingsDialog::onBtnShowDebugTerminalClicked()
+ * SettingsDialog::onCbxShowDebugTerminalChange
  *****************************************************************************/
-void SettingsDialog::onBtnShowDebugTerminalClicked()
+void SettingsDialog::onCbxShowDebugTerminalChange( int value )
 {
-    emit ShowDebugTerminalClicked();
+    // Show or hide the debug terminal
+    emit DebugTerminalVisibilityChanged( (Qt::Unchecked == value) ? false : true );
+
+    // Resize the main window if the terminal got hidden
+    if ( !value )
+    {
+        emit ResizeRequest();
+    }
 }
 
 /******************************************************************************

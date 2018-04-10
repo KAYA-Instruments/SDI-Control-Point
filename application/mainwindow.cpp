@@ -20,11 +20,12 @@
  * @brief   Application main window
  *
  *****************************************************************************/
-#include <QtDebug>
+#include <QDebug>
 #include <QLabel>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QProgressDialog>
+#include <QDockWidget>
 
 #include <ProVideoDevice.h>
 #include <infodialog.h>
@@ -59,16 +60,24 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
     , m_ui( new Ui::MainWindow )
     , m_ConnectDlg( NULL )
     , m_SettingsDlg( NULL )
+    , m_DebugTerminal( NULL )
     , m_cbxConnectedDevices( NULL )
     , m_dev ( NULL )
 {
     // Create ui
     m_ui->setupUi( this );
 
-    // Set and connect dialogs
+    // Make the Tab Widget the central widget
+    setCentralWidget( m_ui->tabWidget );
+
+    // Setup the connect and setting dialogs
     setConnectDlg(connectDialog);
     setSettingsDlg(new SettingsDialog( this ));
-    setDebugTerminal(new DebugTerminal());      // Do not set parent widget, or the terminal is not shown correctly
+
+    // Setup the debug terminal
+    /* Note: This has to be done after setting the Settings Dialog, because the
+     * debug terminal is connected to signals / slots of the settings dialog */
+    setDebugTerminal(new DebugTerminal( this ));
 
     // GUI has to be locked down during update procedure
     connect( m_ui->updBox, SIGNAL(LockCurrentTabPage(bool)), this, SLOT(onLockCurrentTabPage(bool)) );
@@ -87,6 +96,13 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
     connect( m_ui->actionSaveToFile     , SIGNAL( triggered() ), this, SLOT( onSaveToFileClicked() ) );
     connect( m_ui->actionBroadcast      , SIGNAL( triggered() ), this, SLOT( onBroadcastClicked() ) );
     connect( m_ui->actionSync           , SIGNAL( triggered() ), this, SLOT( onSyncSettingsClicked()) );
+
+    // Configure the resize timer
+    m_resizeTimer.setSingleShot( true );
+    connect( &m_resizeTimer, SIGNAL(timeout()), this, SLOT(onResizeRequest()) );
+
+    // Resize to minimum size
+    onResizeRequest();
 }
 
 /******************************************************************************
@@ -104,9 +120,6 @@ MainWindow::~MainWindow()
  *****************************************************************************/
 void MainWindow::closeEvent (QCloseEvent *event)
 {
-    // Make sure that the debug terminal is cloased
-    m_DebugTerminal->close();
-
     // When the main window closes, disable broadcast mode (this disables the broadcast master)
     emit BroadcastChanged( false );
 
@@ -1007,7 +1020,8 @@ void MainWindow::setSettingsDlg( SettingsDialog * dlg )
         connect( m_SettingsDlg, SIGNAL(SystemSettingsChanged(int,int,int,int)), this, SLOT(onSystemSettingsChange(int,int,int,int)) );
         connect( m_SettingsDlg, SIGNAL(EngineeringModeChanged(bool)), this, SLOT(onEngineeringModeChange(bool)) );
         connect( m_SettingsDlg, SIGNAL(SaveSettings()), this, SLOT( onSaveSettingsClicked()) );
-        connect( m_SettingsDlg, SIGNAL(ShowDebugTerminalClicked()), this, SLOT(onShowDebugTerminal()) );
+
+        connect( m_SettingsDlg, SIGNAL(ResizeRequest()), this, SLOT(onResizeRequest()) );
     }
 }
 
@@ -1028,8 +1042,23 @@ void MainWindow::setDebugTerminal( DebugTerminal * dlg )
         connect( m_ConnectDlg->getChannelRS485(), SIGNAL(dataReceived(QString)), m_DebugTerminal, SLOT(onDataReceived(QString)) );
         connect( m_DebugTerminal, SIGNAL(sendData(QString, int)), m_ConnectDlg->getChannelRS485(), SLOT(onSendData(QString, int)) );
 
-        // Set window flags to window
-        m_DebugTerminal->setWindowFlags( Qt::Window );
+        // Setup the Debug Terminal as a dock widget
+        QDockWidget *dock = new QDockWidget( tr("Debug Terminal"), this );
+        dock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+        dock->setWidget( m_DebugTerminal );
+        dock->hide();
+        addDockWidget( Qt::RightDockWidgetArea, dock );
+
+        // Connect settings dialog and debug terminal
+        if ( m_SettingsDlg )
+        {
+            connect( dock->toggleViewAction(), SIGNAL(toggled(bool)), m_SettingsDlg, SLOT( onDebugTerminalVisibilityChange(bool)) );
+            connect( m_SettingsDlg, SIGNAL(DebugTerminalVisibilityChanged(bool)), dock, SLOT(setVisible(bool)) );
+        }
+
+        connect( dock, SIGNAL(topLevelChanged(bool)), this, SLOT(onResizeRequest()) );
+        connect( dock, SIGNAL(visibilityChanged(bool)), this, SLOT(onDebugTerminalVisibilityChange(bool)) );
+        connect( dock, SIGNAL(dockLocationChanged(Qt::DockWidgetArea)), this, SLOT(onDebugTerminalLocationChange(Qt::DockWidgetArea)) );
     }
 }
 
@@ -1681,17 +1710,6 @@ void MainWindow::onEngineeringModeChange( bool value )
 }
 
 /******************************************************************************
- * MainWindow::onShowDebugTerminal
- *****************************************************************************/
-void MainWindow::onShowDebugTerminal()
-{
-    if ( m_DebugTerminal && !m_DebugTerminal->isVisible() )
-    {
-        m_DebugTerminal->show();
-    }
-}
-
-/******************************************************************************
  * MainWindow::onBroadcastChange
  *****************************************************************************/
 void MainWindow::onBroadcastChange( uint8_t flag )
@@ -1709,6 +1727,39 @@ void MainWindow::onBroadcastChange( uint8_t flag )
 
     // emit a broadcast change event to notify other ui elements
     emit BroadcastChanged( broadcastEnabled );
+}
+
+/******************************************************************************
+ * MainWindow::onDebugTerminalVisibilityChange
+ *****************************************************************************/
+void MainWindow::onDebugTerminalVisibilityChange( bool visible )
+{
+    // Resize window to minimum size if dock widget is not visible anymore
+    if ( !visible )
+    {
+        /* Note: We have to call the resize request with a short delay because the
+         * visibility changed event from the dock widget is emitted, before it is
+         * completely closed which causes the main window to think that it still requires
+         * space and it is not correctly resized. */
+        m_resizeTimer.start(1);
+    }
+}
+
+/******************************************************************************
+ * MainWindow::onDebugTerminalVisibilityChange
+ *****************************************************************************/
+void MainWindow::onDebugTerminalLocationChange( Qt::DockWidgetArea location )
+{
+    // Resize window to minimum size if dock widget is not docked anymore
+    if ( location == Qt::NoDockWidgetArea )
+    {
+        onResizeRequest();
+//        /* Note: We have to call the resize request with a short delay because the
+//         * visibility changed event from the dock widget is emitted, before it is
+//         * completely closed which causes the main window to think that it still requires
+//         * space and it is not correctly resized. */
+//        m_resizeTimer.start(1);
+    }
 }
 
 /******************************************************************************
@@ -1744,5 +1795,20 @@ void MainWindow::onResyncRequest()
         QApplication::setOverrideCursor( Qt::WaitCursor );
         m_dev->resync();
         QApplication::setOverrideCursor( Qt::ArrowCursor );
+    }
+}
+
+/******************************************************************************
+ * MainWindow::onResizeRequest
+ *****************************************************************************/
+void MainWindow::onResizeRequest()
+{
+    // Do not resize if the window is minimized, otherwise the layout might break
+    if ( !this->isMinimized() )
+    {
+        // Resize to minimum size
+        this->adjustSize();
+        this->resize( this->minimumSizeHint() );
+        QApplication::processEvents(QEventLoop::WaitForMoreEvents);
     }
 }

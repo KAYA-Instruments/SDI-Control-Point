@@ -13,6 +13,12 @@
     <height>900</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>700</width>
+    <height>0</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>ProVideo Debug Terminal</string>
   </property>

@@ -27,6 +27,7 @@
 #include <QMainWindow>
 #include <QList>
 #include <QComboBox>
+#include <QTimer>
 
 #include <dct_widgets_base.h>
 #include "ProVideoDevice.h"
@@ -66,6 +67,10 @@ signals:
     // broadcast
     void BroadcastChanged( bool enable );
 
+    // debug terminal
+    void showDebugTerminal();
+    void hideDebugTerminal();
+
 private slots:
     void onDeviceConnected( ProVideoDevice * device );
     void onDeviceSelectionChange( int index );
@@ -90,11 +95,13 @@ private slots:
     void onSplitScreenChange( bool flag );
     void onCopyFlagChange( bool flag );
     void onEngineeringModeChange( bool flag );
-    void onShowDebugTerminal();
     void onBroadcastChange(uint8_t flag );
+    void onDebugTerminalVisibilityChange( bool visible );
+    void onDebugTerminalLocationChange( Qt::DockWidgetArea location );
 
     void onAecResyncRequest();
     void onResyncRequest();
+    void onResizeRequest();
 
     void onResolutionMaskChange( uint32_t id0, uint32_t id1, uint32_t id2 );
 
@@ -109,6 +116,7 @@ private:
     ProVideoDevice *        m_dev;
     QString                 m_filename;
     QList<DctWidgetBox *>   m_activeWidgets;
+    QTimer                  m_resizeTimer;
 
     void setConnectDlg( ConnectDialog * );
     void setSettingsDlg( SettingsDialog * );
