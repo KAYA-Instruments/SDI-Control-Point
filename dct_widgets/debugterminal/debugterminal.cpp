@@ -26,6 +26,8 @@
 #include <QClipboard>
 #include <QMessageBox>
 #include <QKeyEvent>
+#include <QFileDialog>
+#include <QTextStream>
 
 #include "debugterminal.h"
 #include "ui_debugterminal.h"
@@ -41,6 +43,9 @@ DebugTerminal::DebugTerminal( QWidget *parent ) :
     // Setup UI
     ui->setupUi(this);
 
+    // Limit number of lines in the text browser to 10000
+    ui->tbTerminal->document()->setMaximumBlockCount( 10000 );
+
     // Install event filter on line edit to catch arrow up, down events
     ui->letInput->installEventFilter(this);
 
@@ -48,6 +53,7 @@ DebugTerminal::DebugTerminal( QWidget *parent ) :
     connect( ui->letInput, SIGNAL(returnPressed()), this, SLOT(onSendCommand()) );
     connect( ui->letInput, SIGNAL(textEdited(QString)), this, SLOT(onTextEdited(QString)) );
     connect( ui->btnShowHelp, SIGNAL(clicked()), this, SLOT(onShowHelpClicked()) );
+    connect( ui->btnSaveLog, SIGNAL(clicked()), this, SLOT(onSaveLogClicked()) );
     connect( ui->btnClearTerminal, SIGNAL(clicked()), this, SLOT(onClearTerminalClicked()) );
 }
 
@@ -192,6 +198,12 @@ void DebugTerminal::onSendCommand()
     {
         // Add string to the start of the history
         commandHistory.prepend( ui->letInput->text() );
+
+        // If history is bigger than the maximum, delete the last entry
+        if ( commandHistory.count() > 100 )
+        {
+            commandHistory.removeLast();
+        }
     }
 
     // Send command with tailing new line
@@ -211,11 +223,14 @@ void DebugTerminal::onShowHelpClicked()
     // Show help text in a message box
     QMessageBox::information( this,
                               "How to Use the Debug Terminal",
-                              "The Debug Terminal will show all commands which were sent by the ProVideo GUI.\n\n"
+                              "The Debug Terminal will show all commands which were sent by the ProVideo GUI. It stores "
+                              "up to 10000 lines, if more lines are added the oldest lines will be removed.\n\n"
                               "You can enter your own commands in the 'Command' field or copy and paste a list of "
                               "commands from the clip board to that field.\n\n"
                               "The Debug Console has a command history which you can access by pressing the Arrow Up "
-                              "or Down keys on your keyboard while the 'Command' field is selected.\n\n"
+                              "or Down keys on your keyboard while the 'Command' field is selected. The command history "
+                              "can contain up to 100 commands, if more commands are sent the oldest ones are removed from "
+                              "the history.\n\n"
                               "If you want to execute long commands (e.g. defect pixel calibration) increase the "
                               "response wait time, otherwise the command output will not be shown.\n\n"
                               "The Debug Terminal and the GUI have to share the Com Port, this means "
@@ -228,14 +243,54 @@ void DebugTerminal::onShowHelpClicked()
 }
 
 /******************************************************************************
+ * DebugTerminal::onSaveLogClicked
+ *****************************************************************************/
+void DebugTerminal::onSaveLogClicked()
+{
+
+    QString directory = QDir::currentPath();
+
+    // NOTE: It can fail on gtk-systems when an empty filename is given
+    //       in the native dialog-box, because GTK sends a SIGSEGV-signal
+    //       to process and this is not handled by Qt.
+    QFileDialog dialog( this );
+    dialog.setDefaultSuffix( "txt" );
+    QString filename = dialog.getSaveFileName(
+        this, tr("Save Debug Terminal Log File"),
+        directory,
+        "Select Text files (*.txt);;All files (*.*)"
+    );
+
+    if ( NULL != filename )
+    {
+        QFileInfo fileInfo( filename );
+        if ( fileInfo.suffix().isEmpty() )
+        {
+            filename += ".txt";
+        }
+
+        QFile file( filename );
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        {
+            QMessageBox::warning( this,
+                                  "Can not open file for writing.",
+                                  QString("The file %1 can not opened for writing. Do you have write access for the "
+                                          "selected folder?").arg(filename) );
+        }
+        else
+        {
+            QTextStream out(&file);
+            out << ui->tbTerminal->document()->toPlainText();
+            file.close();
+        }
+    }
+}
+
+/******************************************************************************
  * DebugTerminal::onClearTerminalClicked
  *****************************************************************************/
 void DebugTerminal::onClearTerminalClicked()
 {
     // Clear content of terminal
     ui->tbTerminal->clear();
-
-    // Clear history
-    commandHistory.clear();
-    currentHistoryIndex = -1;
 }

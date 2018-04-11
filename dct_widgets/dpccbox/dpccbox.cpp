@@ -353,8 +353,8 @@ void DpccBox::loadSettings( QSettings & s )
 //    xPos = s.value( DPCC_SETTINGS_X_POSITIONS ).value<QVector<int> >();
 //    d_data->fillTable( yPos, xPos );
 
-    // Call on onWriteTableToRamClicked to transmitt loaded data to the device
-//    onSaveTableClicked();
+    // Call on onTransmittTableClicked to transmitt loaded data to the device
+//    onTransmittTableClicked();
     s.endGroup();
 
 }
@@ -900,6 +900,5 @@ void DpccBox::onDpccVideoModeChanged( int mode )
         // @TODO Maybe this will be done directly in the camera if the resolution changes,
         // or the camera will have different dpcc storages for each resolution. For now, this
         // is not a use case.
-
     }
 }

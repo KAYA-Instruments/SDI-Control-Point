@@ -360,7 +360,7 @@ void MccEqBox::setupEqualizer()
     // Get layout of equalizer group box widget
     QLayout * layout = d_data->m_ui->gbxEqualizer->layout();
 
-    // Delete all sliders in the layout
+    // Delete all sliders in the layout if the amount of sliders
     QLayoutItem * item;
     while ( (item = layout->takeAt(0)) != 0 )
     {
@@ -601,7 +601,7 @@ void MccEqBox::onOpModeChange( int index )
         // save new number of phases in local data
         d_data->m_no_segments = no_phases;
 
-        // setup iqualizer with new number of segments
+        // setup equalizer with new number of segments
         setupEqualizer();
     }
 }

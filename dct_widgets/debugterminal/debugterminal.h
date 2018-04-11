@@ -73,6 +73,7 @@ private slots:
     void onSendCommand();
     void onTextEdited( QString text );
     void onShowHelpClicked();
+    void onSaveLogClicked();
     void onClearTerminalClicked();
 };
 
