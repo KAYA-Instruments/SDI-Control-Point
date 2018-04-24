@@ -70,12 +70,13 @@
 #define VIDEO_MODE_NAME_2kp30           ( "2kp30" )
 #define VIDEO_MODE_NAME_2kp25           ( "2kp25" )
 #define VIDEO_MODE_NAME_2kp24           ( "2kp24" ) 
-#define VIDEO_MODE_NAME_2kp23_98        ( "2kp23_98" )
-#define VIDEO_MODE_NAME_2kp29_97        ( "2kp29_97" )
+#define VIDEO_MODE_NAME_2kp23_98        ( "2kp23.98" )
+#define VIDEO_MODE_NAME_2kp29_97        ( "2kp29.97" )
 #define VIDEO_MODE_NAME_2kp50           ( "2kp50" )
 #define VIDEO_MODE_NAME_2kp60           ( "2kp60" )
-#define VIDEO_MODE_NAME_2ki50           ( "2ki50" )
-#define VIDEO_MODE_NAME_2ki60           ( "2ki60" )
+#define VIDEO_MODE_NAME_2kp59_94        ( "2kp59.94" )
+#define VIDEO_MODE_NAME_2kp48           ( "2kp48" )
+#define VIDEO_MODE_NAME_2kp47_96        ( "2kp47.96" )
 
 #define VIDEO_MODE_NAME_UHDp30          ( "2160p30" )
 #define VIDEO_MODE_NAME_UHDp25          ( "2160p25" )
@@ -209,28 +210,29 @@ enum VideoMode
     VideoMode2kp29_97     = 19, /**< 1080p2k, 29.97 fps */
     VideoMode2kp50        = 20, /**< 1080p2k, 50 fps    */
     VideoMode2kp60        = 21, /**< 1080p2k, 60 fps    */
-    VideoMode2ki50        = 22, /**< 1080p2k, 50 fps    */
-    VideoMode2ki60        = 23, /**< 1080p2k, 60 fps    */
-    VideoModeUHDp30       = 24, /**< UHD, 30 fps        */
-    VideoModeUHDp25       = 25, /**< UHD, 25 fps        */
-    VideoModeUHDp24       = 26, /**< UHD, 24 fps        */
-    VideoModeUHDp23_98    = 27, /**< UHD, 23.98 fps     */
-    VideoModeUHDp29_97    = 28, /**< UHD, 29.97 fps     */
-    VideoModeUHDp50       = 29, /**< UHD, 50 fps        */
-    VideoModeUHDp60       = 30, /**< UHD, 60 fps        */
-    VideoModeUHDp59_94    = 31, /**< UHD, 59.94 fps     */
-    VideoModeUHDp48       = 32, /**< UHD, 34 fps        */
-    VideoModeUHDp47_96    = 33, /**< UHD, 47.96 fps     */
-    VideoMode4Kp30        = 34, /**< 4K, 30 fps         */
-    VideoMode4Kp25        = 35, /**< 4K, 25 fps         */
-    VideoMode4Kp24        = 36, /**< 4K, 24 fps         */
-    VideoMode4Kp23_98     = 37, /**< 4K, 23.98 fps      */
-    VideoMode4Kp29_97     = 38, /**< 4K, 29.97 fps      */
-    VideoMode4Kp50        = 39, /**< 4K, 50 fps         */
-    VideoMode4Kp60        = 40, /**< 4K, 60 fps         */
-    VideoMode4Kp59_94     = 41, /**< 4K, 59.94 fps      */
-    VideoMode4Kp48        = 42, /**< 4K, 34 fps         */
-    VideoMode4Kp47_96     = 43, /**< 4K, 47.96 fps      */
+    VideoMode2kp59_94     = 22, /**< 1080p2k, 59.94 fps */
+    VideoMode2kp48        = 23, /**< 1080p2k, 50 fps    */
+    VideoMode2kp47_96     = 24, /**< 1080p2k, 60 fps    */
+    VideoModeUHDp30       = 25, /**< UHD, 30 fps        */
+    VideoModeUHDp25       = 26, /**< UHD, 25 fps        */
+    VideoModeUHDp24       = 27, /**< UHD, 24 fps        */
+    VideoModeUHDp23_98    = 28, /**< UHD, 23.98 fps     */
+    VideoModeUHDp29_97    = 29, /**< UHD, 29.97 fps     */
+    VideoModeUHDp50       = 30, /**< UHD, 50 fps        */
+    VideoModeUHDp60       = 31, /**< UHD, 60 fps        */
+    VideoModeUHDp59_94    = 32, /**< UHD, 59.94 fps     */
+    VideoModeUHDp48       = 33, /**< UHD, 34 fps        */
+    VideoModeUHDp47_96    = 34, /**< UHD, 47.96 fps     */
+    VideoMode4Kp30        = 35, /**< 4K, 30 fps         */
+    VideoMode4Kp25        = 36, /**< 4K, 25 fps         */
+    VideoMode4Kp24        = 37, /**< 4K, 24 fps         */
+    VideoMode4Kp23_98     = 38, /**< 4K, 23.98 fps      */
+    VideoMode4Kp29_97     = 39, /**< 4K, 29.97 fps      */
+    VideoMode4Kp50        = 40, /**< 4K, 50 fps         */
+    VideoMode4Kp60        = 41, /**< 4K, 60 fps         */
+    VideoMode4Kp59_94     = 42, /**< 4K, 59.94 fps      */
+    VideoMode4Kp48        = 43, /**< 4K, 34 fps         */
+    VideoMode4Kp47_96     = 44, /**< 4K, 47.96 fps      */
     VideoModeMax,               /**< number of normally supported modes (end marker) */
 
     VideoModeFirstHD      = (VideoMode720p60),
@@ -240,8 +242,8 @@ enum VideoMode
     VideoModeLastFullHD   = (VideoMode1080p59_94),
     VideoModeNumFullHD    = (VideoMode1080p59_94 - VideoModeNumHD),     /**< number of supported Full HD video modes */
     VideoModeFirst2K      = (VideoMode2kp30),
-    VideoModeLast2K       = (VideoMode2ki60),
-    VideoModeNum2K        = (VideoMode2ki60      - VideoModeNumFullHD), /**< number of supported 2K video modes */
+    VideoModeLast2K       = (VideoMode2kp47_96),
+    VideoModeNum2K        = (VideoMode2kp47_96   - VideoModeNumFullHD), /**< number of supported 2K video modes */
     VideoModeFirstUHD     = (VideoModeUHDp30),
     VideoModeLastUHD      = (VideoModeUHDp47_96),
     VideoModeNumUHD       = (VideoModeUHDp47_96  - VideoModeUHDp30),     /**< number of supported UHD video modes */

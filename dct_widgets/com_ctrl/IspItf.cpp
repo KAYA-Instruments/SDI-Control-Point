@@ -767,7 +767,7 @@ void IspItf::onFilterDenoiseLevelChange( int value )
 }
 
 /******************************************************************************
- * IspItf::onMasterBlackLevelChange
+ * IspItf::onFilterChange
  *****************************************************************************/
 void IspItf::onFilterChange( int enable, int detail, int denoise )
 {
@@ -907,6 +907,7 @@ void IspItf::onNotifyWhiteBalanceUpdate()
  *****************************************************************************/
 void IspItf::onNotifyCameraGainChange()
 {
-    GetBlackLevel();
+    // Nothing to do here
+//    GetBlackLevel();  // Why was that here? The black levels do not change on gain change, so no need to fetch them
 }
 

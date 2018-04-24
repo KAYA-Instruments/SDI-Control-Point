@@ -113,6 +113,7 @@ QString GetVideoModeName( VideoMode mode )
         
         case VideoMode2kp30:
             return ( QString(VIDEO_MODE_NAME_2kp30) );
+
         case VideoMode2kp25:
             return ( QString(VIDEO_MODE_NAME_2kp25) );
 
@@ -131,11 +132,14 @@ QString GetVideoModeName( VideoMode mode )
         case VideoMode2kp60:
             return ( QString(VIDEO_MODE_NAME_2kp60) );
 
-        case VideoMode2ki50:
-            return ( QString(VIDEO_MODE_NAME_2ki50) );
+        case VideoMode2kp59_94:
+            return ( QString(VIDEO_MODE_NAME_2kp59_94) );
 
-        case VideoMode2ki60:
-            return ( QString(VIDEO_MODE_NAME_2ki60) );
+        case VideoMode2kp48:
+            return ( QString(VIDEO_MODE_NAME_2kp48) );
+
+        case VideoMode2kp47_96:
+            return ( QString(VIDEO_MODE_NAME_2kp47_96) );
 
         case VideoModeUHDp30:
             return ( QString(VIDEO_MODE_NAME_UHDp30) );

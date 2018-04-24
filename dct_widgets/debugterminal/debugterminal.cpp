@@ -162,8 +162,8 @@ void DebugTerminal::onDataReceived( QString data )
  *****************************************************************************/
 void DebugTerminal::onTextEdited( QString text )
 {
-    // Check if data got pasted from clipboard
-    if ( text == QApplication::clipboard()->text() )
+    // Check if data got pasted from clipboard and contains more than one line
+    if ( text.contains("\n") && text == QApplication::clipboard()->text() )
     {
         // Clear line edit
         ui->letInput->clear();

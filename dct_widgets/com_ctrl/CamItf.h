@@ -55,7 +55,6 @@ signals:
     // new camera analogue gain set
     // This is used to synchronize other interface components.
     void NotifyCameraGainChanged();
-    void NotifyCameraExposureTimeChanged();
 
 public slots:
     // cam configuration

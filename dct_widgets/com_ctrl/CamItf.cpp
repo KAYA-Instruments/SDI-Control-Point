@@ -124,8 +124,6 @@ void CamItf::onCameraExposureChange( int value )
     int res = ctrl_protocol_set_cam_exposure( GET_PROTOCOL_INSTANCE(this),
                     GET_CHANNEL_INSTANCE(this), (uint32_t)value );
     HANDLE_ERROR( res );
-    
-    emit NotifyCameraExposureTimeChanged();
 }
 
 /******************************************************************************

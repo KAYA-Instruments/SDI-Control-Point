@@ -104,7 +104,7 @@
  * @brief command "dpc_auto_load"
  *****************************************************************************/
 #define CMD_AUTO_LOAD_DPCC_TABLE            ( "dpc_auto_load\n" )
-#define CMD_AUTO_LOAD_DPCC_TABLE_TMO        ( 10000 )
+#define CMD_AUTO_LOAD_DPCC_TABLE_TMO        ( 20000 )
 
 /******************************************************************************
  * @brief command "dpc_test_mode"
