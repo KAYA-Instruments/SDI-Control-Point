@@ -193,8 +193,8 @@ void DebugTerminal::onSendCommand()
     // Get command from line edit
     QString command = ui->letInput->text();
 
-    // Check if the current command is not the last command in the history
-    if ( commandHistory.isEmpty() || command != commandHistory.first() )
+    // Check if the current command is not the last command in the history and is not empty
+    if ( (commandHistory.isEmpty() || command != commandHistory.first()) && (command.length() > 0) )
     {
         // Add string to the start of the history
         commandHistory.prepend( ui->letInput->text() );
