@@ -63,7 +63,16 @@
 #define CMD_SET_SDI2                        ( "sdi2 %i\n" )
 #define CMD_SYNC_SDI2                       ( "sdi2 " )
 #define CMD_GET_SDI2_NO_PARMS               ( 1 )
-#define CMD_SET_SDI2_TMO                    ( 5000 )
+#define CMD_SET_SDI2_TMO                    ( CMD_SET_VIDEO_MODE_TMO )  // SDI2 mode change internally requires vmode change on the device
+
+/******************************************************************************
+ * @brief command "downscale"
+ *****************************************************************************/
+#define CMD_GET_DOWNSCALE                   ( "downscale %i\n" )
+#define CMD_SET_DOWNSCALE                   ( "downscale %i %i %i\n" )
+#define CMD_SYNC_DOWNSCALE                  ( "downscale " )
+#define CMD_GET_DOWNSCALE_NO_PARMS          ( 3 )
+#define CMD_SET_DOWNSCALE_TMO               ( CMD_SET_VIDEO_MODE_TMO )  // Downscale mode change internally requires vmode change on the device
 
 /******************************************************************************
  * @brief command "flip" 
@@ -383,6 +392,103 @@ static int set_sdi2_mode
     (void) ctx;
 
     return ( set_param_int_X_with_tmo( channel, CMD_SET_SDI2, CMD_SET_SDI2_TMO, INT( mode ) ) );
+}
+
+/******************************************************************************
+ * get_downscale_mode - gets the downscale mode
+ *****************************************************************************/
+static int get_downscale_mode
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    int const                   no,
+    uint8_t * const             values
+)
+{
+    (void) ctx;
+
+    char command[CMD_SINGLE_LINE_COMMAND_SIZE];
+    char data[2*CMD_SINGLE_LINE_RESPONSE_SIZE];
+
+    ctrl_protocol_downscale_enable_t * enable;
+
+    int res;
+
+    // parameter check
+    if ( !no || !values || (sizeof(*enable) != no) )
+    {
+        return ( -EINVAL );
+    }
+
+    enable = (ctrl_protocol_downscale_enable_t *)values;
+
+    // clear command buffer
+    memset( command, 0, sizeof(command) );
+
+    sprintf( command, CMD_GET_DOWNSCALE, enable->id );
+
+    // send command to COM port
+    ctrl_channel_send_request( channel, (uint8_t *)command, strlen(command) );
+
+    // read response from provideo device
+    res = evaluate_get_response( channel, data, sizeof(data) );
+    if ( !res )
+    {
+        char * s = strstr( data, CMD_SYNC_DOWNSCALE );
+        if ( s )
+        {
+            int v0, v1, v2;
+            res = sscanf( s, CMD_SET_DOWNSCALE, &v0, &v1, &v2 );
+            if ( (res == CMD_GET_DOWNSCALE_NO_PARMS) && (UINT8(v0) == enable->id) )
+            {
+                enable->downscale = UINT8( v1 );
+                enable->interlace = UINT8( v2 );
+                return ( 0 );
+            }
+            else
+            {
+                return ( -EINVAL );
+            }
+        }
+    }
+    else
+    {
+        res = evaluate_error_response( data, res );
+    }
+
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
+    return ( 0 );
+}
+
+/******************************************************************************
+ * set_downscale_mode - Set the downscale mode
+ *****************************************************************************/
+static int set_downscale_mode
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    int const                   no,
+    uint8_t * const             values
+)
+{
+    (void) ctx;
+
+    ctrl_protocol_downscale_enable_t * enable;
+
+    // parameter check
+    if ( !no || !values || (sizeof(*enable) != no) )
+    {
+        return ( -EINVAL );
+    }
+
+    enable = (ctrl_protocol_downscale_enable_t *)values;
+
+    return ( set_param_int_X( channel,
+                CMD_SET_DOWNSCALE, INT( enable->id ), INT( enable->downscale ), INT( enable->interlace ) ) );
 }
 
 /******************************************************************************
@@ -1013,6 +1119,8 @@ static ctrl_protocol_chain_drv_t provideo_chain_drv =
     .set_raw_mode            = set_raw_mode,
     .get_sdi2_mode           = get_sdi2_mode,
     .set_sdi2_mode           = set_sdi2_mode,
+    .get_downscale_mode      = get_downscale_mode,
+    .set_downscale_mode      = set_downscale_mode,
     .get_flip_mode           = get_flip_mode,
     .set_flip_mode           = set_flip_mode,
     .get_sdi_range           = get_sdi_range,

@@ -65,15 +65,5 @@ public slots:
     void onColorProcessingChange( int brightness, int contrast, int saturation, int hue );
 };
 
-#define CONNECT_CPROC_INTERFACE(x, y)                                                                                          \
-{                                                                                                                              \
-    QObject::connect( x, SIGNAL(BrightnessChanged(int)) , y, SLOT(onBrightnessChange(int)) );                                  \
-    QObject::connect( x, SIGNAL(ContrastChanged(int))   , y, SLOT(onContrastChange(int)) );                                    \
-    QObject::connect( x, SIGNAL(SaturationChanged(int)) , y, SLOT(onSaturationChange(int)) );                                  \
-    QObject::connect( x, SIGNAL(HueChanged(int))        , y, SLOT(onHueChange(int)) );                                         \
-    QObject::connect( x, SIGNAL(ColorProcessingChanged(int,int,int,int)), y, SLOT(onColorProcessingChange(int,int,int,int)) ); \
-}
-
-
 #endif // _CPROC_INTERFACE_H_
 

@@ -621,16 +621,6 @@
       <string>Output Configuration</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="1" column="4">
-       <widget class="QCheckBox" name="cbxAudioEnable">
-        <property name="toolTip">
-         <string>Enable to embed audio from the internal microphine in the SDI signal</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="0">
        <widget class="QLabel" name="lblVideoMode">
         <property name="minimumSize">
@@ -650,7 +640,7 @@
         </property>
        </widget>
       </item>
-      <item row="6" column="0">
+      <item row="7" column="0">
        <widget class="QLabel" name="lblTestPattern">
         <property name="minimumSize">
          <size>
@@ -673,7 +663,7 @@
        <widget class="QComboBox" name="cbxFlipMode">
         <property name="minimumSize">
          <size>
-          <width>200</width>
+          <width>170</width>
           <height>0</height>
          </size>
         </property>
@@ -704,24 +694,27 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="3">
-       <widget class="QLabel" name="lblAudioEnable">
+      <item row="4" column="1">
+       <widget class="QComboBox" name="cbxSdi2Mode">
         <property name="minimumSize">
          <size>
-          <width>80</width>
+          <width>170</width>
           <height>0</height>
          </size>
         </property>
-        <property name="text">
-         <string>Audio</string>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
         </property>
        </widget>
       </item>
-      <item row="6" column="1">
+      <item row="7" column="1">
        <widget class="QCheckBox" name="cbxTestPattern">
         <property name="minimumSize">
          <size>
-          <width>200</width>
+          <width>170</width>
           <height>0</height>
          </size>
         </property>
@@ -733,11 +726,11 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
-       <widget class="QComboBox" name="cbxSdi2Mode">
+      <item row="1" column="1">
+       <widget class="QComboBox" name="cbxVideoMode">
         <property name="minimumSize">
          <size>
-          <width>200</width>
+          <width>170</width>
           <height>0</height>
          </size>
         </property>
@@ -764,23 +757,7 @@
          </size>
         </property>
         <property name="text">
-         <string>SDI2 Mode</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QComboBox" name="cbxVideoMode">
-        <property name="minimumSize">
-         <size>
-          <width>200</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
+         <string>SDI 2 Mode</string>
         </property>
        </widget>
       </item>
@@ -803,15 +780,78 @@
          <enum>Qt::Horizontal</enum>
         </property>
         <property name="sizeType">
-         <enum>QSizePolicy::Fixed</enum>
+         <enum>QSizePolicy::Expanding</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>40</width>
+          <width>0</width>
           <height>20</height>
          </size>
         </property>
        </spacer>
+      </item>
+      <item row="5" column="3">
+       <widget class="QLabel" name="lblAudioEnable">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Audio</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="4">
+       <widget class="QComboBox" name="cbxSdi1Downscaler">
+        <property name="minimumSize">
+         <size>
+          <width>170</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QLabel" name="lblSdi1Downscaler">
+        <property name="text">
+         <string>SDI 1 Downscaler</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="3">
+       <widget class="QLabel" name="lblSdi2Downscaler">
+        <property name="text">
+         <string>SDI 2 Downscaler</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="4">
+       <widget class="QComboBox" name="cbxSdi2Downscaler">
+        <property name="minimumSize">
+         <size>
+          <width>170</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="4">
+       <widget class="QCheckBox" name="cbxAudioEnable">
+        <property name="minimumSize">
+         <size>
+          <width>170</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Enable to embed audio from the internal microphine in the SDI signal</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -1181,10 +1221,12 @@ Note: This will only hold the timecode in the SDI output, the timecode on the de
   <tabstop>sbxOffset</tabstop>
   <tabstop>sbxSlope</tabstop>
   <tabstop>cbxVideoMode</tabstop>
-  <tabstop>cbxAudioEnable</tabstop>
   <tabstop>cbxSdi2Mode</tabstop>
   <tabstop>cbxFlipMode</tabstop>
   <tabstop>cbxTestPattern</tabstop>
+  <tabstop>cbxSdi1Downscaler</tabstop>
+  <tabstop>cbxSdi2Downscaler</tabstop>
+  <tabstop>cbxAudioEnable</tabstop>
   <tabstop>cbxGenLockMode</tabstop>
   <tabstop>sbxGenLockOffsetVertical</tabstop>
   <tabstop>sbxGenlockOffsetHorizontal</tabstop>

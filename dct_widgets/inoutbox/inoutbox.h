@@ -75,6 +75,10 @@ public:
     void setVideoMode( const QString mode );
     QString Sdi2Mode() const;
     void setSdi2Mode( const QString mode );
+    QString Sdi1Downscaler() const;
+    void setSdi1Downscaler( const QString mode );
+    QString Sdi2Downscaler() const;
+    void setSdi2Downscaler( const QString mode );
     QString FlipMode() const;
     void setFlipMode( const QString mode );
     bool TestPattern() const;
@@ -96,6 +100,7 @@ public:
     void addVideoMode( QString name, int id );
     void addGenlockMode( QString name, int id );
     void addSdi2Mode( QString name, int id );
+    void addDownscaleMode( QString name, int id );
     void addFlipMode( QString name, int id );
 
     // Show or hide UI elements
@@ -106,6 +111,7 @@ public:
     void setGenLockVisible(const bool value);
     void setTimeCodeVisible(const bool groupbox_visible, const bool hold_visible);
     void setSdi2ModeVisible(const bool value);
+    void setDownscaleModeVisible(const bool value);
     void setFlipModeVisible(const bool vertical, const bool horizontal);
     void setTestPatternVisible(const bool value);
     void setAudioEnableVisible(const bool value);
@@ -140,6 +146,7 @@ signals:
 
     void ChainVideoModeChanged( int value );
     void ChainSdi2ModeChanged( int value );
+    void ChainDownscaleModeChanged( int sdi_out_idx, bool downscale, bool interlace );
     void ChainFlipModeChanged( int value );
     void OsdTestPatternChanged( int value );
     void ChainAudioEnableChanged( bool enable );
@@ -168,6 +175,7 @@ public slots:
 
     void onChainVideoModeChange( int value );
     void onChainSdi2ModeChange( int value );
+    void onChainDownscaleModeChange( int sdi_out_idx, bool downscale, bool interlace );
     void onChainFlipModeChange( int value );
     void onOsdTestPatternChange( int value );
     void onChainAudioEnableChange( bool enable );
@@ -207,9 +215,11 @@ private slots:
     void onBtnExposureMinusClicked( );
     void onBtnExposurePlusClicked( );
     
-    void onCbxVideoModeChange( int value );
-    void onCbxSdi2ModeChange( int value );
-    void onCbxFlipModeChange( int value );
+    void onCbxVideoModeChange( int index );
+    void onCbxSdi2ModeChange( int index );
+    void onCbxSdi1DownscalerChange( int index );
+    void onCbxSdi2DownscalerChange( int index );
+    void onCbxFlipModeChange( int index );
     void onCbxTestPatternChange( int value );
     void onCbxAudioEnableChange( int value );
     
@@ -265,6 +275,7 @@ private:
 
     int gainToIso( int gain ) const;
     int isoToGain( int iso ) const;
+    void EmitDownscaleChanged( int sdi_out_idx, int combo_box_idx );
 
 };
 

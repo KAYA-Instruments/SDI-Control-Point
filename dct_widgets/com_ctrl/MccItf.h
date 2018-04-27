@@ -83,17 +83,5 @@ public slots:
     void onMccPhaseChange( int id, int saturation, int hue );
 };
 
-#define CONNECT_MCC_INTERFACE(x, y)                                 \
-{                                                                   \
-    QObject::connect( x, SIGNAL(MccEnableChanged(int)),             \
-                      y, SLOT(onMccEnableChange(int)) );            \
-    QObject::connect( x, SIGNAL(MccOperationModeChanged(int,int)),  \
-                      y, SLOT(onMccOperationModeChange(int,int)) ); \
-    QObject::connect( x, SIGNAL(MccNoPhasesChanged(int)),           \
-                      y, SLOT(onMccNoPhasesChange(int)) );          \
-    QObject::connect( x, SIGNAL(MccPhaseChanged(int,int,int)),      \
-                      y, SLOT(onMccPhaseChange(int,int,int)) );     \
-}
-
 #endif // _MCC_INTERFACE_H_
 

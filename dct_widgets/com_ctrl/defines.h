@@ -137,6 +137,13 @@
 #define SDI2_MODE_RAW12                 ( "RAW-12" )
 
 /******************************************************************************
+ * Downscale mode names
+ *****************************************************************************/
+#define DOWNSCALE_MODE_OFF              ( "Disabled" )
+#define DOWNSCALE_MODE_ON               ( "Downscale" )
+#define DOWNSCALE_MODE_ON_AND_INTERLACE ( "Downscale and Interlace" )
+
+/******************************************************************************
  * Flip mode names
  *****************************************************************************/
 #define FLIP_MODE_OFF                   ( "off" )
@@ -369,6 +376,18 @@ enum Sdi2Mode
 };
 
 /******************************************************************************
+ * downscale mode
+ *****************************************************************************/
+enum DownscaleMode
+{
+    DownscaleModeFirst          = 0,
+    DownscaleModeOff            = 0,  /**< Do not downscale (original resoltion) */
+    DownscaleModeOn             = 1,  /**< Downscale 4k to 2k content, if possible  */
+    DownscaleModeOnAndInterlace = 2,  /**< Downscale 4k to 2k content and interlace, if possible */
+    DownscaleModeMax
+};
+
+/******************************************************************************
  * flip mode 
  *****************************************************************************/
 enum FlipMode
@@ -419,6 +438,9 @@ QString GetGenlockModeName( GenLockMode mode );
 
 // return corresponding sdi2 mode name 
 QString GetSdi2ModeName( Sdi2Mode mode );
+
+// return corresponding downscale mode name
+QString GetDownscaleModeName( DownscaleMode mode );
 
 // return corresponding flipe mode name 
 QString GetFlipModeName( FlipMode mode );

@@ -53,11 +53,5 @@ public slots:
     void onTestPatternChange( int pattern );
 };
 
-#define CONNECT_OSD_INTERFACE(x, y)                                    \
-{                                                                       \
-    QObject::connect( x, SIGNAL(TestPatternChanged(int)),    \
-                      y, SLOT(onTestPatternChanged(int)) );   \
-}
-
 #endif // _OSD_INTERFACE_H_
 

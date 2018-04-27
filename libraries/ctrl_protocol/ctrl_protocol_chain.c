@@ -158,6 +158,40 @@ int ctrl_protocol_set_sdi2_mode
 }
 
 /******************************************************************************
+ * ctrl_protocol_get_downscale_mode
+ *****************************************************************************/
+int ctrl_protocol_get_downscale_mode
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint8_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( CHAIN_DRV(protocol->drv), get_downscale_mode );
+    CHECK_NOT_NULL( values );
+    return ( CHAIN_DRV(protocol->drv)->get_downscale_mode( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_downscale_mode
+ *****************************************************************************/
+int ctrl_protocol_set_downscale_mode
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint8_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( CHAIN_DRV(protocol->drv), set_downscale_mode );
+    CHECK_NOT_NULL( values );
+    return ( CHAIN_DRV(protocol->drv)->set_downscale_mode( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
  * ctrl_protocol_get_flip_mode
  *****************************************************************************/
 int ctrl_protocol_get_flip_mode

@@ -65,14 +65,4 @@ public slots:
     void onNotifyVideoModeChange();
 };
 
-#define CONNECT_CAM_INTERFACE(x, y)                                                                             \
-{                                                                                                               \
-    QObject::connect( x, SIGNAL(CameraInfoChanged(int,int,int,int,int)),                                        \
-                      y, SLOT(onCameraInfoChange(int,int,int,int,int)) );                                       \
-    QObject::connect( x, SIGNAL(CameraGainChanged(int)),                                                        \
-                      y, SLOT(onCameraGainChange(int)) );                                                       \
-    QObject::connect( x, SIGNAL(CameraExposureChanged(int)),                                                    \
-                      y, SLOT(onCameraExposureChange(int)) );                                                   \
-}
-
 #endif // _CAM_INTERFACE_H_

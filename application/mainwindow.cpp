@@ -308,6 +308,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
     m_ui->inoutBox->setLensChadingCorrectionSettingsVisible(deviceFeatures.hasIspLsc);
     m_ui->inoutBox->setApartureVisible(deviceFeatures.hasIrisItf);
     m_ui->inoutBox->setSdi2ModeVisible(deviceFeatures.hasChainSdi2Mode);
+    m_ui->inoutBox->setDownscaleModeVisible(deviceFeatures.hasChainDownscale);
     m_ui->inoutBox->setGenLockVisible(deviceFeatures.hasChainGenLock);
     m_ui->inoutBox->setTimeCodeVisible(deviceFeatures.hasChainTimeCode, deviceFeatures.hasChainTimeCodeHold);
     m_ui->inoutBox->setFlipModeVisible(deviceFeatures.hasChainFlipVertical, deviceFeatures.hasChainFlipHorizontal);
@@ -439,6 +440,11 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         {
             connect( dev->GetChainItf(), SIGNAL(ChainSdi2ModeChanged(int)), m_ui->inoutBox, SLOT(onChainSdi2ModeChange(int)) );
             connect( m_ui->inoutBox, SIGNAL(ChainSdi2ModeChanged(int)), dev->GetChainItf(), SLOT(onChainSdi2ModeChange(int)) );
+        }
+        if (deviceFeatures.hasChainDownscale)
+        {
+            connect( dev->GetChainItf(), SIGNAL(ChainDownscaleModeChanged(int,bool,bool)), m_ui->inoutBox, SLOT(onChainDownscaleModeChange(int,bool,bool)) );
+            connect( m_ui->inoutBox, SIGNAL(ChainDownscaleModeChanged(int,bool,bool)), dev->GetChainItf(), SLOT(onChainDownscaleModeChange(int,bool,bool)) );
         }
         if (deviceFeatures.hasChainFlipVertical || deviceFeatures.hasChainFlipHorizontal)
         {

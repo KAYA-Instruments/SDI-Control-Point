@@ -529,6 +529,24 @@ QString GetSdi2ModeName( Sdi2Mode mode )
 }
 
 /******************************************************************************
+ * GetDownscaleModeName()
+ *****************************************************************************/
+QString GetDownscaleModeName( DownscaleMode mode )
+{
+    switch ( mode )
+    {
+        case DownscaleModeOff:
+            return ( QString(DOWNSCALE_MODE_OFF) );
+        case DownscaleModeOn:
+            return ( QString(DOWNSCALE_MODE_ON) );
+        case DownscaleModeOnAndInterlace:
+            return ( QString(DOWNSCALE_MODE_ON_AND_INTERLACE) );
+        default:
+            return ( QString::null );
+    }
+}
+
+/******************************************************************************
  * GetFlipModeName()
  *****************************************************************************/
 QString GetFlipModeName( FlipMode mode )

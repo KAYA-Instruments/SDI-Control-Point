@@ -53,11 +53,5 @@ public slots:
     void onKneeConfigChange( int, int, int, int );
 };
 
-#define CONNECT_KNEE_INTERFACE(x, y)                                    \
-{                                                                       \
-    QObject::connect( x, SIGNAL(KneeConfigChanged(int,int,int,int)),    \
-                      y, SLOT(onKneeConfigChange(int,int,int,int)) );   \
-}
-
 #endif // _KNEE_INTERFACE_H_
 
