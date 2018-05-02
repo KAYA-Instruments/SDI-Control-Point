@@ -1709,5 +1709,3 @@ void ConnectDialog::rescan()
     setChannelRS232( m_rs232 );
     setChannelRS485( m_rs485 );
 }
-
-
