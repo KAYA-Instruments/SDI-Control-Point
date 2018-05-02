@@ -6,9 +6,7 @@ The master-branch of this project contains the most recent GUI version used for 
 * **master:**
   * ATOM one (xbow) - Small 2K broadcast camera
   * ATOM one mini (cooper) - Tiny 2K broadcast camera
-  * ATOM one 4K (condor4k) - Small 4K broadcast camera (Discontinued)
   * ATOM one 4K mini (condor4k_mini) - Even smaller 4K broadcast camera
-  * Cameleon (cameleon) - Image processor box
 
 Development by Dream Chip is done in the *dct_development* branch which will be pushed to the master when new features are ready. Other developers are encouraged to create their own branches and issue merge requests.
 
@@ -30,7 +28,7 @@ The project contains four folders with multiple sub-directories:
 # Working on the Project
 ## Development Environment
 The easiest way to edit the software is by using the Qt Creator, which is available for free for open source development at https://info.qt.io/download-qt-for-application-development    
-It is recommended to use the latest version of Qt Creator and the Qt framework. The last tested version is Qt Creator 4.5.1 based on Qt 5.10.1.
+It is recommended to use the latest version of Qt Creator and the Qt framework. The last tested version is Qt Creator 4.6.0 based on Qt 5.10.1.
 
 ## Unit Tests for C-Libraries
 The unit tests are written using an open source framework called embUnit which is available here: https://sourceforge.net/projects/embunit/  
