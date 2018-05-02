@@ -4,6 +4,20 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
+Version **1.1.3** - 02.04.2018
+
+* Added a new Debug Terminal which can be used to monitor the commands send by the GUI and manually send commands to the device, the Debug Terminal can be opened from the Settings Dialog
+* Updated the QCustomPlot version from 1.3.2 to 2.0.0
+* Small bug fixes to DPCC and MCC commands
+
+## Older Releases:
+
+Version **1.1.2** - This release was skipped and not officially released to public
+
+* Improved update downloader which is now more robust
+* Small changes to the Settings Dialog
+* Added combo boxes and "+ / -" buttons to switch between common used values for exposure time and ISO value to the in-out-box
+
 Version **1.1.1** - 20.03.2018
 
 * The timeout for detecting devices using the identfy command is now variable, depending on the baudrate of the COM port
@@ -11,8 +25,6 @@ Version **1.1.1** - 20.03.2018
 * Fixed a bug in the MCC widget that made the programm crash when no phase was selected and the slider ranges were changed
 * Fixed a bug in the update widget where the abort button had to be pressed twice to cancel an update
 * Added a dialog to the update widget which asks the user to re-install an update if the server version is equal to or older than the device version
-
-## Older Releases:
 
 Version **1.1.0** - 07.03.2018
 
