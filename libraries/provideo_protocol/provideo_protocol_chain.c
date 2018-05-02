@@ -487,8 +487,8 @@ static int set_downscale_mode
 
     enable = (ctrl_protocol_downscale_enable_t *)values;
 
-    return ( set_param_int_X( channel,
-                CMD_SET_DOWNSCALE, INT( enable->id ), INT( enable->downscale ), INT( enable->interlace ) ) );
+    return ( set_param_int_X_with_tmo( channel, CMD_SET_DOWNSCALE, CMD_SET_DOWNSCALE_TMO,
+                                       INT( enable->id ), INT( enable->downscale ), INT( enable->interlace ) ) );
 }
 
 /******************************************************************************
