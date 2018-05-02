@@ -57,6 +57,9 @@ public:
 
     // sdi2 output mode state
     void GetChainSdi2Mode();
+
+    // downscale mode state
+    void GetChainDownscaleMode( int id );
     
     // flip mode state
     void GetChainFlipMode();
@@ -98,6 +101,9 @@ signals:
 
     // sdi2 output mode
     void ChainSdi2ModeChanged( int value );
+
+    // downscale mode
+    void ChainDownscaleModeChanged( int sdi_out_idx, bool downscale, bool interlace );
     
     // raw mode
     void ChainFlipModeChanged( int value );
@@ -136,6 +142,7 @@ public slots:
     void onChainVideoModeChange( int value );
     void onChainRawModeChange( int value );
     void onChainSdi2ModeChange( int value );
+    void onChainDownscaleModeChange( int sdi_out_idx, bool downscale, bool interlace );
     void onChainFlipModeChange( int value );
     void onChainSdiModeChange( int value );
     void onChainSdiBlackLevelChange( int value );
@@ -148,26 +155,6 @@ public slots:
     void onChainTimecodeHoldChange( bool enable );
     void onChainAudioEnableChange( bool enable );
 };
-
-#define CONNECT_CHAIN_INTERFACE(x, y)                               \
-{                                                                   \
-    QObject::connect( x, SIGNAL(ChainSelectedChainChanged(int)),    \
-                      y, SLOT(onChainSelectedChainChange(int)) );   \
-    QObject::connect( x, SIGNAL(ChainVideoModeChanged(int)),        \
-                      y, SLOT(onChainVideoModeChange(int)) );       \
-    QObject::connect( x, SIGNAL(ChainSdi2ModeChanged(int)),         \
-                      y, SLOT(onChainSdi2ModeChange(int)) );        \
-    QObject::connect( x, SIGNAL(ChainFlipModeChanged(int)),         \
-                      y, SLOT(onChainFlipModeChange(int)) );        \
-    QObject::connect( x, SIGNAL(ChainGenlockModeChanged(int)),      \
-                      y, SLOT(onChainGenlockModeChange(int)) );     \
-    QObject::connect( x, SIGNAL(ChainSdiModeChanged(int)),          \
-                      y, SLOT(onChainSdiModeChange(int)) );         \
-    QObject::connect( x, SIGNAL(ChainSdiBlackLevelChanged(int)),    \
-                      y, SLOT(onChainSdiBlackLevelChange(int)) );   \
-    QObject::connect( x, SIGNAL(ChainSdiWhiteLevelChanged(int)),    \
-                      y, SLOT(onChainSdiWhiteLevelChange(int)) );   \
-}
 
 #endif // _CHAIN_INTERFACE_H_
 

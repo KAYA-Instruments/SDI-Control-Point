@@ -97,13 +97,5 @@ public slots:
     void onNotifyWhiteBalanceUpdate();
 };
 
-#define CONNECT_AUTO_INTERFACE(x, y)                                    \
-{                                                                       \
-    QObject::connect( x, SIGNAL(NoWbPresetsChanged(int)),               \
-                      y, SLOT(onNoWbPresetsChange(int)) );              \
-    QObject::connect( x, SIGNAL(WbPresetsChanged(int,QString,int)),     \
-                      y, SLOT(onWbPresetsChange(int,QString,int)) );    \
-}
- 
 #endif // _AUTO_INTERFACE_H_
 

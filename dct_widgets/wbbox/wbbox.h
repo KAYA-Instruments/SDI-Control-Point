@@ -29,31 +29,31 @@
  * Red Gain Definitions
  *****************************************************************************/
 #define WB_RED_GAIN_MIN                         (        0 )
-#define WB_RED_GAIN_MAX                         (     1023 )
+#define WB_RED_GAIN_MAX                         (     4095 )
 #define WB_RED_GAIN_COMMA_POSITION              (        8 )
 #define WB_RED_GAIN_BASE                        (        2 )
 #define WB_RED_GAIN_DISPLAY_MULTIPLIER          (        1 )
-#define WB_RED_GAIN_DISPLAY_MASK                (  "%1.3f" )
+#define WB_RED_GAIN_DISPLAY_MASK                (  "%2.3f" )
 
 /******************************************************************************
  * Green Gain Definitions
  *****************************************************************************/
 #define WB_GREEN_GAIN_MIN                       (        0 )
-#define WB_GREEN_GAIN_MAX                       (     1023 )
+#define WB_GREEN_GAIN_MAX                       (     4095 )
 #define WB_GREEN_GAIN_COMMA_POSITION            (        8 )
 #define WB_GREEN_GAIN_BASE                      (        2 )
 #define WB_GREEN_GAIN_DISPLAY_MULTIPLIER        (        1 )
-#define WB_GREEN_GAIN_DISPLAY_MASK              (  "%1.3f" )
+#define WB_GREEN_GAIN_DISPLAY_MASK              (  "%2.3f" )
 
 /******************************************************************************
  * Blue Gain Definitions
  *****************************************************************************/
 #define WB_BLUE_GAIN_MIN                        (        0 )
-#define WB_BLUE_GAIN_MAX                        (     1023 )
+#define WB_BLUE_GAIN_MAX                        (     4095 )
 #define WB_BLUE_GAIN_COMMA_POSITION             (        8 )
 #define WB_BLUE_GAIN_BASE                       (        2 )
 #define WB_BLUE_GAIN_DISPLAY_MULTIPLIER         (        1 )
-#define WB_BLUE_GAIN_DISPLAY_MASK               (  "%1.3f" )
+#define WB_BLUE_GAIN_DISPLAY_MASK               (  "%2.3f" )
 
 /******************************************************************************
  * Color Temperature Definitions

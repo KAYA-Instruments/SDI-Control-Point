@@ -39,7 +39,7 @@ public:
     PrivateData()
         : m_background( new QPixmap( ":/images/needle/dial-back.png" ) )
         , m_needle( new QPixmap( ":/images/back/dial-pointer.png" ) )
-        , m_paintFlags( QPainter::RenderHint(QPainter::Antialiasing | QPainter::SmoothPixmapTransform || QPainter::HighQualityAntialiasing) )
+        , m_paintFlags( QPainter::Antialiasing | QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing )
         , m_maxDeg( 150 )
         , m_cacheBackground( new QPixmap )
         , m_cacheNeedle( new QPixmap )
@@ -57,7 +57,7 @@ public:
     PrivateData( QPixmap * c_back, QPixmap * c_needle, int c_angle )
         : m_background( new QPixmap( *c_back ) )
         , m_needle( new QPixmap( *c_needle ) )
-        , m_paintFlags( QPainter::RenderHint(QPainter::Antialiasing | QPainter::SmoothPixmapTransform || QPainter::HighQualityAntialiasing) )
+        , m_paintFlags( QPainter::Antialiasing | QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing )
         , m_maxDeg( c_angle )
         , m_cacheBackground( new QPixmap )
         , m_cacheNeedle( new QPixmap )
@@ -82,7 +82,7 @@ public:
 
     QPixmap *               m_background;
     QPixmap *               m_needle;
-    QPainter::RenderHint    m_paintFlags;
+    QPainter::RenderHints   m_paintFlags;
     int                     m_maxDeg;
 
     QPixmap *               m_cacheBackground;

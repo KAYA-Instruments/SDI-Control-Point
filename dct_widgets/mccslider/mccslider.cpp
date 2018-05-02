@@ -122,9 +122,6 @@ MccSlider::MccSlider( int segmentIndex, QColor segmentColor,
  *****************************************************************************/
 MccSlider::~MccSlider()
 {
-    // Stop blinking when slider is deleted (e.g. when a new opmode is selected)
-    emit BlinkChanged( d_data->m_segmentIndex, false );
-
     delete d_data;
 }
 
@@ -513,7 +510,7 @@ void MccSlider::onResetSlider( int index )
         d_data->m_ui->satSlider->setValue( d_data->m_defaultSat );
 
         // deactivate blinking
-        setBlink( false );
+        d_data->m_ui->blinkButton->setChecked( false );
     }
 }
 

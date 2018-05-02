@@ -23,11 +23,15 @@
 #ifndef _COM_CHANNEL_H_
 #define _COM_CHANNEL_H_
 
+#include <QObject>
+
 // generic control channel layer
 #include <ctrl_channel/ctrl_channel.h>
 
-class ComChannel
+class ComChannel : public QObject
 {
+    Q_OBJECT
+
 public:
     explicit ComChannel();
     virtual ~ComChannel();
@@ -44,6 +48,12 @@ public:
     bool isOpen( ) const;
 
     void Close();
+
+signals:
+    void dataReceived( QString data );
+
+public slots:
+    virtual void onSendData( QString data, int responseWaitTime ) = 0;
 
 private:
     ctrl_channel_handle_t   m_channel;      // control channel instance

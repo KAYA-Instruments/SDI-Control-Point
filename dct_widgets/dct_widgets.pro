@@ -1,17 +1,18 @@
-# This version number is shown in the Application, it should be
-# updated before each release!
-VERSION = 1.0.8
-DEFINES += VERSION_STRING=\\\"1.0.8\\\"
+# Should be updated before each release!
+VERSION = 1.1.3
+DEFINES += VERSION_STRING=\\\"1.1.3\\\"
 
 QMAKE_TARGET_COMPANY = "Dream Chip Technologies GmbH"
 QMAKE_TARGET_PRODUCT = "ProVideo Widget Collection"
 QMAKE_TARGET_DESCRIPTION = "Collection of Widgets used for the ProVideo GUI"
-QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2017, Dream Chip Technologies GmbH"
+QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2018, Dream Chip Technologies GmbH"
 
+QT += network
 greaterThan(QT_MAJOR_VERSION, 4) {
     QT += widgets designer
 }
 
+CONFIG  += c++11
 lessThan(QT_MAJOR_VERSION, 5) {
     CONFIG += plugin
 }
@@ -34,9 +35,11 @@ DEFINES += "CFG_CSIP_SAMPLE_INT32"
 DEFINES += FLASH_LOADER_APPLICATION=\\\"$$FLASH_LOADER_APPLICATION\\\"
 
 INCLUDEPATH += ../libraries/include     \
+               ../libraries/qcustomplot \
                com_ctrl                 \
                csvwrapper               \
                textviewer               \
+               infodialog               \
                fmtspinbox               \
                skinneddial              \
                switchbutton             \
@@ -47,7 +50,6 @@ INCLUDEPATH += ../libraries/include     \
                piesegmentselect         \
                huesegmentselect         \
                mccslider                \
-               qcustomplot              \
                wbbox                    \
                mccbox                   \
                mcceqbox                 \
@@ -74,7 +76,6 @@ HEADERS      = fmtspinbox/fmtspinbox.h                              \
                piesegmentselect/piesegmentselect.h                  \
                huesegmentselect/huesegmentselect.h                  \
                mccslider/mccslider.h                                \
-               qcustomplot/qcustomplot.h                            \
                wbbox/wbbox.h                                        \
                mccbox/mccbox.h                                      \
                mcceqbox/mcceqbox.h                                  \
@@ -101,9 +102,11 @@ HEADERS      = fmtspinbox/fmtspinbox.h                              \
                ../libraries/include/simple_math/xyz2ct.h            \
                ../libraries/include/simple_math/gamma.h             \
                ../libraries/include/simple_math/float.h             \
+               ../libraries/qcustomplot/qcustomplot.h               \
                com_ctrl/FpncData.h                                  \
                csvwrapper/csvwrapper.h                              \
                textviewer/textviewer.h                              \
+               infodialog/infodialog.h                              \
                dct_widgets_base.h                                   \
                dct_widgets.h
 
@@ -117,7 +120,6 @@ SOURCES      = fmtspinbox/fmtspinbox.cpp                            \
                piesegmentselect/piesegmentselect.cpp                \
                huesegmentselect/huesegmentselect.cpp                \
                mccslider/mccslider.cpp                              \
-               qcustomplot/qcustomplot.cpp                          \
                wbbox/wbbox.cpp                                      \
                mccbox/mccbox.cpp                                    \
                mcceqbox/mcceqbox.cpp                                \
@@ -144,11 +146,13 @@ SOURCES      = fmtspinbox/fmtspinbox.cpp                            \
                ../libraries/simple_math/knee.c                      \
                ../libraries/simple_math/gamma.c                     \
                ../libraries/simple_math/float.c                     \
+               ../libraries/qcustomplot/qcustomplot.cpp             \
                com_ctrl/FpncData.cpp                                \
                com_ctrl/common.cpp                                  \
                com_ctrl/defines.cpp                                 \
                csvwrapper/csvwrapper.cpp                            \
                textviewer/textviewer.cpp                            \
+               infodialog/infodialog.cpp                            \
                dct_widgets.cpp
 
 FORMS       += singlechannelknobbox/singlechannelknobbox.ui         \
@@ -170,6 +174,7 @@ FORMS       += singlechannelknobbox/singlechannelknobbox.ui         \
                fpncbox/fpncbox.ui                                   \
                kneebox/kneebox.ui                                   \
                dpccbox/dpccbox.ui                                   \
-               textviewer/textviewer.ui
+               textviewer/textviewer.ui                             \
+               infodialog/infodialog.ui
 
 RESOURCES   += ../resource/resource.qrc

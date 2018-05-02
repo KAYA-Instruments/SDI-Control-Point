@@ -187,49 +187,5 @@ public slots:
     void onNotifyCameraGainChange();
 };
 
-#define CONNECT_ISP_INTERFACE(x, y)                                                                         \
-{                                                                                                           \
-    QObject::connect( x, SIGNAL(LscChanged(int)),                                                           \
-                      y, SLOT(onLscChange( QVector<uint> value);                                            \
-    QObject::connect( x, SIGNAL(BayerPatternChanged(int)),                                                  \
-                      y, SLOT(onBayerPatternChange(int)) );                                                 \
-    QObject::connect( x, SIGNAL(RedGainChanged(int)),                                                       \
-                      y, SLOT(onRedGainChange(int)) );                                                      \
-    QObject::connect( x, SIGNAL(GreenGainChanged(int)),                                                     \
-                      y, SLOT(onGreenGainChange(int)) );                                                    \
-    QObject::connect( x, SIGNAL(BlueGainChanged(int)),                                                      \
-                      y, SLOT(onBlueGainChange(int)) );                                                     \
-    QObject::connect( x, SIGNAL(GainChanged(int,int,int)),                                                  \
-                      y, SLOT(onGainChange(int,int,int)) );                                                 \
-    QObject::connect( x, SIGNAL(RedBlackLevelChanged(int)),                                                 \
-                      y, SLOT(onRedBlackLevelChange(int)) );                                                \
-    QObject::connect( x, SIGNAL(GreenBlackLevelChanged(int)),                                               \
-                      y, SLOT(onGreenBlackLevelChange(int)) );                                              \
-    QObject::connect( x, SIGNAL(BlueBlackLevelChanged(int)),                                                \
-                      y, SLOT(onBlueBlackLevelChange(int)) );                                               \
-    QObject::connect( x, SIGNAL(BlackLevelChanged(int,int,int)),                                            \
-                      y, SLOT(onBlackLevelChange(int,int,int)) );                                           \
-    QObject::connect( x, SIGNAL(FlareLevelChanged(int,int,int)),                                            \
-                      y, SLOT(onFlareLevelChange(int,int,int)) );                                           \
-    QObject::connect( x, SIGNAL(MasterBlackLevelChanged(int,int,int)),                                      \
-                      y, SLOT(onMasterBlackLevelChange(int,int,int)) );                                     \
-    QObject::connect( x, SIGNAL(FilterEnableChanged(int)),                                                  \
-                      y, SLOT(onFilterEnableChange(int)) );                                                 \
-    QObject::connect( x, SIGNAL(FilterDetailLevelChanged(int)),                                             \
-                      y, SLOT(onFilterDetailLevelChange(int)) );                                            \
-    QObject::connect( x, SIGNAL(FilterDenoiseLevelChanged(int)),                                            \
-                      y, SLOT(onFilterDenoiseLevelChange(int)) );                                           \
-    QObject::connect( x, SIGNAL(FilterChanged(int,int,int)),                                                \
-                      y, SLOT(onFilterChange(int,int,int)) );                                               \
-    QObject::connect( x, SIGNAL(ColorCorrectionMatrixChanged(int,int,int,int,int,int,int,int,int)),         \
-                      y, SLOT(onColorCorrectionMatrixChange(int,int,int,int,int,int,int,int,int)) );        \
-    QObject::connect( x, SIGNAL(ColorCorrectionOffsetChanged(int,int,int)),                                 \
-                      y, SLOT(onColorCorrectionOffsetChange(int,int,int)) );                                \
-    QObject::connect( x, SIGNAL(ColorCorrectionChanged(int,int,int,int,int,int,int,int,int,int,int,int)),   \
-                      y, SLOT(onColorCorrectionChange(int,int,int,int,int,int,int,int,int,int,int,int)) );  \
-    QObject::connect( x, SIGNAL(ColorConversionMatrixChanged(int,int,int,int,int,int,int,int,int)),         \
-                      y, SLOT(onColorConversionMatrixChange(int,int,int,int,int,int,int,int,int)) );        \
-}
-
 #endif // _ISP_INTERFACE_H_
 

@@ -43,6 +43,15 @@ void ChainItf::resync()
     GetChainVideoMode();
     GetChainRawMode();
     GetChainSdi2Mode();
+
+    // Downscale Mode for each output
+    /* Note: On some devices not all chains will be available, in this case GetDownscale
+     * will report an error, but that is no problem */
+    for ( int i = 1; i <= MAX_NUM_CHAINS; i++ )
+    {
+        GetChainDownscaleMode( i );
+    }
+
     GetChainFlipMode();
     GetChainSdiMode();
     GetChainSdiBlackLevel();
@@ -132,6 +141,26 @@ void ChainItf::GetChainSdi2Mode()
         
         // emit a SelectedChainChanged signal
         emit ChainSdi2ModeChanged( (int)value );
+    }
+}
+
+/******************************************************************************
+ * ChainItf::GetChainDownscaleMode
+ *****************************************************************************/
+void ChainItf::GetChainDownscaleMode( int id )
+{
+    // Is there a signal listener
+    if ( receivers(SIGNAL(ChainDownscaleModeChanged(int, bool, bool))) > 0 )
+    {
+        ctrl_protocol_downscale_enable_t v = { .id = (uint8_t)id, .downscale = 0u, .interlace = 0u };
+
+        // read enable state from device
+        int res = ctrl_protocol_get_downscale_mode( GET_PROTOCOL_INSTANCE(this),
+            GET_CHANNEL_INSTANCE(this), sizeof(v), (uint8_t *)&v );
+        HANDLE_ERROR( res );
+
+        // emit a ChainGenlockOffsetChanged signal
+        emit ChainDownscaleModeChanged( (int)v.id, (bool)v.downscale, (bool)v.interlace );
     }
 }
 
@@ -403,6 +432,27 @@ void ChainItf::onChainSdi2ModeChange( int value )
     // set SDI-2 output mode on device
     int res = ctrl_protocol_set_sdi2_mode( GET_PROTOCOL_INSTANCE(this),
             GET_CHANNEL_INSTANCE(this), (uint8_t)value );
+    HANDLE_ERROR( res );
+
+    /* Get downscale mode of the second sdi output as it gets disabled
+     * after switchting to RAW mode */
+    GetChainDownscaleMode( 2 );
+}
+
+/******************************************************************************
+ * ChainItf::onChainDownscaleModeChange
+ *****************************************************************************/
+void ChainItf::onChainDownscaleModeChange( int sdi_out_idx, bool downscale, bool interlace )
+{
+    // convert to array
+    uint8_t values[3];
+    values[0] = (uint8_t)sdi_out_idx;
+    values[1] = (uint8_t)downscale;
+    values[2] = (uint8_t)interlace;
+
+    // set downscale mode on device
+    int res = ctrl_protocol_set_downscale_mode( GET_PROTOCOL_INSTANCE(this),
+            GET_CHANNEL_INSTANCE(this), 3, values );
     HANDLE_ERROR( res );
 }
 

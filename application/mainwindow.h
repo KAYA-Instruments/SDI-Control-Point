@@ -27,11 +27,13 @@
 #include <QMainWindow>
 #include <QList>
 #include <QComboBox>
+#include <QTimer>
 
 #include <dct_widgets_base.h>
 #include "ProVideoDevice.h"
 #include "connectdialog.h"
 #include "settingsdialog.h"
+#include "debugterminal.h"
 
 namespace Ui {
     class MainWindow;
@@ -46,6 +48,9 @@ public:
     ~MainWindow();
 
     void connectToDevice(ProVideoDevice * );
+
+protected:
+    void closeEvent(QCloseEvent *event) override;
 
 signals:
     // chain selection status
@@ -87,6 +92,8 @@ private slots:
     void onCopyFlagChange( bool flag );
     void onEngineeringModeChange( bool flag );
     void onBroadcastChange(uint8_t flag );
+    void onDebugTerminalTopLevelChange( bool floating );
+    void onDebugTerminalVisibilityChange( bool visible );
 
     void onAecResyncRequest();
     void onResyncRequest();
@@ -94,18 +101,22 @@ private slots:
     void onResolutionMaskChange( uint32_t id0, uint32_t id1, uint32_t id2 );
 
     void onLockCurrentTabPage( bool lock );
+    void onResizeMainWindow( bool force = false );
 
 private:
     Ui::MainWindow *        m_ui;
     ConnectDialog *         m_ConnectDlg;
     SettingsDialog *        m_SettingsDlg;
+    DebugTerminal *         m_DebugTerminal;
     QComboBox *             m_cbxConnectedDevices;
     ProVideoDevice *        m_dev;
     QString                 m_filename;
     QList<DctWidgetBox *>   m_activeWidgets;
+    QTimer                  m_resizeTimer;
 
     void setConnectDlg( ConnectDialog * );
     void setSettingsDlg( SettingsDialog * );
+    void setDebugTerminal( DebugTerminal * );
     void setupUI(ProVideoDevice::features deviceFeatures);
 
     void updateDeviceList();

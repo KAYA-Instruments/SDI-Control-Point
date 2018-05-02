@@ -104,12 +104,5 @@ private:
     int ReadCorrectionDataFromDevice( const int, const int, const int, QVector<int> & );
 };
 
-#define CONNECT_FPNC_INTERFACE(x, y)                            \
-{                                                               \
-    QObject::connect( x, SIGNAL(FpncEnableChanged(int)),        \
-                      y, SLOT(onFpncEnableChange(int)) );       \
-}
-
-
 #endif // _FPNC_INTERFACE_H_
 

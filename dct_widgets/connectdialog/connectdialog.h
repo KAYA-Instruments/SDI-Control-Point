@@ -62,7 +62,16 @@ public:
     ~ConnectDialog();
 
     void setChannelRS232( ComChannelSerial * com );
+    ComChannelSerial * getChannelRS232()
+    {
+        return m_rs232;
+    }
+
     void setChannelRS485( ComChannelSerial * com );
+    ComChannelSerial * getChannelRS485()
+    {
+        return m_rs485;
+    }
 
     ComChannelSerial * getActiveChannel() const
     {

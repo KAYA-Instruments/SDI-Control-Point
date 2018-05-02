@@ -156,5 +156,6 @@
         <file>icons/cog-64.png</file>
         <file>icons/cog-32.png</file>
         <file>icons/cog-16.png</file>
+        <file>icons/terminal.png</file>
     </qresource>
 </RCC>

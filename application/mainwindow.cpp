@@ -20,11 +20,12 @@
  * @brief   Application main window
  *
  *****************************************************************************/
-#include <QtDebug>
+#include <QDebug>
 #include <QLabel>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QProgressDialog>
+#include <QDockWidget>
 
 #include <ProVideoDevice.h>
 #include <infodialog.h>
@@ -59,15 +60,24 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
     , m_ui( new Ui::MainWindow )
     , m_ConnectDlg( NULL )
     , m_SettingsDlg( NULL )
+    , m_DebugTerminal( NULL )
     , m_cbxConnectedDevices( NULL )
     , m_dev ( NULL )
 {
     // Create ui
     m_ui->setupUi( this );
 
-    // Set and connect dialogs
+    // Make the Tab Widget the central widget
+    setCentralWidget( m_ui->tabWidget );
+
+    // Setup the connect and setting dialogs
     setConnectDlg(connectDialog);
     setSettingsDlg(new SettingsDialog( this ));
+
+    // Setup the debug terminal
+    /* Note: This has to be done after setting the Settings Dialog, because the
+     * debug terminal is connected to signals / slots of the settings dialog */
+    setDebugTerminal(new DebugTerminal( this ));
 
     // GUI has to be locked down during update procedure
     connect( m_ui->updBox, SIGNAL(LockCurrentTabPage(bool)), this, SLOT(onLockCurrentTabPage(bool)) );
@@ -86,6 +96,13 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
     connect( m_ui->actionSaveToFile     , SIGNAL( triggered() ), this, SLOT( onSaveToFileClicked() ) );
     connect( m_ui->actionBroadcast      , SIGNAL( triggered() ), this, SLOT( onBroadcastClicked() ) );
     connect( m_ui->actionSync           , SIGNAL( triggered() ), this, SLOT( onSyncSettingsClicked()) );
+
+    // Configure the resize timer
+    m_resizeTimer.setSingleShot( true );
+    connect( &m_resizeTimer, SIGNAL(timeout()), this, SLOT(onResizeMainWindow()) );
+
+    // Resize to minimum size
+    onResizeMainWindow( true );   // Force resize, even if debug terminal is not visible
 }
 
 /******************************************************************************
@@ -93,11 +110,20 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
  *****************************************************************************/
 MainWindow::~MainWindow()
 {
+    delete m_SettingsDlg;
+    delete m_DebugTerminal;
+    delete m_ui;
+}
+
+/******************************************************************************
+ * MainWindow::~MainWindow
+ *****************************************************************************/
+void MainWindow::closeEvent (QCloseEvent *event)
+{
     // When the main window closes, disable broadcast mode (this disables the broadcast master)
     emit BroadcastChanged( false );
 
-    delete m_SettingsDlg;
-    delete m_ui;
+    event->accept();
 }
 
 /******************************************************************************
@@ -282,6 +308,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
     m_ui->inoutBox->setLensChadingCorrectionSettingsVisible(deviceFeatures.hasIspLsc);
     m_ui->inoutBox->setApartureVisible(deviceFeatures.hasIrisItf);
     m_ui->inoutBox->setSdi2ModeVisible(deviceFeatures.hasChainSdi2Mode);
+    m_ui->inoutBox->setDownscaleModeVisible(deviceFeatures.hasChainDownscale);
     m_ui->inoutBox->setGenLockVisible(deviceFeatures.hasChainGenLock);
     m_ui->inoutBox->setTimeCodeVisible(deviceFeatures.hasChainTimeCode, deviceFeatures.hasChainTimeCodeHold);
     m_ui->inoutBox->setFlipModeVisible(deviceFeatures.hasChainFlipVertical, deviceFeatures.hasChainFlipHorizontal);
@@ -413,6 +440,11 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         {
             connect( dev->GetChainItf(), SIGNAL(ChainSdi2ModeChanged(int)), m_ui->inoutBox, SLOT(onChainSdi2ModeChange(int)) );
             connect( m_ui->inoutBox, SIGNAL(ChainSdi2ModeChanged(int)), dev->GetChainItf(), SLOT(onChainSdi2ModeChange(int)) );
+        }
+        if (deviceFeatures.hasChainDownscale)
+        {
+            connect( dev->GetChainItf(), SIGNAL(ChainDownscaleModeChanged(int,bool,bool)), m_ui->inoutBox, SLOT(onChainDownscaleModeChange(int,bool,bool)) );
+            connect( m_ui->inoutBox, SIGNAL(ChainDownscaleModeChanged(int,bool,bool)), dev->GetChainItf(), SLOT(onChainDownscaleModeChange(int,bool,bool)) );
         }
         if (deviceFeatures.hasChainFlipVertical || deviceFeatures.hasChainFlipHorizontal)
         {
@@ -952,6 +984,23 @@ void MainWindow::onLockCurrentTabPage( bool lock )
 }
 
 /******************************************************************************
+ * MainWindow::onResizeMainWindow
+ *****************************************************************************/
+void MainWindow::onResizeMainWindow( bool force )
+{
+    /* Do not resize if the window is minimized, otherwise the layout might break.
+     * Also do only resize if the the debug terminal is not visible, or if force
+     * is set to true. */
+    if ( (!this->isMinimized() && !m_DebugTerminal->isVisible()) || force )
+    {
+        // Resize to minimum size
+        this->adjustSize();
+        this->resize( this->minimumSizeHint() );
+        QApplication::processEvents(QEventLoop::WaitForMoreEvents);
+    }
+}
+
+/******************************************************************************
  * MainWindow::setConnectDlg
  *****************************************************************************/
 void MainWindow::setConnectDlg( ConnectDialog * dlg )
@@ -993,7 +1042,45 @@ void MainWindow::setSettingsDlg( SettingsDialog * dlg )
         connect( m_SettingsDlg, SIGNAL(ResyncRequest()), this, SLOT(onResyncRequest()) );
         connect( m_SettingsDlg, SIGNAL(SystemSettingsChanged(int,int,int,int)), this, SLOT(onSystemSettingsChange(int,int,int,int)) );
         connect( m_SettingsDlg, SIGNAL(EngineeringModeChanged(bool)), this, SLOT(onEngineeringModeChange(bool)) );
-        connect( m_SettingsDlg, SIGNAL(SaveSettings()), this, SLOT( onSaveSettingsClicked() ) );
+        connect( m_SettingsDlg, SIGNAL(SaveSettings()), this, SLOT( onSaveSettingsClicked()) );
+
+//        connect( m_SettingsDlg, SIGNAL(ResizeRequest()), this, SLOT(onResizeRequest()) );
+    }
+}
+
+/******************************************************************************
+ * MainWindow::setDebugTerminal
+ *****************************************************************************/
+void MainWindow::setDebugTerminal( DebugTerminal * dlg )
+{
+    m_DebugTerminal = dlg;
+
+    if ( m_DebugTerminal )
+    {
+        // Connect debug terminal with RS232 channel
+        connect( m_ConnectDlg->getChannelRS232(), SIGNAL(dataReceived(QString)), m_DebugTerminal, SLOT(onDataReceived(QString)) );
+        connect( m_DebugTerminal, SIGNAL(sendData(QString, int)), m_ConnectDlg->getChannelRS232(), SLOT(onSendData(QString, int)) );
+
+        // Connect debug terminal with RS485 channel
+        connect( m_ConnectDlg->getChannelRS485(), SIGNAL(dataReceived(QString)), m_DebugTerminal, SLOT(onDataReceived(QString)) );
+        connect( m_DebugTerminal, SIGNAL(sendData(QString, int)), m_ConnectDlg->getChannelRS485(), SLOT(onSendData(QString, int)) );
+
+        // Setup the Debug Terminal as a dock widget
+        QDockWidget *dock = new QDockWidget( tr("Debug Terminal"), this );
+        dock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+        dock->setWidget( m_DebugTerminal );
+        dock->hide();
+        addDockWidget( Qt::RightDockWidgetArea, dock );
+
+        // Connect settings dialog and debug terminal
+        if ( m_SettingsDlg )
+        {
+            connect( dock->toggleViewAction(), SIGNAL(toggled(bool)), m_SettingsDlg, SLOT( onDebugTerminalVisibilityChange(bool)) );
+            connect( m_SettingsDlg, SIGNAL(DebugTerminalVisibilityChanged(bool)), dock, SLOT(setVisible(bool)) );
+        }
+
+        connect( dock, SIGNAL(topLevelChanged(bool)), this, SLOT(onDebugTerminalTopLevelChange(bool)) );
+        connect( dock, SIGNAL(visibilityChanged(bool)), this, SLOT(onDebugTerminalVisibilityChange(bool)) );
     }
 }
 
@@ -1662,6 +1749,34 @@ void MainWindow::onBroadcastChange( uint8_t flag )
 
     // emit a broadcast change event to notify other ui elements
     emit BroadcastChanged( broadcastEnabled );
+}
+
+/******************************************************************************
+ * MainWindow::onDebugTerminalTopLevelChange
+ *****************************************************************************/
+void MainWindow::onDebugTerminalTopLevelChange( bool floating )
+{
+    // Resize window to minimum size if dock widget is not docked anymore
+    if ( floating )
+    {
+         onResizeMainWindow( true );   // Force resize
+    }
+}
+
+/******************************************************************************
+ * MainWindow::onDebugTerminalVisibilityChange
+ *****************************************************************************/
+void MainWindow::onDebugTerminalVisibilityChange( bool visible )
+{
+    // Resize window to minimum size if dock widget is not visible anymore
+    if ( !visible )
+    {
+        /* Note: We have to call the resize request with a short delay because the
+         * visibility changed event from the dock widget is emitted, before it is
+         * completely closed which causes the main window to think that it still requires
+         * space and it is not correctly resized. */
+        m_resizeTimer.start( 1 );
+    }
 }
 
 /******************************************************************************

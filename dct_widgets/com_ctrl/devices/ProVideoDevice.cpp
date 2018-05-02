@@ -214,7 +214,7 @@ void ProVideoDevice::SetCopyFlag( const bool flag )
  *****************************************************************************/
 ComChannel * ProVideoDevice::getComChannel() const
 {
-    return NULL;
+    return GetProVideoSystemItf()->GetComChannel();
 }
 
 /******************************************************************************

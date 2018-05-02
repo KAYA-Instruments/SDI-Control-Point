@@ -147,25 +147,5 @@ public slots:
     void onLutFastGammaChange( int gamma );
 };
 
-#define CONNECT_LUT_INTERFACE(x, y)                                                         \
-{                                                                                           \
-    QObject::connect( x, SIGNAL(LutEnableChanged(int,int)),                                 \
-                      y, SLOT(onLutEnableChange(int,int)) );                                \
-    QObject::connect( x, SIGNAL(LutModeChanged(int)),                                       \
-                      y, SLOT(onLutModeChange(int)) );                                      \
-    QObject::connect( x, SIGNAL(LutFixedModeChanged(int)),                                  \
-                      y, SLOT(onLutFixedModeChange(int)) );                                 \
-    QObject::connect( x, SIGNAL(LutPresetChanged(int)),                                     \
-                      y, SLOT(onLutPresetChange(int)) );                                    \
-    QObject::connect( x, SIGNAL(LutSampleValuesRedChanged(QVector<int>,QVector<int>)),      \
-                      y, SLOT(onLutSampleValuesRedChange(QVector<int>,QVector<int>)) );     \
-    QObject::connect( x, SIGNAL(LutSampleValuesGreenChanged(QVector<int>,QVector<int>)),    \
-                      y, SLOT(onLutSampleValuesGreenChange(QVector<int>,QVector<int>)) );   \
-    QObject::connect( x, SIGNAL(LutSampleValuesBlueChanged(QVector<int>,QVector<int>)),     \
-                      y, SLOT(onLutSampleValuesBlueChange(QVector<int>,QVector<int>)) );    \
-    QObject::connect( x, SIGNAL(LutFastGammaChanged(int)),                                  \
-                      y, SLOT(onLutFastGammaChange(int)) );                                 \
-}
-
 #endif // _LUT_INTERFACE_H_
 

@@ -94,6 +94,8 @@ public:
 
 #define INOUT_SETTINGS_VIDEO_MODE                   ( "video_mode" )
 #define INOUT_SETTINGS_SDI2_MODE                    ( "sdi2_mode" )
+#define INOUT_SETTINGS_SDI1_DOWNSCALER              ( "sdi1_downscaler" )
+#define INOUT_SETTINGS_SDI2_DOWNSCALER              ( "sdi2_downscaler" )
 #define INOUT_SETTINGS_FLIP_MODE                    ( "flip_mode" )
 #define INOUT_SETTINGS_TEST_PATTERN                 ( "test_pattern" )
 #define INOUT_SETTINGS_AUDIO_ENABLE                 ( "audio_enable" )
@@ -210,9 +212,6 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->sbxGenlockOffsetHorizontal->setRange( -4095, 4095 );
     d_data->m_ui->sbxGenlockOffsetHorizontal->setKeyboardTracking( false );
 
-    // fill exposure time combo box
-
-
     // fill bayer pattern combo box
     for ( int i=BayerPatternFirst; i<BayerPatternMax; i++ )
     {
@@ -223,6 +222,12 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     for ( int i=Sdi2ModeFirst; i<Sdi2ModeMax; i++ )
     {
         addSdi2Mode( GetSdi2ModeName( (enum Sdi2Mode)i ), i );
+    }
+
+    // fill downscale mode combo boxes
+    for ( int i=DownscaleModeFirst; i<DownscaleModeMax; i++ )
+    {
+        addDownscaleMode( GetDownscaleModeName( (enum DownscaleMode)i ), i );
     }
 
     // Note: Flip modes depend on the device and are added in "setFlipModeVisible()"
@@ -266,6 +271,8 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     // video
     connect( d_data->m_ui->cbxVideoMode, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxVideoModeChange(int)) );
     connect( d_data->m_ui->cbxSdi2Mode, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxSdi2ModeChange(int)) );
+    connect( d_data->m_ui->cbxSdi1Downscaler, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxSdi1DownscalerChange(int)) );
+    connect( d_data->m_ui->cbxSdi2Downscaler, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxSdi2DownscalerChange(int)) );
     connect( d_data->m_ui->cbxFlipMode, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxFlipModeChange(int)) );
     connect( d_data->m_ui->cbxTestPattern, SIGNAL(stateChanged(int)), this, SLOT(onCbxTestPatternChange(int)) );
     connect( d_data->m_ui->btnIsoMinus, SIGNAL(clicked()), this, SLOT(onBtnIsoMinusClicked()) );
@@ -350,6 +357,25 @@ int InOutBox::gainToIso( int gain ) const
 int InOutBox::isoToGain( int iso ) const
 {
     return ( (iso * 1000) / d_data->m_minIso );
+}
+
+/******************************************************************************
+ * isoToGain
+ *****************************************************************************/
+void InOutBox::EmitDownscaleChanged( int sdi_out_idx, int combo_box_idx )
+{
+    switch ( combo_box_idx )
+    {
+    case 0: // Disable downscaler
+        emit ChainDownscaleModeChanged( sdi_out_idx, 0, 0 );
+        break;
+    case 1: // Enable downscaler
+        emit ChainDownscaleModeChanged( sdi_out_idx, 1, 0 );
+        break;
+    case 2: // Enable downscaler and interlacer
+        emit ChainDownscaleModeChanged( sdi_out_idx, 1, 1 );
+        break;
+    }
 }
 
 /******************************************************************************
@@ -651,7 +677,7 @@ void InOutBox::setVideoMode( const QString mode )
 }
 
 /******************************************************************************
- * InOutBox::VideoMode
+ * InOutBox::Sdi2Mode
  *****************************************************************************/
 QString InOutBox::Sdi2Mode() const
 {
@@ -659,7 +685,7 @@ QString InOutBox::Sdi2Mode() const
 }
 
 /******************************************************************************
- * InOutBox::VideoMode
+ * InOutBox::setSdi2Mode
  *****************************************************************************/
 void InOutBox::setSdi2Mode( const QString mode )
 {
@@ -671,6 +697,54 @@ void InOutBox::setSdi2Mode( const QString mode )
         d_data->m_ui->cbxSdi2Mode->blockSignals( false );
 
         emit ChainSdi2ModeChanged( d_data->m_ui->cbxSdi2Mode->itemData( index ).toInt() );
+    }
+}
+
+/******************************************************************************
+ * InOutBox::Sdi1Downscaler
+ *****************************************************************************/
+QString InOutBox::Sdi1Downscaler() const
+{
+    return ( d_data->m_ui->cbxSdi1Downscaler->currentText() );
+}
+
+/******************************************************************************
+ * InOutBox::setSdi1Downscaler
+ *****************************************************************************/
+void InOutBox::setSdi1Downscaler( const QString mode )
+{
+    int index = d_data->m_ui->cbxSdi1Downscaler->findText( mode );
+    if ( index != -1 )
+    {
+        d_data->m_ui->cbxSdi1Downscaler->blockSignals( true );
+        d_data->m_ui->cbxSdi1Downscaler->setCurrentIndex( index );
+        d_data->m_ui->cbxSdi1Downscaler->blockSignals( false );
+
+        EmitDownscaleChanged( 1, index );
+    }
+}
+
+/******************************************************************************
+ * InOutBox::Sdi2Downscaler
+ *****************************************************************************/
+QString InOutBox::Sdi2Downscaler() const
+{
+    return ( d_data->m_ui->cbxSdi2Downscaler->currentText() );
+}
+
+/******************************************************************************
+ * InOutBox::setSdi2Downscaler
+ *****************************************************************************/
+void InOutBox::setSdi2Downscaler( const QString mode )
+{
+    int index = d_data->m_ui->cbxSdi2Downscaler->findText( mode );
+    if ( index != -1 )
+    {
+        d_data->m_ui->cbxSdi2Downscaler->blockSignals( true );
+        d_data->m_ui->cbxSdi2Downscaler->setCurrentIndex( index );
+        d_data->m_ui->cbxSdi2Downscaler->blockSignals( false );
+
+        EmitDownscaleChanged( 2, index );
     }
 }
 
@@ -842,6 +916,8 @@ void InOutBox::loadSettings( QSettings & s )
     // Note: Set video mode first, otherwise gain and exposure will not be correctly set
     setVideoMode( s.value( INOUT_SETTINGS_VIDEO_MODE ).toString() );
     setSdi2Mode( s.value( INOUT_SETTINGS_SDI2_MODE ).toString() );
+    setSdi1Downscaler( s.value( INOUT_SETTINGS_SDI1_DOWNSCALER ).toString() );
+    setSdi2Downscaler( s.value( INOUT_SETTINGS_SDI2_DOWNSCALER ).toString() );
     setFlipMode( s.value( INOUT_SETTINGS_FLIP_MODE ).toString() );
     setTestPattern( s.value( INOUT_SETTINGS_TEST_PATTERN ).toBool() );
     setAudioEnable( s.value( INOUT_SETTINGS_AUDIO_ENABLE ).toBool() );
@@ -896,6 +972,8 @@ void InOutBox::saveSettings( QSettings & s )
 
     s.setValue( INOUT_SETTINGS_VIDEO_MODE                   , VideoMode() );
     s.setValue( INOUT_SETTINGS_SDI2_MODE                    , Sdi2Mode() );
+    s.setValue( INOUT_SETTINGS_SDI1_DOWNSCALER              , Sdi1Downscaler() );
+    s.setValue( INOUT_SETTINGS_SDI2_DOWNSCALER              , Sdi2Downscaler() );
     s.setValue( INOUT_SETTINGS_FLIP_MODE                    , FlipMode() );
     s.setValue( INOUT_SETTINGS_TEST_PATTERN                 , TestPattern() );
     s.setValue( INOUT_SETTINGS_AUDIO_ENABLE                 , AudioEnable() );
@@ -916,6 +994,8 @@ void InOutBox::applySettings( void )
     // Note: Set video mode first, otherwise gain and exposure will not be correctly set
     emit ChainVideoModeChanged( d_data->m_ui->cbxVideoMode->currentData().toInt() );
     emit ChainSdi2ModeChanged( d_data->m_ui->cbxSdi2Mode->currentData().toInt() );
+    EmitDownscaleChanged( 1,  d_data->m_ui->cbxSdi1Downscaler->currentData().toInt() );
+    EmitDownscaleChanged( 2,  d_data->m_ui->cbxSdi2Downscaler->currentData().toInt() );
     emit ChainFlipModeChanged( d_data->m_ui->cbxFlipMode->currentData().toInt() );
     emit OsdTestPatternChanged( TestPattern() );
     emit ChainAudioEnableChanged( AudioEnable() );
@@ -982,6 +1062,20 @@ void InOutBox::addSdi2Mode( QString name, int id )
 }
 
 /******************************************************************************
+ * InOutBox::addDownscaleMode
+ *****************************************************************************/
+void InOutBox::addDownscaleMode( QString name, int id )
+{
+    d_data->m_ui->cbxSdi1Downscaler->blockSignals( true );
+    d_data->m_ui->cbxSdi1Downscaler->addItem( name, id );
+    d_data->m_ui->cbxSdi1Downscaler->blockSignals( false );
+
+    d_data->m_ui->cbxSdi2Downscaler->blockSignals( true );
+    d_data->m_ui->cbxSdi2Downscaler->addItem( name, id );
+    d_data->m_ui->cbxSdi2Downscaler->blockSignals( false );
+}
+
+/******************************************************************************
  * InOutBox::addFlipMode
  *****************************************************************************/
 void InOutBox::addFlipMode( QString name, int id )
@@ -1044,12 +1138,24 @@ void InOutBox::setTimeCodeVisible(const bool groupbox_visible, const bool hold_v
 }
 
 /******************************************************************************
- * InOutBox::setTimeCodeVisible
+ * InOutBox::setSdi2ModeVisible
  *****************************************************************************/
 void InOutBox::setSdi2ModeVisible(const bool value)
 {
     d_data->m_ui->lblSdi2Mode->setVisible(value);
     d_data->m_ui->cbxSdi2Mode->setVisible(value);
+}
+
+/******************************************************************************
+ * InOutBox::setDownscaleModeVisible
+ *****************************************************************************/
+void InOutBox::setDownscaleModeVisible(const bool value)
+{
+    d_data->m_ui->lblSdi1Downscaler->setVisible(value);
+    d_data->m_ui->cbxSdi1Downscaler->setVisible(value);
+
+    d_data->m_ui->lblSdi2Downscaler->setVisible(value);
+    d_data->m_ui->cbxSdi2Downscaler->setVisible(value);
 }
 
 /******************************************************************************
@@ -1281,7 +1387,7 @@ void InOutBox::onChainVideoModeChange( int value )
         d_data->m_ui->cbxVideoMode->blockSignals( true );
         d_data->m_ui->cbxVideoMode->setCurrentIndex( index );
         d_data->m_ui->cbxVideoMode->blockSignals( false );
-    }    
+    }
 }
 
 /******************************************************************************
@@ -1295,7 +1401,38 @@ void InOutBox::onChainSdi2ModeChange( int value )
         d_data->m_ui->cbxSdi2Mode->blockSignals( true );
         d_data->m_ui->cbxSdi2Mode->setCurrentIndex( index );
         d_data->m_ui->cbxSdi2Mode->blockSignals( false );
-    }    
+    }
+}
+
+/******************************************************************************
+ * InOutBox::onChainDownscaleModeChange
+ *****************************************************************************/
+void InOutBox::onChainDownscaleModeChange( int sdi_out_idx, bool downscale, bool interlace )
+{
+    // Get index for combo box (1 = downscale, 2 = downscale and interlace)
+    int index = 0;
+    if ( downscale )
+    {
+        index = 1;
+
+        if ( interlace )
+        {
+            index = 2;
+        }
+    }
+
+    if ( sdi_out_idx == 1 )
+    {
+        d_data->m_ui->cbxSdi1Downscaler->blockSignals( true );
+        d_data->m_ui->cbxSdi1Downscaler->setCurrentIndex( index );
+        d_data->m_ui->cbxSdi1Downscaler->blockSignals( false );
+    }
+    else if ( sdi_out_idx == 2 )
+    {
+        d_data->m_ui->cbxSdi2Downscaler->blockSignals( true );
+        d_data->m_ui->cbxSdi2Downscaler->setCurrentIndex( index );
+        d_data->m_ui->cbxSdi2Downscaler->blockSignals( false );
+    }
 }
 
 /******************************************************************************
@@ -1309,7 +1446,7 @@ void InOutBox::onChainFlipModeChange( int value )
         d_data->m_ui->cbxFlipMode->blockSignals( true );
         d_data->m_ui->cbxFlipMode->setCurrentIndex( index );
         d_data->m_ui->cbxFlipMode->blockSignals( false );
-    }    
+    }
 }
 
 /******************************************************************************
@@ -1753,6 +1890,30 @@ void InOutBox::onCbxSdi2ModeChange( int index )
 {
     setWaitCursor();
     emit ChainSdi2ModeChanged( d_data->m_ui->cbxSdi2Mode->itemData( index ).toInt() );
+    setNormalCursor();
+}
+
+/******************************************************************************
+ * InOutBox::onCbxSdi1DownscalerChange
+ *****************************************************************************/
+void InOutBox::onCbxSdi1DownscalerChange( int index )
+{
+    setWaitCursor();
+
+    EmitDownscaleChanged( 1 , index );
+
+    setNormalCursor();
+}
+
+/******************************************************************************
+ * InOutBox::onCbxSdi2DownscalerChange
+ *****************************************************************************/
+void InOutBox::onCbxSdi2DownscalerChange( int index )
+{
+    setWaitCursor();
+
+    EmitDownscaleChanged( 2 , index );
+
     setNormalCursor();
 }
 

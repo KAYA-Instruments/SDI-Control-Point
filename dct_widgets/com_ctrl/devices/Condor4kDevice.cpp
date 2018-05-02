@@ -285,6 +285,8 @@ Condor4kDevice::features Condor4kDevice::getSupportedFeatures()
     deviceFeatures.hasCamItf                = true;
     deviceFeatures.hasChainItf              = true;
     deviceFeatures.hasChainSdi2Mode         = true;
+    deviceFeatures.hasChainAudio            = true;
+    deviceFeatures.hasChainDownscale        = true;
     deviceFeatures.hasChainGenLock          = true;
     deviceFeatures.hasChainTimeCode         = true;
     deviceFeatures.hasChainTimeCodeHold     = true;

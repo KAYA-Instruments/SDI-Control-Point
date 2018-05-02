@@ -132,7 +132,6 @@ int CsvWriter_writeField(CsvWriter *csvWriter, char *field) {
 			} else {
 				printf("%s\"%s", fieldPrefix, buffer);
 			}
-			bufferWasWrittenOnce = 1;
 		} else {
 			if (csvWriter->fileHandler_ != NULL) {
 				fprintf(csvWriter->fileHandler_, "%s", buffer);

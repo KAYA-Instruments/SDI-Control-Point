@@ -195,41 +195,5 @@ private:
     MaskInterpreter * m_SwMask;
 };
 
-#define CONNECT_PROVIDEO_SYSTEM_INTERFACE(x, y)                                         \
-{                                                                                       \
-    QObject::connect( x, SIGNAL(DeviceIdChanged(uint32_t,uint32_t,uint32_t,uint32_t)),  \
-                      y, SLOT(onDeviceIdChange(uint32_t,uint32_t,uint32_t,uint32_t)) ); \
-    QObject::connect( x, SIGNAL(SystemValidityChanged(QString)),                        \
-                      y, SLOT(onSystemValidityChange(QString)) );                       \
-    QObject::connect( x, SIGNAL(BitStreamVersionChanged(uint32_t)),                     \
-                      y, SLOT(onBitStreamVersionChange(uint32_t)) );                    \
-    QObject::connect( x, SIGNAL(BootloaderVersionChanged(uint32_t)),                    \
-                      y, SLOT(onBootloaderVersionChange(uint32_t)) );                   \
-    QObject::connect( x, SIGNAL(ApplicationVersionChanged(QString)),                    \
-                      y, SLOT(onApplicationVersionChange(QString)) );                   \
-    QObject::connect( x, SIGNAL(ApplicationReleaseDateChanged(QString)),                \
-                      y, SLOT(onApplicationReleaseDateChange(QString)) );               \
-    QObject::connect( x, SIGNAL(ApplicationBuildDateChanged(QString)),                  \
-                      y, SLOT(onApplicationBuildDateChange(QString)) );                 \
-    QObject::connect( x, SIGNAL(FeatureMaskHwChanged(uint32_t)),                        \
-                      y, SLOT(onFeatureMaskHwChange(uint32_t)) );                       \
-    QObject::connect( x, SIGNAL(FeatureMaskSwChanged(uint32_t)),                        \
-                      y, SLOT(onFeatureMaskSwChange(uint32_t)) );                       \
-    QObject::connect( x, SIGNAL(RS232BaudRateChanged(uint32_t)),                        \
-                      y, SLOT(onRS232BaudRateChange(uint32_t)) );                       \
-    QObject::connect( x, SIGNAL(RS485BaudRateChanged(uint32_t)),                        \
-                      y, SLOT(onRS485BaudRateChange(uint32_t)) );                       \
-    QObject::connect( x, SIGNAL(RS485AddressChanged(uint32_t)),                         \
-                      y, SLOT(onRS485AddressChange(uint32_t)) );                        \
-    QObject::connect( x, SIGNAL(RS485BroadcastAddressChanged(int32_t)),                 \
-                      y, SLOT(onRS485BroadcastAddressChange(int32_t)) );                \
-    QObject::connect( x, SIGNAL(RS485BroadcastMasterChanged(uint8_t)),                  \
-                      y, SLOT(onRS485BroadcastMasterChange(uint8_t)) );                 \
-    QObject::connect( x, SIGNAL(PromptChanged(uint8_t)),                                \
-                      y, SLOT(onPromptChange(uint8_t)) );                               \
-    QObject::connect( x, SIGNAL(DebugLevelChanged(uint8_t)),                            \
-                      y, SLOT(onDebugLevelChange(uint8_t)) );                           \
-}
-
 #endif // _PROVIDEO_SYSTEM_INTERFACE_H_
 

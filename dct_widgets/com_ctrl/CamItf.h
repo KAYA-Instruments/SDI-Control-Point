@@ -55,7 +55,6 @@ signals:
     // new camera analogue gain set
     // This is used to synchronize other interface components.
     void NotifyCameraGainChanged();
-    void NotifyCameraExposureTimeChanged();
 
 public slots:
     // cam configuration
@@ -65,15 +64,5 @@ public slots:
     // notifier slot for video-mode change
     void onNotifyVideoModeChange();
 };
-
-#define CONNECT_CAM_INTERFACE(x, y)                                                                             \
-{                                                                                                               \
-    QObject::connect( x, SIGNAL(CameraInfoChanged(int,int,int,int,int)),                                        \
-                      y, SLOT(onCameraInfoChange(int,int,int,int,int)) );                                       \
-    QObject::connect( x, SIGNAL(CameraGainChanged(int)),                                                        \
-                      y, SLOT(onCameraGainChange(int)) );                                                       \
-    QObject::connect( x, SIGNAL(CameraExposureChanged(int)),                                                    \
-                      y, SLOT(onCameraExposureChange(int)) );                                                   \
-}
 
 #endif // _CAM_INTERFACE_H_

@@ -155,9 +155,9 @@ public:
 
     void setKneeConfig( int point, int slope, int clip )
     {
-        m_ui->KneePlot->graph( KNEE_CURVE_ID )->clearData();
-        m_ui->KneePlot->graph( KNEE_POINT_CURVE_ID )->clearData();
-        m_ui->KneePlot->graph( WHITE_CLIP_CURVE_ID )->clearData();
+        m_ui->KneePlot->graph( KNEE_CURVE_ID )->data()->clear();
+        m_ui->KneePlot->graph( KNEE_POINT_CURVE_ID )->data()->clear();
+        m_ui->KneePlot->graph( WHITE_CLIP_CURVE_ID )->data()->clear();
 
         QVector<double> x( 1024 );
         QVector<double> y( 1024 );

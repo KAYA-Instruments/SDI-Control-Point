@@ -1365,8 +1365,8 @@ void UpdateBox::onRunClicked()
                 // Close serial connection to device, otherwise the flashloader can not communicate with it
                 emit CloseSerialConnection();
 
-                // reboot wait delay 2000ms
-                dT = 2000;
+                // reboot wait delay 5s
+                dT = 5000;
             }
 
             // III. reset progress bar

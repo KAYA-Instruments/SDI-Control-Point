@@ -104,7 +104,7 @@
  * @brief command "dpc_auto_load"
  *****************************************************************************/
 #define CMD_AUTO_LOAD_DPCC_TABLE            ( "dpc_auto_load\n" )
-#define CMD_AUTO_LOAD_DPCC_TABLE_TMO        ( 10000 )
+#define CMD_AUTO_LOAD_DPCC_TABLE_TMO        ( 20000 )
 
 /******************************************************************************
  * @brief command "dpc_test_mode"
@@ -395,6 +395,7 @@ static int get_dpcc_table
         int n;
 
         // poll for data (NOTE: reserve last byte for '\0')
+        memset( buf, 0, sizeof(buf) );
         n = ctrl_channel_receive_response( channel, (uint8_t *)buf, (sizeof(buf) - 1u) );
 
         // evaluate number of received data

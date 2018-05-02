@@ -53,6 +53,7 @@ public:
         bool hasChainItf;
         bool hasChainRawMode;
         bool hasChainSdi2Mode;
+        bool hasChainDownscale;
         bool hasChainGenLock;
         bool hasChainTimeCode;
         bool hasChainTimeCodeHold;

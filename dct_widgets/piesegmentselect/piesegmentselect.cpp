@@ -40,7 +40,7 @@ public:
         , m_cacheBackground( new QPixmap )
         , m_segmentBorderColor( QColor(0, 0, 0, 80) )
         , m_segmentHighLightColor( QColor(255, 255, 255, 127) )
-        , m_paintFlags( QPainter::RenderHint(QPainter::Antialiasing | QPainter::SmoothPixmapTransform || QPainter::HighQualityAntialiasing) )
+        , m_paintFlags( QPainter::Antialiasing | QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing )
         , m_cacheWidth( 0 )
         , m_cacheHeight( 0 )
         , m_cacheIndex( -1 )
@@ -61,7 +61,7 @@ public:
     QPixmap *               m_cacheBackground;
     QColor                  m_segmentBorderColor;
     QColor                  m_segmentHighLightColor;
-    QPainter::RenderHint    m_paintFlags;
+    QPainter::RenderHints   m_paintFlags;
 
     int                     m_cacheWidth;
     int                     m_cacheHeight;
@@ -329,7 +329,7 @@ void PieSegmentSelect::mouseMoveEvent( QMouseEvent * evt )
                 idx += d_data->m_noSegments;
             }
 
-            emit moved( index );
+            emit moved( idx );
         }
     }
 } 

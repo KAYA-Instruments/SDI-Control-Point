@@ -113,6 +113,7 @@ QString GetVideoModeName( VideoMode mode )
         
         case VideoMode2kp30:
             return ( QString(VIDEO_MODE_NAME_2kp30) );
+
         case VideoMode2kp25:
             return ( QString(VIDEO_MODE_NAME_2kp25) );
 
@@ -131,11 +132,14 @@ QString GetVideoModeName( VideoMode mode )
         case VideoMode2kp60:
             return ( QString(VIDEO_MODE_NAME_2kp60) );
 
-        case VideoMode2ki50:
-            return ( QString(VIDEO_MODE_NAME_2ki50) );
+        case VideoMode2kp59_94:
+            return ( QString(VIDEO_MODE_NAME_2kp59_94) );
 
-        case VideoMode2ki60:
-            return ( QString(VIDEO_MODE_NAME_2ki60) );
+        case VideoMode2kp48:
+            return ( QString(VIDEO_MODE_NAME_2kp48) );
+
+        case VideoMode2kp47_96:
+            return ( QString(VIDEO_MODE_NAME_2kp47_96) );
 
         case VideoModeUHDp30:
             return ( QString(VIDEO_MODE_NAME_UHDp30) );
@@ -519,6 +523,24 @@ QString GetSdi2ModeName( Sdi2Mode mode )
             return ( QString(SDI2_MODE_RAW10) );
         case Sdi2ModeRAW12:
             return ( QString(SDI2_MODE_RAW12) );
+        default:
+            return ( QString::null );
+    }
+}
+
+/******************************************************************************
+ * GetDownscaleModeName()
+ *****************************************************************************/
+QString GetDownscaleModeName( DownscaleMode mode )
+{
+    switch ( mode )
+    {
+        case DownscaleModeOff:
+            return ( QString(DOWNSCALE_MODE_OFF) );
+        case DownscaleModeOn:
+            return ( QString(DOWNSCALE_MODE_ON) );
+        case DownscaleModeOnAndInterlace:
+            return ( QString(DOWNSCALE_MODE_ON_AND_INTERLACE) );
         default:
             return ( QString::null );
     }
