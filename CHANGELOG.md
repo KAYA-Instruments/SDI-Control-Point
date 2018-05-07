@@ -4,14 +4,21 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
+Version **1.1.4** - 07.04.2018
+
+* Added a dialog to the in-out-box to change the weights of the auto exposure control (new AEC feature)
+* Added display of the shut down temperature to the info box (requires latest device firmware)
+* Fixed a bug where the "verify" checkbox in the update-box could be checked / unchecked during a running flash procedure
+* Fixed a bug where the command history of the debug terminal would jump to the wrong history entry after a new command was send
+
+## Older Releases:
+
 Version **1.1.3** - 02.04.2018
 
 * Added a new Debug Terminal which can be used to monitor the commands send by the GUI and manually send commands to the device, the Debug Terminal can be opened from the Settings Dialog
 * Updated the QCustomPlot version from 1.3.2 to 2.0.0
 * Small bug fixes to DPCC and MCC commands
 * Added combo boxes to the in-out-tab to setup the new downscale feature of the ATOM one 4K mini
-
-## Older Releases:
 
 Version **1.1.2** - This release was skipped and not officially released to public
 
