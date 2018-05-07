@@ -676,7 +676,10 @@ int ctrl_protocol_get_temp
  *
  * @param[in]  channel  control channel instance
  * @param[in]  protocol control protocol instance
- * @param[out] max_temp maximum logged temperature in °C
+ * @param[in]  no       number of values to read, has to be 2
+ * @param[out] values   array of two values, first value is logged maximum
+ *                      temperature in °C, second value is allowed maximum
+ *                      temperature in °C
  *
  * @return     0 on success, error-code otherwise
  *****************************************************************************/
@@ -684,7 +687,8 @@ int ctrl_protocol_get_max_temp
 (
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel,
-    int32_t * const              max_temp
+    int const                    no,
+    int32_t * const              values
 );
 
 /**************************************************************************//**
@@ -841,7 +845,7 @@ typedef struct ctrl_protocol_sys_drv_s
     ctrl_protocol_set_uint8_t       set_debug;
     ctrl_protocol_get_uint32_t      get_runtime;
     ctrl_protocol_uint8_array_t     get_temp;
-    ctrl_protocol_get_int32_t       get_max_temp;
+    ctrl_protocol_int32_array_t     get_max_temp;
     ctrl_protocol_run_t             max_temp_reset;
     ctrl_protocol_get_uint32_t      get_over_temp_count;
     ctrl_protocol_run_t             reboot;

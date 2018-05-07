@@ -493,7 +493,7 @@ void UpdateBox::setSystemState( SystemStates state )
             d_data->m_ui->letSystemMode->setText( SYSTEM_STATE_UPDATE );
             d_data->m_ui->btnRun->setText( "Start" );
             d_data->m_ui->btnRun->setEnabled( (!fn.isEmpty()) && (fileExists(fn)) ? true : false );
-            d_data->m_ui->cbxVerify->setEnabled( (!fn.isEmpty()) && (fileExists(fn)) ? true : false );
+            d_data->m_ui->cbxVerify->setEnabled( false );
             d_data->m_ui->btnFilename->setEnabled( false );
             d_data->m_ui->btnCheckFirmwareUpdate->setEnabled( false );
             d_data->m_ui->btnCheckGuiUpdate->setEnabled( false );
@@ -506,7 +506,7 @@ void UpdateBox::setSystemState( SystemStates state )
         }
         else if ( state == FlashState )
         {
-            // flash tate, set run botton text to abort, so that user can stop the update
+            // flash tate, set run button text to abort, so that user can stop the update
             d_data->m_ui->letSystemMode->setText( SYSTEM_STATE_FLASHING );
             d_data->m_ui->btnRun->setText( "Abort" );
         }

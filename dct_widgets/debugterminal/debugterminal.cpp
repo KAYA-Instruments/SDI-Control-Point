@@ -206,6 +206,9 @@ void DebugTerminal::onSendCommand()
         }
     }
 
+    // Set current history index to -1
+    currentHistoryIndex = -1;
+
     // Send command with tailing new line
     setWaitCursor();
     emit sendData( command.append('\n'), ui->sbxWaitTime->value() );

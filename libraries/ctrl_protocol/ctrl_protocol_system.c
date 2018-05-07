@@ -550,13 +550,15 @@ int ctrl_protocol_get_max_temp
 (
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel,
-    int32_t * const              max_temp
+    int const                    no,
+    int32_t * const              values
 )
 {
     CHECK_HANDLE( protocol );
     CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_max_temp );
-    CHECK_NOT_NULL( max_temp );
-    return ( SYS_DRV(protocol->drv)->get_max_temp( protocol->ctx, channel, max_temp ) );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( values );
+    return ( SYS_DRV(protocol->drv)->get_max_temp( protocol->ctx, channel, no, values ) );
 }
 
 /******************************************************************************

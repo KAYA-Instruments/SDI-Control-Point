@@ -40,10 +40,20 @@
 #define CMD_GET_AEC_ENABLE_NO_PARAMS        ( 1 )
 
 #define CMD_GET_AEC_SETUP                   ( "aec\n" )
-#define CMD_SET_AEC_SETUP                   ( "aec %i %i %i %i %i %i %i %i %i\n" )
+#define CMD_SET_AEC_SETUP                   ( "aec %i %i %i %i %i %i %i %i %i %i\n" )
 #define CMD_SYNC_AEC_SETUP                  ( "aec " )
-#define CMD_GET_AEC_SETUP_NO_PARAMS         ( 9 )
+#define CMD_GET_AEC_SETUP_NO_PARAMS         ( 10 )
 #define CMD_SET_AEC_SETUP_TMO               ( 200 )
+
+/******************************************************************************
+ * @brief command "aec_weight"
+ *****************************************************************************/
+#define CMD_GET_AEC_WEIGHT                  ( "aec_weight\n" )
+#define CMD_SET_AEC_WEIGHT                  ( "aec_weight %i %i\n" )
+#define CMD_SET_AEC_WEIGHTn                 ( "aec_weight %i %i\n%n" )
+#define CMD_SYNC_AEC_WEIGHT                 ( "aec_weight " )
+#define CMD_SET_AEC_WEIGHT_NO_PARAMS        ( 2 )
+#define CMD_GET_AEC_WEIGHT_NUM_ITEMS        ( 25 )
 
 /******************************************************************************
  * @brief command "stat_ae" 
@@ -208,7 +218,7 @@ static int get_aec_setup
             CMD_SYNC_AEC_SETUP, CMD_SET_AEC_SETUP,
             &values[0], &values[1], &values[2], &values[3],
             &values[4], &values[5], &values[6], &values[7],
-            &values[8] );
+            &values[8], &values[9] );
 
     // return error code
     if ( res < 0 )
@@ -246,7 +256,166 @@ static int set_aec_setup
     return ( set_param_int_X_with_tmo( channel, CMD_SET_AEC_SETUP, CMD_SET_AEC_SETUP_TMO,
         INT( values[0] ), INT( values[1] ), INT( values[2] ), INT( values[3] ),
         INT( values[4] ), INT( values[5] ), INT( values[6] ), INT( values[7] ),
-        INT( values[8] )) );
+        INT( values[8] ), INT( values[9] )) );
+}
+
+/******************************************************************************
+ * set_aec_weight - Set weight of aec weight grid
+ *****************************************************************************/
+static int set_aec_weight
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    int const                   no,
+    uint8_t * const             values
+)
+{
+    (void) ctx;
+
+    if ( !no || !values || (no != CMD_SET_AEC_WEIGHT_NO_PARAMS) )
+    {
+        return ( -EINVAL );
+    }
+
+    return ( set_param_int_X( channel, CMD_SET_AEC_WEIGHT,
+                              INT( values[0] ), INT( values[1] ) ) );
+}
+
+/******************************************************************************
+ * get_aec_weights - read all aec weights
+ *****************************************************************************/
+static int get_aec_weights
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    int const                   no,
+    uint8_t * const             values
+)
+{
+    (void) ctx;
+
+    char command[CMD_SINGLE_LINE_COMMAND_SIZE];
+    char buf[CMD_SINGLE_LINE_RESPONSE_SIZE];
+    char data[CMD_SINGLE_LINE_RESPONSE_SIZE*2];
+
+    int loop = 1;
+    int cnt = 0;
+
+    if ( !no || !values || (no != CMD_GET_AEC_WEIGHT_NUM_ITEMS) )
+    {
+        return ( -EINVAL );
+    }
+
+    // clear command buffer
+    memset( command, 0, sizeof(command) );
+
+    // create command to send
+    sprintf( command, CMD_GET_AEC_WEIGHT );
+
+    // send get-command to control channel
+    ctrl_channel_send_request( channel, (uint8_t *)command, strlen(command) );
+
+    // clear data buffer
+    memset( data, 0, sizeof(data) );
+    data[0] = '\0';
+
+    // counter to check for buffer overflow
+    unsigned int data_count = 0;
+
+    // start timer
+    time_t start = time(NULL);;
+
+    // wait for answer from COM-Port
+    while ( loop )
+    {
+        int n;
+
+        // poll for data (NOTE: reserve last byte for '\0')
+        memset( buf, 0, sizeof(buf) );
+        n = ctrl_channel_receive_response( channel, (uint8_t *)buf, (sizeof(buf) - 1u) );
+
+        // evaluate number of received data
+        if ( n > 0 )
+        {
+            // always put a "null" at the end of a string
+            buf[n] = '\0';
+
+            // increment data counter and check for overflow
+            data_count += n;
+            if ( data_count >= sizeof(data) )
+            {
+                return ( -ENOMEM );
+            }
+
+            // append poll buffer to receive buffer
+            strcat( data, buf );
+
+            // consume all commands from buffer
+            // (get start position of first command therefoe)
+            char * s = strstr( data, CMD_SYNC_AEC_WEIGHT );
+            while ( s )
+            {
+                int index = 0, weight = 0, offset = 0;
+
+                // parse command
+                int res = sscanf( s, CMD_SET_AEC_WEIGHTn, &index, &weight, &offset );
+                if ( (res == CMD_SET_AEC_WEIGHT_NO_PARAMS) && (s[offset-1] == '\n') )
+                {
+                    if ( cnt >= CMD_GET_AEC_WEIGHT_NUM_ITEMS )
+                    {
+                        return ( -ENOMEM );
+                    }
+
+                    // check if indices are in order and none are missing
+                    if ( index != cnt + 1 )
+                    {
+                        return ( -EFAULT );
+                    }
+
+                    values[cnt] = UINT8( weight );
+                    cnt++;
+
+                    // move out the processed command
+                    // Note: Use memmove instead of strncpy, because dst and src overlap!
+                    memmove( data, (s+offset), sizeof(data) - (s+offset-data) );
+
+                    // decrement data counter by bytes taken out
+                    data_count -= offset;
+
+                    // search next command in buffer
+                    s = strstr( data, CMD_SYNC_AEC_WEIGHT);
+                }
+                else
+                {
+                    s = NULL;
+                }
+            }
+
+            // check if string is complete and valid
+            if ( strstr( data, CMD_OK ) )
+            {
+                return ( 0 );
+            }
+
+            // check if string is complete and error-message
+            else if ( strstr( data, CMD_FAIL ) )
+            {
+                return ( evaluate_error_response( data, -EINVAL ) );
+            }
+
+            // reset timer
+            start = time(NULL);;
+        }
+        else
+        {
+            // timeout handling, if device does not send new pixel positions after
+            // 1 second, assume table has been transmitted completely
+            int dt = (int)difftime( time(NULL), start );
+            loop = ((int)dt > 1 ) ? 0 : 1;
+        }
+    }
+
+    return ( -EILSEQ );
 }
 
 /******************************************************************************
@@ -966,6 +1135,8 @@ static ctrl_protocol_auto_drv_t provideo_auto_drv =
     .set_aec_enable             = set_aec_enable,
     .get_aec_setup              = get_aec_setup,
     .set_aec_setup              = set_aec_setup,
+    .get_aec_weights            = get_aec_weights,
+    .set_aec_weight             = set_aec_weight,
     .get_awb_enable             = get_awb_enable,
     .set_awb_enable             = set_awb_enable,
     .get_awb_speed              = get_awb_speed,

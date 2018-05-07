@@ -787,17 +787,17 @@ void ProVideoSystemItf::onGetTempRequest( uint8_t id )
 void ProVideoSystemItf::GetMaxTemp()
 {
     // Is there a signal listener
-    if ( receivers(SIGNAL(MaxTempChanged(int32_t))) > 0 )
+    if ( receivers(SIGNAL(MaxTempChanged(int32_t, int32_t))) > 0 )
     {
-        int32_t max_temp = 0u;
+        int32_t values[2];
 
         // read maximum logged temperature
         int res = ctrl_protocol_get_max_temp( GET_PROTOCOL_INSTANCE(this),
-                    GET_CHANNEL_INSTANCE(this), &max_temp );
+                    GET_CHANNEL_INSTANCE(this), 2, values );
         HANDLE_ERROR( res );
 
         // emit a MaxTempChanged signal
-        emit MaxTempChanged( max_temp );
+        emit MaxTempChanged( values[0], values[1] );
     }
 }
 

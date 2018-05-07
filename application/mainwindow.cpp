@@ -498,6 +498,9 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
 
         connect( dev->GetAutoItf(), SIGNAL(AecSetupChanged(QVector<int>)), m_ui->inoutBox, SLOT(onAecSetupChange(QVector<int>)) );
         connect( m_ui->inoutBox, SIGNAL(AecSetupChanged(QVector<int>)), dev->GetAutoItf(), SLOT(onAecSetupChange(QVector<int>)) );
+
+        connect( dev->GetAutoItf(), SIGNAL(AecWeightsChanged(QVector<int>)), m_ui->inoutBox, SLOT(onAecWeightsChange(QVector<int>)) );
+        connect( m_ui->inoutBox, SIGNAL(AecWeightChanged(int,int)), dev->GetAutoItf(), SLOT(onAecWeightChange(int,int)) );
     }
 
     if (deviceFeatures.hasIrisItf)
@@ -818,7 +821,7 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
 
     // connect temperature info
     connect( dev->GetProVideoSystemItf(), SIGNAL(TempChanged(uint8_t,float,QString)), m_ui->infoBox, SLOT(onTempChange(uint8_t,float,QString)) );
-    connect( dev->GetProVideoSystemItf(), SIGNAL(MaxTempChanged(int32_t)), m_ui->infoBox, SLOT(onMaxTempChange(int32_t)) );
+    connect( dev->GetProVideoSystemItf(), SIGNAL(MaxTempChanged(int32_t, int32_t)), m_ui->infoBox, SLOT(onMaxTempChange(int32_t, int32_t)) );
     connect( dev->GetProVideoSystemItf(), SIGNAL(OverTempCountChanged(uint32_t)), m_ui->infoBox, SLOT(onOverTempCountChange(uint32_t)) );
 
     connect( m_ui->infoBox, SIGNAL(GetTempRequest(uint8_t)), dev->GetProVideoSystemItf(), SLOT(onGetTempRequest(uint8_t)) );

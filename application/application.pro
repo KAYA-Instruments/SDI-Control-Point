@@ -6,8 +6,8 @@
 
 # This version number is shown in the Application, it should be
 # updated before each release!
-VERSION = 1.1.3
-DEFINES += VERSION_STRING=\\\"1.1.3\\\"
+VERSION = 1.1.4
+DEFINES += VERSION_STRING=\\\"1.1.4\\\"
 
 QMAKE_TARGET_COMPANY = "Dream Chip Technologies GmbH"
 QMAKE_TARGET_PRODUCT = "ProVideo GUI"
@@ -57,6 +57,7 @@ INCLUDEPATH += ../libraries/include ..              \
                ../dct_widgets/connectdialog         \
                ../dct_widgets/settingsdialog        \
                ../dct_widgets/infodialog            \
+               ../dct_widgets/aecweightsdialog      \
                ../dct_widgets/btnarraybox           \
                ../dct_widgets/singlechannelknobbox  \
                ../dct_widgets/triplechannelknobbox  \
@@ -96,6 +97,7 @@ SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
            ../dct_widgets/connectdialog/connectdialog.cpp                   \
            ../dct_widgets/settingsdialog/settingsdialog.cpp                 \
            ../dct_widgets/infodialog/infodialog.cpp                         \
+           ../dct_widgets/aecweightsdialog/aecweightsdialog.cpp             \
            ../dct_widgets/btnarraybox/btnarraybox.cpp                       \
            ../dct_widgets/singlechannelknobbox/singlechannelknobbox.cpp     \
            ../dct_widgets/triplechannelknobbox/triplechannelknobbox.cpp     \
@@ -207,6 +209,7 @@ HEADERS  += ../libraries/include                                                
             ../dct_widgets/connectdialog/connectdialog.h                        \
             ../dct_widgets/settingsdialog/settingsdialog.h                      \
             ../dct_widgets/infodialog/infodialog.h                              \
+            ../dct_widgets/aecweightsdialog/aecweightsdialog.h                  \
             ../dct_widgets/com_ctrl/devices/ProVideoDevice.h                    \
             ../dct_widgets/com_ctrl/devices/XbowDevice.h                        \
             ../dct_widgets/com_ctrl/devices/Condor4kDevice.h                    \
@@ -302,6 +305,7 @@ FORMS    += ../dct_widgets/mcceqbox/mcceqbox.ui                             \
             ../dct_widgets/connectdialog/connectdialog.ui                   \
             ../dct_widgets/settingsdialog/settingsdialog.ui                 \
             ../dct_widgets/infodialog/infodialog.ui                         \
+            ../dct_widgets/aecweightsdialog/aecweightsdialog.ui             \
             ../dct_widgets/textviewer/textviewer.ui                         \
             ../dct_widgets/debugterminal/debugterminal.ui                   \
             mainwindow.ui

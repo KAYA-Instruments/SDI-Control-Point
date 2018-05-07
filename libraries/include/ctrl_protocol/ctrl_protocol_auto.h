@@ -50,7 +50,12 @@ extern "C" {
 /**************************************************************************//**
  * @brief Number of exposure statistic values
  *****************************************************************************/
-#define NO_VALUES_EXPOSURE_STATISTIC    ( 25 ) 
+#define NO_VALUES_EXPOSURE_STATISTIC    ( 25 )
+
+/**************************************************************************//**
+ * @brief Number of aec weight values
+ *****************************************************************************/
+#define NO_AEC_WEIGHTS                  ( NO_VALUES_EXPOSURE_STATISTIC )
 
 /**************************************************************************//**
  * @brief Number of xyz statistic values
@@ -65,7 +70,7 @@ extern "C" {
 /**************************************************************************//**
  * @brief Number of aec setup values
  *****************************************************************************/
-#define NO_VALUES_AEC_SETUP             ( 9 )
+#define NO_VALUES_AEC_SETUP             ( 10 )
 
 /**************************************************************************//**
  * @brief Gets the enable state of auto-exposure
@@ -133,6 +138,42 @@ int ctrl_protocol_set_aec_setup
     ctrl_channel_handle_t const  channel, 
     int const                    no, 
     int32_t * const              values
+);
+
+/**************************************************************************//**
+ * @brief Gets current aec weights
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[in]   no       number of bytes in buffer
+ * @param[out]  buf      data buffer
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_aec_weights
+(
+    ctrl_protocol_handle_t const    protocol,
+    ctrl_channel_handle_t const     channel,
+    int const                       no,
+    uint8_t * const                 buf
+);
+
+/**************************************************************************//**
+ * @brief       Set one weight entry of the aec weights
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[in]   no       number of bytes in buffer
+ * @param[in]   buf      data buffer
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_set_aec_weight
+(
+    ctrl_protocol_handle_t const    protocol,
+    ctrl_channel_handle_t const     channel,
+    int const                       no,
+    uint8_t * const                 buf
 );
 
 /**************************************************************************//**
@@ -441,6 +482,8 @@ typedef struct ctrl_protocol_auto_drv_s
     ctrl_protocol_set_uint8_t       set_aec_enable;
     ctrl_protocol_int32_array_t     get_aec_setup;
     ctrl_protocol_int32_array_t     set_aec_setup;
+    ctrl_protocol_uint8_array_t     get_aec_weights;
+    ctrl_protocol_uint8_array_t     set_aec_weight;
     // auto white-balance commands
     ctrl_protocol_get_uint8_t       get_awb_enable;
     ctrl_protocol_set_uint8_t       set_awb_enable;
