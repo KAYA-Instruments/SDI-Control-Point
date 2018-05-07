@@ -83,7 +83,8 @@ InfoBox::InfoBox( QWidget * parent ) : DctWidgetBox( parent )
     // fill temperature line edits
     d_data->m_ui->letTemp0->setText("N/A");
     d_data->m_ui->letTemp1->setText("N/A");
-    d_data->m_ui->letMaxTemp->setText("N/A");
+    d_data->m_ui->letMaxTempLogged->setText("N/A");
+    d_data->m_ui->letMaxTempAllowed->setText("N/A");
     d_data->m_ui->letOverTemp->setText("N/A");
 
     // connect temperature refresh and reset buttons
@@ -321,9 +322,10 @@ void InfoBox::onTempChange( uint8_t id, float temp, QString name )
 /******************************************************************************
  * InfoBox::onMaxTempChange
  *****************************************************************************/
-void InfoBox::onMaxTempChange( int32_t max_temp )
+void InfoBox::onMaxTempChange( int32_t max_temp_logged, int32_t max_temp_allowed )
 {
-    d_data->m_ui->letMaxTemp->setText( QStringLiteral("%1.0 °C").arg(max_temp) );
+    d_data->m_ui->letMaxTempLogged->setText( QStringLiteral("%1.0 °C").arg(max_temp_logged) );
+    d_data->m_ui->letMaxTempAllowed->setText( QStringLiteral("%1.0 °C").arg(max_temp_allowed) );
 }
 
 /******************************************************************************

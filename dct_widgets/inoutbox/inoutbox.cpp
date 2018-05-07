@@ -23,11 +23,13 @@
 #include <QtDebug>
 #include <QProxyStyle>
 #include <QThread>
+#include <QTime>
 
 #include "inoutbox.h"
 #include "ui_inoutbox.h"
 #include "defines.h"
-#include <QTime>
+
+#include <aecweightsdialog.h>
 
 /******************************************************************************
  * namespaces 
@@ -82,6 +84,8 @@ public:
 #define INOUT_SETTINGS_CAMERA_EXPOSURE              ( "shutter" )
 
 #define INOUT_SETTINGS_AEC_ENABLE                   ( "aec_enable" )
+#define INOUT_SETTINGS_AEC_USE_CUSTOM_WEIGHTS       ( "aec_use_custom_weights" )
+#define INOUT_SETTINGS_AEC_WEIGHTS                  ( "aec_weights" )
 #define INOUT_SETTINGS_AEC_SETPOINT                 ( "aec_setpoint" )
 #define INOUT_SETTINGS_AEC_MAX_ISO                  ( "aec_max_iso" )
 #define INOUT_SETTINGS_AEC_SPEED                    ( "aec_speed" )
@@ -106,7 +110,7 @@ public:
 #define INOUT_SETTINGS_GENLOCK_TERMINATION          ( "genlock_termination" )
 
 typedef struct aec_setup_t {
-    int run;
+    bool run;
     int setPoint;
     int speed;
     int ClmTolerance;
@@ -115,6 +119,8 @@ typedef struct aec_setup_t {
     int costAperture;
     int tAf;
     int maxGain;
+    bool useCustomWeighting;
+    uint8_t weights[25];
 } aec_setup_t;
 
 /******************************************************************************
@@ -132,6 +138,7 @@ public:
         , m_AptMax( 16000 )
         , m_AptEnable( true )
         , m_minIso( 1 )
+        , m_weightDialog( new AecWeightsDialog() )
     {
         // do nothing
     };
@@ -140,6 +147,7 @@ public:
     {
         delete m_ui;
         delete m_sbxStyle;
+        delete m_weightDialog;
     };
 
     Ui::UI_InOutBox *   m_ui;           /**< ui handle */
@@ -156,6 +164,8 @@ public:
     bool                m_AptEnable;
 
     int                 m_minIso;       /**< iso value of the device at gain 1 (1000) */
+
+    AecWeightsDialog *  m_weightDialog;
 };
 
 /******************************************************************************
@@ -168,6 +178,8 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
 
     // initialize UI
     d_data->m_ui->setupUi( this );
+
+    d_data->m_weightDialog->setParent( this, Qt::Dialog);
 
     d_data->m_ui->sbxIso->setRange( 80, 400 );
     d_data->m_ui->sldIso->setRange( 80, 400 );
@@ -288,15 +300,21 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->cbxGenLockTermination, SIGNAL(stateChanged(int)), this, SLOT(onCbxGenlockTerminationChange(int)) );
 
     // auto exposure
-    connect( d_data->m_ui->cbxAecEnable   , SIGNAL(stateChanged(int)), this, SLOT(onCbxAecEnableChange(int)) );
+    connect( d_data->m_ui->cbxAecEnable, SIGNAL(stateChanged(int)), this, SLOT(onCbxAecEnableChange(int)) );
+    connect( d_data->m_ui->cbxAecWeight, SIGNAL(stateChanged(int)), this, SLOT(onCbxAecWeightChange(int)) );
 
-    connect( d_data->m_ui->sldSetPoint    , SIGNAL(valueChanged(int)), this, SLOT(onSldSetPointChange(int)) );
-    connect( d_data->m_ui->sldSetPoint    , SIGNAL(sliderReleased()), this, SLOT(onSldSetPointReleased()) );
-    connect( d_data->m_ui->sbxSetPoint    , SIGNAL(valueChanged(int)), this, SLOT(onSbxSetPointChange(int)) );
+    connect( this, SIGNAL(WeightDialogAecWeightsChanged(QVector<int>)), d_data->m_weightDialog, SLOT(onAecWeightsChange(QVector<int>)) );
+    connect( d_data->m_weightDialog, SIGNAL(AecWeightChanged(int,int)), this, SIGNAL(AecWeightChanged(int,int)) );
 
-    connect( d_data->m_ui->sldMaxIso    , SIGNAL(valueChanged(int)), this, SLOT(onSldMaxIsoChange(int)) );
-    connect( d_data->m_ui->sldMaxIso    , SIGNAL(sliderReleased()), this, SLOT(onSldMaxIsoReleased()) );
-    connect( d_data->m_ui->sbxMaxIso    , SIGNAL(valueChanged(int)), this, SLOT(onSbxMaxIsoChange(int)) );
+    connect( d_data->m_ui->btnAecWeight, SIGNAL(clicked()), d_data->m_weightDialog, SLOT(show()) );
+
+    connect( d_data->m_ui->sldSetPoint, SIGNAL(valueChanged(int)), this, SLOT(onSldSetPointChange(int)) );
+    connect( d_data->m_ui->sldSetPoint, SIGNAL(sliderReleased()), this, SLOT(onSldSetPointReleased()) );
+    connect( d_data->m_ui->sbxSetPoint, SIGNAL(valueChanged(int)), this, SLOT(onSbxSetPointChange(int)) );
+
+    connect( d_data->m_ui->sldMaxIso, SIGNAL(valueChanged(int)), this, SLOT(onSldMaxIsoChange(int)) );
+    connect( d_data->m_ui->sldMaxIso, SIGNAL(sliderReleased()), this, SLOT(onSldMaxIsoReleased()) );
+    connect( d_data->m_ui->sbxMaxIso, SIGNAL(valueChanged(int)), this, SLOT(onSbxMaxIsoChange(int)) );
 
     connect( d_data->m_ui->sldControlSpeed, SIGNAL(valueChanged(int)), this, SLOT(onSldControlSpeedChange(int)) );
     connect( d_data->m_ui->sldControlSpeed, SIGNAL(sliderReleased()), this, SLOT(onSldControlSpeedReleased()) );
@@ -305,29 +323,29 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->rdbTaf50Hz, SIGNAL( toggled(bool) ), this, SLOT(onTafToggle(bool)) );
     connect( d_data->m_ui->rdbTaf60Hz, SIGNAL( toggled(bool) ), this, SLOT(onTafToggle(bool)) );
 
-    connect( d_data->m_ui->sldAperture    , SIGNAL(valueChanged(int)), this, SLOT(onSldIrisAptChange(int)) );
-    connect( d_data->m_ui->sldAperture    , SIGNAL(sliderReleased()), this, SLOT(onSldIrisAptReleased()) );
-    connect( d_data->m_ui->sbxAperture    , SIGNAL(valueChanged(int)), this, SLOT(onSbxIrisAptChange(int)) );
+    connect( d_data->m_ui->sldAperture, SIGNAL(valueChanged(int)), this, SLOT(onSldIrisAptChange(int)) );
+    connect( d_data->m_ui->sldAperture, SIGNAL(sliderReleased()), this, SLOT(onSldIrisAptReleased()) );
+    connect( d_data->m_ui->sbxAperture, SIGNAL(valueChanged(int)), this, SLOT(onSbxIrisAptChange(int)) );
 
     // timecode
-    connect( d_data->m_ui->btnSetTimecode , SIGNAL(clicked()), this, SLOT(onBtnTimecodeSetClicked()) );
-    connect( d_data->m_ui->btnGetTimecode , SIGNAL(clicked()), this, SLOT(onBtnTimecodeGetClicked()) );
+    connect( d_data->m_ui->btnSetTimecode, SIGNAL(clicked()), this, SLOT(onBtnTimecodeSetClicked()) );
+    connect( d_data->m_ui->btnGetTimecode, SIGNAL(clicked()), this, SLOT(onBtnTimecodeGetClicked()) );
     connect( d_data->m_ui->btnHoldTimecode, SIGNAL(clicked(bool)), this, SLOT(onBtnTimecodeHoldClicked(bool)) );
 
     // lense shading correction
-    connect( d_data->m_ui->cbxLscEnable   , SIGNAL(stateChanged(int)), this, SLOT(onCbxLscEnableChange(int)) );
+    connect( d_data->m_ui->cbxLscEnable, SIGNAL(stateChanged(int)), this, SLOT(onCbxLscEnableChange(int)) );
 
-    connect( d_data->m_ui->sbxK         , SIGNAL(valueChanged(double)), this, SLOT(onSbxKChange(double)) );
-    connect( d_data->m_ui->sldK         , SIGNAL(valueChanged(int)), this, SLOT(onSldKChange(int)) );
-    connect( d_data->m_ui->sldK         , SIGNAL(sliderReleased()), this, SLOT(onSldKReleased()) );
+    connect( d_data->m_ui->sbxK, SIGNAL(valueChanged(double)), this, SLOT(onSbxKChange(double)) );
+    connect( d_data->m_ui->sldK, SIGNAL(valueChanged(int)), this, SLOT(onSldKChange(int)) );
+    connect( d_data->m_ui->sldK, SIGNAL(sliderReleased()), this, SLOT(onSldKReleased()) );
 
-    connect( d_data->m_ui->sbxOffset    , SIGNAL(valueChanged(double)), this, SLOT(onSbxOffsetChange(double)) );
-    connect( d_data->m_ui->sldOffset    , SIGNAL(valueChanged(int)), this, SLOT(onSldOffsetChange(int)) );
-    connect( d_data->m_ui->sldOffset    , SIGNAL(sliderReleased()), this, SLOT(onSldOffsetReleased()) );
+    connect( d_data->m_ui->sbxOffset, SIGNAL(valueChanged(double)), this, SLOT(onSbxOffsetChange(double)) );
+    connect( d_data->m_ui->sldOffset, SIGNAL(valueChanged(int)), this, SLOT(onSldOffsetChange(int)) );
+    connect( d_data->m_ui->sldOffset, SIGNAL(sliderReleased()), this, SLOT(onSldOffsetReleased()) );
 
-    connect( d_data->m_ui->sbxSlope     , SIGNAL(valueChanged(double)), this, SLOT(onSbxSlopeChange(double)) );
-    connect( d_data->m_ui->sldSlope     , SIGNAL(valueChanged(int)), this, SLOT(onSldSlopeChange(int)) );
-    connect( d_data->m_ui->sldSlope     , SIGNAL(sliderReleased()), this, SLOT(onSldSlopeReleased()) );
+    connect( d_data->m_ui->sbxSlope, SIGNAL(valueChanged(double)), this, SLOT(onSbxSlopeChange(double)) );
+    connect( d_data->m_ui->sldSlope, SIGNAL(valueChanged(int)), this, SLOT(onSldSlopeChange(int)) );
+    connect( d_data->m_ui->sldSlope, SIGNAL(sliderReleased()), this, SLOT(onSldSlopeReleased()) );
 
     ////////////////////
     // operation mode
@@ -459,7 +477,7 @@ void InOutBox::setCameraExposure( const int value )
  *****************************************************************************/
 bool InOutBox::AecEnable() const
 {
-    return ( (bool)d_data->m_AecSetup.run );
+    return ( d_data->m_AecSetup.run );
 }
 
 /******************************************************************************
@@ -474,7 +492,7 @@ void InOutBox::setAecEnable( const bool value )
     d_data->m_ui->cbxAecEnable->setCheckState( value ? Qt::Checked : Qt::Unchecked );
     d_data->m_ui->cbxAecEnable->blockSignals( false );
 
-    d_data->m_AecSetup.run = (int)value;
+    d_data->m_AecSetup.run = value;
 
     setWaitCursor();
     emit AecEnableChanged( d_data->m_AecSetup.run );
@@ -602,6 +620,33 @@ void InOutBox::setAecFlickerFrequency( const int value )
     d_data->m_ui->rdbTaf60Hz->blockSignals( true );
     d_data->m_ui->rdbTaf60Hz->setChecked( d_data->m_AecSetup.tAf == 8333 );
     d_data->m_ui->rdbTaf60Hz->blockSignals( false );
+
+    setWaitCursor();
+    emit AecSetupChanged( createAecVector() );
+    setNormalCursor();
+}
+
+/******************************************************************************
+ * InOutBox::AecCustomWeights
+ *****************************************************************************/
+bool InOutBox::AecCustomWeights() const
+{
+    return ( d_data->m_AecSetup.useCustomWeighting );
+}
+
+/******************************************************************************
+ * InOutBox::setAecCustomWeights
+ *****************************************************************************/
+void InOutBox::setAecCustomWeights( const bool value )
+{
+    d_data->m_ui->cbxAecWeight->blockSignals( true );
+    d_data->m_ui->cbxAecWeight->setCheckState( value ? Qt::Checked : Qt::Unchecked );
+    d_data->m_ui->cbxAecWeight->blockSignals( false );
+
+    d_data->m_AecSetup.useCustomWeighting = value;
+
+    // Run enable aec widgets to enable / disable the set weighting button
+    enableAecWidgets( d_data->m_AecSetup.run );
 
     setWaitCursor();
     emit AecSetupChanged( createAecVector() );
@@ -931,6 +976,9 @@ void InOutBox::loadSettings( QSettings & s )
     setAecControlSpeed( s.value( INOUT_SETTINGS_AEC_SPEED ).toInt() );
     setAecFlickerFrequency( s.value( INOUT_SETTINGS_AEC_FLICKER ).toInt() );
     setAecEnable( s.value( INOUT_SETTINGS_AEC_ENABLE ).toBool() );
+    setAecCustomWeights( s.value( INOUT_SETTINGS_AEC_USE_CUSTOM_WEIGHTS ).toBool() );
+    // NOTE: call qRegisterMetaTypeStreamOperators<QVector<int> >("QVector<int>"); in main.cpp
+    d_data->m_weightDialog->setAecWeights( s.value( INOUT_SETTINGS_AEC_WEIGHTS ).value<QVector<int> >() );
 
     lsc_setup_t lscSetup;
     lscSetup.enable = s.value( INOUT_SETTINGS_LSC_ENABLE ).toBool();
@@ -960,6 +1008,9 @@ void InOutBox::saveSettings( QSettings & s )
     s.setValue( INOUT_SETTINGS_CAMERA_EXPOSURE              , CameraExposure() );
     
     s.setValue( INOUT_SETTINGS_AEC_ENABLE                   , AecEnable() );
+    s.setValue( INOUT_SETTINGS_AEC_USE_CUSTOM_WEIGHTS       , AecCustomWeights() );
+    // NOTE: call qRegisterMetaTypeStreamOperators<QVector<int> >("QVector<int>"); in main.cpp
+    s.setValue( INOUT_SETTINGS_AEC_WEIGHTS                  , QVariant::fromValue<QVector<int>>(d_data->m_weightDialog->getAecWeights()) );
     s.setValue( INOUT_SETTINGS_AEC_SETPOINT                 , AecSetPoint() );
     s.setValue( INOUT_SETTINGS_AEC_MAX_ISO                  , AecMaxIso() );
     s.setValue( INOUT_SETTINGS_AEC_SPEED                    , AecControlSpeed() );
@@ -1005,6 +1056,7 @@ void InOutBox::applySettings( void )
     emit CameraExposureChanged( CameraExposure() );
 
     emit AecSetupChanged( createAecVector() );
+    d_data->m_weightDialog->setAecWeights( d_data->m_weightDialog->getAecWeights() );
 
     emit ChainGenlockModeChanged( d_data->m_ui->cbxGenLockMode->currentData().toInt() );
     emit ChainGenlockOffsetChanged( GenLockOffsetVertical(), GenLockOffsetHorizontal() );
@@ -2035,6 +2087,23 @@ void InOutBox::onCbxAecEnableChange( int value )
 }
 
 /******************************************************************************
+ * InOutBox::onCbxAecWeightChange
+ *****************************************************************************/
+void InOutBox::onCbxAecWeightChange( int value )
+{
+    bool enable = (value == Qt::Checked) ? true : false;
+
+    d_data->m_AecSetup.useCustomWeighting = (int)enable;
+
+    // Run enable aec widgets to enable / disable the set weighting button
+    enableAecWidgets( d_data->m_AecSetup.run );
+
+    setWaitCursor();
+    emit AecSetupChanged( createAecVector() );
+    setNormalCursor();
+}
+
+/******************************************************************************
  * InOutBox::onAecEnableChange
  *****************************************************************************/
 void InOutBox::onAecEnableChange( int enable )
@@ -2052,20 +2121,33 @@ void InOutBox::onAecEnableChange( int enable )
  *****************************************************************************/
 void InOutBox::onAecSetupChange( QVector<int> values )
 {
-    if ( values.count() == 9 )
+    if ( values.count() == 10 )
     {
-        d_data->m_AecSetup.run          = values[0];
-        d_data->m_AecSetup.setPoint     = values[1];
-        d_data->m_AecSetup.speed        = values[2];
-        d_data->m_AecSetup.ClmTolerance = values[3];
-        d_data->m_AecSetup.costGain     = values[4];
-        d_data->m_AecSetup.costTInt     = values[5];
-        d_data->m_AecSetup.costAperture = values[6];
-        d_data->m_AecSetup.tAf          = values[7];
-        d_data->m_AecSetup.maxGain      = values[8];
+        d_data->m_AecSetup.run                = values[0];
+        d_data->m_AecSetup.setPoint           = values[1];
+        d_data->m_AecSetup.speed              = values[2];
+        d_data->m_AecSetup.ClmTolerance       = values[3];
+        d_data->m_AecSetup.costGain           = values[4];
+        d_data->m_AecSetup.costTInt           = values[5];
+        d_data->m_AecSetup.costAperture       = values[6];
+        d_data->m_AecSetup.tAf                = values[7];
+        d_data->m_AecSetup.maxGain            = values[8];
+        d_data->m_AecSetup.useCustomWeighting = values[9];
+
+        // Run enable aec widgets to enable / disable the set weighting button
+        enableAecWidgets( d_data->m_AecSetup.run );
 
         updateAecSetupWidgets();
     }
+}
+
+/******************************************************************************
+ * InOutBox::onAecWeightsChange
+ *****************************************************************************/
+void InOutBox::onAecWeightsChange( QVector<int> weights )
+{
+    // Change weights in weight dialog
+    emit WeightDialogAecWeightsChanged( weights );
 }
 
 /******************************************************************************
@@ -2366,6 +2448,11 @@ void InOutBox::UpdateExposureComboBox( int exposure )
  *****************************************************************************/
 void InOutBox::updateAecSetupWidgets( void )
 {
+    // Custom weighting
+    d_data->m_ui->cbxAecWeight->blockSignals( true );
+    d_data->m_ui->cbxAecWeight->setChecked( d_data->m_AecSetup.useCustomWeighting );
+    d_data->m_ui->cbxAecWeight->blockSignals( false );
+
     // Set point
     d_data->m_ui->sbxSetPoint->blockSignals( true );
     d_data->m_ui->sbxSetPoint->setValue( d_data->m_AecSetup.setPoint );
@@ -2446,6 +2533,22 @@ void InOutBox::updateLscWidgets( void )
  *****************************************************************************/
 void InOutBox::enableAecWidgets( bool enable )
 {
+    d_data->m_ui->cbxAecWeight->setEnabled( enable );
+
+    /* The configure weight button shall only be enabled, if custom weighting
+     * is enabled */
+    if ( d_data->m_AecSetup.useCustomWeighting && enable )
+    {
+        d_data->m_ui->btnAecWeight->setEnabled( true );
+    }
+    else
+    {
+        d_data->m_ui->btnAecWeight->setEnabled( false );
+
+        // Make sure the weights dialog is closed
+        d_data->m_weightDialog->close();
+    }
+
     d_data->m_ui->sbxSetPoint->setEnabled( enable );
     d_data->m_ui->sldSetPoint->setEnabled( enable );
 
@@ -2484,8 +2587,8 @@ void InOutBox::enableCamConfWidgets( bool enable )
 QVector<int> InOutBox::createAecVector( void )
 {
     // pack aec setup values into vector
-    QVector<int> values(9);
-    values[0] = d_data->m_AecSetup.run;
+    QVector<int> values(10);
+    values[0] = (int)d_data->m_AecSetup.run;
     values[1] = d_data->m_AecSetup.setPoint;
     values[2] = d_data->m_AecSetup.speed;
     values[3] = d_data->m_AecSetup.ClmTolerance;
@@ -2494,6 +2597,7 @@ QVector<int> InOutBox::createAecVector( void )
     values[6] = d_data->m_AecSetup.costAperture;
     values[7] = d_data->m_AecSetup.tAf;
     values[8] = d_data->m_AecSetup.maxGain;
+    values[9] = (int)d_data->m_AecSetup.useCustomWeighting;
     return ( values );
 }
 

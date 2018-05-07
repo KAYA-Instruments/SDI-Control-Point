@@ -94,7 +94,42 @@ int ctrl_protocol_set_aec_setup
 {
     CHECK_HANDLE( protocol );
     CHECK_DRV_FUNC( AUTO_DRV(protocol->drv), set_aec_setup );
+    CHECK_NOT_NULL( values );
     return ( AUTO_DRV(protocol->drv)->set_aec_setup( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_aec_weights
+ *****************************************************************************/
+int ctrl_protocol_get_aec_weights
+(
+    ctrl_protocol_handle_t const    protocol,
+    ctrl_channel_handle_t const     channel,
+    int const                       no,
+    uint8_t * const                 buf
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( AUTO_DRV(protocol->drv), get_aec_weights );
+    CHECK_NOT_NULL( buf );
+    return ( AUTO_DRV(protocol->drv)->get_aec_weights( protocol->ctx, channel, no, buf ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_aec_setup
+ *****************************************************************************/
+int ctrl_protocol_set_aec_weight
+(
+    ctrl_protocol_handle_t const    protocol,
+    ctrl_channel_handle_t const     channel,
+    int const                       no,
+    uint8_t * const                 buf
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( AUTO_DRV(protocol->drv), set_aec_weight );
+    CHECK_NOT_NULL( buf );
+    return ( AUTO_DRV(protocol->drv)->set_aec_weight( protocol->ctx, channel, no, buf ) );
 }
 
 /******************************************************************************

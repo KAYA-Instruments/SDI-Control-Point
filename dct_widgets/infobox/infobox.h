@@ -69,7 +69,7 @@ public slots:
     void onFeatureMaskSwChange( uint32_t mask );
     void onRunTimeChange( uint32_t seconds );
     void onTempChange( uint8_t id, float temp , QString name );
-    void onMaxTempChange( int32_t max_temp );
+    void onMaxTempChange( int32_t max_temp_logged, int32_t max_temp_allowed );
     void onOverTempCountChange( uint32_t count );
 
 private slots:

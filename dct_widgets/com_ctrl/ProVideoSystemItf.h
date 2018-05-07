@@ -168,7 +168,7 @@ signals:
     void DebugLevelChanged( uint8_t level );
     void RunTimeChanged( uint32_t cnt );
     void TempChanged( uint8_t id, float temp, QString name );
-    void MaxTempChanged( int32_t max_temp );
+    void MaxTempChanged( int32_t max_temp_current, int32_t max_temp_allowed );
     void OverTempCountChanged( uint32_t count );
 
 public slots:

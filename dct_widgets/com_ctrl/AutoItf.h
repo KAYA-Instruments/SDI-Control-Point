@@ -44,6 +44,7 @@ public:
     // auto processing
     void GetAecEnable();
     void GetAecSetup();
+    void GetAecWeights();
     void GetAwbEnable();
     void GetAwbSpeed();
     void GetNoWbPresets();
@@ -60,6 +61,7 @@ signals:
     // auto processing
     void AecEnableChanged( int value );
     void AecSetupChanged( QVector<int> value );
+    void AecWeightsChanged( QVector<int> weights );
     void AwbEnableChanged( int value );
     void AwbSpeedChanged( int speed );
     void NoWbPresetsChanged( int value );
@@ -92,6 +94,7 @@ public slots:
     // auto exposure processing
     void onAecEnableChange( int enable );
     void onAecSetupChange( QVector<int> value );
+    void onAecWeightChange( int index, int weight );
 
     // notifier slot for white-balance update 
     void onNotifyWhiteBalanceUpdate();

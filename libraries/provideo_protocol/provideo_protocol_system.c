@@ -166,8 +166,8 @@
  *****************************************************************************/
 #define CMD_GET_MAX_TEMP                        ( "max_temp\n" )
 #define CMD_SYNC_MAX_TEMP                       ( "max_temp " )
-#define CMD_GET_MAX_TEMP_RESPONSE               ( "max_temp %i\n")
-#define CMD_GET_MAX_TEMP_NO_PARAMS              ( 1 )
+#define CMD_GET_MAX_TEMP_RESPONSE               ( "max_temp %i %i\n")
+#define CMD_GET_MAX_TEMP_NO_PARAMS              ( 2 )
 
 /******************************************************************************
  * @brief command "max_temp_reset"
@@ -1648,23 +1648,25 @@ static int get_max_temp
 (
     void * const                ctx,
     ctrl_channel_handle_t const channel,
-    int32_t * const             max_temp
+    int const                   no,
+    int32_t * const             values
 )
 {
     (void) ctx;
 
-    int value;
+    int current_value;
+    int max_value;
     int res;
 
     // parameter check
-    if ( !max_temp )
+    if ( no != CMD_GET_MAX_TEMP_NO_PARAMS || !values  )
     {
         return ( -EINVAL );
     }
 
-    // command call to get 1 parameter from provideo system
+    // command call to get 2 parameter from provideo system
     res = get_param_int_X( channel, 2,
-            CMD_GET_MAX_TEMP, CMD_SYNC_MAX_TEMP, CMD_GET_MAX_TEMP_RESPONSE, &value );
+            CMD_GET_MAX_TEMP, CMD_SYNC_MAX_TEMP, CMD_GET_MAX_TEMP_RESPONSE, &current_value, &max_value );
 
     // return error code
     if ( res < 0 )
@@ -1673,13 +1675,14 @@ static int get_max_temp
     }
 
     // return -EFAULT if number of parameter not matching
-    else if ( res != CMD_GET_RUNTIME_NO_PARMS )
+    else if ( res != CMD_GET_MAX_TEMP_NO_PARAMS )
     {
         return ( -EFAULT );
     }
 
     // type-cast to range
-    *max_temp = INT32( value );
+    values[0] = INT32( current_value );
+    values[1] = INT32( max_value );
 
     return ( 0 );
 }

@@ -1,6 +1,6 @@
 # Should be updated before each release!
-VERSION = 1.1.3
-DEFINES += VERSION_STRING=\\\"1.1.3\\\"
+VERSION = 1.1.4
+DEFINES += VERSION_STRING=\\\"1.1.4\\\"
 
 QMAKE_TARGET_COMPANY = "Dream Chip Technologies GmbH"
 QMAKE_TARGET_PRODUCT = "ProVideo Widget Collection"
@@ -40,6 +40,7 @@ INCLUDEPATH += ../libraries/include     \
                csvwrapper               \
                textviewer               \
                infodialog               \
+               aecweightsdialog         \
                fmtspinbox               \
                skinneddial              \
                switchbutton             \
@@ -107,6 +108,7 @@ HEADERS      = fmtspinbox/fmtspinbox.h                              \
                csvwrapper/csvwrapper.h                              \
                textviewer/textviewer.h                              \
                infodialog/infodialog.h                              \
+               aecweightsdialog/aecweightsdialog.h                  \
                dct_widgets_base.h                                   \
                dct_widgets.h
 
@@ -153,6 +155,7 @@ SOURCES      = fmtspinbox/fmtspinbox.cpp                            \
                csvwrapper/csvwrapper.cpp                            \
                textviewer/textviewer.cpp                            \
                infodialog/infodialog.cpp                            \
+               aecweightsdialog/aecweightsdialog.cpp                \
                dct_widgets.cpp
 
 FORMS       += singlechannelknobbox/singlechannelknobbox.ui         \
@@ -175,6 +178,7 @@ FORMS       += singlechannelknobbox/singlechannelknobbox.ui         \
                kneebox/kneebox.ui                                   \
                dpccbox/dpccbox.ui                                   \
                textviewer/textviewer.ui                             \
-               infodialog/infodialog.ui
+               infodialog/infodialog.ui                             \
+               aecweightsdialog/aecweightsdialog.ui
 
 RESOURCES   += ../resource/resource.qrc

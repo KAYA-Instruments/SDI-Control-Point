@@ -64,6 +64,8 @@ public:
     void setAecControlSpeed( const int value );
     int AecFlickerFrequency() const;
     void setAecFlickerFrequency( const int value );
+    bool AecCustomWeights() const;
+    void setAecCustomWeights( const bool value );
 
     bool LscEnable() const;
     float LscK() const;
@@ -157,6 +159,8 @@ signals:
 
     void AecEnableChanged( int value );
     void AecSetupChanged( QVector<int> values );
+    void AecWeightChanged( int index, int weight );
+    void WeightDialogAecWeightsChanged( QVector<int> weights );
 
     void ChainTimecodeGetRequested( void );
     void ChainTimecodeSetChanged( QVector<int> );
@@ -186,6 +190,7 @@ public slots:
 
     void onAecEnableChange( int enable );
     void onAecSetupChange( QVector<int> values );
+    void onAecWeightsChange( QVector<int> weights );
 
     void onAecStatChange( QVector<int> values );
 
@@ -231,6 +236,7 @@ private slots:
     void onCbxGenlockTerminationChange( int value );
 
     void onCbxAecEnableChange( int value );
+    void onCbxAecWeightChange( int value );
     
     void onSldSetPointChange( int value );
     void onSldSetPointReleased();

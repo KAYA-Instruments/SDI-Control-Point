@@ -42,6 +42,7 @@ void AutoItf::resync()
     GetStatExposureEnable();
     GetAecEnable();
     GetAecSetup();
+    GetAecWeights();
     GetAwbEnable();
     GetAwbSpeed();
 
@@ -111,6 +112,31 @@ void AutoItf::GetAecSetup()
         
         // emit a AecSetupChanged signal
         emit AecSetupChanged( v_values );
+    }
+}
+
+/******************************************************************************
+ * AutoItf::GetAecWeights
+ *****************************************************************************/
+void AutoItf::GetAecWeights()
+{
+    // Is there a signal listener
+    if ( receivers(SIGNAL(AecWeightsChanged(QVector<int>))) > 0 )
+    {
+        uint8_t weights[NO_AEC_WEIGHTS];
+
+        // get auto processing number of white balance presets from device
+        int res = ctrl_protocol_get_aec_weights( GET_PROTOCOL_INSTANCE(this),
+                    GET_CHANNEL_INSTANCE(this), NO_AEC_WEIGHTS, &weights[0] );
+        HANDLE_ERROR( res );
+
+        QVector<int> weightsVector;
+        for ( int i = 0; i < NO_AEC_WEIGHTS; i++ )
+        {
+            weightsVector.append( (int)weights[i] );
+        }
+
+        emit AecWeightsChanged( weightsVector );
     }
 }
 
@@ -452,5 +478,20 @@ void AutoItf::onAecSetupChange( QVector<int> value )
 
     int res = ctrl_protocol_set_aec_setup( GET_PROTOCOL_INSTANCE(this),
             GET_CHANNEL_INSTANCE(this), NO_VALUES_AEC_SETUP, &value_array[0] );
+    HANDLE_ERROR( res );
+}
+
+/******************************************************************************
+ * AutoItf::onAecWeightChange
+ *****************************************************************************/
+void AutoItf::onAecWeightChange( int index, int weight )
+{
+    uint8_t value_array[2];
+
+    value_array[0] = (uint8_t)index;
+    value_array[1] = (uint8_t)weight;
+
+    int res = ctrl_protocol_set_aec_weight( GET_PROTOCOL_INSTANCE(this),
+            GET_CHANNEL_INSTANCE(this), 2, &value_array[0] );
     HANDLE_ERROR( res );
 }
