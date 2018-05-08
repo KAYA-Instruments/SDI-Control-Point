@@ -41,7 +41,8 @@ public:
         CommandState =  0,
         UpdateState  =  1,
         FlashState   =  2,
-        ErrorState   =  3,
+        RebootState  =  3,
+        ErrorState   =  4,
     };
 
     explicit UpdateBox( QWidget * parent = 0 );
@@ -75,7 +76,7 @@ private:
     } version_t;
 
     SystemStates getSystemState( void );
-    void setSystemState( SystemStates state );
+    void setSystemState( SystemStates state , bool force = false );
 
     unsigned int getTotalNumUpdates();
     void setUpdateCounter( unsigned int updCnt );

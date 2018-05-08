@@ -58,6 +58,7 @@ namespace Ui {
 #define SYSTEM_STATE_COMMAND        ( "Device in operation." )
 #define SYSTEM_STATE_UPDATE         ( "Device is waiting for update." )
 #define SYSTEM_STATE_FLASHING       ( "Device is being updated." )
+#define SYSTEM_STATE_REBOOT         ( "Device is rebooting." )
 
 #define VERSION_DOWNLOAD_SYNC       ( "version: " )
 #define VERSION_DOWNLOAD_PARSE      ( "version: V%d_%d_%d\n" )
@@ -456,13 +457,13 @@ UpdateBox::SystemStates UpdateBox::getSystemState( void )
 /******************************************************************************
  * UpdateBox::setSystemState
  *****************************************************************************/
-void UpdateBox::setSystemState( SystemStates state )
+void UpdateBox::setSystemState( SystemStates state, bool force )
 {
     // Aquire semaphore
     d_data->m_state_sema.acquire();
 
     // Configure system state
-    if ( (state != d_data->m_state) && (state > InvalidState) )
+    if ( (state != d_data->m_state || force) && (state > InvalidState) )
     {
         bool enable = true;
 
@@ -492,31 +493,55 @@ void UpdateBox::setSystemState( SystemStates state )
             // update state or error retry state (waits for update data)
             d_data->m_ui->letSystemMode->setText( SYSTEM_STATE_UPDATE );
             d_data->m_ui->btnRun->setText( "Start" );
-            d_data->m_ui->btnRun->setEnabled( (!fn.isEmpty()) && (fileExists(fn)) ? true : false );
+            // When coming from command state, disable the run button during update state
+            if ( d_data->m_state == CommandState )
+            {
+                d_data->m_ui->btnRun->setEnabled( false );
+            }
+            // Else (e.g. when coming from error state) enable it, if a valid update path is present
+            else
+            {
+                d_data->m_ui->btnRun->setEnabled( (!fn.isEmpty()) && (fileExists(fn)) ? true : false );
+            }
             d_data->m_ui->cbxVerify->setEnabled( false );
             d_data->m_ui->btnFilename->setEnabled( false );
             d_data->m_ui->btnCheckFirmwareUpdate->setEnabled( false );
             d_data->m_ui->btnCheckGuiUpdate->setEnabled( false );
             enable = true;
         }
+        else if ( state == FlashState )
+        {
+            // flash state, set run button text to abort, so that user can stop the update
+            d_data->m_ui->letSystemMode->setText( SYSTEM_STATE_FLASHING );
+            d_data->m_ui->btnRun->setEnabled( true );
+            d_data->m_ui->btnRun->setText( "Abort" );
+        }
+        else if ( state == RebootState )
+        {
+            // reboot state, disable abort button / run button
+            d_data->m_ui->letSystemMode->setText( SYSTEM_STATE_REBOOT);
+            d_data->m_ui->btnRun->setEnabled( false );
+        }
         else if ( state == ErrorState )
         {
             // error state, change run botton text to start, so that user can restart the update
             d_data->m_ui->btnRun->setText( "Start" );
         }
-        else if ( state == FlashState )
-        {
-            // flash tate, set run button text to abort, so that user can stop the update
-            d_data->m_ui->letSystemMode->setText( SYSTEM_STATE_FLASHING );
-            d_data->m_ui->btnRun->setText( "Abort" );
-        }
 
+        // Show / hide flashloader tool information depending on enable flag
         d_data->m_ui->lblSystemName->setEnabled( enable );
         d_data->m_ui->letSystemName->setEnabled( enable );
         d_data->m_ui->lblSystemVersion->setEnabled( enable );
         d_data->m_ui->letSystemVersion->setEnabled( enable );
         d_data->m_ui->lblFlashLoaderVersion->setEnabled( enable );
         d_data->m_ui->letFlashLoaderVersion->setEnabled( enable );
+
+        if ( !enable )
+        {
+            d_data->m_ui->letSystemName->clear();
+            d_data->m_ui->letSystemVersion->clear();
+            d_data->m_ui->letFlashLoaderVersion->clear();
+        }
 
         // set the new system state
         d_data->m_state = state;
@@ -1169,12 +1194,13 @@ void UpdateBox::checkUpdateDirectory( QString updateDirectory  )
         d_data->m_upd_config[i].file = QString::null;
     }
 
+    // Error flags
+    bool noFileFoundError = true;
+    bool multipleMatchError = false;
+
     // check if user selected a directory
     if ( !updateDirectory.isEmpty() )
     {
-        // Error flags
-        bool noFileFoundError = true;
-        bool multipleMatchError = false;
 
         // store new update directory path
         d_data->m_upd_dir = updateDirectory;
@@ -1240,16 +1266,6 @@ void UpdateBox::checkUpdateDirectory( QString updateDirectory  )
                                           "Two many files found",
                                           "In the given update folder more than one matching update file was found. Please delete duplicate files or specify a different folder." );
             }
-
-            // reset data structures
-            for ( int i = 0; i < d_data->m_upd_config.count(); i++ )
-            {
-                d_data->m_upd_config[i].file = QString::null;
-            }
-
-            // and disable UI elements
-            d_data->m_ui->btnRun->setEnabled( false );
-            d_data->m_ui->cbxVerify->setEnabled( false );
         }
 
         // Handle no file found error
@@ -1269,27 +1285,11 @@ void UpdateBox::checkUpdateDirectory( QString updateDirectory  )
                                           "No file found",
                                           "The given folder does not contain valid update files, please select a different update folder." );
             }
-
-            // disable UI elements
-            d_data->m_ui->btnRun->setEnabled( false );
-            d_data->m_ui->cbxVerify->setEnabled( false );
-        }
-
-        // If no error occured, enable ui elements to start update
-        else
-        {
-            // Set update counter and index
-            /*  counter will be incremented in the onUpdateFinished() slot,
-             * which will then restart the timer, if more updates are pending */
-            setUpdateCounter( 1 );
-            getFirstUpdateIndex();
-            d_data->m_ui->btnRun->setEnabled( true );
-            d_data->m_ui->cbxVerify->setEnabled( true );
         }
     }
 
-    // User cancelled directory selection
-    else
+    // User cancelled directory selection or an error occurd
+    if ( noFileFoundError || multipleMatchError )
     {
         // reset data structures
         for ( int i = 0; i < d_data->m_upd_config.count(); i++ )
@@ -1301,6 +1301,19 @@ void UpdateBox::checkUpdateDirectory( QString updateDirectory  )
         d_data->m_ui->btnRun->setEnabled( false );
         d_data->m_ui->cbxVerify->setEnabled( false );
     }
+    // If no error occured, enable ui elements to start update
+    else
+    {
+        // Set update counter and index
+        /*  counter will be incremented in the onUpdateFinished() slot,
+         * which will then restart the timer, if more updates are pending */
+        setUpdateCounter( 1 );
+        d_data->m_ui->btnRun->setEnabled( true );
+        d_data->m_ui->cbxVerify->setEnabled( true );
+    }
+
+    // Call getFirstUpdateIndex() to setup line edits with the update path (or clear them if no update found)
+    getFirstUpdateIndex();
 }
 
 /******************************************************************************
@@ -1351,7 +1364,7 @@ void UpdateBox::onRunClicked()
         {
             int dT = 1; // 1 ms = 1 tick
 
-            // I. set wait cursor and lock GUI to current tab page
+            // I. set wait cursor and lock GUI to current tab page, disable run button
             setWaitCursor();
             emit LockCurrentTabPage( true );
 
@@ -1451,39 +1464,47 @@ void UpdateBox::onPromptChange( uint8_t )
  *****************************************************************************/
 void UpdateBox::onSystemPlatformChange( QString name )
 {
-    // Clear list of update configs
-    d_data->m_upd_config.clear();
+    // If the platform has changed
+    if ( name != d_data->m_system_platform )
+    {
+        // Reset server version numbers for the firmware, as it is not correct for new platform
+        d_data->m_ui->letServerFirmwareVersion->setText( "Not checked yet" );
+
+        // Clear list of update configs
+        d_data->m_upd_config.clear();
+
+        if ( name == PLATFORM_XBOW )
+        {
+            d_data->m_upd_config.append( xbow_update );
+        }
+
+        else if ( name == PLATFORM_CONDOR_4K || name.contains(QString(PLATFORM_CONDOR_4K_MINI)) )
+        {
+            // first file is firmware update
+            d_data->m_upd_config.append( condor4k_fw_update );
+
+            // second file is bitstream update
+            d_data->m_upd_config.append( condor4k_bs_update );
+        }
+
+        else if ( name == PLATFORM_COOPER )
+        {
+            // first file is firmware update
+            d_data->m_upd_config.append( cooper_fw_update );
+
+            // second file is bitstream update
+            d_data->m_upd_config.append( cooper_bs_update );
+        }
+    }
 
     // Save platform name
     d_data->m_system_platform = name;
 
-    if ( name == PLATFORM_XBOW )
-    {
-        d_data->m_upd_config.append( xbow_update );
-    }
+    // Reset update path by calling getFirstUpdateIndex()
+    getFirstUpdateIndex();
 
-    else if ( name == PLATFORM_CONDOR_4K || name.contains(QString(PLATFORM_CONDOR_4K_MINI)) )
-    {
-        // first file is firmware update
-        d_data->m_upd_config.append( condor4k_fw_update );
-
-        // second file is bitstream update
-        d_data->m_upd_config.append( condor4k_bs_update );
-    }
-
-    else if ( name == PLATFORM_COOPER )
-    {
-        // first file is firmware update
-        d_data->m_upd_config.append( cooper_fw_update );
-
-        // second file is bitstream update
-        d_data->m_upd_config.append( cooper_bs_update );
-    }
-
-    else
-    {
-        d_data->m_upd_config.clear();
-    }
+    // Make sure we are in command state
+    setSystemState( CommandState, true );
 }
 
 /******************************************************************************
@@ -1706,6 +1727,9 @@ void UpdateBox::onUpdateFinished()
                     d_data->m_upd_dir.clear();
                 }
 
+                // Switch to reboot state
+                setSystemState( RebootState );
+
                 // send restart command to camera
                 int res = d_data->m_application->runCommand(
                             FlashLoader::FLASHLOAD_CMD_REBOOT );
@@ -1715,7 +1739,7 @@ void UpdateBox::onUpdateFinished()
                 QThread::sleep( 1 );
 
                 // process events, otherwise the last event of the flashloader is not processed
-                QApplication::processEvents();
+                QApplication::processEvents( QEventLoop::WaitForMoreEvents );
 
                 // unlock GUI
                 emit LockCurrentTabPage( false );
