@@ -4,7 +4,7 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
-Version **1.1.4** - 07.04.2018
+Version **1.1.4** - 08.04.2018
 
 * Added a dialog to the in-out-box to change the weights of the auto exposure control (new AEC feature)
 * Added display of the shut down temperature to the info box (requires latest device firmware)
