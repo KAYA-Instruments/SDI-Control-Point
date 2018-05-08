@@ -10,6 +10,7 @@ Version **1.1.4** - 08.04.2018
 * Added display of the shut down temperature to the info box (requires latest device firmware)
 * Fixed a bug where the "verify" checkbox in the update-box could be checked / unchecked during a running flash procedure
 * Fixed a bug where the command history of the debug terminal would jump to the wrong history entry after a new command was send
+* Fixed a bug where the GUI would not correctly reconnect after updating the device firmware on Windows
 
 ## Older Releases:
 
