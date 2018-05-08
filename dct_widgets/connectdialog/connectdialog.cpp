@@ -146,6 +146,10 @@ void ConnectDialog::showEvent( QShowEvent* event )
     // Resize window to minimum size
     QApplication::processEvents();
     this->resize( this->minimumSizeHint() );
+
+    // Get last used RS485 and RS232 configs
+    m_lastRs232Config = getRs232Config();
+    m_lastRs485Config = getRs485Config();
 }
 
 /******************************************************************************
@@ -320,6 +324,13 @@ bool ConnectDialog::connectWithDevice()
     }
     else
     {
+        // Delete the connected device
+        if ( m_connectedDevice != NULL )
+        {
+            delete m_connectedDevice;
+        }
+        m_connectedDevice = NULL;
+
         qDebug() << "Unknown device connected:" << systemPlatform;
     }
 
@@ -329,6 +340,7 @@ bool ConnectDialog::connectWithDevice()
     // Display message boxes if the connection could not be established
     if ( !ret)
     {
+
         QMessageBox msgBox;
         msgBox.setWindowTitle("Connection Error");
 
@@ -389,24 +401,24 @@ void ConnectDialog::setChannelRS232( ComChannelSerial * c )
         m_ui->cbxBaudrateRS232->setCurrentIndex( m_ui->cbxBaudrateRS232->findData( CTRL_CHANNEL_BAUDRATE_DEFAULT ) );
 
         // add number of data-bit selection to combobox
-        
+
         // RS232
         m_ui->cbxDatabitsRS232->addItem( QString::number(CTRL_CHANNEL_DATA_BITS_5), CTRL_CHANNEL_DATA_BITS_5 );
         m_ui->cbxDatabitsRS232->addItem( QString::number(CTRL_CHANNEL_DATA_BITS_6), CTRL_CHANNEL_DATA_BITS_6 );
         m_ui->cbxDatabitsRS232->addItem( QString::number(CTRL_CHANNEL_DATA_BITS_7), CTRL_CHANNEL_DATA_BITS_7 );
         m_ui->cbxDatabitsRS232->addItem( QString::number(CTRL_CHANNEL_DATA_BITS_8), CTRL_CHANNEL_DATA_BITS_8 );
         m_ui->cbxDatabitsRS232->setCurrentIndex( m_ui->cbxDatabitsRS232->findData( CTRL_CHANNEL_DATA_BITS_DEFAULT ) );
-        
+
         // add number of parity selection to combobox
-        
+
         // RS232
         m_ui->cbxParityRS232->addItem( "none", CTRL_CHANNEL_PARITY_NONE );
         m_ui->cbxParityRS232->addItem( "odd" , CTRL_CHANNEL_PARITY_ODD );
         m_ui->cbxParityRS232->addItem( "even", CTRL_CHANNEL_PARITY_EVEN );
         m_ui->cbxParityRS232->setCurrentIndex( m_ui->cbxParityRS232->findData( CTRL_CHANNEL_PARITY_DEFAULT ) );
-        
+
         // add number of stop-bit selection to combobox
-        
+
         // RS232
         m_ui->cbxStopbitsRS232->addItem( QString::number(CTRL_CHANNEL_STOP_BITS_1), CTRL_CHANNEL_STOP_BITS_1 );
         m_ui->cbxStopbitsRS232->addItem( QString::number(CTRL_CHANNEL_STOP_BITS_2), CTRL_CHANNEL_STOP_BITS_2 );
@@ -454,26 +466,26 @@ void ConnectDialog::setChannelRS485( ComChannelSerial * c )
         m_ui->cbxBaudrateRS485->addItem( QString::number(CTRL_CHANNEL_BAUDRATE_57600) , CTRL_CHANNEL_BAUDRATE_57600 );
         m_ui->cbxBaudrateRS485->addItem( QString::number(CTRL_CHANNEL_BAUDRATE_115200), CTRL_CHANNEL_BAUDRATE_115200 );
         m_ui->cbxBaudrateRS485->setCurrentIndex( m_ui->cbxBaudrateRS485->findData( CTRL_CHANNEL_BAUDRATE_DEFAULT ) );
-      
+
         // add number of data-bit selection to combobox
-        
+
         // RS485
         m_ui->cbxDatabitsRS485->addItem( QString::number(CTRL_CHANNEL_DATA_BITS_5), CTRL_CHANNEL_DATA_BITS_5 );
         m_ui->cbxDatabitsRS485->addItem( QString::number(CTRL_CHANNEL_DATA_BITS_6), CTRL_CHANNEL_DATA_BITS_6 );
         m_ui->cbxDatabitsRS485->addItem( QString::number(CTRL_CHANNEL_DATA_BITS_7), CTRL_CHANNEL_DATA_BITS_7 );
         m_ui->cbxDatabitsRS485->addItem( QString::number(CTRL_CHANNEL_DATA_BITS_8), CTRL_CHANNEL_DATA_BITS_8 );
         m_ui->cbxDatabitsRS485->setCurrentIndex( m_ui->cbxDatabitsRS485->findData( CTRL_CHANNEL_DATA_BITS_DEFAULT ) );
-        
+
         // add number of parity selection to combobox
-        
+
         // RS485
         m_ui->cbxParityRS485->addItem( "none", CTRL_CHANNEL_PARITY_NONE );
         m_ui->cbxParityRS485->addItem( "odd" , CTRL_CHANNEL_PARITY_ODD );
         m_ui->cbxParityRS485->addItem( "even", CTRL_CHANNEL_PARITY_EVEN );
         m_ui->cbxParityRS485->setCurrentIndex( m_ui->cbxParityRS485->findData( CTRL_CHANNEL_PARITY_DEFAULT ) );
-        
+
         // add number of stop-bit selection to combobox
-        
+
         // RS485
         m_ui->cbxStopbitsRS485->addItem( QString::number(CTRL_CHANNEL_STOP_BITS_1), CTRL_CHANNEL_STOP_BITS_1 );
         m_ui->cbxStopbitsRS485->addItem( QString::number(CTRL_CHANNEL_STOP_BITS_2), CTRL_CHANNEL_STOP_BITS_2 );
@@ -549,7 +561,7 @@ bool ConnectDialog::loadSettings( QSettings &s )
         return ( true );
     }
 
-    // default return 
+    // default return
     return ( false );
 }
 
@@ -589,7 +601,7 @@ ConnectDialog::Interface ConnectDialog::getActiveInterface() const
         case 0:
             iface = Rs485;
             break;
-        
+
         case 1:
             iface = Rs232;
             break;
@@ -618,7 +630,7 @@ int ConnectDialog::setActiveInterface( ConnectDialog::Interface iface )
             case Rs232:
                 m_active = m_rs232;
                 break;
-        
+
             case Rs485:
                 m_active = m_rs485;
                 break;
@@ -643,13 +655,13 @@ int ConnectDialog::setActiveInterface( ConnectDialog::Interface iface )
 QString ConnectDialog::getActiveChannelName() const
 {
     QString s;
-    
+
     switch ( getActiveInterface() )
     {
         case Rs232:
             s = m_ui->cbxPortRS232->currentText();
             break;
-        
+
         case Rs485:
             s = m_ui->cbxPortRS485->currentText();
             break;
@@ -706,7 +718,7 @@ int ConnectDialog::getActiveBaudRate() const
         case Rs232:
             v = m_ui->cbxBaudrateRS232->itemData( m_ui->cbxBaudrateRS232->currentIndex() ).toInt();
             break;
-        
+
         case Rs485:
             v = m_ui->cbxBaudrateRS485->itemData( m_ui->cbxBaudrateRS485->currentIndex() ).toInt();
             break;
@@ -746,7 +758,7 @@ int ConnectDialog::setActiveBaudRate( Interface iface, int baudrate )
         default:
             break;
     }
-    
+
     return ( (idx < 0) ? -ENODEV : 0 );
 }
 
@@ -762,7 +774,7 @@ int ConnectDialog::getActiveDataBits() const
         case Rs232:
             v = m_ui->cbxDatabitsRS232->itemData( m_ui->cbxDatabitsRS232->currentIndex() ).toInt();
             break;
-        
+
         case Rs485:
             v = m_ui->cbxDatabitsRS485->itemData( m_ui->cbxDatabitsRS485->currentIndex() ).toInt();
             break;
@@ -802,7 +814,7 @@ int ConnectDialog::setActiveDataBits( Interface iface, int databits )
         default:
             break;
     }
-    
+
     return ( (idx < 0) ? -ENODEV : 0 );
 }
 
@@ -812,13 +824,13 @@ int ConnectDialog::setActiveDataBits( Interface iface, int databits )
 QString ConnectDialog::getActiveParity() const
 {
     QString s;
-    
+
     switch ( getActiveInterface() )
     {
         case Rs232:
             s = m_ui->cbxParityRS232->currentText();
             break;
-        
+
         case Rs485:
             s = m_ui->cbxStopbitsRS485->currentText();
             break;
@@ -859,7 +871,7 @@ int ConnectDialog::setActiveParity( Interface iface, QString &name )
         default:
             break;
     }
-    
+
     return ( (idx < 0) ? -ENODEV : 0 );
 }
 
@@ -871,13 +883,13 @@ int ConnectDialog::getActiveStopBits() const
     int v = 0;
 
     QString s;
-    
+
     switch ( getActiveInterface() )
     {
         case Rs232:
             v = m_ui->cbxStopbitsRS232->itemData( m_ui->cbxStopbitsRS232->currentIndex() ).toInt();
             break;
-        
+
         case Rs485:
             v = m_ui->cbxStopbitsRS485->itemData( m_ui->cbxStopbitsRS485->currentIndex() ).toInt();
             break;
@@ -917,7 +929,7 @@ int ConnectDialog::setActiveStopBits( Interface iface, int stopbits )
         default:
             break;
     }
-    
+
     return ( (idx < 0) ? -ENODEV : 0 );
 }
 
@@ -1185,6 +1197,7 @@ bool ConnectDialog::detectAndConnect()
     }
     else
     {
+
         QMessageBox msgBox;
         msgBox.setWindowTitle( "Auto-Detection failed" );
         msgBox.setWindowIcon( QIcon(":/icons/disconnect_64x64.png") );
@@ -1194,6 +1207,13 @@ bool ConnectDialog::detectAndConnect()
                         "In such cases please try starting the automtaic detection again.");
         msgBox.exec();
     }
+
+    // Delete the connected device, no device was found
+    if ( m_connectedDevice != NULL )
+    {
+        delete m_connectedDevice;
+    }
+    m_connectedDevice = NULL;
 
     return false;
 }
@@ -1402,6 +1422,13 @@ bool ConnectDialog::scanAndConnect()
                         "make sure that each device has a unique address.");
         msgBox.exec();
     }
+
+    // Delete connected device (no device was found)
+    if ( m_connectedDevice != NULL )
+    {
+        delete m_connectedDevice;
+    }
+    m_connectedDevice = NULL;
 
     return false;
 }
@@ -1697,8 +1724,64 @@ void ConnectDialog::accept()
  *****************************************************************************/
 void ConnectDialog::reject()
 {
-    // call derived function
-    QDialog::reject();
+    // Check if a connection is established
+    if ( this->isConnected() )
+    {
+        // Check if connection settings got changed by the user
+        ctrl_channel_rs232_open_config_t currentRs232Config = getRs232Config();
+        ctrl_channel_rs4xx_open_config_t currentRs485Config = getRs485Config();
+
+        if ( memcmp( &m_lastRs232Config, &currentRs232Config, sizeof(ctrl_channel_rs232_open_config_t) ) != 0 ||
+             memcmp( &m_lastRs485Config, &currentRs485Config, sizeof(ctrl_channel_rs4xx_open_config_t) ) != 0 )
+        {
+            /* If the settings got changed tell the user that he can either go back and
+             * connect to a device or quit the GUI */
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::question( this, "Restore previous Com-Port Settings?",
+                                           "The Com-Port settings where changed. To return to the main window the previous settings "
+                                           "have to be restored.\n\n"
+                                           "Click 'Yes' to restore the previous settings and return to the main window, click 'No' "
+                                           "to stay in the connect dialog and connect with a new device.",
+                                           QMessageBox::Yes | QMessageBox::No );
+
+            if ( reply == QMessageBox::No )
+            {
+                // Do nothing to stay in the connect dialog
+            }
+            else
+            {
+                // Restore settings, return to main window
+                setRs232Config( m_lastRs232Config );
+                setRs485Config( m_lastRs485Config );
+                QDialog:: accept();
+            }
+        }
+        else
+        {
+            // Settins were not changed, close the connect dialog and return to the main window
+            QDialog::accept();
+        }
+    }
+    // If no connection is established (e.g. connection failed)
+    else
+    {
+        // Ask user if he wants to leave the GUI
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question( this, "Close GUI?",
+                                       "The GUI is not connected to any device. Closing the connect dialog will also also close the GUI.\n\n"
+                                       "Click 'Yes' to close the GUI, click 'No' to stay in the connect dialog.",
+                                       QMessageBox::Yes | QMessageBox::No );
+
+        if ( reply == QMessageBox::No )
+        {
+            // Do nothing to stay in the connect dialog
+        }
+        else
+        {
+            // Call reject to close the main window
+            QDialog::reject();
+        }
+    }
 }
 
 /******************************************************************************
