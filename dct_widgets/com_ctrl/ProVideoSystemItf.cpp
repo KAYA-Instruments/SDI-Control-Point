@@ -613,14 +613,19 @@ bool ProVideoSystemItf::isConnected()
 void ProVideoSystemItf::flushDeviceBuffers()
 {
     int res = 0;
-    uint8_t flag = 0u;
+    uint8_t value = 0u;
+    uint8_t data[128];
 
-    // Read prompt 5 times to make sure buffers are empty
+    // Flush buffer of com port by reading from it
+    ctrl_channel_receive_response( GET_CHANNEL_INSTANCE(this), data, sizeof(data) );
+
+    // Read prompt 5 times to make sure device buffers are empty
     for ( int i = 0; i < 5; i++ )
     {
         // Read current prompt configuration
         res = ctrl_protocol_get_prompt( GET_PROTOCOL_INSTANCE(this),
-                    GET_CHANNEL_INSTANCE(this), &flag );
+                                        GET_CHANNEL_INSTANCE(this),
+                                        &value );
 
         // If read was successful (device answered), break
         if ( res == 0 )
