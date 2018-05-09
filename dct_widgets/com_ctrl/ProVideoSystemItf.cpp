@@ -545,8 +545,9 @@ void ProVideoSystemItf::GetDeviceList( uint32_t timeout )
     // Is there a signal listener
     if ( receivers(SIGNAL(DeviceListChanged(QList<rs485Device>))) > 0 )
     {
-        // Flush device buffers
-        flushDeviceBuffers();
+        // Flush com port buffer by reading from it
+        uint8_t data[128];
+        ctrl_channel_receive_response( GET_CHANNEL_INSTANCE(this), data, sizeof(data) );
 
         // Up to MAX_DEVICE_ID + 1 devices can be detected (because 0 is a valid address too)
         ctrl_protocol_device_t devices[MAX_DEVICE_ID + 1];
