@@ -309,7 +309,7 @@ public:
         delete m_FsmTimer;
         delete m_ui;
 
-        // Usually the temporary download folder is deleted during the update process, if not delete it now
+        // Delete the temporary download directory
         if ( m_download_dir )
         {
             delete m_download_dir;
@@ -638,7 +638,6 @@ void UpdateBox::getFirstUpdateIndex()
         d_data->m_ui->letFilename->clear();
         d_data->m_ui->letFiletype->clear();
     }
-
 }
 
 /******************************************************************************
@@ -1135,6 +1134,11 @@ void UpdateBox::onFsmTimer( )
     int res = 0;
     int updateIndex = d_data->m_upd_idx;
 
+    if ( updateIndex < 0 )
+    {
+        return;
+    }
+
     SystemStates state = getSystemState();
 
     // I. CommandState: not connected with flashloader
@@ -1201,7 +1205,6 @@ void UpdateBox::checkUpdateDirectory( QString updateDirectory  )
     // check if user selected a directory
     if ( !updateDirectory.isEmpty() )
     {
-
         // store new update directory path
         d_data->m_upd_dir = updateDirectory;
 
@@ -1716,16 +1719,8 @@ void UpdateBox::onUpdateFinished()
             if ( d_data->m_upd_cnt == getTotalNumUpdates() )
             {
                 // reset update counter and index
-                setUpdateCounter( 0 );
-                getNextUpdateIndex();   // this will not find a index, thus clear the file path line edit
-
-                // if updates were installed from a temp dir, delete it and reset the update dir
-                if ( d_data->m_download_dir )
-                {
-                    delete d_data->m_download_dir;
-                    d_data->m_download_dir = NULL;
-                    d_data->m_upd_dir.clear();
-                }
+                setUpdateCounter( 1 );
+                getFirstUpdateIndex();
 
                 // Switch to reboot state
                 setSystemState( RebootState );

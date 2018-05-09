@@ -634,6 +634,9 @@ void ProVideoSystemItf::flushDeviceBuffers()
             break;
         }
     }
+
+    // Flush buffer of com port by reading from it
+    ctrl_channel_receive_response( GET_CHANNEL_INSTANCE(this), data, sizeof(data) );
 }
 
 /******************************************************************************
