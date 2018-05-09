@@ -26,6 +26,8 @@
 #include <QMessageBox>
 #include <QProgressDialog>
 #include <QDockWidget>
+#include <QDesktopWidget>
+#include <QScrollBar>
 
 #include <ProVideoDevice.h>
 #include <infodialog.h>
@@ -67,9 +69,6 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
     // Create ui
     m_ui->setupUi( this );
 
-    // Make the Tab Widget the central widget
-    setCentralWidget( m_ui->tabWidget );
-
     // Setup the connect and setting dialogs
     setConnectDlg(connectDialog);
     setSettingsDlg(new SettingsDialog( this ));
@@ -100,9 +99,6 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
     // Configure the resize timer
     m_resizeTimer.setSingleShot( true );
     connect( &m_resizeTimer, SIGNAL(timeout()), this, SLOT(onResizeMainWindow()) );
-
-    // Resize to minimum size
-    onResizeMainWindow( true );   // Force resize, even if debug terminal is not visible
 }
 
 /******************************************************************************
@@ -116,7 +112,7 @@ MainWindow::~MainWindow()
 }
 
 /******************************************************************************
- * MainWindow::~MainWindow
+ * MainWindow::closeEvent
  *****************************************************************************/
 void MainWindow::closeEvent (QCloseEvent *event)
 {
@@ -341,6 +337,30 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
     // Settings Dialog
     m_SettingsDlg->setBroadcastSettingsVisible(deviceFeatures.hasRS232Interface);
     m_SettingsDlg->setRS232SettingsVisible(deviceFeatures.hasRS232Interface);
+
+    // Resize the scroll area widget (which holds the tab widget) to minimum size
+    m_ui->scrollArea->widget()->adjustSize();
+    m_ui->scrollArea->widget()->resize( m_ui->scrollArea->widget()->minimumSizeHint() );
+
+    /* Try setting the minimum size of the scroll area to the minimum size of the scroll area
+     * widget to avoid showing vertical and horizontal scroll bars */
+    m_ui->scrollArea->setMinimumSize( m_ui->scrollArea->widget()->minimumSizeHint());
+
+    /* Check if the screen is large enough to show the show the the GUI, if it is not, set the
+     * minimum width / height to 0 again to show scroll bars */
+    if ( QApplication::desktop()->availableGeometry().height() < this->height() )
+    {
+        m_ui->scrollArea->setMinimumHeight( 0 );
+        // Set minimum width to include the vertical scroll bar
+        m_ui->scrollArea->setMinimumWidth( m_ui->scrollArea->widget()->minimumSizeHint().width() + m_ui->scrollArea->verticalScrollBar()->width() );
+    }
+    if ( QApplication::desktop()->availableGeometry().width() < this->width() )
+    {
+        m_ui->scrollArea->setMinimumWidth( 0 );
+    }
+
+    // Resize main window
+    onResizeMainWindow( true );
 }
 
 /******************************************************************************
@@ -991,15 +1011,20 @@ void MainWindow::onLockCurrentTabPage( bool lock )
  *****************************************************************************/
 void MainWindow::onResizeMainWindow( bool force )
 {
-    /* Do not resize if the window is minimized, otherwise the layout might break.
-     * Also do only resize if the the debug terminal is not visible, or if force
-     * is set to true. */
-    if ( (!this->isMinimized() && !m_DebugTerminal->isVisible()) || force )
+    /* Only resize if the size of the scroll area has been fixed, that means the whole GUI is
+     * visible witouth scrollbars */
+    if ( m_ui->scrollArea->minimumHeight() != 0 && m_ui->scrollArea->minimumWidth() != 0 )
     {
-        // Resize to minimum size
-        this->adjustSize();
-        this->resize( this->minimumSizeHint() );
-        QApplication::processEvents(QEventLoop::WaitForMoreEvents);
+        /* Do not resize if the window is minimized, otherwise the layout might break.
+         * Also do only resize if the the debug terminal is not visible, or if force
+         * is set to true. */
+        if ( (!this->isMinimized() && !m_DebugTerminal->isVisible()) || force )
+        {
+            // Resize to minimum size
+            this->adjustSize();
+            this->resize( this->minimumSizeHint() );
+            QApplication::processEvents(QEventLoop::WaitForMoreEvents);
+        }
     }
 }
 
@@ -1046,8 +1071,6 @@ void MainWindow::setSettingsDlg( SettingsDialog * dlg )
         connect( m_SettingsDlg, SIGNAL(SystemSettingsChanged(int,int,int,int)), this, SLOT(onSystemSettingsChange(int,int,int,int)) );
         connect( m_SettingsDlg, SIGNAL(EngineeringModeChanged(bool)), this, SLOT(onEngineeringModeChange(bool)) );
         connect( m_SettingsDlg, SIGNAL(SaveSettings()), this, SLOT( onSaveSettingsClicked()) );
-
-//        connect( m_SettingsDlg, SIGNAL(ResizeRequest()), this, SLOT(onResizeRequest()) );
     }
 }
 

@@ -9,15 +9,9 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>946</width>
-    <height>1038</height>
+    <width>950</width>
+    <height>1015</height>
    </rect>
-  </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>ProVideo Color Control</string>
@@ -28,298 +22,296 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
-    <property name="sizeConstraint">
-     <enum>QLayout::SetDefaultConstraint</enum>
-    </property>
     <item>
-     <widget class="QTabWidget" name="tabWidget">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
+     <widget class="QScrollArea" name="scrollArea">
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
       </property>
-      <property name="tabPosition">
-       <enum>QTabWidget::East</enum>
-      </property>
-      <property name="tabShape">
-       <enum>QTabWidget::Rounded</enum>
-      </property>
-      <property name="currentIndex">
+      <property name="lineWidth">
        <number>0</number>
       </property>
-      <property name="iconSize">
-       <size>
-        <width>40</width>
-        <height>40</height>
-       </size>
+      <property name="sizeAdjustPolicy">
+       <enum>QAbstractScrollArea::AdjustToContents</enum>
       </property>
-      <property name="elideMode">
-       <enum>Qt::ElideNone</enum>
+      <property name="widgetResizable">
+       <bool>true</bool>
       </property>
-      <widget class="QWidget" name="tabInOut">
-       <attribute name="icon">
-        <iconset resource="../resource/resource.qrc">
-         <normaloff>:/images/tab/inout.png</normaloff>:/images/tab/inout.png</iconset>
-       </attribute>
-       <attribute name="title">
-        <string/>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_7">
+      <widget class="QWidget" name="scrollAreaWidgetContents">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>932</width>
+         <height>958</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_13">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
         <item>
-         <widget class="InOutBox" name="inoutBox">
-          <property name="maximumSize">
+         <widget class="QTabWidget" name="tabWidget">
+          <property name="tabPosition">
+           <enum>QTabWidget::East</enum>
+          </property>
+          <property name="tabShape">
+           <enum>QTabWidget::Rounded</enum>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <property name="iconSize">
            <size>
-            <width>16777215</width>
-            <height>16777215</height>
+            <width>40</width>
+            <height>40</height>
            </size>
           </property>
-          <property name="toolTip">
-           <string/>
+          <property name="elideMode">
+           <enum>Qt::ElideNone</enum>
           </property>
-          <property name="whatsThis">
-           <string/>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tabBlack">
-       <attribute name="icon">
-        <iconset resource="../resource/resource.qrc">
-         <normaloff>:/images/tab/black.png</normaloff>:/images/tab/black.png</iconset>
-       </attribute>
-       <attribute name="title">
-        <string/>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_5">
-        <item>
-         <widget class="BlackLevelBox" name="blackBox">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="whatsThis">
-           <string/>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tabWb">
-       <attribute name="icon">
-        <iconset resource="../resource/resource.qrc">
-         <normaloff>:/images/tab/thermometer.png</normaloff>:/images/tab/thermometer.png</iconset>
-       </attribute>
-       <attribute name="title">
-        <string/>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <item>
-         <widget class="WbBox" name="wbBox">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="whatsThis">
-           <string/>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tabFlt">
-       <attribute name="icon">
-        <iconset resource="../resource/resource.qrc">
-         <normaloff>:/images/tab/filter.png</normaloff>:/images/tab/filter.png</iconset>
-       </attribute>
-       <attribute name="title">
-        <string/>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_9">
-        <item>
-         <widget class="FltBox" name="fltBox">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="whatsThis">
-           <string/>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tabMcc">
-       <attribute name="icon">
-        <iconset resource="../resource/resource.qrc">
-         <normaloff>:/images/tab/piesegmentselect.png</normaloff>:/images/tab/piesegmentselect.png</iconset>
-       </attribute>
-       <attribute name="title">
-        <string/>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <item>
-         <widget class="MccEqBox" name="mccEqBox">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="whatsThis">
-           <string>MccEqBox</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tabKnee">
-       <attribute name="icon">
-        <iconset resource="../resource/resource.qrc">
-         <normaloff>:/images/tab/knee.png</normaloff>:/images/tab/knee.png</iconset>
-       </attribute>
-       <attribute name="title">
-        <string/>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_10">
-        <item>
-         <widget class="KneeBox" name="kneeBox">
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="whatsThis">
-           <string/>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tabGamma">
-       <attribute name="icon">
-        <iconset resource="../resource/resource.qrc">
-         <normaloff>:/images/tab/gamma.png</normaloff>:/images/tab/gamma.png</iconset>
-       </attribute>
-       <attribute name="title">
-        <string/>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_6">
-        <item>
-         <widget class="LutBox" name="lutBox">
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="whatsThis">
-           <string/>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tabDpcc">
-       <attribute name="icon">
-        <iconset resource="../resource/resource.qrc">
-         <normaloff>:/images/tab/dpcc.png</normaloff>:/images/tab/dpcc.png</iconset>
-       </attribute>
-       <attribute name="title">
-        <string/>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_12">
-        <item>
-         <widget class="DpccBox" name="dpccBox">
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="whatsThis">
-           <string/>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tabOut">
-       <attribute name="icon">
-        <iconset resource="../resource/resource.qrc">
-         <normaloff>:/images/tab/out.png</normaloff>:/images/tab/out.png</iconset>
-       </attribute>
-       <attribute name="title">
-        <string/>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_8">
-        <item>
-         <widget class="OutBox" name="outBox">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="whatsThis">
-           <string/>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tabInfo">
-       <attribute name="icon">
-        <iconset resource="../resource/resource.qrc">
-         <normaloff>:/images/tab/info.png</normaloff>:/images/tab/info.png</iconset>
-       </attribute>
-       <attribute name="title">
-        <string/>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_4">
-        <item>
-         <widget class="InfoBox" name="infoBox">
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="whatsThis">
-           <string/>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tabUpdate">
-       <attribute name="icon">
-        <iconset resource="../resource/resource.qrc">
-         <normaloff>:/images/tab/update.png</normaloff>:/images/tab/update.png</iconset>
-       </attribute>
-       <attribute name="title">
-        <string/>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_11">
-        <item>
-         <widget class="UpdateBox" name="updBox">
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="whatsThis">
-           <string/>
-          </property>
+          <widget class="QWidget" name="tabInOut">
+           <attribute name="icon">
+            <iconset resource="../resource/resource.qrc">
+             <normaloff>:/images/tab/inout.png</normaloff>:/images/tab/inout.png</iconset>
+           </attribute>
+           <attribute name="title">
+            <string/>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_7">
+            <item>
+             <widget class="InOutBox" name="inoutBox">
+              <property name="toolTip">
+               <string/>
+              </property>
+              <property name="whatsThis">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tabBlack">
+           <attribute name="icon">
+            <iconset resource="../resource/resource.qrc">
+             <normaloff>:/images/tab/black.png</normaloff>:/images/tab/black.png</iconset>
+           </attribute>
+           <attribute name="title">
+            <string/>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_5">
+            <item>
+             <widget class="BlackLevelBox" name="blackBox">
+              <property name="toolTip">
+               <string/>
+              </property>
+              <property name="whatsThis">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tabWb">
+           <attribute name="icon">
+            <iconset resource="../resource/resource.qrc">
+             <normaloff>:/images/tab/thermometer.png</normaloff>:/images/tab/thermometer.png</iconset>
+           </attribute>
+           <attribute name="title">
+            <string/>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <item>
+             <widget class="WbBox" name="wbBox">
+              <property name="toolTip">
+               <string/>
+              </property>
+              <property name="whatsThis">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tabFlt">
+           <attribute name="icon">
+            <iconset resource="../resource/resource.qrc">
+             <normaloff>:/images/tab/filter.png</normaloff>:/images/tab/filter.png</iconset>
+           </attribute>
+           <attribute name="title">
+            <string/>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_9">
+            <item>
+             <widget class="FltBox" name="fltBox">
+              <property name="toolTip">
+               <string/>
+              </property>
+              <property name="whatsThis">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tabMcc">
+           <attribute name="icon">
+            <iconset resource="../resource/resource.qrc">
+             <normaloff>:/images/tab/piesegmentselect.png</normaloff>:/images/tab/piesegmentselect.png</iconset>
+           </attribute>
+           <attribute name="title">
+            <string/>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <item>
+             <widget class="MccEqBox" name="mccEqBox">
+              <property name="toolTip">
+               <string/>
+              </property>
+              <property name="whatsThis">
+               <string>MccEqBox</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tabKnee">
+           <attribute name="icon">
+            <iconset resource="../resource/resource.qrc">
+             <normaloff>:/images/tab/knee.png</normaloff>:/images/tab/knee.png</iconset>
+           </attribute>
+           <attribute name="title">
+            <string/>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_10">
+            <item>
+             <widget class="KneeBox" name="kneeBox">
+              <property name="toolTip">
+               <string/>
+              </property>
+              <property name="whatsThis">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tabGamma">
+           <attribute name="icon">
+            <iconset resource="../resource/resource.qrc">
+             <normaloff>:/images/tab/gamma.png</normaloff>:/images/tab/gamma.png</iconset>
+           </attribute>
+           <attribute name="title">
+            <string/>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_6">
+            <item>
+             <widget class="LutBox" name="lutBox">
+              <property name="toolTip">
+               <string/>
+              </property>
+              <property name="whatsThis">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tabDpcc">
+           <attribute name="icon">
+            <iconset resource="../resource/resource.qrc">
+             <normaloff>:/images/tab/dpcc.png</normaloff>:/images/tab/dpcc.png</iconset>
+           </attribute>
+           <attribute name="title">
+            <string/>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_12">
+            <item>
+             <widget class="DpccBox" name="dpccBox">
+              <property name="toolTip">
+               <string/>
+              </property>
+              <property name="whatsThis">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tabOut">
+           <attribute name="icon">
+            <iconset resource="../resource/resource.qrc">
+             <normaloff>:/images/tab/out.png</normaloff>:/images/tab/out.png</iconset>
+           </attribute>
+           <attribute name="title">
+            <string/>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_8">
+            <item>
+             <widget class="OutBox" name="outBox">
+              <property name="toolTip">
+               <string/>
+              </property>
+              <property name="whatsThis">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tabInfo">
+           <attribute name="icon">
+            <iconset resource="../resource/resource.qrc">
+             <normaloff>:/images/tab/info.png</normaloff>:/images/tab/info.png</iconset>
+           </attribute>
+           <attribute name="title">
+            <string/>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_4">
+            <item>
+             <widget class="InfoBox" name="infoBox">
+              <property name="toolTip">
+               <string/>
+              </property>
+              <property name="whatsThis">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tabUpdate">
+           <attribute name="icon">
+            <iconset resource="../resource/resource.qrc">
+             <normaloff>:/images/tab/update.png</normaloff>:/images/tab/update.png</iconset>
+           </attribute>
+           <attribute name="title">
+            <string/>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_11">
+            <item>
+             <widget class="UpdateBox" name="updBox">
+              <property name="toolTip">
+               <string/>
+              </property>
+              <property name="whatsThis">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
          </widget>
         </item>
        </layout>
