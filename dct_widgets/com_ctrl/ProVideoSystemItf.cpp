@@ -615,10 +615,10 @@ void ProVideoSystemItf::flushDeviceBuffers()
 {
     int res = 0;
     uint8_t value = 0u;
-    uint8_t data[128];
+    uint8_t data[32];
 
-    // Flush buffer of com port by reading from it
-    ctrl_channel_receive_response( GET_CHANNEL_INSTANCE(this), data, sizeof(data) );
+    // Flush buffer of com port by reading from it until there is no data left
+    while ( ctrl_channel_receive_response( GET_CHANNEL_INSTANCE(this), data, sizeof(data) ) != 0 ) {};
 
     // Read prompt 5 times to make sure device buffers are empty
     for ( int i = 0; i < 5; i++ )
@@ -635,8 +635,8 @@ void ProVideoSystemItf::flushDeviceBuffers()
         }
     }
 
-    // Flush buffer of com port by reading from it
-    ctrl_channel_receive_response( GET_CHANNEL_INSTANCE(this), data, sizeof(data) );
+    // Flush buffer of com port by reading from it until there is no data left
+    while ( ctrl_channel_receive_response( GET_CHANNEL_INSTANCE(this), data, sizeof(data) ) != 0 ) {};
 }
 
 /******************************************************************************
