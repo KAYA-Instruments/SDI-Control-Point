@@ -712,8 +712,15 @@ bool UpdateBox::isNewVersion( version_t server_version, version_t current_versio
  *****************************************************************************/
 void UpdateBox::onDownloadProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
+    // Calculate progress
+    int progress = 0;
+    if ( bytesTotal > 0 )
+    {
+         progress = (int)( (bytesReceived * 100) / bytesTotal );
+    }
+
     // Emit download progress signal
-    emit DownloadProgress( (int) ((bytesReceived * 100) / bytesTotal) );
+    emit DownloadProgress( progress );
 }
 
 /******************************************************************************
