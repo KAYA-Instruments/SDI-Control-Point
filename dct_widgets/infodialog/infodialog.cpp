@@ -1,6 +1,8 @@
 #include "infodialog.h"
 #include "ui_infodialog.h"
 
+#include <QIcon>
+
 InfoDialog::InfoDialog( QString iconFilePath, QString infoText , QWidget *parent ) :
     QDialog( parent ),
     ui( new Ui::InfoDialog )
