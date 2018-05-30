@@ -525,6 +525,7 @@ void UpdateBox::setSystemState( SystemStates state, bool force )
         else if ( state == ErrorState )
         {
             // error state, change run botton text to start, so that user can restart the update
+            d_data->m_ui->btnRun->setEnabled( true );
             d_data->m_ui->btnRun->setText( "Start" );
         }
 
