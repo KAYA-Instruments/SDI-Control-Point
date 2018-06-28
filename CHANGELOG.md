@@ -4,6 +4,19 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
+Version **1.1.5** - 28.06.2018
+
+* The update box is now more consistent in its behaviour when connecting to a new device, during device reboot and when an empty folder is selected
+* When closing the Connect Dialog the GUI does no longer close completely. This is only necesarry, when the GUI is not connected to a device, if that is the case a message will pop up
+* Added Scrollbars to the GUI which are automatically shown when the screen size is too small to fit the GUI completely
+* Made autodetection and device connection more robust
+* Fixed a bug where the GUI could crash while downloading a new device firmware from the server
+* The update box now does not delete an update after it was applied, this makes it more easy to flash the same update to multiple devices
+* Fixed a bug where the firmware update could not be restarted after failure
+* Changed display of the runtime counter in the info box, it now also displays the days (hours are not enough)
+
+## Older Releases:
+
 Version **1.1.4** - 08.04.2018
 
 * Added a dialog to the in-out-box to change the weights of the auto exposure control (new AEC feature)
@@ -11,8 +24,6 @@ Version **1.1.4** - 08.04.2018
 * Fixed a bug where the "verify" checkbox in the update-box could be checked / unchecked during a running flash procedure
 * Fixed a bug where the command history of the debug terminal would jump to the wrong history entry after a new command was send
 * Fixed a bug where the GUI would not correctly reconnect after updating the device firmware on Windows
-
-## Older Releases:
 
 Version **1.1.3** - 02.04.2018
 

@@ -1,6 +1,6 @@
 # Should be updated before each release!
-VERSION = 1.1.4
-DEFINES += VERSION_STRING=\\\"1.1.4\\\"
+VERSION = 1.1.5
+DEFINES += VERSION_STRING=\\\"1.1.5\\\"
 
 QMAKE_TARGET_COMPANY = "Dream Chip Technologies GmbH"
 QMAKE_TARGET_PRODUCT = "ProVideo Widget Collection"
