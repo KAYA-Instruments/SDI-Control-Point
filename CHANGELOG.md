@@ -4,12 +4,13 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
-Version **1.1.4** - 07.04.2018
+Version **1.1.4** - 08.04.2018
 
 * Added a dialog to the in-out-box to change the weights of the auto exposure control (new AEC feature)
 * Added display of the shut down temperature to the info box (requires latest device firmware)
 * Fixed a bug where the "verify" checkbox in the update-box could be checked / unchecked during a running flash procedure
 * Fixed a bug where the command history of the debug terminal would jump to the wrong history entry after a new command was send
+* Fixed a bug where the GUI would not correctly reconnect after updating the device firmware on Windows
 
 ## Older Releases:
 
