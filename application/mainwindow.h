@@ -113,6 +113,7 @@ private:
     QString                 m_filename;
     QList<DctWidgetBox *>   m_activeWidgets;
     QTimer                  m_resizeTimer;
+    bool                    m_ScrollbarsNeeded;
 
     void setConnectDlg( ConnectDialog * );
     void setSettingsDlg( SettingsDialog * );

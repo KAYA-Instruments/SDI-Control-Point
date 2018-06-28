@@ -65,6 +65,7 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
     , m_DebugTerminal( NULL )
     , m_cbxConnectedDevices( NULL )
     , m_dev ( NULL )
+    , m_ScrollbarsNeeded( false )
 {
     // Create ui
     m_ui->setupUi( this );
@@ -338,25 +339,33 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
     m_SettingsDlg->setBroadcastSettingsVisible(deviceFeatures.hasRS232Interface);
     m_SettingsDlg->setRS232SettingsVisible(deviceFeatures.hasRS232Interface);
 
-    // Resize the scroll area widget (which holds the tab widget) to minimum size
-    m_ui->scrollArea->widget()->adjustSize();
-    m_ui->scrollArea->widget()->resize( m_ui->scrollArea->widget()->minimumSizeHint() );
-
-    /* Try setting the minimum size of the scroll area to the minimum size of the scroll area
-     * widget to avoid showing vertical and horizontal scroll bars */
-    m_ui->scrollArea->setMinimumSize( m_ui->scrollArea->widget()->minimumSizeHint());
-
-    /* Check if the screen is large enough to show the show the the GUI, if it is not, set the
-     * minimum width / height to 0 again to show scroll bars */
-    if ( QApplication::desktop()->availableGeometry().height() < this->height() )
+    if ( !m_ScrollbarsNeeded )
     {
-        m_ui->scrollArea->setMinimumHeight( 0 );
-        // Set minimum width to include the vertical scroll bar
-        m_ui->scrollArea->setMinimumWidth( m_ui->scrollArea->widget()->minimumSizeHint().width() + m_ui->scrollArea->verticalScrollBar()->width() );
-    }
-    if ( QApplication::desktop()->availableGeometry().width() < this->width() )
-    {
-        m_ui->scrollArea->setMinimumWidth( 0 );
+        // Resize the scroll area widget (which holds the tab widget) to minimum size
+        m_ui->scrollArea->widget()->adjustSize();
+        m_ui->scrollArea->widget()->resize( m_ui->scrollArea->widget()->minimumSizeHint() );
+
+        /* Try setting the minimum size of the scroll area to the minimum size of the scroll area
+         * widget to avoid showing vertical and horizontal scroll bars */
+        m_ui->scrollArea->setMinimumSize( m_ui->scrollArea->widget()->minimumSizeHint());
+
+        /* Check if the screen is large enough to show the GUI, if it is not, set the
+         * minimum width / height to 0 again to show scroll bars */
+        if ( QApplication::desktop()->availableGeometry().height() < this->minimumSizeHint().height() )
+        {
+            m_ScrollbarsNeeded = true;
+            this->setMaximumHeight( QApplication::desktop()->availableGeometry().height() );
+            m_ui->scrollArea->setMinimumHeight( 0 );
+
+            // Set minimum width to include the vertical scroll bar
+            m_ui->scrollArea->setMinimumWidth( m_ui->scrollArea->widget()->minimumSizeHint().width() + m_ui->scrollArea->verticalScrollBar()->width() );
+        }
+        if ( QApplication::desktop()->availableGeometry().width() < this->width() )
+        {
+            m_ScrollbarsNeeded = true;
+            this->setMaximumWidth( QApplication::desktop()->availableGeometry().width() );
+            m_ui->scrollArea->setMinimumWidth( 0 );
+        }
     }
 
     // Resize main window
@@ -1011,9 +1020,8 @@ void MainWindow::onLockCurrentTabPage( bool lock )
  *****************************************************************************/
 void MainWindow::onResizeMainWindow( bool force )
 {
-    /* Only resize if the size of the scroll area has been fixed, that means the whole GUI is
-     * visible witouth scrollbars */
-    if ( m_ui->scrollArea->minimumHeight() != 0 && m_ui->scrollArea->minimumWidth() != 0 )
+    /* Only resize if the whole GUI is visible witouth scrollbars */
+    if ( !m_ScrollbarsNeeded )
     {
         /* Do not resize if the window is minimized, otherwise the layout might break.
          * Also do only resize if the the debug terminal is not visible, or if force
@@ -1022,6 +1030,7 @@ void MainWindow::onResizeMainWindow( bool force )
         {
             // Resize to minimum size
             this->adjustSize();
+            qDebug() << this->minimumSizeHint();
             this->resize( this->minimumSizeHint() );
             QApplication::processEvents(QEventLoop::WaitForMoreEvents);
         }
