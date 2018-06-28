@@ -154,7 +154,7 @@ void InfoBox::applySettings( void )
 void InfoBox::setRuntimeVisible( const bool value )
 {
     d_data->m_ui->lblRuntime->setVisible(value);
-    d_data->m_ui->tetRuntime->setVisible(value);
+    d_data->m_ui->letRuntime->setVisible(value);
 }
 
 /******************************************************************************
@@ -297,8 +297,15 @@ void InfoBox::onFeatureMaskSwChange( uint32_t mask )
  *****************************************************************************/
 void InfoBox::onRunTimeChange( uint32_t seconds )
 {
-    QTime t( 0, 0 , 0 );
-    d_data->m_ui->tetRuntime->setTime( t.addSecs( seconds ) );
+    int secs = seconds % 60;
+    seconds /= 60;
+    int mins = seconds % 60;
+    seconds /= 60;
+    int hours = seconds % 24;
+    seconds /= 24;
+    int days = seconds;
+
+    d_data->m_ui->letRuntime->setText( QStringLiteral("%1:%2:%3:%4 (d:h:m:s)").arg(days).arg(hours).arg(mins).arg(secs) );
 }
 
 /******************************************************************************
