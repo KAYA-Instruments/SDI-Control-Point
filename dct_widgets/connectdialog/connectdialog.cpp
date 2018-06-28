@@ -1731,8 +1731,17 @@ void ConnectDialog::reject()
         ctrl_channel_rs232_open_config_t currentRs232Config = getRs232Config();
         ctrl_channel_rs4xx_open_config_t currentRs485Config = getRs485Config();
 
-        if ( memcmp( &m_lastRs232Config, &currentRs232Config, sizeof(ctrl_channel_rs232_open_config_t) ) != 0 ||
-             memcmp( &m_lastRs485Config, &currentRs485Config, sizeof(ctrl_channel_rs4xx_open_config_t) ) != 0 )
+        if ( m_lastRs232Config.baudrate != currentRs232Config.baudrate ||
+             m_lastRs232Config.data != currentRs232Config.data         ||
+             m_lastRs232Config.idx != currentRs232Config.idx           ||
+             m_lastRs232Config.parity != currentRs232Config.parity     ||
+             m_lastRs232Config.stop != currentRs232Config.stop         ||
+             m_lastRs485Config.baudrate != currentRs485Config.baudrate ||
+             m_lastRs485Config.dev_addr != currentRs485Config.dev_addr ||
+             m_lastRs485Config.data != currentRs485Config.data         ||
+             m_lastRs485Config.idx != currentRs485Config.idx           ||
+             m_lastRs485Config.parity != currentRs485Config.parity     ||
+             m_lastRs485Config.stop != currentRs485Config.stop         )
         {
             /* If the settings got changed tell the user that he can either go back and
              * connect to a device or quit the GUI */

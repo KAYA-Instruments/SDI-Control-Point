@@ -354,7 +354,6 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
         if ( QApplication::desktop()->availableGeometry().height() < this->minimumSizeHint().height() )
         {
             m_ScrollbarsNeeded = true;
-            this->setMaximumHeight( QApplication::desktop()->availableGeometry().height() );
             m_ui->scrollArea->setMinimumHeight( 0 );
 
             // Set minimum width to include the vertical scroll bar
@@ -363,7 +362,6 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
         if ( QApplication::desktop()->availableGeometry().width() < this->width() )
         {
             m_ScrollbarsNeeded = true;
-            this->setMaximumWidth( QApplication::desktop()->availableGeometry().width() );
             m_ui->scrollArea->setMinimumWidth( 0 );
         }
     }
