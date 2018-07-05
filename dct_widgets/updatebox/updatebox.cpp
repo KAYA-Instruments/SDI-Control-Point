@@ -743,9 +743,9 @@ bool UpdateBox::downloadFile( QUrl url )
     connect( &timer, SIGNAL(timeout()), &loop, SLOT(quit()) );
 
     // Start the timer, download request and event loop
-    /* Note: If no data is received within 5 seconds the connection is considered broken
+    /* Note: If no data is received within 10 seconds the connection is considered broken
      * and the download is aborted. */
-    timer.start( 5000 );
+    timer.start( 10000 );
     d_data->m_network_manager->get( request );
     QNetworkReply * reply = d_data->m_network_manager->get( request );
 
@@ -1159,7 +1159,6 @@ void UpdateBox::onFsmTimer( )
         // run asynchronous command
         res = d_data->m_application->runCommand(
                 FlashLoader::FLASHLOAD_CMD_SYSTEM_INFO );
-        HANDLE_ERROR( res );
 
         // restart reconnect timer
         d_data->m_FsmTimer->start( 2000 );
@@ -1179,7 +1178,6 @@ void UpdateBox::onFsmTimer( )
         // start flashing
         res = d_data->m_application->runCommand(
                 FlashLoader::FLASHLOAD_CMD_PROGRAM, d_data->m_upd_config[updateIndex].sector, 0, d_data->m_upd_config[updateIndex].file );
-        HANDLE_ERROR( res );
     }
 
     // III. ErrorStateRetry: An error occured while updating
@@ -1192,6 +1190,31 @@ void UpdateBox::onFsmTimer( )
     // IV. update running or error state
     else
     {
+    }
+
+    // Handle errors
+    if ( res == -EBUSY )
+    {
+        QMessageBox::warning( this,
+                              "Updated Failed",
+                              "An invalid command was sent to the Flashloader Tool.\n\n"
+                              "This error should not occur, please send a bug report to the developers." );
+        setSystemState( ErrorState );
+
+        // set normal cursor
+        setNormalCursor();
+    }
+    else if ( res == -ENOENT )
+    {
+        QMessageBox::warning( this,
+                              "Flashloader Tool not found",
+                              "The Flashloader Tool could not be found. Please make sure that the file 'flashloader.exe' is "
+                              "placed in a folder named 'tools' which is placed in the same folder that 'ProVideo.exe' is placed.\n\n"
+                              "Please restart the Update after copying the Flashloader." );
+        setSystemState( ErrorState );
+
+        // set normal cursor
+        setNormalCursor();
     }
 }
 

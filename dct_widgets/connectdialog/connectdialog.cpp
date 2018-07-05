@@ -61,7 +61,8 @@ ConnectDialog::ConnectDialog( QWidget * parent )
     , m_connectedDevice ( NULL )
     , m_active( NULL )
     , m_detectedRS485Devices()
-    , m_currentRS485DeviceIndex(-1)
+    , m_currentRS485DeviceIndex( -1 )
+    , m_firstStart( true )
 {
     // initialize UI
     m_ui->setupUi( this );
@@ -1713,6 +1714,9 @@ void ConnectDialog::accept()
         // Try to connect with the device
         if ( connectWithDevice() )
         {
+            // GUI was successfully connected, next time the connect dialog is opend will not be the first start
+            m_firstStart = false;
+
             // call derived function to close
             QDialog::accept();
         }
@@ -1771,8 +1775,8 @@ void ConnectDialog::reject()
             QDialog::accept();
         }
     }
-    // If no connection is established (e.g. connection failed)
-    else
+    // If no connection is established (e.g. connection failed) and this is not the first start of the GUI
+    else if ( !m_firstStart )
     {
         // Ask user if he wants to leave the GUI
         QMessageBox::StandardButton reply;
@@ -1790,6 +1794,12 @@ void ConnectDialog::reject()
             // Call reject to close the main window
             QDialog::reject();
         }
+    }
+    // No connection is established, but this is the first start (main window was never shown)
+    else
+    {
+        // Call reject to close the main window
+        QDialog::reject();
     }
 }
 

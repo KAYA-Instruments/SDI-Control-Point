@@ -160,6 +160,7 @@ private:
     QVector<detectedRS485Device> m_detectedRS485Devices;    // list of the RS485 devices which were detected during scan
     int                          m_currentRS485DeviceIndex; // Index of the connected device from the m_detectedRS485Devices list that is currently connected
     QPushButton *                m_rescan;                  // rescan button
+    bool                         m_firstStart;              // connect dialog was opend for the first time
 
     ctrl_channel_rs4xx_open_config_t m_lastRs485Config;     // Last used RS485 connection settings
     ctrl_channel_rs232_open_config_t m_lastRs232Config;     // Last used RS232 connection settings
