@@ -24,6 +24,7 @@
 #include <QProxyStyle>
 #include <QThread>
 #include <QTime>
+#include <QMessageBox>
 
 #include "inoutbox.h"
 #include "ui_inoutbox.h"
@@ -958,6 +959,11 @@ void InOutBox::loadSettings( QSettings & s )
 {
     s.beginGroup( INOUT_SETTINGS_SECTION_NAME );
     
+    /* Disable genlock before making changes to the settings, otherwise the user might see
+     * multiple warnings if no sync signal is available in slave mode and the process takes
+     * very long because the device will run into the genlock lock timeout multiple times. */
+    emit ChainGenlockModeChanged( GenLockModeDisabled );
+
     // Note: Set video mode first, otherwise gain and exposure will not be correctly set
     setVideoMode( s.value( INOUT_SETTINGS_VIDEO_MODE ).toString() );
     setSdi2Mode( s.value( INOUT_SETTINGS_SDI2_MODE ).toString() );
@@ -988,10 +994,10 @@ void InOutBox::loadSettings( QSettings & s )
 
     setLsc( lscSetup );
 
-    setGenLockMode( s.value( INOUT_SETTINGS_GENLOCK_MODE ).toString() );
     setGenLockOffsetVertical( s.value( INOUT_SETTINGS_GENLOCK_OFFSET_VERTICAL ).toInt() );
     setGenLockOffsetHorizontal( s.value( INOUT_SETTINGS_GENLOCK_OFFSET_HORIZONTAL ).toInt() );
     setGenLockTermination( s.value( INOUT_SETTINGS_GENLOCK_TERMINATION ).toBool() );
+    setGenLockMode( s.value( INOUT_SETTINGS_GENLOCK_MODE ).toString() );
 
     s.endGroup();
 }
@@ -1042,6 +1048,11 @@ void InOutBox::saveSettings( QSettings & s )
  *****************************************************************************/
 void InOutBox::applySettings( void )
 {
+    /* Disable genlock before making changes to the settings, otherwise the user might see
+     * multiple warnings if no sync signal is available in slave mode and the process takes
+     * very long because the device will run into the genlock lock timeout multiple times. */
+    emit ChainGenlockModeChanged( GenLockModeDisabled );
+
     // Note: Set video mode first, otherwise gain and exposure will not be correctly set
     emit ChainVideoModeChanged( d_data->m_ui->cbxVideoMode->currentData().toInt() );
     emit ChainSdi2ModeChanged( d_data->m_ui->cbxSdi2Mode->currentData().toInt() );
@@ -1058,9 +1069,9 @@ void InOutBox::applySettings( void )
     emit AecSetupChanged( createAecVector() );
     d_data->m_weightDialog->setAecWeights( d_data->m_weightDialog->getAecWeights() );
 
-    emit ChainGenlockModeChanged( d_data->m_ui->cbxGenLockMode->currentData().toInt() );
     emit ChainGenlockOffsetChanged( GenLockOffsetVertical(), GenLockOffsetHorizontal() );
     emit ChainGenlockTerminationChanged( GenLockTermination() );
+    emit ChainGenlockModeChanged( d_data->m_ui->cbxGenLockMode->currentData().toInt() );
 }
 
 /******************************************************************************
@@ -2056,6 +2067,16 @@ void InOutBox::onSbxGenlockOffsetHorizontalChange( int value )
  *****************************************************************************/
 void InOutBox::onCbxGenlockTerminationChange( int value )
 {
+    if ( GenLockMode() == GetGenlockModeName( GenLockModeMaster ) && value )
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Termination enabled in Master Mode");
+        msgBox.setText("You have enabled Genlock Termination while the device is in Genlock Master Mode.\n\n"
+                       "In Master Mode the Termination is always disabled, regardless of the Genlock "
+                       "Termination setting. It will get enabled as soon as you switch to Slave Mode.");
+        msgBox.exec();
+    }
+
     setWaitCursor();
     emit ChainGenlockTerminationChanged( (value == Qt::Checked) ? 1 : 0 );
     setNormalCursor();

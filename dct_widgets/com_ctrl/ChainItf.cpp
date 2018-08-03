@@ -405,7 +405,7 @@ void ChainItf::onChainVideoModeChange( int value )
             msgBox.setWindowTitle("Genlock Error");
             msgBox.setText("The device can not lock to the supplied sync source.\n\n"
                            "Please make sure you have attached a valid sync signal "
-                           "that matches the the currently setup video mode.");
+                           "that matches the currently setup video mode.");
             msgBox.exec();
         }
     }
@@ -518,7 +518,7 @@ void ChainItf::onChainGenlockModeChange( int value )
         msgBox.setWindowTitle("Genlock Error");
         msgBox.setText("The device can not lock to the supplied sync source.\n\n"
                        "Please make sure you have attached a valid sync signal "
-                       "that matches the the currently setup video mode.");
+                       "that matches the currently setup video mode.");
         msgBox.exec();
     }
 
