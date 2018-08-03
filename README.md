@@ -90,7 +90,7 @@ How to crosscompile a QT5 project using MXE:
 
 1. Get the MXE repo from github:  
    ```# git clone https://github.com/mxe/mxe.git```
-2. Build the cross compile toolchain for qt5. This will just build the needed functionality for this project to decrease compile time:  
+2. Build the cross compile toolchain for qt5. The follwoing command will just build the needed functionality for this project to decrease compile time. To further speed up the process you can add "-j 4 JOBS=2" or something similar (see https://mxe.cc/#usage for more information):  
    ```# cd mxe && make qtbase qtserialport```
 3. Go to the application folder of the project (where the application *.pro file lies)  
    ```# cd <project folder>/application/```
