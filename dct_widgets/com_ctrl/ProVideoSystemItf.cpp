@@ -29,7 +29,7 @@
 #include "common.h"
 #include "ProVideoSystemItf.h"
 
-#include <QtDebug>
+#include <QThread>
 
 /******************************************************************************
  * ProVideoSystemItf::resync()
@@ -621,6 +621,9 @@ void ProVideoSystemItf::flushDeviceBuffers()
     int res = ctrl_protocol_flush_buffers( GET_PROTOCOL_INSTANCE(this),
                                            GET_CHANNEL_INSTANCE(this) );
     HANDLE_ERROR( res );
+
+    // Wait 10 ms
+    QThread::msleep(10);
 
     // Flush buffer of com port by reading from it until there is no data left
     while ( ctrl_channel_receive_response( GET_CHANNEL_INSTANCE(this), data, sizeof(data) ) != 0 ) {};
