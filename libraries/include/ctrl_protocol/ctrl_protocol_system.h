@@ -722,6 +722,21 @@ int ctrl_protocol_get_over_temp_count
 );
 
 /**************************************************************************//**
+ * @brief Flush buffers of the device by sending multiple new lines
+ *
+ * @param[in]  channel  control channel instance
+ * @param[in]  protocol control protocol instance
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_flush_buffers
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel
+);
+
+
+/**************************************************************************//**
  * @brief Run the reboot command on device 
  *
  * @note       The control channel needs to be reconnected.
@@ -848,6 +863,7 @@ typedef struct ctrl_protocol_sys_drv_s
     ctrl_protocol_int32_array_t     get_max_temp;
     ctrl_protocol_run_t             max_temp_reset;
     ctrl_protocol_get_uint32_t      get_over_temp_count;
+    ctrl_protocol_run_t             flush_buffers;
     ctrl_protocol_run_t             reboot;
     ctrl_protocol_run_t             update;
     ctrl_protocol_run_t             save_settings;

@@ -545,9 +545,8 @@ void ProVideoSystemItf::GetDeviceList( uint32_t timeout )
     // Is there a signal listener
     if ( receivers(SIGNAL(DeviceListChanged(QList<rs485Device>))) > 0 )
     {
-        // Flush com port buffer by reading from it
-        uint8_t data[128];
-        ctrl_channel_receive_response( GET_CHANNEL_INSTANCE(this), data, sizeof(data) );
+        // Flush buffers
+        flushDeviceBuffers();
 
         // Up to MAX_DEVICE_ID + 1 devices can be detected (because 0 is a valid address too)
         ctrl_protocol_device_t devices[MAX_DEVICE_ID + 1];
@@ -613,27 +612,15 @@ bool ProVideoSystemItf::isConnected()
  *****************************************************************************/
 void ProVideoSystemItf::flushDeviceBuffers()
 {
-    int res = 0;
-    uint8_t value = 0u;
     uint8_t data[32];
 
     // Flush buffer of com port by reading from it until there is no data left
     while ( ctrl_channel_receive_response( GET_CHANNEL_INSTANCE(this), data, sizeof(data) ) != 0 ) {};
 
-    // Read prompt 5 times to make sure device buffers are empty
-    for ( int i = 0; i < 5; i++ )
-    {
-        // Read current prompt configuration
-        res = ctrl_protocol_get_prompt( GET_PROTOCOL_INSTANCE(this),
-                                        GET_CHANNEL_INSTANCE(this),
-                                        &value );
-
-        // If read was successful (device answered), break
-        if ( res == 0 )
-        {
-            break;
-        }
-    }
+    // Flush buffers of device
+    int res = ctrl_protocol_flush_buffers( GET_PROTOCOL_INSTANCE(this),
+                                           GET_CHANNEL_INSTANCE(this) );
+    HANDLE_ERROR( res );
 
     // Flush buffer of com port by reading from it until there is no data left
     while ( ctrl_channel_receive_response( GET_CHANNEL_INSTANCE(this), data, sizeof(data) ) != 0 ) {};

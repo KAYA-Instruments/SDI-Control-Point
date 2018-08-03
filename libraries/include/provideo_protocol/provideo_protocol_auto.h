@@ -27,6 +27,8 @@
 extern "C" {
 #endif
 
+#include <ctrl_protocol/ctrl_protocol.h>
+
 /**************************************************************************//**
  * @brief      Register the AUTO protocol implementation at control protocol layer
  *

@@ -592,6 +592,20 @@ int ctrl_protocol_get_over_temp_count
 }
 
 /******************************************************************************
+ * ctrl_protocol_flush_buffers
+ *****************************************************************************/
+int ctrl_protocol_flush_buffers
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), flush_buffers );
+    return ( SYS_DRV(protocol->drv)->flush_buffers( protocol->ctx, channel ) );
+}
+
+/******************************************************************************
  * ctrl_protocol_reboot
  *****************************************************************************/
 int ctrl_protocol_reboot

@@ -20,7 +20,6 @@
  * @brief   Application main window
  *
  *****************************************************************************/
-#include <QDebug>
 #include <QLabel>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -1028,7 +1027,6 @@ void MainWindow::onResizeMainWindow( bool force )
         {
             // Resize to minimum size
             this->adjustSize();
-            qDebug() << this->minimumSizeHint();
             this->resize( this->minimumSizeHint() );
             QApplication::processEvents(QEventLoop::WaitForMoreEvents);
         }

@@ -202,6 +202,11 @@
 #define CMD_GET_DEVICE_LIST_MAX_TMO             ( 3000 )
 
 /******************************************************************************
+ * @brief command "flush_buffers"
+ *****************************************************************************/
+#define CMD_FLUSH_BUFFERS                       ( "\n\n\n\n\n" )
+
+/******************************************************************************
  * @brief command "reboot" 
  *****************************************************************************/
 #define CMD_REBOOT                              ( "reboot\n" )
@@ -1745,6 +1750,23 @@ static int get_over_temp_count
 }
 
 /******************************************************************************
+ * flush_buffers - flush the device buffers of the connected device
+ *****************************************************************************/
+static int flush_buffers
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel
+)
+{
+    (void) ctx;
+
+    // send data buffer to control channel
+    ctrl_channel_send_request( channel, (uint8_t *)CMD_FLUSH_BUFFERS, strlen( CMD_FLUSH_BUFFERS ) );
+
+    return 0;
+}
+
+/******************************************************************************
  * reboot - reboot the connected device
  *****************************************************************************/
 static int reboot
@@ -1876,6 +1898,7 @@ static ctrl_protocol_sys_drv_t provideo_sys_drv =
     .get_max_temp                 = get_max_temp,
     .max_temp_reset               = max_temp_reset,
     .get_over_temp_count          = get_over_temp_count,
+    .flush_buffers                = flush_buffers,
     .reboot                       = reboot,
     .update                       = update,
     .save_settings                = save_settings,
