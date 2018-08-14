@@ -1633,7 +1633,7 @@ void ConnectDialog::onReopenSerialConnection( void )
     QMessageBox msgBox;
     msgBox.setWindowTitle( "Restarting Device" );
     msgBox.setText( "The update was successful and the device is now restarting.\n\n"
-                    "It can take up to two minutes until the device is accessible again, please be patient." );
+                    "It can take up to 30 seconds until the device is accessible again, please be patient." );
     msgBox.setWindowModality( Qt::ApplicationModal );
     msgBox.setStandardButtons( 0 );
     msgBox.show();
@@ -1642,9 +1642,9 @@ void ConnectDialog::onReopenSerialConnection( void )
     // Reopen the serial port
     getActiveChannel()->ReOpen();
 
-    // Try to connect with the device, maximum wait time 120 * 1s = 2min
+    // Try to connect with the device, maximum wait time 30 sec
     int retryCount = 0;
-    const int numRetrys = 120;
+    const int numRetrys = 30;
     while ( !m_connectedDevice->isConnected() && retryCount < numRetrys )
     {
         // wait 1s before retry
