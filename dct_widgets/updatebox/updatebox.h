@@ -24,6 +24,7 @@
 #define __UPDATE_BOX_H__
 
 #include <QNetworkReply>
+#include <QMimeData>
 
 #include <dct_widgets_base.h>
 
@@ -46,7 +47,8 @@ public:
     };
 
     explicit UpdateBox( QWidget * parent = 0 );
-    ~UpdateBox();
+    ~UpdateBox() Q_DECL_OVERRIDE;
+
 
     quint32 Baudrate() const;
     void setBaudrate( const quint32 baudrate );
@@ -55,6 +57,9 @@ public:
     void setPortname( const QString& portname );
 
 protected:
+    void dragEnterEvent(QDragEnterEvent *event) Q_DECL_OVERRIDE;
+    void dropEvent(QDropEvent *event) Q_DECL_OVERRIDE;
+
     void prepareMode( const Mode mode ) Q_DECL_OVERRIDE;
 
     void loadSettings( QSettings & s ) Q_DECL_OVERRIDE;
@@ -74,6 +79,8 @@ private:
         int minor_release;
         int patch_level;
     } version_t;
+
+    QString mimeDataToUpdateFilePath( const QMimeData * mimeData );
 
     SystemStates getSystemState( void );
     void setSystemState( SystemStates state , bool force = false );

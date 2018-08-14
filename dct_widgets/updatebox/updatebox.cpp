@@ -35,6 +35,9 @@
 #include <QTemporaryDir>
 #include <QCryptographicHash>
 #include <QDesktopServices>
+#include <QMimeData>
+#include <QDragEnterEvent>
+#include <QDropEvent>
 
 #include <common.h>
 
@@ -96,14 +99,14 @@ typedef struct update_config_s
 #define PLATFORM_XBOW     ( "xbow" )    // platform-name
 const update_config_t xbow_update =
 {
-    .type        = xbow,
-    .baudrate    = 0u,        // use automatic baudrate detection of flashloader
-    .sector      = 128u,
-    .extension   = "rpd",
-    .content     = false,     // not needed it's clear
-    .reversal    = true,
-    .file        = "",
-    .description = "Combined Bitstream and Software Update File"
+    /* .type        = */ xbow,
+    /* .baudrate    = */ 0u,        // use automatic baudrate detection of flashloader
+    /* .sector      = */ 128u,
+    /* .extension   = */ "rpd",
+    /* .content     = */ false,     // not needed it's clear
+    /* .reversal    = */ true,
+    /* .file        = */ "",
+    /* .description = */ "Combined Bitstream and Software Update File"
 };
 
 // NOTE: condor4k and condor4k_mini, bitstream and firmware are seperate
@@ -115,27 +118,27 @@ const update_config_t xbow_update =
 // firmware update
 const update_config_t condor4k_fw_update =
 {
-    .type        = condor4k_fw,
-    .baudrate    = 0u,        // use automatic baudrate detection of flashloader
-    .sector      = 1u,
-    .extension   = "bin",
-    .content     = true,      // needed to distinguish between firmware and bitstream
-    .reversal    = false,
-    .file        = QString::null,
-    .description = "Software Update File"
+    /* .type        = */ condor4k_fw,
+    /* .baudrate    = */ 0u,        // use automatic baudrate detection of flashloader
+    /* .sector      = */ 1u,
+    /* .extension   = */ "bin",
+    /* .content     = */ true,      // needed to distinguish between firmware and bitstream
+    /* .reversal    = */ false,
+    /* .file        = */ QString::null,
+    /* .description = */ "Software Update File"
 };
 
 // bitstream update
 const update_config_t condor4k_bs_update =
 {
-    .type        = condor4k_bs,
-    .baudrate    = 0u,        // use automatic baudrate detection of flashloader
-    .sector      = 144u,
-    .extension   = "bin",
-    .content     = true,      // needed to distinguish between firmware and bitstream
-    .reversal    = false,
-    .file        = QString::null,
-    .description = "Bitstream Update File"
+    /* .type        = */ condor4k_bs,
+    /* .baudrate    = */ 0u,        // use automatic baudrate detection of flashloader
+    /* .sector      = */ 144u,
+    /* .extension   = */ "bin",
+    /* .content     = */ true,      // needed to distinguish between firmware and bitstream
+    /* .reversal    = */ false,
+    /* .file        = */ QString::null,
+    /* .description = */ "Bitstream Update File"
 };
 
 // NOTE: cooper, bitstream and firmware are seperate
@@ -146,27 +149,27 @@ const update_config_t condor4k_bs_update =
 // firmware update
 const update_config_t cooper_fw_update =
 {
-    .type        = cooper_fw,
-    .baudrate    = 0u,        // use automatic baudrate detection of flashloader
-    .sector      = 1u,
-    .extension   = "bin",
-    .content     = true,      // needed to distinguish between firmware and bitstream
-    .reversal    = false,
-    .file        = QString::null,
-    .description = "Software Update File"
+    /* .type        = */ cooper_fw,
+    /* .baudrate    = */ 0u,        // use automatic baudrate detection of flashloader
+    /* .sector      = */ 1u,
+    /* .extension   = */ "bin",
+    /* .content     = */ true,      // needed to distinguish between firmware and bitstream
+    /* .reversal    = */ false,
+    /* .file        = */ QString::null,
+    /* .description = */ "Software Update File"
 };
 
 // bitstream update
 const update_config_t cooper_bs_update =
 {
-    .type        = cooper_bs,
-    .baudrate    = 0u,        // use automatic baudrate detection of flashloader
-    .sector      = 4u,
-    .extension   = "bin",
-    .content     = true,      // needed to distinguish between firmware and bitstream
-    .reversal    = false,
-    .file        = QString::null,
-    .description = "Bitstream Update File"
+    /* .type        = */ cooper_bs,
+    /* .baudrate    = */ 0u,        // use automatic baudrate detection of flashloader
+    /* .sector      = */ 4u,
+    /* .extension   = */ "bin",
+    /* .content     = */ true,      // needed to distinguish between firmware and bitstream
+    /* .reversal    = */ false,
+    /* .file        = */ QString::null,
+    /* .description = */ "Bitstream Update File"
 };
 
 /******************************************************************************
@@ -360,6 +363,9 @@ UpdateBox::UpdateBox( QWidget * parent ) : DctWidgetBox( parent )
     // create private data container
     d_data = new PrivateData( this );
 
+    // enable dragging update files from the explorer and dropping them on this widget
+    setAcceptDrops( true );
+
     // set initial state
     setSystemState( CommandState );
 }
@@ -370,6 +376,74 @@ UpdateBox::UpdateBox( QWidget * parent ) : DctWidgetBox( parent )
 UpdateBox::~UpdateBox()
 {
     delete d_data;
+}
+
+/******************************************************************************
+ * UpdateBox::dragEnterEvent
+ *****************************************************************************/
+void UpdateBox::dragEnterEvent(QDragEnterEvent *event)
+{
+    // Check if a valid file was dragged
+    if ( mimeDataToUpdateFilePath( event->mimeData() ).isEmpty() == false )
+    {
+        event->acceptProposedAction();
+    }
+}
+
+/******************************************************************************
+ * UpdateBox::dropEvent
+ *****************************************************************************/
+void UpdateBox::dropEvent(QDropEvent *event)
+{
+    // Check if a valid vile was dropped
+    QString filePath = mimeDataToUpdateFilePath( event->mimeData() );
+    if ( filePath.isEmpty() == false )
+    {
+        // Get file info
+        QFileInfo updateFile( filePath );
+
+        // This is a single file, there is no update directory
+        d_data->m_upd_dir = updateFile.path();
+
+        // reset data structures
+        for ( int i = 0; i < d_data->m_upd_config.count(); i++ )
+        {
+            d_data->m_upd_config[i].file = QString::null;
+        }
+
+        // loop over all update configs and try to find a matching binary file
+        for ( int i = 0; i < d_data->m_upd_config.count(); i++ )
+        {
+            if ( updateFile.isFile() &&
+                 updateFile.suffix() == d_data->m_upd_config[i].extension )
+            {
+                // if content has to be checked
+                if ( d_data->m_upd_config[i].content )
+                {
+                    // check file type matches, if it does not, continue with next file
+                    if ( !fileTypeMatches(d_data->m_upd_config[i].type, filePath) )
+                    {
+                        continue;
+                    }
+                }
+
+                // Update file found
+                d_data->m_upd_config[i].file = filePath;
+
+                // Enable ui elements to start update
+                /*  counter will be incremented in the onUpdateFinished() slot,
+                 * which will then restart the timer, if more updates are pending */
+                setUpdateCounter( 1 );
+                d_data->m_ui->btnRun->setEnabled( true );
+                d_data->m_ui->cbxVerify->setEnabled( true );
+            }
+        }
+    }
+
+    // Call getFirstUpdateIndex() to setup line edits with the update path (or clear them if no update found)
+    getFirstUpdateIndex();
+
+    event->acceptProposedAction();
 }
 
 /******************************************************************************
@@ -434,6 +508,30 @@ void UpdateBox::saveSettings( QSettings & )
 void UpdateBox::applySettings( void )
 {
     // do nothing here
+}
+
+/******************************************************************************
+ * UpdateBox::mimeDataToUpdateFilePath
+ *****************************************************************************/
+QString UpdateBox::mimeDataToUpdateFilePath( const QMimeData * mimeData )
+{
+    if ( mimeData->hasUrls() &&  mimeData->urls().count() == 1 )
+    {
+        QString path = mimeData->urls().first().toLocalFile();
+        if ( path.isEmpty() == false )
+        {
+            // loop over all update configs and try to find a matching binary file
+            for ( int i = 0; i < d_data->m_upd_config.count(); i++ )
+            {
+                if ( QFileInfo( path ).isFile() &&
+                     QFileInfo( path ).suffix() == d_data->m_upd_config[i].extension )
+                {
+                    return path;
+                }
+            }
+        }
+    }
+    return QString();
 }
 
 /******************************************************************************
