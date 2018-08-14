@@ -4,6 +4,16 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
+Version **1.1.6** - 14.08.2018
+
+* Reduced maximum wait time for a reconnect after a device update from 2 minutes to 30 seconds
+* Added drag and drop to the update box, the user can now drag a binary file from his file explorer and drop it anywhere on the update box tab to load the file
+* Improved the way a connection is established with devices making it more robust which should lead to less errors when loading the device settings
+* Small improvements to the update box and the connect dialogq
+* Fixed the occurence of multiple "device not locked" messages when genlock is enabled on the device but no genlock signal is present
+
+## Older Releases:
+
 Version **1.1.5** - 28.06.2018
 
 * The update box is now more consistent in its behaviour when connecting to a new device, during device reboot and when an empty folder is selected
@@ -14,8 +24,6 @@ Version **1.1.5** - 28.06.2018
 * The update box now does not delete an update after it was applied, this makes it more easy to flash the same update to multiple devices
 * Fixed a bug where the firmware update could not be restarted after failure
 * Changed display of the runtime counter in the info box, it now also displays the days (hours are not enough)
-
-## Older Releases:
 
 Version **1.1.4** - 08.04.2018
 
