@@ -109,4 +109,7 @@ The above steps will build a Win32 static executable. To use dynamic libraries o
 * MinGW-w64, 64-bit, static libs: ```# make qtbase qtserialport MXE_TARGETS=x86_64-w64-mingw32.static```
 * MinGW-w64, 64-bit, shared libs: ```# make qtbase qtserialport MXE_TARGETS=x86_64-w64-mingw32.shared```
 
+By default MXE currently uses GCC 5, if you want to use a newer GCC Version, e.g. GCC 8 add the following string to the make command from step 2: ```MXE_PLUGIN_DIRS='plugins/gcc8'```
+A complete example building MXE with 8 threads and GCC 8 would look like this: ```# make -j 8 qtbase qtserialport MXE_PLUGIN_DIRS='plugins/gcc8'```
+
 And use the according toolchain-path in step 5.
