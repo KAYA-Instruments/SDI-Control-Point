@@ -887,8 +887,8 @@ bool UpdateBox::downloadFile( QUrl url )
  *****************************************************************************/
 void UpdateBox::onCheckFirmwareUpdateClicked()
 {
-    // Show a info dialog to indicate
-    InfoDialog infoDlg( QString(":/images/tab/update.png"), QString("Contacting Update Server..."), this->parentWidget() );
+    // Show a info dialog to indicate update server is contacted
+    InfoDialog infoDlg( QString(":/images/tab/update.png"), QString("Update Dialog"), QString("Contacting Update Server..."), this->parentWidget() );
     infoDlg.show();
 
     // Create URL request for file download
@@ -1046,7 +1046,7 @@ void UpdateBox::downloadUpdate()
     }
 
     // Show a info dialog to indicate download is ongoing
-    InfoDialog infoDlg( QString(":/icons/save2.png"), QString("Downloading Update..."), this->parentWidget() );
+    InfoDialog infoDlg( QString(":/icons/save2.png"), QString("Update Dialog"), QString("Downloading Update..."), this->parentWidget() );
     infoDlg.show();
 
     // Download update files to temporary directory
@@ -1148,8 +1148,8 @@ void UpdateBox::downloadUpdate()
  *****************************************************************************/
 void UpdateBox::onCheckGuiUpdateClicked()
 {
-    // Show a info dialog to indicate
-    InfoDialog infoDlg( QString(":/images/tab/update.png"), QString("Contacting Update Server..."), this->parentWidget() );
+    // Show a info dialog to indicate update server is contacted
+    InfoDialog infoDlg( QString(":/images/tab/update.png"), QString("Update Dialog"), QString("Contacting Update Server..."), this->parentWidget() );
     infoDlg.show();
 
     // Create URL request for file download

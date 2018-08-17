@@ -1118,7 +1118,7 @@ bool ConnectDialog::detectAndConnect()
     }
 
     // Show a message box to indicate device scan is ongoing
-    InfoDialog infoDlg( QString(":/icons/connect_64x64.png"), QString("Detecting Devices..."), this->parentWidget() );
+    InfoDialog infoDlg( QString(":/icons/connect_64x64.png"), QString("Detect Dialog"), QString("Detecting Devices..."), this->parentWidget() );
     infoDlg.show();
 
     // sleep for 100ms and process events, this ensures that the message box is correctly shown under linux

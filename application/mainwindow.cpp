@@ -415,7 +415,7 @@ void MainWindow::updateDeviceList()
 void MainWindow::connectToDevice( ProVideoDevice * dev )
 {
     // Show a message box to indicate connection is ongoing
-    InfoDialog infoDlg( QString(":/icons/cog-64.png"), QString("Loading Device Settings..."), this->parentWidget() );
+    InfoDialog infoDlg( QString(":/icons/cog-64.png"), QString("Connect Dialog"), QString("Loading Device Settings..."), this->parentWidget() );
     infoDlg.show();
 
     // sleep for 100ms and process events, this ensures that the message box is correctly shown under linux
