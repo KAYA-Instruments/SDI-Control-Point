@@ -3,7 +3,7 @@
 
 #include <QIcon>
 
-InfoDialog::InfoDialog( QString iconFilePath, QString infoText , QWidget *parent ) :
+InfoDialog::InfoDialog( QString iconFilePath, QString windowTitle, QString infoText , QWidget *parent ) :
     QDialog( parent ),
     ui( new Ui::InfoDialog )
 {
@@ -13,6 +13,7 @@ InfoDialog::InfoDialog( QString iconFilePath, QString infoText , QWidget *parent
     this->setWindowFlags( Qt::Dialog | Qt::FramelessWindowHint | Qt::MSWindowsFixedSizeDialogHint );
 
     // Set Icon and text
+    this->setWindowTitle( windowTitle );
     this->setWindowIcon( QIcon(iconFilePath) );
     this->ui->lblImage->setPixmap( QPixmap(iconFilePath) );
     this->ui->lblInfo->setText(infoText);

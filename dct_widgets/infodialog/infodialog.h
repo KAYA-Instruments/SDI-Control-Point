@@ -12,7 +12,7 @@ class InfoDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit InfoDialog( QString iconFilePath, QString infoText, QWidget *parent = 0 );
+    explicit InfoDialog( QString iconFilePath, QString windowTitle, QString infoText, QWidget *parent = 0 );
     ~InfoDialog();
 
 private:
