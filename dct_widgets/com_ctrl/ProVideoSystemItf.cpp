@@ -30,6 +30,7 @@
 #include "ProVideoSystemItf.h"
 
 #include <QThread>
+#include <QRegularExpression>
 
 /******************************************************************************
  * ProVideoSystemItf::resync()
@@ -78,7 +79,16 @@ void ProVideoSystemItf::GetSystemInfo()
     emit SystemPlatformChanged( QString((char *)system_info.system_platform) );
 
     // emit a DeviceNameChanged signal
-    emit DeviceNameChanged( QString((char *)system_info.device_name) );
+    /* Check if device name contains valid characters. When devices come
+     * fresh from the factory they might have garbage device names which can
+     * crash the GUI. */
+    QString device_name((char *)system_info.device_name);
+    bool containsNonASCII = device_name.contains(QRegularExpression(QStringLiteral("[^\\x{0000}-\\x{007F}]")));
+    if ( containsNonASCII )
+    {
+        device_name.clear();
+    }
+    emit DeviceNameChanged( device_name );
 
     // emit a DeviceIdChanged signal
     emit DeviceIdChanged( system_info.system_id[0], system_info.system_id[1],
@@ -164,7 +174,16 @@ void ProVideoSystemItf::GetDeviceName()
         HANDLE_ERROR( res );
 
         // emit a DeviceNameChanged signal
-        emit DeviceNameChanged( QString((char *)device_name) );
+        /* Check if device name contains valid characters. When devices come
+         * fresh from the factory they might have garbage device names which can
+         * crash the GUI. */
+        QString device_name_str((char *)device_name);
+        bool containsNonASCII = device_name_str.contains(QRegularExpression(QStringLiteral("[^\\x{0000}-\\x{007F}]")));
+        if ( containsNonASCII )
+        {
+            device_name_str.clear();
+        }
+        emit DeviceNameChanged( device_name_str );
     }
 }
 
