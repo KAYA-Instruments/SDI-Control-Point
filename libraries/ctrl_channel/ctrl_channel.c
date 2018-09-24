@@ -89,6 +89,8 @@ typedef struct ctrl_channel_s
     // transfer function
     ctrl_channel_open_t             open;               /**< instance specific implementation of open function */
     ctrl_channel_close_t            close;              /**< instance specific implementation of close function */
+    ctrl_channel_lock_t             lock;               /**< instance specific implementation of lock function */
+    ctrl_channel_release_t          release;            /**< instance specific implementation of release function */
     ctrl_channel_send_request_t     send_request;       /**< instance specific implementation of send function */
     ctrl_channel_receive_response_t receive_response;   /**< instance specific implementation of poll function */
 
@@ -202,11 +204,28 @@ int ctrl_channel_send_request
     int const                   len
 )
 {
+    int res = 0;
+
     CHECK_HANDLE_AND_STATE( ch, CTRL_CHANNEL_STATE_CONNECTED );
     
     CHECK_API_FUNC( ch->send_request );
 
-    return ( ch->send_request( ch->priv, data, len ) );
+    /* Send data over channel. Lock and release channel if those functions are
+     * available, otherwise send without locking. */
+
+    if (ch->lock )
+    {
+        ch->lock( ch->priv );
+    }
+
+    res = ch->send_request( ch->priv, data, len );
+
+    if (ch->release )
+    {
+        ch->release( ch->priv );
+    }
+
+    return res;
 }
 
 /******************************************************************************
@@ -219,11 +238,28 @@ int ctrl_channel_receive_response
     int const                   len
 )
 {
+    int res = 0;
+
     CHECK_HANDLE_AND_STATE( ch, CTRL_CHANNEL_STATE_CONNECTED );
     
     CHECK_API_FUNC( ch->receive_response );
 
-    return ( ch->receive_response( ch->priv, data, len ) );
+    /* Receive data over channel. Lock and release channel if those functions are
+     * available, otherwise receive without locking. */
+
+    if (ch->lock )
+    {
+        ch->lock( ch->priv );
+    }
+
+    res = ch->receive_response( ch->priv, data, len );
+
+    if (ch->release )
+    {
+        ch->release( ch->priv );
+    }
+
+    return res;
 }
 
 /******************************************************************************
@@ -237,6 +273,8 @@ int ctrl_channel_register
     ctrl_channel_get_port_name_t const      get_port_name,
     ctrl_channel_open_t const               open,
     ctrl_channel_close_t const              close,
+    ctrl_channel_lock_t const               lock,
+    ctrl_channel_release_t const            release,
     ctrl_channel_send_request_t const       send_request,
     ctrl_channel_receive_response_t const   receive_response
 )
@@ -261,6 +299,8 @@ int ctrl_channel_register
     // set functional handler
     ch->open             = open;
     ch->close            = close;
+    ch->lock             = lock;
+    ch->release          = release;
     ch->send_request     = send_request;
     ch->receive_response = receive_response;
 

@@ -139,8 +139,8 @@ signals:
     void ReopenSuccessful();
 
 public slots:
-    void accept();
-    void reject();
+    void accept() Q_DECL_OVERRIDE;
+    void reject() Q_DECL_OVERRIDE;
 
     void onBroadcastChange( bool enabled );
     void onCloseSerialConnection( void );
@@ -150,6 +150,9 @@ private slots:
     void rescan();
     void onDetectButtonClick();
     void onScanButtonClick();
+
+protected:
+    void showEvent( QShowEvent* event ) Q_DECL_OVERRIDE;
 
 private:
     Ui::dlgConnect *             m_ui;                      // GUI instance
@@ -165,7 +168,6 @@ private:
     ctrl_channel_rs4xx_open_config_t m_lastRs485Config;     // Last used RS485 connection settings
     ctrl_channel_rs232_open_config_t m_lastRs232Config;     // Last used RS232 connection settings
 
-    void showEvent( QShowEvent* event );
 
     ctrl_channel_rs4xx_open_config_t getRs485Config();
     void setRs485Config( ctrl_channel_rs4xx_open_config_t const config );

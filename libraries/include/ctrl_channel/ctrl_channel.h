@@ -109,6 +109,32 @@ typedef int (* ctrl_channel_close_t)
 );
 
 /**************************************************************************//**
+ * @brief function pointer type to lock access to a device. Should be called
+ *        before sending data to or receiving data from a device.
+ *
+ * @param[in]  handle   private channel context handle
+ *
+ * @return      0 on sucess, error-code otherwise
+ *****************************************************************************/
+typedef int (* ctrl_channel_lock_t)
+(
+    void * const    handle
+);
+
+/**************************************************************************//**
+ * @brief function pointer type to free lock of a device. Should be called
+ *        after calling sending data to or receiving data from a device.
+ *
+ * @param[in]  handle   private channel context handle
+ *
+ * @return      0 on sucess, error-code otherwise
+ *****************************************************************************/
+typedef int (* ctrl_channel_release_t)
+(
+    void * const    handle
+);
+
+/**************************************************************************//**
  * @brief function pointer type to send control command packet (request) 
  *        to a connected provideo device.
  *
@@ -258,6 +284,8 @@ int ctrl_channel_receive_response
  * @param[in]  get_port_name    function pointer to implementation
  * @param[in]  open             function pointer to implementation
  * @param[in]  close            function pointer to implementation
+ * @param[in]  lock             function pointer to implementation
+ * @param[in]  release          function pointer to implementation
  * @param[in]  send_request     function pointer to implementation
  * @param[in]  receive_response function pointer to implementation
  *
@@ -271,6 +299,8 @@ int ctrl_channel_register
     ctrl_channel_get_port_name_t const      get_port_name,
     ctrl_channel_open_t const               open,
     ctrl_channel_close_t const              close,
+    ctrl_channel_lock_t const               lock,
+    ctrl_channel_release_t const            release,
     ctrl_channel_send_request_t const       send_request,
     ctrl_channel_receive_response_t const   receive_response
 );

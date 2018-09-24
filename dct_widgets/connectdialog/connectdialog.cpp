@@ -137,7 +137,7 @@ ConnectDialog::~ConnectDialog()
 }
 
 /******************************************************************************
- * ConnectDialog::~showEvent
+ * ConnectDialog::showEvent
  *****************************************************************************/
 void ConnectDialog::showEvent( QShowEvent* event )
 {

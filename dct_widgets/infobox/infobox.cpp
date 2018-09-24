@@ -22,6 +22,7 @@
  *****************************************************************************/
 #include <QtDebug>
 #include <QMessageBox>
+#include <QTimer>
 
 #include <textviewer.h>
 
@@ -45,18 +46,21 @@ class InfoBox::PrivateData
 public:
     PrivateData()
         : m_ui( new Ui::UI_InfoBox ),
-          m_numTempSensors( 0 )
+          m_numTempSensors( 0 ),
+          m_updateTimer( new QTimer )
     {
         // do nothing
-    };
+    }
 
     ~PrivateData()
     {
         delete m_ui;
-    };
+        delete m_updateTimer;
+    }
 
     Ui::UI_InfoBox *    m_ui;                   /**< ui handle */
     unsigned int        m_numTempSensors;       /**< number of Temperature sensors which are available */
+    QTimer *            m_updateTimer;          /**< timer which regularly updates temperature and fan data */
 };
 
 /******************************************************************************
@@ -78,7 +82,8 @@ InfoBox::InfoBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->letFeatureMaskSw->setVisible( false );
     d_data->m_ui->lblFeatureMaskHw->setVisible( false );
     d_data->m_ui->letFeatureMaskHw->setVisible( false );
-    d_data->m_ui->lstFeatureMaskHw->setVisible( false );
+    d_data->m_ui->lblFeatureList->setVisible(false);
+    d_data->m_ui->lstFeatureList->setVisible( false );
 
     // fill temperature line edits
     d_data->m_ui->letTemp0->setText("N/A");
@@ -89,8 +94,12 @@ InfoBox::InfoBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->letMaxTempAllowed->setText("N/A");
     d_data->m_ui->letOverTemp->setText("N/A");
 
-    // connect temperature refresh and reset buttons
-    connect( d_data->m_ui->btnRefreshTemp, SIGNAL(clicked(bool)), this, SLOT(onRefreshTempClicked()) );
+    // setup timer to update the temperature / fan data every second
+    /* The timer will be started with every show event and stopped when a
+     * hide event occurs. This ensures it is only running when it is needed. */
+    connect( d_data->m_updateTimer, SIGNAL(timeout()), this, SLOT(onUpdateTimerExpired()) );
+
+    // connect temperature reset button
     connect( d_data->m_ui->btnResetMaxTemp, SIGNAL(clicked(bool)), this, SLOT(onResetMaxTempClicked()) );
 
     // connect fan target spin box
@@ -117,8 +126,23 @@ void InfoBox::showEvent( QShowEvent* event )
     // Call inherited function
     DctWidgetBox::showEvent( event );
 
-    // Refresh temperature readouts
-    onRefreshTempClicked();
+    // Update temperature and fan readouts
+    onUpdateTimerExpired();
+
+    // Start the update timer to upate them automatically every 1s
+    d_data->m_updateTimer->start(1000);
+}
+
+/******************************************************************************
+ * InfoBox::hideEvent
+ *****************************************************************************/
+void InfoBox::hideEvent( QHideEvent* event )
+{
+    // Call inherited function
+    DctWidgetBox::hideEvent( event );
+
+    // Start the update timer
+    d_data->m_updateTimer->stop();
 }
 
 /******************************************************************************
@@ -293,8 +317,8 @@ void InfoBox::onFeatureMaskHwChange( uint32_t mask )
  *****************************************************************************/
 void InfoBox::onFeatureMaskHwListChange( QStringList features )
 {
-    d_data->m_ui->lstFeatureMaskHw->clear();
-    d_data->m_ui->lstFeatureMaskHw->addItems( features );
+    d_data->m_ui->lstFeatureList->clear();
+    d_data->m_ui->lstFeatureList->addItems( features );
 }
 
 /******************************************************************************
@@ -318,7 +342,7 @@ void InfoBox::onRunTimeChange( uint32_t seconds )
     seconds /= 60;
     int hours = seconds % 24;
     seconds /= 24;
-    int days = seconds;
+    int days = static_cast<int>(seconds);
 
     d_data->m_ui->letRuntime->setText( QStringLiteral("%1:%2:%3:%4 (d:h:m:s)").arg(days).arg(hours).arg(mins).arg(secs) );
 }
@@ -329,7 +353,7 @@ void InfoBox::onRunTimeChange( uint32_t seconds )
 void InfoBox::onTempChange( uint8_t id, float temp, QString name )
 {
     QString tempString;
-    tempString.sprintf( "%.1f °C", temp );
+    tempString.sprintf( "%.1f °C", static_cast<double>(temp) );
 
     if ( id == 0u )
     {
@@ -365,7 +389,7 @@ void InfoBox::onFanSpeedChange( uint8_t speed )
 void InfoBox::onFanTargetChange( uint8_t target )
 {
     d_data->m_ui->sbxFanTarget->blockSignals( true );
-    d_data->m_ui->sbxFanTarget->setValue( (int)target );
+    d_data->m_ui->sbxFanTarget->setValue( static_cast<int>(target) );
     d_data->m_ui->sbxFanTarget->blockSignals( false );
 }
 
@@ -378,9 +402,9 @@ void InfoBox::onOverTempCountChange( uint32_t count )
 }
 
 /******************************************************************************
- * InfoBox::onRefreshTempClicked
+ * InfoBox::onUpdateTimerExpired
  *****************************************************************************/
-void InfoBox::onRefreshTempClicked()
+void InfoBox::onUpdateTimerExpired()
 {
     if ( d_data->m_numTempSensors > 0 )
     {
@@ -403,7 +427,7 @@ void InfoBox::onRefreshTempClicked()
 void InfoBox::onSbxFanTargetChanged( int target )
 {
     setWaitCursor();
-    emit FanTargetChanged( (uint8_t)target );
+    emit FanTargetChanged( static_cast<uint8_t>(target) );
     setNormalCursor();
 }
 
@@ -433,4 +457,3 @@ void InfoBox::onShowThirdPartyLicensesClicked()
     TextViewer * licenseView = new TextViewer( ":/doc/third-party-licenses.txt", "Third-Party Licenses" );
     licenseView->show();
 }
-
