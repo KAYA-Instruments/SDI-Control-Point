@@ -313,6 +313,7 @@ Condor4kDevice::features Condor4kDevice::getSupportedFeatures()
     deviceFeatures.hasSystemSaveLoad        = true;
     deviceFeatures.hasSystemUpdate          = true;
     deviceFeatures.hasSystemRuntime         = true;
+    deviceFeatures.hasSystemFan             = true;
     deviceFeatures.hasSystemBroadcast       = true;
     deviceFeatures.hasRS232Interface        = true;
 

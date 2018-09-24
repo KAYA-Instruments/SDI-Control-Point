@@ -122,8 +122,8 @@ public:
     int LutFastGamma() const;
     void setLutFastGamma( const int );
 
-    int LutBitWidth() const;
-    void setLutBitWidth( const int );
+    unsigned int LutBitWidth() const;
+    void setLutBitWidth( const unsigned int );
 
 protected:
     void prepareMode( const Mode mode ) Q_DECL_OVERRIDE;

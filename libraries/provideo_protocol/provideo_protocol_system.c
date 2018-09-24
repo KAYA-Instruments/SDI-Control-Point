@@ -166,13 +166,29 @@
  *****************************************************************************/
 #define CMD_GET_MAX_TEMP                        ( "max_temp\n" )
 #define CMD_SYNC_MAX_TEMP                       ( "max_temp " )
-#define CMD_GET_MAX_TEMP_RESPONSE               ( "max_temp %i %i\n")
-#define CMD_GET_MAX_TEMP_NO_PARAMS              ( 2 )
+#define CMD_GET_MAX_TEMP_RESPONSE               ( "max_temp %i %i %i\n")
+#define CMD_GET_MAX_TEMP_NO_PARAMS              ( 3 )
 
 /******************************************************************************
  * @brief command "max_temp_reset"
  *****************************************************************************/
 #define CMD_MAX_TEMP_RESET                      ( "max_temp_reset\n" )
+
+/******************************************************************************
+ * @brief command "fan_speed"
+ *****************************************************************************/
+#define CMD_GET_FAN_SPEED                       ( "fan_speed\n" )
+#define CMD_SYNC_FAN_SPEED                      ( "fan_speed " )
+#define CMD_GET_FAN_SPEED_RESPONSE              ( "fan_speed %i\n")
+#define CMD_GET_FAN_SPEED_NO_PARAMS             ( 1 )
+
+/******************************************************************************
+ * @brief command "fan_target"
+ *****************************************************************************/
+#define CMD_GET_FAN_TARGET                      ( "fan_target\n" )
+#define CMD_SET_FAN_TARGET                      ( "fan_target %i\n" )
+#define CMD_SYNC_FAN_TARGET                     ( "fan_target " )
+#define CMD_GET_FAN_TARGET_NO_PARMS             ( 1 )
 
 /******************************************************************************
  * @brief command "over_temp_count"
@@ -1659,7 +1675,7 @@ static int get_max_temp
 {
     (void) ctx;
 
-    int current_value;
+    int current_value_user, current_value_persistent;
     int max_value;
     int res;
 
@@ -1671,7 +1687,9 @@ static int get_max_temp
 
     // command call to get 2 parameter from provideo system
     res = get_param_int_X( channel, 2,
-            CMD_GET_MAX_TEMP, CMD_SYNC_MAX_TEMP, CMD_GET_MAX_TEMP_RESPONSE, &current_value, &max_value );
+            CMD_GET_MAX_TEMP, CMD_SYNC_MAX_TEMP, CMD_GET_MAX_TEMP_RESPONSE, &current_value_user,
+                                                                            &current_value_persistent,
+                                                                            &max_value );
 
     // return error code
     if ( res < 0 )
@@ -1686,8 +1704,9 @@ static int get_max_temp
     }
 
     // type-cast to range
-    values[0] = INT32( current_value );
-    values[1] = INT32( max_value );
+    values[0] = INT32( current_value_user );
+    values[1] = INT32( current_value_persistent );
+    values[2] = INT32( max_value );
 
     return ( 0 );
 }
@@ -1705,6 +1724,108 @@ static int max_temp_reset
     
     return ( set_param_0( channel, CMD_MAX_TEMP_RESET ) );
 }
+
+/******************************************************************************
+ * fan_speed - red the current cooling fan speed in %
+ *****************************************************************************/
+static int get_fan_speed
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    uint8_t * const             speed
+)
+{
+    (void) ctx;
+
+    int value;
+    int res;
+
+    // parameter check
+    if ( !speed )
+    {
+        return ( -EINVAL );
+    }
+
+    // command call to get 1 parameter from provideo system
+    res = get_param_int_X( channel, 2,
+            CMD_GET_FAN_SPEED, CMD_SYNC_FAN_SPEED, CMD_GET_FAN_SPEED_RESPONSE, &value );
+
+    // return error code
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
+    // return -EFAULT if number of parameter not matching
+    else if ( res != CMD_GET_RUNTIME_NO_PARMS )
+    {
+        return ( -EFAULT );
+    }
+
+    // type-cast to range
+    *speed = UINT8( value );
+
+    return ( 0 );
+}
+
+/******************************************************************************
+ * get_fan_target - get the target system temperature of the fan control
+ *****************************************************************************/
+static int get_fan_target
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    uint8_t * const             target
+)
+{
+    (void) ctx;
+
+    int value;
+    int res;
+
+    // parameter check
+    if ( !target )
+    {
+        return ( -EINVAL );
+    }
+
+    // command call to get 1 parameter from provideo system
+    res = get_param_int_X( channel, 2,
+            CMD_GET_FAN_TARGET, CMD_SYNC_FAN_TARGET, CMD_SET_FAN_TARGET, &value );
+
+    // return error code
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
+    // return -EFAULT if number of parameter not matching
+    else if ( res != CMD_GET_FAN_TARGET_NO_PARMS )
+    {
+        return ( -EFAULT );
+    }
+
+    // type-cast to range
+    *target = UINT8( value );
+
+    return ( 0 );
+}
+
+/******************************************************************************
+ * set_fan_target - set the target system temperature of the fan control
+ *****************************************************************************/
+static int set_fan_target
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    uint8_t const               target
+)
+{
+    (void) ctx;
+
+    return ( set_param_int_X( channel, CMD_SET_FAN_TARGET, INT( target ) ) );
+}
+
 
 /******************************************************************************
  * get_max_temp - function to get the maximum logged temperature
@@ -1897,6 +2018,9 @@ static ctrl_protocol_sys_drv_t provideo_sys_drv =
     .get_temp                     = get_temp,
     .get_max_temp                 = get_max_temp,
     .max_temp_reset               = max_temp_reset,
+    .get_fan_speed                = get_fan_speed,
+    .get_fan_target               = get_fan_target,
+    .set_fan_target               = set_fan_target,
     .get_over_temp_count          = get_over_temp_count,
     .flush_buffers                = flush_buffers,
     .reboot                       = reboot,

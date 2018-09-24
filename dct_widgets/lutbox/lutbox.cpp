@@ -803,20 +803,20 @@ public:
         inverse_gamma = 1.0f / gamma;
 
         // II. Calculate samples
-        int const bit_width = m_bit_width;
+        unsigned int const bit_width = m_bit_width;
         int const num_samples = 128;
         int i;
         for ( i = 0; i < (1 << bit_width); i += (1 << bit_width) / num_samples )
         {
             x.append( i );
-            y.append( sm_gamma_float(i, kink, lcontrast, lbrightness, contrast, inverse_gamma, brightness, bit_width, bit_width) );
+            y.append( sm_gamma_float((uint32_t)i, kink, lcontrast, lbrightness, contrast, inverse_gamma, brightness, (uint8_t)bit_width, (uint8_t)bit_width) );
 
             // Add a sample at the intersection of linear part and gamma curve
             int x_i_int = (int)(x_i * (1 << bit_width));
             if ( x_i_int > i && x_i_int < (i + (1 << bit_width) / num_samples ) )
             {
                 x.append( x_i_int );
-                y.append( sm_gamma_float(x_i_int, kink, lcontrast, lbrightness, contrast, inverse_gamma, brightness, bit_width, bit_width) );
+                y.append( sm_gamma_float((uint32_t)x_i_int, kink, lcontrast, lbrightness, contrast, inverse_gamma, brightness, (uint8_t)bit_width, (uint8_t)bit_width) );
             }
         }
 
@@ -838,7 +838,7 @@ public:
         float const brightness = TO_FLOAT( REC709_BRIGHTNESS );
 
         // I. Calculate samples
-        int const bit_width = m_bit_width;
+        unsigned int const bit_width = m_bit_width;
         int const num_samples = 512;
         int i;
         for ( i = 0; i < (1 << bit_width); i += (1 << bit_width) / num_samples )
@@ -847,13 +847,13 @@ public:
             switch ( mode )
             {
             case LUT_FIXED_REC709: // Rec. 709
-                y.append( sm_gamma_float(i, kink, lcontrast, lbrightness, contrast, inverse_gamma, brightness, bit_width, bit_width) );
+                y.append( sm_gamma_float((uint32_t)i, kink, lcontrast, lbrightness, contrast, inverse_gamma, brightness, (uint8_t)bit_width, (uint8_t)bit_width) );
                 break;
             case LUT_FIXED_PQ: // Rec. 2100 - PQ
-                y.append( sm_pq(i, bit_width, bit_width) );
+                y.append( sm_pq((uint32_t)i, (uint8_t)bit_width, (uint8_t)bit_width) );
                 break;
             case LUT_FIXED_HLG: // Rec. 2100 - HLG
-                y.append( sm_hlg(i, bit_width, bit_width) );
+                y.append( sm_hlg((uint32_t)i, (uint8_t)bit_width, (uint8_t)bit_width) );
                 break;
             default:
                 return;
@@ -872,7 +872,7 @@ public:
     int                     m_fixed_mode;                   /**< fixed gamma curve mode */
     int                     m_preset;                       /**< current preset */
     LutChannel              m_ch;                           /**< currently selected channel */
-    int                     m_bit_width;                    /**< width of the lut module (depends on device) */
+    unsigned int            m_bit_width;                    /**< width of the lut module (depends on device) */
     
     CubicInterpolation *    m_interpolate[LutChannelMax];       /**< interpolation class */
     CubicInterpolation *    m_final_interpolate[LutChannelMax]; /**< final interpolation class */
@@ -1070,7 +1070,7 @@ void LutBox::setLutFastGamma( const int gamma )
 /******************************************************************************
  * LutBox::LutBitWidth
  *****************************************************************************/
-int LutBox::LutBitWidth() const
+unsigned int LutBox::LutBitWidth() const
 {
     return ( d_data->m_bit_width );
 }
@@ -1078,7 +1078,7 @@ int LutBox::LutBitWidth() const
 /******************************************************************************
  * LutBox::setLutBidWidth
  *****************************************************************************/
-void LutBox::setLutBitWidth( const int width )
+void LutBox::setLutBitWidth( const unsigned int width )
 {
     d_data->m_bit_width = width;
 

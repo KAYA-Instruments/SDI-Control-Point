@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>719</width>
-    <height>959</height>
+    <height>988</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -698,66 +698,54 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="4" column="0">
-       <widget class="QLabel" name="lblOverTemp">
-        <property name="text">
-         <string>Number of Over-Temperature Events</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1" colspan="2">
-       <widget class="QLineEdit" name="letMaxTempLogged">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>150</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>150</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
        <widget class="QLabel" name="lblMaxTempAllowed">
         <property name="text">
          <string>Shut-Down Temperature</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="4">
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+      <item row="1" column="5">
+       <widget class="QPushButton" name="btnRefreshTemp">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>0</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="lblMaxTempLogged">
         <property name="text">
-         <string>Maximum Logged Temperature</string>
+         <string>Refresh</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="letTemp0">
+      <item row="3" column="5">
+       <widget class="QPushButton" name="btnResetMaxTemp">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Reset</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="lblTemp">
+        <property name="text">
+         <string>Current Temperature</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="lblOverTemp">
+        <property name="text">
+         <string>Number of Over-Temperature Events</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" colspan="2">
+       <widget class="QLineEdit" name="letMaxTempLoggedPersistent">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -781,7 +769,7 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="4" column="1">
        <widget class="QLineEdit" name="letMaxTempAllowed">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -812,21 +800,8 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="3">
-       <widget class="QPushButton" name="btnResetMaxTemp">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Reset</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QLineEdit" name="letTemp1">
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="letTemp0">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -850,27 +825,30 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="3">
-       <widget class="QPushButton" name="btnRefreshTemp">
+      <item row="4" column="2" rowspan="2" colspan="5">
+       <widget class="QLabel" name="label_2">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Refresh</string>
+         <string>Note: To protect the device it will shut down when this temprature is reached and the Over-Temperature Event counter will be incremented.</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="lblTemp">
+      <item row="3" column="0">
+       <widget class="QLabel" name="lblMaxTempLogged">
         <property name="text">
-         <string>Current Temperature</string>
+         <string>Maximum Logged Temperature</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
+      <item row="5" column="1">
        <widget class="QLineEdit" name="letOverTemp">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -895,21 +873,131 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="2" rowspan="2" colspan="3">
-       <widget class="QLabel" name="label_2">
+      <item row="3" column="4">
+       <widget class="QLineEdit" name="letMaxTempLoggedUser">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="text">
-         <string>Note: To protect the device it will shut down when this temprature is reached and the Over-Temperature Event counter will be incremented.</string>
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>0</height>
+         </size>
         </property>
-        <property name="wordWrap">
+        <property name="maximumSize">
+         <size>
+          <width>150</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="readOnly">
          <bool>true</bool>
         </property>
        </widget>
+      </item>
+      <item row="1" column="4">
+       <widget class="QLineEdit" name="letTemp1">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>150</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="lblFanSpeed">
+        <property name="text">
+         <string>Fan Speed / Target Temperature</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="letFanSpeed">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>150</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="4">
+       <widget class="QSpinBox" name="sbxFanTarget">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>150</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="suffix">
+         <string> °C</string>
+        </property>
+        <property name="maximum">
+         <number>75</number>
+        </property>
+        <property name="value">
+         <number>55</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="6">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </widget>
@@ -925,7 +1013,7 @@
         <item>
          <widget class="QLabel" name="lblLicense">
           <property name="text">
-           <string>This software is published under GPLv3, to view the license, click the following button.</string>
+           <string>This software is published under GPLv3, to view the license, click the &quot;Show Software License&quot; button. We use the QT Framework by the Qt Company and other open source components. Click the &quot;Show Third Party Licenses&quot; button to view all third-party software licenses.</string>
           </property>
           <property name="wordWrap">
            <bool>true</bool>
@@ -933,28 +1021,22 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="btnShowLicense">
-          <property name="text">
-           <string>Show Software License</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="lblThirdParty">
-          <property name="text">
-           <string>This software uses the Qt Framework by the Qt Company. Click the following button to view all third-party software licenses.</string>
-          </property>
-          <property name="wordWrap">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="btnShowThirdPartyLicenses">
-          <property name="text">
-           <string>Show Third Party Licenses</string>
-          </property>
-         </widget>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QPushButton" name="btnShowLicense">
+            <property name="text">
+             <string>Show Software License</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnShowThirdPartyLicenses">
+            <property name="text">
+             <string>Show Third Party Licenses</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item>
          <spacer name="verticalSpacer_2">

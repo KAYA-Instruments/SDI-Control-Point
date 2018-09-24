@@ -87,12 +87,13 @@ public:
         bool hasSystemSaveLoad;
         bool hasSystemUpdate;
         bool hasSystemRuntime;
+        bool hasSystemFan;
         bool hasSystemCopySettings;
         bool hasSystemBroadcast;
         bool hasRS232Interface;
 
-        int lutBitWidth;
-        int numTempSensors;
+        unsigned int lutBitWidth;
+        unsigned int numTempSensors;
     };
 
     explicit ProVideoDevice( ComChannel *, ComProtocol * );

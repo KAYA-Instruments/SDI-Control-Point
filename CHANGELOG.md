@@ -4,15 +4,21 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
+Version **1.1.7** - 24.09.2018
+
+* The maximum temperature readout command now reads both the persistent and the user reset-able maximum temperature
+* Added readout of current fan speed and added a spin box to setup the target temperature of the fan control for supported devices
+* Fixed a rare crash that occured when a device reported a device name that did contain non-ASCII characters
+
+## Older Releases:
+
 Version **1.1.6** - 14.08.2018
 
 * Reduced maximum wait time for a reconnect after a device update from 2 minutes to 30 seconds
 * Added drag and drop to the update box, the user can now drag a binary file from his file explorer and drop it anywhere on the update box tab to load the file
 * Improved the way a connection is established with devices making it more robust which should lead to less errors when loading the device settings
-* Small improvements to the update box and the connect dialogq
+* Small improvements to the update box and the connect dialog
 * Fixed the occurence of multiple "device not locked" messages when genlock is enabled on the device but no genlock signal is present
-
-## Older Releases:
 
 Version **1.1.5** - 28.06.2018
 

@@ -576,6 +576,53 @@ int ctrl_protocol_max_temp_reset
 }
 
 /******************************************************************************
+ * ctrl_protocol_get_fan_speed
+ *****************************************************************************/
+int ctrl_protocol_get_fan_speed
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t * const              speed
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_fan_speed );
+    CHECK_NOT_NULL( speed );
+    return ( SYS_DRV(protocol->drv)->get_fan_speed( protocol->ctx, channel, speed ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_fan_target
+ *****************************************************************************/
+int ctrl_protocol_get_fan_target
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t * const              target
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_fan_target );
+    CHECK_NOT_NULL( target );
+    return ( SYS_DRV(protocol->drv)->get_fan_target( protocol->ctx, channel, target ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_fan_target
+ *****************************************************************************/
+int ctrl_protocol_set_fan_target
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t const                target
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), set_fan_target );
+    return ( SYS_DRV(protocol->drv)->set_fan_target( protocol->ctx, channel, target ) );
+}
+
+/******************************************************************************
  * ctrl_protocol_get_over_temp_count
  *****************************************************************************/
 int ctrl_protocol_get_over_temp_count

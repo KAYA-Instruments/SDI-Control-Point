@@ -83,13 +83,18 @@ InfoBox::InfoBox( QWidget * parent ) : DctWidgetBox( parent )
     // fill temperature line edits
     d_data->m_ui->letTemp0->setText("N/A");
     d_data->m_ui->letTemp1->setText("N/A");
-    d_data->m_ui->letMaxTempLogged->setText("N/A");
+    d_data->m_ui->letFanSpeed->setText("N/A");
+    d_data->m_ui->letMaxTempLoggedPersistent->setText("N/A");
+    d_data->m_ui->letMaxTempLoggedUser->setText("N/A");
     d_data->m_ui->letMaxTempAllowed->setText("N/A");
     d_data->m_ui->letOverTemp->setText("N/A");
 
     // connect temperature refresh and reset buttons
     connect( d_data->m_ui->btnRefreshTemp, SIGNAL(clicked(bool)), this, SLOT(onRefreshTempClicked()) );
     connect( d_data->m_ui->btnResetMaxTemp, SIGNAL(clicked(bool)), this, SLOT(onResetMaxTempClicked()) );
+
+    // connect fan target spin box
+    connect( d_data->m_ui->sbxFanTarget, SIGNAL(valueChanged(int)), this, SLOT(onSbxFanTargetChanged(int)) );
 
     // connect software license dialogs
     connect( d_data->m_ui->btnShowLicense, SIGNAL(clicked(bool)), this, SLOT(onShowLicenseClicked()) );
@@ -155,6 +160,16 @@ void InfoBox::setRuntimeVisible( const bool value )
 {
     d_data->m_ui->lblRuntime->setVisible(value);
     d_data->m_ui->letRuntime->setVisible(value);
+}
+
+/******************************************************************************
+ * InfoBox::setFanSettingsVisible
+ *****************************************************************************/
+void InfoBox::setFanSettingsVisible( const bool value )
+{
+    d_data->m_ui->lblFanSpeed->setVisible(value);
+    d_data->m_ui->letFanSpeed->setVisible(value);
+    d_data->m_ui->sbxFanTarget->setVisible(value);
 }
 
 /******************************************************************************
@@ -329,10 +344,29 @@ void InfoBox::onTempChange( uint8_t id, float temp, QString name )
 /******************************************************************************
  * InfoBox::onMaxTempChange
  *****************************************************************************/
-void InfoBox::onMaxTempChange( int32_t max_temp_logged, int32_t max_temp_allowed )
+void InfoBox::onMaxTempChange( int32_t max_temp_logged_user, int32_t max_temp_logged_persistent, int32_t max_temp_allowed )
 {
-    d_data->m_ui->letMaxTempLogged->setText( QStringLiteral("%1.0 °C").arg(max_temp_logged) );
+    d_data->m_ui->letMaxTempLoggedPersistent->setText( QStringLiteral("%1.0 °C (Persistent)").arg(max_temp_logged_persistent) );
+    d_data->m_ui->letMaxTempLoggedUser->setText( QStringLiteral("%1.0 °C (User)").arg(max_temp_logged_user) );
     d_data->m_ui->letMaxTempAllowed->setText( QStringLiteral("%1.0 °C").arg(max_temp_allowed) );
+}
+
+/******************************************************************************
+ * InfoBox::onFanSpeedChange
+ *****************************************************************************/
+void InfoBox::onFanSpeedChange( uint8_t speed )
+{
+    d_data->m_ui->letFanSpeed->setText( QStringLiteral("%1 %").arg(speed));
+}
+
+/******************************************************************************
+ * InfoBox::onFanTargetChange
+ *****************************************************************************/
+void InfoBox::onFanTargetChange( uint8_t target )
+{
+    d_data->m_ui->sbxFanTarget->blockSignals( true );
+    d_data->m_ui->sbxFanTarget->setValue( (int)target );
+    d_data->m_ui->sbxFanTarget->blockSignals( false );
 }
 
 /******************************************************************************
@@ -358,8 +392,19 @@ void InfoBox::onRefreshTempClicked()
         }
 
         emit GetMaxTempRequest();
+        emit GetFanSpeedRequest();
         emit GetOverTempCountRequest();
     }
+}
+
+/******************************************************************************
+ * InfoBox::onSbxFanTargetChanged
+ *****************************************************************************/
+void InfoBox::onSbxFanTargetChanged( int target )
+{
+    setWaitCursor();
+    emit FanTargetChanged( (uint8_t)target );
+    setNormalCursor();
 }
 
 /******************************************************************************

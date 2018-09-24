@@ -58,6 +58,8 @@ void ProVideoSystemItf::resync()
     GetDebugLevel();
     // sync runtime counter
     GetRunTime();
+    // sync target system temperature
+    GetFanTarget();
 }
 
 /******************************************************************************
@@ -86,7 +88,7 @@ void ProVideoSystemItf::GetSystemInfo()
     bool containsNonASCII = device_name.contains(QRegularExpression(QStringLiteral("[^\\x{0000}-\\x{007F}]")));
     if ( containsNonASCII )
     {
-        device_name.clear();
+        device_name = QString("???");
     }
     emit DeviceNameChanged( device_name );
 
@@ -181,7 +183,7 @@ void ProVideoSystemItf::GetDeviceName()
         bool containsNonASCII = device_name_str.contains(QRegularExpression(QStringLiteral("[^\\x{0000}-\\x{007F}]")));
         if ( containsNonASCII )
         {
-            device_name_str.clear();
+            device_name_str = QString("???");
         }
         emit DeviceNameChanged( device_name_str );
     }
@@ -590,6 +592,16 @@ void ProVideoSystemItf::GetDeviceList( uint32_t timeout )
                 // Add it to list
                 rs485Device device;
                 device.device_name = QString::fromLocal8Bit( (char*)devices[i].device_name );
+
+                /* Check if device name contains valid characters. When devices come
+                 * fresh from the factory they might have garbage device names which can
+                 * crash the GUI. */
+                bool containsNonASCII = device.device_name.contains(QRegularExpression(QStringLiteral("[^\\x{0000}-\\x{007F}]")));
+                if ( containsNonASCII )
+                {
+                    device.device_name = QString("???");
+                }
+
                 device.device_platform = QString::fromLocal8Bit( (char*)devices[i].device_platform );
                 device.rs485_address = devices[i].rs485_address;
                 device.rs485_bc_address = devices[i].rs485_bc_address;
@@ -805,17 +817,17 @@ void ProVideoSystemItf::onGetTempRequest( uint8_t id )
 void ProVideoSystemItf::GetMaxTemp()
 {
     // Is there a signal listener
-    if ( receivers(SIGNAL(MaxTempChanged(int32_t, int32_t))) > 0 )
+    if ( receivers(SIGNAL(MaxTempChanged(int32_t, int32_t, int32_t))) > 0 )
     {
-        int32_t values[2];
+        int32_t values[3];
 
         // read maximum logged temperature
         int res = ctrl_protocol_get_max_temp( GET_PROTOCOL_INSTANCE(this),
-                    GET_CHANNEL_INSTANCE(this), 2, values );
+                    GET_CHANNEL_INSTANCE(this), 3, values );
         HANDLE_ERROR( res );
 
         // emit a MaxTempChanged signal
-        emit MaxTempChanged( values[0], values[1] );
+        emit MaxTempChanged( values[0], values[1], values[2] );
     }
 }
 
@@ -838,12 +850,64 @@ void ProVideoSystemItf::onMaxTempReset()
     HANDLE_ERROR( res );
 }
 
+
 /******************************************************************************
- * ProVideoSystemItf::onGetOverTempCountRequest
+ * ProVideoSystemItf::GetFanSpeed
  *****************************************************************************/
-void ProVideoSystemItf::onGetOverTempCountRequest()
+void ProVideoSystemItf::GetFanSpeed()
 {
-    GetOverTempCount();
+    // Is there a signal listener
+    if ( receivers(SIGNAL(FanSpeedChanged(uint8_t))) > 0 )
+    {
+        uint8_t speed = 0u;
+
+        // read current fan speed
+        int res = ctrl_protocol_get_fan_speed( GET_PROTOCOL_INSTANCE(this),
+                    GET_CHANNEL_INSTANCE(this), &speed );
+        HANDLE_ERROR( res );
+
+        // emit a OverTempCountChanged signal
+        emit FanSpeedChanged( speed );
+    }
+}
+
+/******************************************************************************
+ * ProVideoSystemItf::GetFanTarget
+ *****************************************************************************/
+void ProVideoSystemItf::GetFanTarget()
+{
+    // Is there a signal listener
+    if ( receivers(SIGNAL(FanTargetChanged(uint8_t))) > 0 )
+    {
+        uint8_t target = 0u;
+
+        // read current fan target temperature
+        int res = ctrl_protocol_get_fan_target( GET_PROTOCOL_INSTANCE(this),
+                    GET_CHANNEL_INSTANCE(this), &target );
+        HANDLE_ERROR( res );
+
+        // emit a RS485BaudRateChanged signal
+        emit FanTargetChanged( target );
+    }
+}
+
+/******************************************************************************
+ * ProVideoSystemItf::onFanTargetChange
+ *****************************************************************************/
+void ProVideoSystemItf::onFanTargetChange( uint8_t target )
+{
+    // write fan target temperature
+    int res = ctrl_protocol_set_fan_target( GET_PROTOCOL_INSTANCE(this),
+                    GET_CHANNEL_INSTANCE(this), target );
+    HANDLE_ERROR( res );
+}
+
+/******************************************************************************
+ * ProVideoSystemItf::onGetFanSpeedRequest
+ *****************************************************************************/
+void ProVideoSystemItf::onGetFanSpeedRequest()
+{
+    GetFanSpeed();
 }
 
 /******************************************************************************
@@ -856,7 +920,7 @@ void ProVideoSystemItf::GetOverTempCount()
     {
         uint32_t count = 0u;
 
-        // read maximum logged temperature
+        // read over temperature counter
         int res = ctrl_protocol_get_over_temp_count( GET_PROTOCOL_INSTANCE(this),
                     GET_CHANNEL_INSTANCE(this), &count );
         HANDLE_ERROR( res );
@@ -864,6 +928,14 @@ void ProVideoSystemItf::GetOverTempCount()
         // emit a OverTempCountChanged signal
         emit OverTempCountChanged( count );
     }
+}
+
+/******************************************************************************
+ * ProVideoSystemItf::onGetOverTempCountRequest
+ *****************************************************************************/
+void ProVideoSystemItf::onGetOverTempCountRequest()
+{
+    GetOverTempCount();
 }
 
 /******************************************************************************

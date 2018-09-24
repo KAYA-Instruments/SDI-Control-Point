@@ -706,6 +706,54 @@ int ctrl_protocol_max_temp_reset
 );
 
 /**************************************************************************//**
+ * @brief Get the current cooling fan speed in %
+ *
+ * @param[in]  channel  control channel instance
+ * @param[in]  protocol control protocol instance
+ * @param[out] speed    current fan speed in %
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_fan_speed
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t * const              speed
+);
+
+/**************************************************************************//**
+ * @brief Get the current target temperature of the fan control
+ *
+ * @param[in]  channel  control channel instance
+ * @param[in]  protocol control protocol instance
+ * @param[out] target   current target temperature
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_fan_target
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t * const              target
+);
+
+/**************************************************************************//**
+ * @brief Set the target system temperature of the fan control
+ *
+ * @param[in]  channel  control channel instance
+ * @param[in]  protocol control protocol instance
+ * @param[in]  target   target temperature to set
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_set_fan_target
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t const                target
+);
+
+/**************************************************************************//**
  * @brief Get the amount of occured over temperature events
  *
  * @param[in]  channel  control channel instance
@@ -862,6 +910,9 @@ typedef struct ctrl_protocol_sys_drv_s
     ctrl_protocol_uint8_array_t     get_temp;
     ctrl_protocol_int32_array_t     get_max_temp;
     ctrl_protocol_run_t             max_temp_reset;
+    ctrl_protocol_get_uint8_t       get_fan_speed;
+    ctrl_protocol_get_uint8_t       get_fan_target;
+    ctrl_protocol_set_uint8_t       set_fan_target;
     ctrl_protocol_get_uint32_t      get_over_temp_count;
     ctrl_protocol_run_t             flush_buffers;
     ctrl_protocol_run_t             reboot;

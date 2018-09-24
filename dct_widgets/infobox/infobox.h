@@ -38,6 +38,7 @@ public:
 
     // Show or hide UI elements
     void setRuntimeVisible( const bool value );
+    void setFanSettingsVisible( const bool value );
     void setNumTempSensors( const unsigned int tempSensorCount );
 
 protected:
@@ -50,6 +51,8 @@ protected:
 signals:
     void GetTempRequest( uint8_t id );
     void GetMaxTempRequest();
+    void GetFanSpeedRequest();
+    void FanTargetChanged( uint8_t target );
     void GetOverTempCountRequest();
     void MaxTempReset();
 
@@ -69,11 +72,14 @@ public slots:
     void onFeatureMaskSwChange( uint32_t mask );
     void onRunTimeChange( uint32_t seconds );
     void onTempChange( uint8_t id, float temp , QString name );
-    void onMaxTempChange( int32_t max_temp_logged, int32_t max_temp_allowed );
+    void onMaxTempChange( int32_t max_temp_logged_user, int32_t max_temp_logged_persistent, int32_t max_temp_allowed );
+    void onFanSpeedChange( uint8_t speed );
+    void onFanTargetChange( uint8_t target );
     void onOverTempCountChange( uint32_t count );
 
 private slots:
     void onRefreshTempClicked();
+    void onSbxFanTargetChanged( int target );
     void onResetMaxTempClicked();
     void onShowLicenseClicked();
     void onShowThirdPartyLicensesClicked();

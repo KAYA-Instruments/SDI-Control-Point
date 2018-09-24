@@ -128,6 +128,8 @@ public:
     // temperature
     void GetTemp( uint8_t id );
     void GetMaxTemp();
+    void GetFanSpeed();
+    void GetFanTarget();
     void GetOverTempCount();
 
     // check for connection to device
@@ -168,8 +170,10 @@ signals:
     void DebugLevelChanged( uint8_t level );
     void RunTimeChanged( uint32_t cnt );
     void TempChanged( uint8_t id, float temp, QString name );
-    void MaxTempChanged( int32_t max_temp_current, int32_t max_temp_allowed );
+    void MaxTempChanged( int32_t max_temp_current_user, int32_t max_temp_current_persistent, int32_t max_temp_allowed );
     void OverTempCountChanged( uint32_t count );
+    void FanSpeedChanged( uint8_t speed );
+    void FanTargetChanged( uint8_t target );
 
 public slots:
     void onDeviceNameChange( QString name );
@@ -184,6 +188,8 @@ public slots:
     void onGetMaxTempRequest();
     void onMaxTempReset();
     void onGetOverTempCountRequest();
+    void onGetFanSpeedRequest();
+    void onFanTargetChange( uint8_t target );
     void onBootIntoUpdateMode();
     void onSaveSettings();
     void onLoadSettings();

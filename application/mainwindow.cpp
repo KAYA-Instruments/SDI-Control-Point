@@ -333,6 +333,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
 
     // Info Tab
     m_ui->infoBox->setRuntimeVisible(deviceFeatures.hasSystemRuntime);
+    m_ui->infoBox->setFanSettingsVisible(deviceFeatures.hasSystemFan);
 
     // Settings Dialog
     m_SettingsDlg->setBroadcastSettingsVisible(deviceFeatures.hasRS232Interface);
@@ -847,11 +848,15 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
 
     // connect temperature info
     connect( dev->GetProVideoSystemItf(), SIGNAL(TempChanged(uint8_t,float,QString)), m_ui->infoBox, SLOT(onTempChange(uint8_t,float,QString)) );
-    connect( dev->GetProVideoSystemItf(), SIGNAL(MaxTempChanged(int32_t, int32_t)), m_ui->infoBox, SLOT(onMaxTempChange(int32_t, int32_t)) );
+    connect( dev->GetProVideoSystemItf(), SIGNAL(MaxTempChanged(int32_t, int32_t, int32_t)), m_ui->infoBox, SLOT(onMaxTempChange(int32_t, int32_t, int32_t)) );
+    connect( dev->GetProVideoSystemItf(), SIGNAL(FanSpeedChanged(uint8_t)), m_ui->infoBox, SLOT(onFanSpeedChange(uint8_t)) );
+    connect( dev->GetProVideoSystemItf(), SIGNAL(FanTargetChanged(uint8_t)), m_ui->infoBox, SLOT(onFanTargetChange(uint8_t)) );
+    connect( m_ui->infoBox, SIGNAL(FanTargetChanged(uint8_t)), dev->GetProVideoSystemItf(), SLOT(onFanTargetChange(uint8_t)) );
     connect( dev->GetProVideoSystemItf(), SIGNAL(OverTempCountChanged(uint32_t)), m_ui->infoBox, SLOT(onOverTempCountChange(uint32_t)) );
 
     connect( m_ui->infoBox, SIGNAL(GetTempRequest(uint8_t)), dev->GetProVideoSystemItf(), SLOT(onGetTempRequest(uint8_t)) );
     connect( m_ui->infoBox, SIGNAL(GetMaxTempRequest()), dev->GetProVideoSystemItf(), SLOT(onGetMaxTempRequest()) );
+    connect( m_ui->infoBox, SIGNAL(GetFanSpeedRequest()), dev->GetProVideoSystemItf(), SLOT(onGetFanSpeedRequest()) );
     connect( m_ui->infoBox, SIGNAL(GetOverTempCountRequest()), dev->GetProVideoSystemItf(), SLOT(onGetOverTempCountRequest()) );
     connect( m_ui->infoBox, SIGNAL(MaxTempReset()), dev->GetProVideoSystemItf(), SLOT(onMaxTempReset()) );
 
