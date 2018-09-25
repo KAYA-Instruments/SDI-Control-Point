@@ -59,11 +59,11 @@ static bool fileExists( QString & path )
 MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
     : QMainWindow( parent )
     , m_ui( new Ui::MainWindow )
-    , m_ConnectDlg( NULL )
-    , m_SettingsDlg( NULL )
-    , m_DebugTerminal( NULL )
-    , m_cbxConnectedDevices( NULL )
-    , m_dev ( NULL )
+    , m_ConnectDlg( nullptr )
+    , m_SettingsDlg( nullptr )
+    , m_DebugTerminal( nullptr )
+    , m_cbxConnectedDevices( nullptr )
+    , m_dev ( nullptr )
     , m_ScrollbarsNeeded( false )
 {
     // Create ui
@@ -182,8 +182,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
         QComboBox * cbxConnectedDevices = new QComboBox( m_ui->toolBar );
 
         // Set size adjust policy to auto adjust to react to changing device names
-        cbxConnectedDevices->setSizeAdjustPolicy( cbxConnectedDevices->AdjustToContents );
-        cbxConnectedDevices->setMaximumWidth( 300 );
+        cbxConnectedDevices->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
 
         // Add device names to the combo box
         for ( int i = 0; i < connectedRS485Devices.count(); i++ )
@@ -209,7 +208,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
     }
     else
     {
-        m_cbxConnectedDevices = NULL;
+        m_cbxConnectedDevices = nullptr;
     }
 
     // If the system supports broadcasting and there is at least one RS485 device connected show the broadcast toggle button
@@ -378,7 +377,7 @@ void MainWindow::updateDeviceList()
     // Adjust the devices list
     QVector<ConnectDialog::detectedRS485Device> connectedRS485Devices = m_ConnectDlg->getDetectedRS485Devices();
     int currentRS485DeviceIndex = m_ConnectDlg->getCurrentRs485DeviceIndex();
-    if ( !connectedRS485Devices.empty() && m_cbxConnectedDevices != NULL )
+    if ( !connectedRS485Devices.empty() && m_cbxConnectedDevices != nullptr )
     {
         // Block signals from combo box
         m_cbxConnectedDevices->blockSignals( true );
@@ -992,7 +991,7 @@ void MainWindow::onResolutionMaskChange( uint32_t id0, uint32_t id1, uint32_t id
 
         if ( supported )
         {
-            m_ui->inoutBox->addVideoMode( GetVideoModeName( (VideoMode)i ), i );
+            m_ui->inoutBox->addVideoMode( GetVideoModeName( static_cast<VideoMode>(i) ), i );
         }
     }
 }
@@ -1332,7 +1331,7 @@ void MainWindow::onLoadFromFileClicked()
         "Setting Files (*.dct);;All files (*.*)"
     );
 
-    if ( NULL != m_filename )
+    if ( nullptr != m_filename )
     {
         QFileInfo file( m_filename );
         if ( file.suffix().isEmpty() )
@@ -1381,7 +1380,7 @@ void MainWindow::onLoadFromFileClicked()
 
                 // Create progress dialog
                 QProgressDialog progressDialog( "Loading Settings...", "", 0, progressSteps, this );
-                progressDialog.setCancelButton( NULL );
+                progressDialog.setCancelButton( nullptr );
                 progressDialog.setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowTitleHint);
                 progressDialog.show();
 
@@ -1481,7 +1480,7 @@ void MainWindow::onSaveToFileClicked()
     QApplication::processEvents();
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
-    if ( NULL != m_filename )
+    if ( nullptr != m_filename )
     {
         QFileInfo file( m_filename );
         if ( file.suffix().isEmpty() )
@@ -1510,7 +1509,7 @@ void MainWindow::onSaveToFileClicked()
 
         // Create progress dialog
         QProgressDialog progressDialog( "Saving Settings...", "", 0, progressSteps, this );
-        progressDialog.setCancelButton( NULL );
+        progressDialog.setCancelButton( nullptr );
         progressDialog.setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowTitleHint);
         progressDialog.show();
 
@@ -1649,7 +1648,7 @@ void MainWindow::onSyncSettingsClicked()
 
     // Create progress dialog
     QProgressDialog progressDialog( "Synchronising Settings...", "", 0, progressSteps, this );
-    progressDialog.setCancelButton( NULL );
+    progressDialog.setCancelButton( nullptr );
     progressDialog.setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowTitleHint);
     progressDialog.show();
 
