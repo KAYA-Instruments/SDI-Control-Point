@@ -298,6 +298,7 @@ static int get_aec_weights
     char buf[CMD_SINGLE_LINE_RESPONSE_SIZE];
     char data[CMD_SINGLE_LINE_RESPONSE_SIZE*2];
 
+    struct timespec start, now;
     int loop = 1;
     int cnt = 0;
 
@@ -313,7 +314,7 @@ static int get_aec_weights
     sprintf( command, CMD_GET_AEC_WEIGHT );
 
     // send get-command to control channel
-    ctrl_channel_send_request( channel, (uint8_t *)command, strlen(command) );
+    ctrl_channel_send_request( channel, (uint8_t *)command, (int)strlen(command) );
 
     // clear data buffer
     memset( data, 0, sizeof(data) );
@@ -323,7 +324,7 @@ static int get_aec_weights
     unsigned int data_count = 0;
 
     // start timer
-    time_t start = time(NULL);;
+    get_time_monotonic( &start );
 
     // wait for answer from COM-Port
     while ( loop )
@@ -341,7 +342,7 @@ static int get_aec_weights
             buf[n] = '\0';
 
             // increment data counter and check for overflow
-            data_count += n;
+            data_count += (unsigned int)n;
             if ( data_count >= sizeof(data) )
             {
                 return ( -ENOMEM );
@@ -355,11 +356,12 @@ static int get_aec_weights
             char * s = strstr( data, CMD_SYNC_AEC_WEIGHT );
             while ( s )
             {
-                int index = 0, weight = 0, offset = 0;
+                int index = 0, weight = 0;
+                unsigned int offset = 0;
 
                 // parse command
                 int res = sscanf( s, CMD_SET_AEC_WEIGHTn, &index, &weight, &offset );
-                if ( (res == CMD_SET_AEC_WEIGHT_NO_PARAMS) && (s[offset-1] == '\n') )
+                if ( (res == CMD_SET_AEC_WEIGHT_NO_PARAMS) && (offset != 0) && (s[offset-1] == '\n') )
                 {
                     if ( cnt >= CMD_GET_AEC_WEIGHT_NUM_ITEMS )
                     {
@@ -375,12 +377,16 @@ static int get_aec_weights
                     values[cnt] = UINT8( weight );
                     cnt++;
 
+                    // decrement data counter by bytes taken out
+                    unsigned int num_bytes_processed = (unsigned int)s + offset - (unsigned int)data;
+                    data_count -= num_bytes_processed;
+
                     // move out the processed command
                     // Note: Use memmove instead of strncpy, because dst and src overlap!
-                    memmove( data, (s+offset), sizeof(data) - (s+offset-data) );
+                    memmove( data, (s+offset), data_count );
 
-                    // decrement data counter by bytes taken out
-                    data_count -= offset;
+                    // clear moved out data to make sure buffer is free of garbage
+                    memset((data + data_count), 0, num_bytes_processed );
 
                     // search next command in buffer
                     s = strstr( data, CMD_SYNC_AEC_WEIGHT);
@@ -404,14 +410,15 @@ static int get_aec_weights
             }
 
             // reset timer
-            start = time(NULL);;
+            get_time_monotonic( &start );
         }
         else
         {
             // timeout handling, if device does not send new pixel positions after
             // 1 second, assume table has been transmitted completely
-            int dt = (int)difftime( time(NULL), start );
-            loop = ((int)dt > 1 ) ? 0 : 1;
+            get_time_monotonic( &now );
+            int diff_ms = (now.tv_sec - start.tv_sec) * 1000 + (now.tv_nsec - start.tv_nsec) / 1000000;
+            loop = (diff_ms > 1000) ? 0 : 1;
         }
     }
 
@@ -656,7 +663,7 @@ static int get_wbpresets
     {
         int n = 0;
 
-        int no_of_items = no / sizeof(ctrl_protocol_wb_preset_t) ;
+        int no_of_items = no / (int)sizeof(ctrl_protocol_wb_preset_t) ;
 
         ctrl_protocol_wb_preset_t * v = (ctrl_protocol_wb_preset_t *)values;
 

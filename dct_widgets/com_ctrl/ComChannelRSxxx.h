@@ -24,6 +24,7 @@
 #define _COM_CHANNEL_RSxxx_H_
 
 #include <QObject>
+#include <QSemaphore>
 
 #include <QtSerialPort/QtSerialPort>
 #include <QtSerialPort/QSerialPortInfo>
@@ -39,13 +40,14 @@ class ComChannelSerial : public ComChannel
 
 public:
     explicit ComChannelSerial() : ComChannel(),
-        m_port( NULL ),
+        m_port( nullptr ),
         m_idx( 0 ),
         m_data( 0 ),
         m_parity( 0 ),
         m_stop( 0 ),
         m_baudrate( 0 ),
-        m_reopenable( false )
+        m_reopenable( false ),
+        m_readWriteLock( 1 )
     {
     }
 
@@ -114,6 +116,16 @@ public:
         m_reopenable = reopenable;
     }
 
+    void lock()
+    {
+        m_readWriteLock.acquire();
+    }
+
+    void release()
+    {
+        m_readWriteLock.release();
+    }
+
     int getNoPorts() const;
     int getPortName( int idx, ctrl_channel_name_t name );
 
@@ -135,12 +147,13 @@ public slots:
 private:
     QSerialPort *   m_port;
 
-    uint8_t         m_idx;          /**< system port index */
-    uint8_t         m_data;         /**< number of data bits */
-    uint8_t         m_parity;       /**< type of parity */
-    uint8_t         m_stop;         /**< number of stop bits */
-    uint32_t        m_baudrate;     /**< baudrate */
-    bool            m_reopenable;   /**< port can be reopened */
+    uint8_t         m_idx;              /**< system port index */
+    uint8_t         m_data;             /**< number of data bits */
+    uint8_t         m_parity;           /**< type of parity */
+    uint8_t         m_stop;             /**< number of stop bits */
+    uint32_t        m_baudrate;         /**< baudrate */
+    bool            m_reopenable;       /**< port can be reopened */
+    QSemaphore      m_readWriteLock;    /**< semaphore used to lock read write access to make serial port access thread safe */
 };
 
 class ComChannelRS232 : public ComChannelSerial

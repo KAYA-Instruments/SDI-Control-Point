@@ -23,7 +23,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
-#include <time.h>
 
 #include <ctrl_channel/ctrl_channel.h>
 
@@ -212,7 +211,7 @@
  *****************************************************************************/
 #define CMD_GET_DEVICE_LIST                     ( "identify\n" )
 #define CMD_GET_DEVICE_LIST_REPLY               ( "id: %s %u %u %u %[^\t\r\n]\n%n" )
-#define CMD_SYNC_DEVIE_LIST                     ( "id: ")
+#define CMD_SYNC_DEVICE_LIST                    ( "id: ")
 #define CMD_GET_DEVICE_LIST_NO_PARAMS           ( 5 )
 #define CMD_DEVICE_LIST_MAX_DEVICES             ( 100 )     // Has to be equal to (MAX_DEVICE_ID + 1) which is defined in defines.h
 #define CMD_GET_DEVICE_LIST_MAX_TMO             ( 3000 )
@@ -1330,7 +1329,7 @@ static int get_device_list
     sprintf( command, CMD_GET_DEVICE_LIST );
 
     // send get-command to control channel
-    ctrl_channel_send_request( channel, (uint8_t *)command, strlen(command) );
+    ctrl_channel_send_request( channel, (uint8_t *)command, (int)strlen(command) );
 
     // clear data buffer
     memset( data, 0, sizeof(data) );
@@ -1358,7 +1357,7 @@ static int get_device_list
             buf[n] = '\0';
 
             // increment data counter and check for overflow
-            data_count += n;
+            data_count += (unsigned int)n;
             if ( data_count >= sizeof(data) )
             {
                 return ( -ENOMEM );
@@ -1368,12 +1367,12 @@ static int get_device_list
             strcat( data, buf );
 
             // consume all commands from buffer
-            // (get start position of first command therefoe)
-            char * s = strstr( data, CMD_SYNC_DEVIE_LIST );
+            // (therefore get start position of first command)
+            char * s = strstr( data, CMD_SYNC_DEVICE_LIST );
             while ( s )
             {
                 // parse command
-                int offset = 0;
+                unsigned int offset = 0;
                 ctrl_protocol_device_t device;
                 int res = sscanf( s, CMD_GET_DEVICE_LIST_REPLY, device.device_platform,
                                                                 &device.rs485_address,
@@ -1382,7 +1381,10 @@ static int get_device_list
                                                                 device.device_name,
                                                                 &offset);
 
-                if ( (res == CMD_GET_DEVICE_LIST_NO_PARAMS) && (s[offset-1] == '\n') )
+                /* Note: the check for offset != 0 is needed, because on Windows it
+                 * seems to be possible that sscanf() has a result != 0 (meaning it has
+                 * found parameters and parsed them) but still report an offset of 0. */
+                if ( (res == CMD_GET_DEVICE_LIST_NO_PARAMS) && (offset != 0) && (s[offset-1] == '\n') )
                 {
                     if ( cnt >= CMD_DEVICE_LIST_MAX_DEVICES )
                     {
@@ -1392,15 +1394,19 @@ static int get_device_list
                     memcpy(  &device_list[cnt], &device, sizeof(device) );
                     cnt++;
 
+                    // decrement data counter by bytes taken out
+                    unsigned int num_bytes_processed = (unsigned int)s + offset - (unsigned int)data;
+                    data_count -= num_bytes_processed;
+
                     // move out the processed command
                     // Note: Use memmove instead of strncpy, because dst and src overlap!
-                    memmove( data, (s+offset), sizeof(data) - (s+offset-data) );
+                    memmove( data, (s+offset), data_count );
 
-                    // decrement data counter by bytes taken out
-                    data_count -= offset;
+                    // clear moved out data to make sure buffer is free of garbage
+                    memset((data + data_count), 0, num_bytes_processed );
 
                     // search next command in buffer
-                    s = strstr( data, CMD_SYNC_DEVIE_LIST );
+                    s = strstr( data, CMD_SYNC_DEVICE_LIST );
                 }
                 else
                 {
@@ -1625,7 +1631,7 @@ static int get_temp
     sprintf( command, CMD_GET_TEMP, temp->id );
 
     // send command to COM port
-    ctrl_channel_send_request( channel, (uint8_t *)command, strlen(command) );
+    ctrl_channel_send_request( channel, (uint8_t *)command, (int)strlen(command) );
 
     // read response from provideo device
     res = evaluate_get_response( channel, data, sizeof(data) );

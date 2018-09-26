@@ -75,7 +75,7 @@ enum SYSTEM_FEATURE
 /**************************************************************************//**
  * @brief application version type
  *****************************************************************************/
-typedef uint8_t  ctrl_protocol_system_desc_t[50];
+typedef char ctrl_protocol_system_desc_t[50];
 
 /**************************************************************************//**
  * @brief Version object

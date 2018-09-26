@@ -31,10 +31,10 @@
  *****************************************************************************/
 ComChannel::ComChannel()
 {
-    int size = ctrl_channel_get_instance_size();
+    size_t size = static_cast<size_t>(ctrl_channel_get_instance_size());
 
     // create control channel instance
-    m_channel = (ctrl_channel_handle_t)(new char[size]);
+    m_channel = static_cast<ctrl_channel_handle_t>(malloc(size));
     if ( !m_channel )
     {
         showError( -ENOMEM, __FILE__, __FUNCTION__, __LINE__ );
@@ -51,7 +51,7 @@ ComChannel::ComChannel()
 ComChannel::~ComChannel()
 {
     (void)ctrl_channel_close( m_channel );
-    delete[] ((char *)m_channel);
+    free( m_channel );
 }
 
 /******************************************************************************
@@ -67,7 +67,7 @@ int ComChannel::Open( void * param, int size )
  *****************************************************************************/
 bool ComChannel::isOpen() const
 {
-    return ( (bool)( CTRL_CHANNEL_STATE_CONNECTED == ctrl_channel_get_state( m_channel ) ) );
+    return ( CTRL_CHANNEL_STATE_CONNECTED == ctrl_channel_get_state( m_channel ) );
 }
 
 /******************************************************************************

@@ -58,6 +58,44 @@ static int ctrl_channel_qtserial_get_port_name
 }
 
 /******************************************************************************
+ * ctrl_channel_qtserial_lock
+ *****************************************************************************/
+static int ctrl_channel_qtserial_lock( void * const handle )
+{
+    ComChannelSerial * com = static_cast<ComChannelSerial *>(handle);
+
+    // check parameter
+    if ( !com )
+    {
+        return ( -EINVAL );
+    }
+
+    // call channel implementation
+    com->lock();
+
+    return 0;
+}
+
+/******************************************************************************
+ * ctrl_channel_qtserial_release
+ *****************************************************************************/
+static int ctrl_channel_qtserial_release( void * const handle )
+{
+    ComChannelSerial * com = static_cast<ComChannelSerial *>(handle);
+
+    // check parameter
+    if ( !com )
+    {
+        return ( -EINVAL );
+    }
+
+    // call channel implementation
+    com->release();
+
+    return 0;
+}
+
+/******************************************************************************
  * ctrl_channel_qtserial_rs232_open
  *****************************************************************************/
 static int ctrl_channel_qtserial_rs232_open
@@ -68,12 +106,12 @@ static int ctrl_channel_qtserial_rs232_open
 )
 {
     // type cast context
-    ComChannelRS232 * com = (ComChannelRS232 *)handle;
+    ComChannelRS232 * com = static_cast<ComChannelRS232 *>(handle);
 
     QSerialPort * port;
 
     // type cast open configuration
-    ctrl_channel_rs232_open_config_t * conf  = (ctrl_channel_rs232_open_config_t *)param;
+    ctrl_channel_rs232_open_config_t * conf  = static_cast<ctrl_channel_rs232_open_config_t *>(param);
 
     // check parameter
     if ( !com || !conf || (size != sizeof(ctrl_channel_rs232_open_config_t)) )
@@ -82,7 +120,7 @@ static int ctrl_channel_qtserial_rs232_open
     }
 
     // close the old com port
-    if ( com->getPort() != NULL )
+    if ( com->getPort() != nullptr )
     {
         com->getPort()->close();
         delete com->getPort();
@@ -247,11 +285,11 @@ static int ctrl_channel_qtserial_rs232_open
 static int ctrl_channel_qtserial_rs232_close( void * const handle )
 {
     // type cast context
-    ComChannelRS232 * com = (ComChannelRS232 *)handle;
+    ComChannelRS232 * com = static_cast<ComChannelRS232 *>(handle);
     if ( com )
     {
         QSerialPort * port = com->getPort();
-        com->setPort( NULL );
+        com->setPort( nullptr );
         if ( port )
         {
             port->close();
@@ -272,8 +310,10 @@ static int ctrl_channel_qtserial_rs232_send_request
     int const       len
 )
 {
+    int res = 0;
+
     // type cast context
-    ComChannelRS232 * com = (ComChannelRS232 *)handle;
+    ComChannelRS232 * com = static_cast<ComChannelRS232 *>(handle);
     if ( com )
     {
         QSerialPort * port = com->getPort();
@@ -281,12 +321,13 @@ static int ctrl_channel_qtserial_rs232_send_request
         {
             /* We call the "emit data received" function here, although this is actually a data send.
              * This is done to have a local echo functionality in the debug terminal. */
-            com->emitDataRecieved( (char *)data );
+            com->emitDataRecieved( reinterpret_cast<char *>(data) );
 
-            return ( port->write( (const char *)data, len ) );
+            res = static_cast<int>(port->write( reinterpret_cast<const char *>(data), len ));
         }
     }
-    return ( 0 );
+
+    return ( res );
 }
 
 /******************************************************************************
@@ -299,8 +340,10 @@ static int ctrl_channel_qtserial_rs232_receive_response
     int const       len
 )
 {
+    int res = 0;
+
     // type cast context
-    ComChannelRS232 * com = (ComChannelRS232 *)handle;
+    ComChannelRS232 * com = static_cast<ComChannelRS232 *>(handle);
     if ( com )
     {
         QSerialPort * port = com->getPort();
@@ -309,18 +352,17 @@ static int ctrl_channel_qtserial_rs232_receive_response
             // Check if bytes are available, otherwise wait 1ms for new data to arrive
             if( port->bytesAvailable() > 0 || port->waitForReadyRead(1) )
             {
-                int result = port->read( (char *)data, len );
+                res = static_cast<int>(port->read( reinterpret_cast<char *>(data), len ));
 
                 /* Call the emitDataReceived function which will emit a dataRecieved signal, if a slot
                  * is registered for that event. This is used for the debugging terminal, it is not needed
                  * for communication with the device */
-                com->emitDataRecieved( (char *)data );
-
-                return result;
+                com->emitDataRecieved( reinterpret_cast<char *>(data) );
             }
         }
     }
-    return ( 0 );
+
+    return ( res );
 }
 
 /******************************************************************************
@@ -334,12 +376,12 @@ static int ctrl_channel_qtserial_rs4xx_open
 )
 {
     // type cast context
-    ComChannelRS4xx * com = (ComChannelRS4xx *)handle;
+    ComChannelRS4xx * com = static_cast<ComChannelRS4xx *>(handle);
 
     QSerialPort * port;
 
     // type cast open configuration
-    ctrl_channel_rs4xx_open_config_t * conf  = (ctrl_channel_rs4xx_open_config_t *)param;
+    ctrl_channel_rs4xx_open_config_t * conf  = static_cast<ctrl_channel_rs4xx_open_config_t *>(param);
 
     // check parameter
     if ( !com || !conf || (size != sizeof(ctrl_channel_rs4xx_open_config_t)) )
@@ -348,7 +390,7 @@ static int ctrl_channel_qtserial_rs4xx_open
     }
 
     // close the old com port
-    if ( com->getPort() != NULL )
+    if ( com->getPort() != nullptr )
     {
         com->getPort()->close();
         delete com->getPort();
@@ -514,11 +556,11 @@ static int ctrl_channel_qtserial_rs4xx_open
 static int ctrl_channel_qtserial_rs4xx_close( void * const handle )
 {
     // type cast context
-    ComChannelRS4xx * com = (ComChannelRS4xx *)handle;
+    ComChannelRS4xx * com = static_cast<ComChannelRS4xx *>(handle);
     if ( com )
     {
         QSerialPort * port = com->getPort();
-        com->setPort( NULL );
+        com->setPort( nullptr );
         if ( port )
         {
             port->close();
@@ -539,8 +581,10 @@ static int ctrl_channel_qtserial_rs4xx_send_request
     int const       len
 )
 {
+    int res = 0;
+
     // type cast context
-    ComChannelRS4xx * com = (ComChannelRS4xx *)handle;
+    ComChannelRS4xx * com = static_cast<ComChannelRS4xx *>(handle);
     if ( com )
     {
         QSerialPort * port = com->getPort();
@@ -554,13 +598,14 @@ static int ctrl_channel_qtserial_rs4xx_send_request
             /* We call the "emit data received" function here, although this is actually a data send.
              * This is done to have a local echo functionality in the debug terminal. */
             com->emitDataRecieved( s.toLocal8Bit().constData() );
-            com->emitDataRecieved( (char *)data );
+            com->emitDataRecieved( reinterpret_cast<char *>(data) );
 
             // send command
-            return ( port->write( (const char *)data, len ) );
+            res = static_cast<int>(port->write( reinterpret_cast<const char *>(data), len ));
         }
     }
-    return ( 0 );
+
+    return ( res );
 }
 
 /******************************************************************************
@@ -573,8 +618,10 @@ static int ctrl_channel_qtserial_rs4xx_receive_response
     int const       len
 )
 {
+    int res = 0;
+
     // type cast context
-    ComChannelRS4xx * com = (ComChannelRS4xx *)handle;
+    ComChannelRS4xx * com = static_cast<ComChannelRS4xx *>(handle);
     if ( com )
     {
         QSerialPort * port = com->getPort();
@@ -584,7 +631,7 @@ static int ctrl_channel_qtserial_rs4xx_receive_response
         {
             if ( port->bytesAvailable() > 0 || port->waitForReadyRead(1) )
             {
-                int result = ( port->read( (char *)data, len ) );
+                res = static_cast<int>(port->read( reinterpret_cast<char *>(data), len ));
                 /* Mahr: After reading data, wait 250 us to give the RS485 tx/rx chips time
                  * to switch from write to read. This fixes problems where the device would not
                  * receive some commands.
@@ -597,13 +644,12 @@ static int ctrl_channel_qtserial_rs4xx_receive_response
                 /* Call the emitDataReceived function which will emit a dataRecieved signal, if a slot
                  * is registered for that event. This is used for the debugging terminal, it is not needed
                  * for communication with the device */
-                com->emitDataRecieved( (char *)data );
-
-                return result;
+                com->emitDataRecieved( reinterpret_cast<char *>(data) );
             }
         }
     }
-    return ( 0 );
+
+    return ( res );
 }
 
 /******************************************************************************
@@ -678,7 +724,7 @@ void ComChannelSerial::onSendData( QString data, int responseWaitTime )
                 (readString == "\r\n" && timer.elapsed() <= responseWaitTime) )
         {
             memset( buffer, 0, sizeof(buffer) );
-            int result = m_port->read( (char *)buffer, sizeof(buffer) );
+            int result = static_cast<int>(m_port->read( buffer, sizeof(buffer) ));
 
             if ( result > 0 )
             {
@@ -702,6 +748,8 @@ ComChannelRS232::ComChannelRS232( void )
                     ctrl_channel_qtserial_get_port_name,
                     ctrl_channel_qtserial_rs232_open,
                     ctrl_channel_qtserial_rs232_close,
+                    ctrl_channel_qtserial_lock,
+                    ctrl_channel_qtserial_release,
                     ctrl_channel_qtserial_rs232_send_request,
                     ctrl_channel_qtserial_rs232_receive_response );
     if ( res )
@@ -744,6 +792,8 @@ ComChannelRS4xx::ComChannelRS4xx( unsigned int dev_addr )
                     ctrl_channel_qtserial_get_port_name,
                     ctrl_channel_qtserial_rs4xx_open,
                     ctrl_channel_qtserial_rs4xx_close,
+                    ctrl_channel_qtserial_lock,
+                    ctrl_channel_qtserial_release,
                     ctrl_channel_qtserial_rs4xx_send_request,
                     ctrl_channel_qtserial_rs4xx_receive_response );
     if ( res )
@@ -765,7 +815,7 @@ void ComChannelRS4xx::ReOpen()
     cfg.parity     = getParity();
     cfg.stop       = getNoStopBits();
     cfg.baudrate   = getBaudRate();
-    cfg.dev_addr   = getDeviceAddress();
+    cfg.dev_addr   = static_cast<uint8_t>(getDeviceAddress());
 
     int res = ctrl_channel_open( GetInstance(), &cfg, sizeof(cfg) );
     if ( res )

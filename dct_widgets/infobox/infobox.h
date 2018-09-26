@@ -34,7 +34,7 @@ class InfoBox : public DctWidgetBox
 
 public:
     explicit InfoBox( QWidget * parent = 0 );
-    ~InfoBox();
+    ~InfoBox() Q_DECL_OVERRIDE;
 
     // Show or hide UI elements
     void setRuntimeVisible( const bool value );
@@ -42,6 +42,9 @@ public:
     void setNumTempSensors( const unsigned int tempSensorCount );
 
 protected:
+    void showEvent( QShowEvent* event ) Q_DECL_OVERRIDE;
+    void hideEvent( QHideEvent* event ) Q_DECL_OVERRIDE;
+
     void prepareMode( const Mode mode ) Q_DECL_OVERRIDE;
 
     void loadSettings( QSettings & s ) Q_DECL_OVERRIDE;
@@ -78,7 +81,7 @@ public slots:
     void onOverTempCountChange( uint32_t count );
 
 private slots:
-    void onRefreshTempClicked();
+    void onUpdateTimerExpired();
     void onSbxFanTargetChanged( int target );
     void onResetMaxTempClicked();
     void onShowLicenseClicked();
@@ -87,8 +90,6 @@ private slots:
 private:
     class PrivateData;
     PrivateData * d_data;
-
-    void showEvent( QShowEvent* event );
 };
 
 #endif // __INFO_BOX_H__

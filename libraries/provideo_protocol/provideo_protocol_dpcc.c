@@ -23,7 +23,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
-#include <time.h>
 
 #include <ctrl_channel/ctrl_channel.h>
 
@@ -356,6 +355,7 @@ static int get_dpcc_table
 
     ctrl_protocol_dpcc_table_t * table;
 
+    struct timespec start, now;
     int loop = 1;
     int cnt = 0;
 
@@ -377,7 +377,7 @@ static int get_dpcc_table
     sprintf( command, CMD_GET_DPCC_PIXEL );
 
     // send get-command to control channel
-    ctrl_channel_send_request( channel, (uint8_t *)command, strlen(command) );
+    ctrl_channel_send_request( channel, (uint8_t *)command, (int)strlen(command) );
 
     // clear data buffer
     memset( data, 0, sizeof(data) );
@@ -387,7 +387,7 @@ static int get_dpcc_table
     unsigned int data_count = 0;
 
     // start timer
-    time_t start = time(NULL);;
+    get_time_monotonic( &start );
 
     // wait for answer from COM-Port
     while ( loop )
@@ -405,7 +405,7 @@ static int get_dpcc_table
             buf[n] = '\0';
 
             // increment data counter and check for overflow
-            data_count += n;
+            data_count += (unsigned int)n;
             if ( data_count >= sizeof(data) )
             {
                 return ( -ENOMEM );
@@ -419,11 +419,12 @@ static int get_dpcc_table
             char * s = strstr( data, CMD_SYNC_DPCC_PIXEL );
             while ( s )
             {
-                int x =0, y = 0, offset = 0;
+                int x =0, y = 0;
+                unsigned int offset = 0;
 
                 // parse command
                 int res = sscanf( s, CMD_SET_DPCC_PIXELn, &x, &y, &offset );
-                if ( (res == CMD_GET_DPCC_PIXEL_NO_PARMS) && (s[offset-1] == '\n') )
+                if ( (res == CMD_GET_DPCC_PIXEL_NO_PARMS) && (offset != 0) && (s[offset-1] == '\n') )
                 {
                     if ( cnt >= table->size )
                     {
@@ -434,12 +435,16 @@ static int get_dpcc_table
                     table->y[cnt] = UINT16( y );
                     cnt++;
 
+                    // decrement data counter by bytes taken out
+                    unsigned int num_bytes_processed = (unsigned int)s + offset - (unsigned int)data;
+                    data_count -= num_bytes_processed;
+
                     // move out the processed command
                     // Note: Use memmove instead of strncpy, because dst and src overlap!
-                    memmove( data, (s+offset), sizeof(data) - (s+offset-data) );
+                    memmove( data, (s+offset), data_count );
 
-                    // decrement data counter by bytes taken out
-                    data_count -= offset;
+                    // clear moved out data to make sure buffer is free of garbage
+                    memset((data + data_count), 0, num_bytes_processed );
            
                     // search next command in buffer
                     s = strstr( data, CMD_SYNC_DPCC_PIXEL );
@@ -453,7 +458,7 @@ static int get_dpcc_table
             // check if string is complete and valid
             if ( strstr( data, CMD_OK ) )
             {
-                table->no = cnt;
+                table->no = (uint16_t)cnt;
                 return ( 0 );
             }
 
@@ -464,14 +469,16 @@ static int get_dpcc_table
             }
 
             // reset timer
-            start = time(NULL);;
+            get_time_monotonic( &start );
         }
         else
         {
             // timeout handling, if device does not send new pixel positions after
             // 1 second, assume table has been transmitted completely
-            int dt = (int)difftime( time(NULL), start );
-            loop = ((int)dt > 1 ) ? 0 : 1;
+            // timeout handling
+            get_time_monotonic( &now );
+            int diff_ms = (now.tv_sec - start.tv_sec) * 1000 + (now.tv_nsec - start.tv_nsec) / 1000000;
+            loop = (diff_ms > 1000) ? 0 : 1;
         }
     }
 
