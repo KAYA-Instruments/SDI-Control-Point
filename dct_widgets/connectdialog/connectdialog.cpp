@@ -58,8 +58,8 @@ ConnectDialog::ConnectDialog( QWidget * parent )
     , m_ui( new Ui::dlgConnect )
     , m_rs232( new ComChannelRS232() )
     , m_rs485( new ComChannelRS4xx() )
-    , m_connectedDevice ( NULL )
-    , m_active( NULL )
+    , m_connectedDevice ( nullptr )
+    , m_active( nullptr )
     , m_detectedRS485Devices()
     , m_currentRS485DeviceIndex( -1 )
     , m_firstStart( true )
@@ -130,7 +130,7 @@ ConnectDialog::~ConnectDialog()
     delete m_rs232;
     delete m_rs485;
 
-    if (m_connectedDevice != NULL)
+    if (m_connectedDevice != nullptr)
     {
         delete m_connectedDevice;
     }
@@ -161,12 +161,12 @@ ctrl_channel_rs4xx_open_config_t ConnectDialog::getRs485Config()
     ctrl_channel_rs4xx_open_config_t config;
 
     // create open configuration
-    config.idx      = m_ui->cbxPortRS485->itemData( m_ui->cbxPortRS485->currentIndex() ).toInt();
-    config.baudrate = m_ui->cbxBaudrateRS485->itemData( m_ui->cbxBaudrateRS485->currentIndex() ).toInt();
-    config.data     = m_ui->cbxDatabitsRS485->itemData( m_ui->cbxDatabitsRS485->currentIndex() ).toInt();
-    config.parity   = m_ui->cbxParityRS485->itemData( m_ui->cbxParityRS485->currentIndex() ).toInt();
-    config.stop     = m_ui->cbxStopbitsRS485->itemData( m_ui->cbxStopbitsRS485->currentIndex() ).toInt();
-    config.dev_addr = m_ui->sbxDevAddrRS485->value();
+    config.idx      = static_cast<uint8_t>(m_ui->cbxPortRS485->itemData( m_ui->cbxPortRS485->currentIndex() ).toInt());
+    config.baudrate = static_cast<uint32_t>(m_ui->cbxBaudrateRS485->itemData( m_ui->cbxBaudrateRS485->currentIndex() ).toInt());
+    config.data     = static_cast<uint8_t>(m_ui->cbxDatabitsRS485->itemData( m_ui->cbxDatabitsRS485->currentIndex() ).toInt());
+    config.parity   = static_cast<uint8_t>(m_ui->cbxParityRS485->itemData( m_ui->cbxParityRS485->currentIndex() ).toInt());
+    config.stop     = static_cast<uint8_t>(m_ui->cbxStopbitsRS485->itemData( m_ui->cbxStopbitsRS485->currentIndex() ).toInt());
+    config.dev_addr = static_cast<uint8_t>(m_ui->sbxDevAddrRS485->value());
 
     return config;
 }
@@ -192,11 +192,11 @@ ctrl_channel_rs232_open_config_t ConnectDialog::getRs232Config()
     ctrl_channel_rs232_open_config_t config;
 
     // create open configuration
-    config.idx      = m_ui->cbxPortRS232->itemData( m_ui->cbxPortRS232->currentIndex() ).toInt();
-    config.baudrate = m_ui->cbxBaudrateRS232->itemData( m_ui->cbxBaudrateRS232->currentIndex() ).toInt();
-    config.data     = m_ui->cbxDatabitsRS232->itemData( m_ui->cbxDatabitsRS232->currentIndex() ).toInt();
-    config.parity   = m_ui->cbxParityRS232->itemData( m_ui->cbxParityRS232->currentIndex() ).toInt();
-    config.stop     = m_ui->cbxStopbitsRS232->itemData( m_ui->cbxStopbitsRS232->currentIndex() ).toInt();
+    config.idx      = static_cast<uint8_t>(m_ui->cbxPortRS232->itemData( m_ui->cbxPortRS232->currentIndex() ).toInt());
+    config.baudrate = static_cast<uint32_t>(m_ui->cbxBaudrateRS232->itemData( m_ui->cbxBaudrateRS232->currentIndex() ).toInt());
+    config.data     = static_cast<uint8_t>(m_ui->cbxDatabitsRS232->itemData( m_ui->cbxDatabitsRS232->currentIndex() ).toInt());
+    config.parity   = static_cast<uint8_t>(m_ui->cbxParityRS232->itemData( m_ui->cbxParityRS232->currentIndex() ).toInt());
+    config.stop     = static_cast<uint8_t>(m_ui->cbxStopbitsRS232->itemData( m_ui->cbxStopbitsRS232->currentIndex() ).toInt());
 
     return config;
 }
@@ -229,7 +229,7 @@ bool ConnectDialog::fileExists( QString & path )
  *****************************************************************************/
 bool ConnectDialog::isConnected()
 {
-    return ( (m_connectedDevice == NULL) ? false : true );
+    return ( (m_connectedDevice == nullptr) ? false : true );
 }
 
 /******************************************************************************
@@ -283,7 +283,7 @@ bool ConnectDialog::connectWithDevice()
     QString systemPlatform = genericDevice.getSystemPlatform();
     if ( bIsKnown )
     {
-        ProVideoDevice * connectedDevice = NULL;
+        ProVideoDevice * connectedDevice = nullptr;
         if ( systemPlatform == KNOWN_DEVICE_XBOW )
         {
             connectedDevice = new XbowDevice( getActiveChannel(), new ProVideoProtocol() );
@@ -298,10 +298,10 @@ bool ConnectDialog::connectWithDevice()
         }
         qDebug() << "connected with:" << systemPlatform;
 
-        if ( connectedDevice != NULL )  // This check should never fail
+        if ( connectedDevice != nullptr )  // This check should never fail
         {
             // Delete the old device
-            if ( m_connectedDevice != NULL )
+            if ( m_connectedDevice != nullptr )
             {
                 delete m_connectedDevice;
             }
@@ -326,11 +326,11 @@ bool ConnectDialog::connectWithDevice()
     else
     {
         // Delete the connected device
-        if ( m_connectedDevice != NULL )
+        if ( m_connectedDevice != nullptr )
         {
             delete m_connectedDevice;
         }
-        m_connectedDevice = NULL;
+        m_connectedDevice = nullptr;
 
         qDebug() << "Unknown device connected:" << systemPlatform;
     }
@@ -385,7 +385,7 @@ void ConnectDialog::setChannelRS232( ComChannelSerial * c )
             res = c->getPortName( i, name );
             if ( !res )
             {
-                m_ui->cbxPortRS232->addItem( (char *)name, i );
+                m_ui->cbxPortRS232->addItem( static_cast<char *>(name), i );
             }
         }
 
@@ -452,7 +452,7 @@ void ConnectDialog::setChannelRS485( ComChannelSerial * c )
             res = c->getPortName( i, name );
             if ( !res )
             {
-                m_ui->cbxPortRS485->addItem( (char *)name, i );
+                m_ui->cbxPortRS485->addItem( static_cast<char *>(name), i );
             }
         }
 
@@ -505,7 +505,7 @@ bool ConnectDialog::loadSettings( QSettings &s )
     QString string;
     int value;
 
-    Interface iface = (Interface)s.value(CON_DIALOG_INTERFACE, "").toInt();
+    Interface iface = static_cast<Interface>(s.value(CON_DIALOG_INTERFACE, "").toInt());
     if ( setActiveInterface( iface ) )
     {
         return ( false );
@@ -624,7 +624,7 @@ int ConnectDialog::setActiveInterface( ConnectDialog::Interface iface )
 
     if ( (iface > Invalid) && (iface < MaxInterface) )
     {
-        m_ui->tabController->setCurrentIndex( (int)iface );
+        m_ui->tabController->setCurrentIndex( static_cast<int>(iface) );
 
         switch ( iface )
         {
@@ -637,7 +637,7 @@ int ConnectDialog::setActiveInterface( ConnectDialog::Interface iface )
                 break;
 
             default:
-                m_active = NULL;
+                m_active = nullptr;
                 res = -ENODEV;
                 break;
         }
@@ -1044,7 +1044,7 @@ int ConnectDialog::openInterface()
         ctrl_channel_rs232_open_config_t open_cfg = getRs232Config();
 
         // open channel
-        res = m_rs232->Open( (void *)&open_cfg, sizeof(open_cfg) );
+        res = m_rs232->Open( static_cast<void *>(&open_cfg), sizeof(open_cfg) );
 
         if ( res )
         {
@@ -1062,7 +1062,7 @@ int ConnectDialog::openInterface()
         ctrl_channel_rs4xx_open_config_t open_cfg = getRs485Config();
 
         // open channel
-        res = m_rs485->Open( (void *)&open_cfg, sizeof(open_cfg) );
+        res = m_rs485->Open( static_cast<void *>(&open_cfg), sizeof(open_cfg) );
         if ( res )
         {
             return ( res );
@@ -1104,7 +1104,7 @@ bool ConnectDialog::detectAndConnect()
     ctrl_channel_rs4xx_open_config_t openCfg = getRs485Config();
 
     // open the com port with initial settings
-    if (  getActiveChannel()->Open((void *)&openCfg, sizeof(openCfg)) )
+    if (  getActiveChannel()->Open(static_cast<void *>(&openCfg), sizeof(openCfg)) )
     {
         qDebug() << "Can not open RS485 channel for port " << openCfg.idx << ", address " << openCfg.dev_addr << " and baudrate " << openCfg.baudrate;
 
@@ -1131,7 +1131,7 @@ bool ConnectDialog::detectAndConnect()
     // Find connected devices
     // Set address to the fail safe address, all devices will answer on that address
     openCfg.dev_addr = 100;
-    ((ComChannelRS4xx*)getActiveChannel())->setDeviceAddress( openCfg.dev_addr );
+    (static_cast<ComChannelRS4xx *>(getActiveChannel())->setDeviceAddress( openCfg.dev_addr ));
 
 
     // Get the device list for this baudrate
@@ -1210,11 +1210,11 @@ bool ConnectDialog::detectAndConnect()
     }
 
     // Delete the connected device, no device was found
-    if ( m_connectedDevice != NULL )
+    if ( m_connectedDevice != nullptr )
     {
         delete m_connectedDevice;
     }
-    m_connectedDevice = NULL;
+    m_connectedDevice = nullptr;
 
     return false;
 }
@@ -1261,7 +1261,7 @@ bool ConnectDialog::scanAndConnect()
     ctrl_channel_rs4xx_open_config_t openCfg = getRs485Config();
 
     // open the com port with initial settings
-    if (  getActiveChannel()->Open((void *)&openCfg, sizeof(openCfg)) )
+    if (  getActiveChannel()->Open(static_cast<void *>(&openCfg), sizeof(openCfg)) )
     {
         qDebug() << "Can not open RS485 channel for port" << openCfg.idx << ", address" << openCfg.dev_addr << "and baudrate" << openCfg.baudrate;
 
@@ -1316,10 +1316,10 @@ bool ConnectDialog::scanAndConnect()
             }
 
             // II. Set channel and baudrate of the comport
-            openCfg.dev_addr = address;
-            openCfg.baudrate = baudrates[baudrateIndex];
+            openCfg.dev_addr = static_cast<uint8_t>(address);
+            openCfg.baudrate = static_cast<uint32_t>(baudrates[baudrateIndex]);
 
-            ((ComChannelRS4xx*)getActiveChannel())->setDeviceAddress( openCfg.dev_addr );
+            (static_cast<ComChannelRS4xx *>(getActiveChannel()))->setDeviceAddress( openCfg.dev_addr );
             getActiveChannel()->setBaudRate( openCfg.baudrate);
             getActiveChannel()->ReOpen();   // After baudrate change, com port has to be reopened
 
@@ -1425,11 +1425,11 @@ bool ConnectDialog::scanAndConnect()
     }
 
     // Delete connected device (no device was found)
-    if ( m_connectedDevice != NULL )
+    if ( m_connectedDevice != nullptr )
     {
         delete m_connectedDevice;
     }
-    m_connectedDevice = NULL;
+    m_connectedDevice = nullptr;
 
     return false;
 }
@@ -1441,56 +1441,56 @@ void ConnectDialog::changeComportSettings( int rs232Baudrate, int rs485Baudrate,
 {
     // Change RS232 Settings
     // Emit a change event to change the baudrate on the device
-    emit RS232BaudrateChanged( rs232Baudrate );
+    emit RS232BaudrateChanged( static_cast<uint32_t>(rs232Baudrate) );
 
     // If we are currently connected to the device over RS232, we have to change the com ports baudrate
     if ( getActiveInterface() == Rs232 )
     {
-        getActiveChannel()->setBaudRate( rs232Baudrate);
+        getActiveChannel()->setBaudRate( static_cast<uint32_t>(rs232Baudrate) );
         getActiveChannel()->ReOpen();   // After baudrate change, com port has to be reopened
     }
 
     // Change RS485 Settings
     // Emit a change event to change the baudrate on the device
-    emit RS485BaudrateChanged( rs485Baudrate );
+    emit RS485BaudrateChanged( static_cast<uint32_t>(rs485Baudrate) );
 
     // If we are currently connected to the device over RS485, we have to change the com ports baudrate
     if ( getActiveInterface() == Rs485 )
     {
-        getActiveChannel()->setBaudRate( rs485Baudrate);
+        getActiveChannel()->setBaudRate( static_cast<uint32_t>(rs485Baudrate) );
         getActiveChannel()->ReOpen();   // After baudrate change, com port has to be reopened
     }
 
     // Emit a change event to change the address on the device
-    emit RS485AddressChanged( rs485Address );
+    emit RS485AddressChanged( static_cast<uint32_t>(rs485Address) );
 
     // If we are currently connected to the device over RS485, we have to change the com ports address
     if ( getActiveInterface() == Rs485 )
     {
-        ((ComChannelRS4xx*)getActiveChannel())->setDeviceAddress( rs485Address );
+        (static_cast<ComChannelRS4xx *>(getActiveChannel()))->setDeviceAddress( static_cast<uint32_t>(rs485Address) );
     }
 
     // Emit a change event to change the broadcast address on the device
-    emit RS485BroadcastAddressChanged( rs485BroadcastAddress );
+    emit RS485BroadcastAddressChanged( static_cast<uint32_t>(rs485BroadcastAddress) );
 
     // Setup connect dialog with new values
     // RS232
     ctrl_channel_rs232_open_config_t rs232Config = getRs232Config();
-    rs232Config.baudrate = rs232Baudrate;
+    rs232Config.baudrate = static_cast<uint32_t>(rs232Baudrate);
     setRs232Config( rs232Config );
 
     // RS485
     ctrl_channel_rs4xx_open_config_t rs485Config = getRs485Config();
-    rs485Config.baudrate = rs485Baudrate;
-    rs485Config.dev_addr = rs485Address;
+    rs485Config.baudrate = static_cast<uint32_t>(rs485Baudrate);
+    rs485Config.dev_addr = static_cast<uint8_t>(rs485Address);
     setRs485Config( rs485Config );
 
     // If we are connected after a scan operation, update the list of detected devices
     if ( !m_detectedRS485Devices.empty() )
     {
-        m_detectedRS485Devices[m_currentRS485DeviceIndex].config.baudrate = rs485Baudrate;
-        m_detectedRS485Devices[m_currentRS485DeviceIndex].config.dev_addr = rs485Address;
-        m_detectedRS485Devices[m_currentRS485DeviceIndex].broadcastAddress = rs485BroadcastAddress;
+        m_detectedRS485Devices[m_currentRS485DeviceIndex].config.baudrate = static_cast<uint32_t>(rs485Baudrate);
+        m_detectedRS485Devices[m_currentRS485DeviceIndex].config.dev_addr = static_cast<uint8_t>(rs485Address);
+        m_detectedRS485Devices[m_currentRS485DeviceIndex].broadcastAddress = static_cast<uint32_t>(rs485BroadcastAddress);
 
         // Rearrange the list, so that it is sorted by device address in ascending order
         std::sort( m_detectedRS485Devices.begin(), m_detectedRS485Devices.end(),
@@ -1498,9 +1498,9 @@ void ConnectDialog::changeComportSettings( int rs232Baudrate, int rs485Baudrate,
                    { return a.config.dev_addr < b.config.dev_addr; } );
 
         // Find index of the device in the list
-        m_currentRS485DeviceIndex = std::find_if( m_detectedRS485Devices.begin(), m_detectedRS485Devices.end(),
-                                                  [rs485Address](const detectedRS485Device & a)
-                                                  { return a.config.dev_addr == rs485Address; } ) - m_detectedRS485Devices.begin();
+        m_currentRS485DeviceIndex = static_cast<int>((std::find_if( m_detectedRS485Devices.begin(), m_detectedRS485Devices.end(),
+                                                                    [rs485Address](const detectedRS485Device & a)
+                                                                    { return a.config.dev_addr == rs485Address; } ) - m_detectedRS485Devices.begin()));
     }
 }
 
@@ -1579,7 +1579,7 @@ void ConnectDialog::onBroadcastChange( bool enabled )
             }
 
             // Change the address of the Com-Port to the broadcast address
-            ((ComChannelRS4xx*)getActiveChannel())->setDeviceAddress( m_detectedRS485Devices[m_currentRS485DeviceIndex].broadcastAddress );
+            (static_cast<ComChannelRS4xx *>(getActiveChannel()))->setDeviceAddress( m_detectedRS485Devices[m_currentRS485DeviceIndex].broadcastAddress );
 
             /* Switch broadcast master and try to connect with it, this might take several trys because
              * there can be garbage left in the tx/rx buffers of the device */
@@ -1605,13 +1605,13 @@ void ConnectDialog::onBroadcastChange( bool enabled )
         else
         {
             // Change the address of the Com-Port to the broadcast address to make sure all devices receive the command
-            ((ComChannelRS4xx*)getActiveChannel())->setDeviceAddress( m_detectedRS485Devices[m_currentRS485DeviceIndex].broadcastAddress );
+            (static_cast<ComChannelRS4xx *>(getActiveChannel()))->setDeviceAddress( m_detectedRS485Devices[m_currentRS485DeviceIndex].broadcastAddress );
 
             // Disable broadcast master on all devices
             emit RS485BroadcastMasterChanged( -1 );
 
             // Change the address of the Com-Port to the device address
-            ((ComChannelRS4xx*)getActiveChannel())->setDeviceAddress( m_detectedRS485Devices[m_currentRS485DeviceIndex].config.dev_addr );
+            (static_cast<ComChannelRS4xx *>(getActiveChannel()))->setDeviceAddress( m_detectedRS485Devices[m_currentRS485DeviceIndex].config.dev_addr );
         }
     }
 }
@@ -1635,7 +1635,7 @@ void ConnectDialog::onReopenSerialConnection( void )
     msgBox.setText( "The update was successful and the device is now restarting.\n\n"
                     "It can take up to 30 seconds until the device is accessible again, please be patient." );
     msgBox.setWindowModality( Qt::ApplicationModal );
-    msgBox.setStandardButtons( 0 );
+    msgBox.setStandardButtons( nullptr );
     msgBox.show();
     QApplication::processEvents();
 

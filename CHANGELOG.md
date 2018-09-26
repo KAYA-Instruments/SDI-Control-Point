@@ -4,11 +4,17 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
-Version **1.1.7** - 24.09.2018
+Version **1.1.7** - 26.09.2018
 
 * The maximum temperature readout command now reads both the persistent and the user reset-able maximum temperature
 * Added readout of current fan speed and added a spin box to setup the target temperature of the fan control for supported devices
 * Fixed a rare crash that occured when a device reported a device name that did contain non-ASCII characters
+* The info tab now has a timer to update the temperature / fan values every second. This is only done when the info tab is visible. To make sure no errors occur due to this automatic update, the com channel now has a lock on the read / write functions to make it thread safe.
+* Fixed a bug where the automatic detection would detect devices double and / or with incomplete names
+* Fixed potential bugs where the same could have happened in dpc and and aec weight transmision
+* Fixed potential bugs where the timeout for dpc and aec weight transmision could be shorter than 1s (since the timer only had 1 second resolution)
+* Made the device dropdown field expanding to make device names better readable
+* Fixed some Clang warnings (this is an ongoing task)
 
 ## Older Releases:
 
