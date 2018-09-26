@@ -1395,7 +1395,7 @@ static int get_device_list
                     cnt++;
 
                     // decrement data counter by bytes taken out
-                    unsigned int num_bytes_processed = (unsigned int)s + offset - (unsigned int)data;
+                    unsigned int num_bytes_processed = (unsigned int)(s + offset - data);
                     data_count -= num_bytes_processed;
 
                     // move out the processed command
@@ -1418,7 +1418,7 @@ static int get_device_list
         {
             // timeout handling
             get_time_monotonic( &now );
-            int diff_ms = (now.tv_sec - start.tv_sec) * 1000 + (now.tv_nsec - start.tv_nsec) / 1000000;
+            int diff_ms = (int)((now.tv_sec - start.tv_sec) * 1000 + (now.tv_nsec - start.tv_nsec) / 1000000);
             loop = (diff_ms > (int)timeout) ? 0 : 1;
         }
     }
