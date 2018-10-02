@@ -2635,9 +2635,9 @@ QVector<uint> InOutBox::createLscVector( void )
 
     /* The parameters k, offset and slope have to be converted from
      * float to Q2.30 fixed point format */
-    values[1] = static_cast<uint>(d_data->m_LscSetup.k * static_cast<float>(1u << 30u));
-    values[2] = static_cast<uint>(d_data->m_LscSetup.offset * static_cast<float>(1u << 30u));
-    values[3] = static_cast<uint>(d_data->m_LscSetup.slope * static_cast<float>(1u << 30u));
+    values[1] = static_cast<uint>(d_data->m_LscSetup.k * (1u << 30u));
+    values[2] = static_cast<uint>(d_data->m_LscSetup.offset * (1u << 30u));
+    values[3] = static_cast<uint>(d_data->m_LscSetup.slope * (1u << 30u));
     return ( values );
 }
 
@@ -2912,7 +2912,7 @@ void InOutBox::onSbxKChange( double value )
  *****************************************************************************/
 void InOutBox::onSldOffsetChange( int value )
 {
-    float sbxValue = static_cast<float>(value * 100.0);
+    float sbxValue = static_cast<float>(value / 100.0);
 
     d_data->m_ui->sbxOffset->blockSignals( true );
     d_data->m_ui->sbxOffset->setValue( static_cast<double>(sbxValue) );
@@ -2966,7 +2966,7 @@ void InOutBox::onSbxOffsetChange( double value )
  *****************************************************************************/
 void InOutBox::onSldSlopeChange( int value )
 {
-    float sbxValue = static_cast<float>(value * 100.0);
+    float sbxValue = static_cast<float>(value / 100.0);
 
     d_data->m_ui->sbxSlope->blockSignals( true );
     d_data->m_ui->sbxSlope->setValue( static_cast<double>(sbxValue) );
