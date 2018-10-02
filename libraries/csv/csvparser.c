@@ -14,7 +14,7 @@ CsvParser *CsvParser_new(const char *filePath, const char *delimiter, int firstL
     if (filePath == NULL) {
         csvParser->filePath_ = NULL;
     } else {
-        int filePathLen = strlen(filePath);
+        unsigned long filePathLen = strlen(filePath);
         csvParser->filePath_ = (char*)malloc((filePathLen + 1));
         strcpy(csvParser->filePath_, filePath);
     }
@@ -40,7 +40,7 @@ CsvParser *CsvParser_new_from_string(const char *csvString, const char *delimite
 	CsvParser *csvParser = CsvParser_new(NULL, delimiter, firstLineIsHeader);
 	csvParser->fromString_ = 1;	
 	if (csvString != NULL) {
-		int csvStringLen = strlen(csvString);
+        unsigned long csvStringLen = strlen(csvString);
 		csvParser->csvString_ = (char*)malloc(csvStringLen + 1);
 		strcpy(csvParser->csvString_, csvString);
 	}	
@@ -100,14 +100,14 @@ int CsvParser_getNumFields(const CsvRow *csvRow) {
     return csvRow->numOfFields_;
 }
 
-const char **CsvParser_getFields(const CsvRow *csvRow) {
-    return (const char**)csvRow->fields_;
+char **CsvParser_getFields(const CsvRow *csvRow) {
+    return csvRow->fields_;
 }
 
 CsvRow *_CsvParser_getRow(CsvParser *csvParser) {
-    int numRowRealloc = 0;
-    int acceptedFields = 64;
-    int acceptedCharsInField = 64;
+    unsigned long numRowRealloc = 0;
+    unsigned long acceptedFields = 64;
+    unsigned long acceptedCharsInField = 64;
     if (csvParser->filePath_ == NULL && (! csvParser->fromString_)) {
         _CsvParser_setErrorMessage(csvParser, "Supplied CSV file path is NULL");
         return NULL;
@@ -146,7 +146,7 @@ CsvRow *_CsvParser_getRow(CsvParser *csvParser) {
     int lastCharIsQuote = 0;
     int isEndOfFile = 0;
     while (1) {
-        char currChar = (csvParser->fromString_) ? csvParser->csvString_[csvParser->csvStringIter_] : fgetc(csvParser->fileHandler_);
+        char currChar = (csvParser->fromString_) ? csvParser->csvString_[csvParser->csvStringIter_] : (char)fgetc(csvParser->fileHandler_);
         csvParser->csvStringIter_++;
         int endOfFileIndicator;
         if (csvParser->fromString_) {
@@ -184,16 +184,20 @@ CsvRow *_CsvParser_getRow(CsvParser *csvParser) {
         }
         if (isEndOfFile || ((currChar == csvParser->delimiter_ || currChar == '\n') && ! inside_complex_field) ){
             currField[lastCharIsQuote ? currFieldCharIter - 1 : currFieldCharIter] = '\0';
-            csvRow->fields_[fieldIter] = (char*)malloc(currFieldCharIter + 1);
+            csvRow->fields_[fieldIter] = (char*)malloc((unsigned long)currFieldCharIter + 1);
             strcpy(csvRow->fields_[fieldIter], currField);
             free(currField);
             csvRow->numOfFields_++;
             if (currChar == '\n') {
                 return csvRow;
             }
-            if (csvRow->numOfFields_ != 0 && csvRow->numOfFields_ % acceptedFields == 0) {
-                csvRow->fields_ = (char**)realloc(csvRow->fields_, ((numRowRealloc + 2) * acceptedFields) * sizeof(char*));
-                numRowRealloc++;
+            if (csvRow->numOfFields_ != 0 && (unsigned long)csvRow->numOfFields_ % acceptedFields == 0) {
+                void * temp = realloc(csvRow->fields_, ((numRowRealloc + 2) * acceptedFields) * sizeof(char*));
+                if ( temp != NULL )
+                {
+                    csvRow->fields_ = (char**)temp;
+                    numRowRealloc++;
+                }
             }
             acceptedCharsInField = 64;
             currField = (char*)malloc(acceptedCharsInField);
@@ -203,9 +207,13 @@ CsvRow *_CsvParser_getRow(CsvParser *csvParser) {
         } else {
             currField[currFieldCharIter] = currChar;
             currFieldCharIter++;
-            if (currFieldCharIter == acceptedCharsInField - 1) {
+            if ((unsigned long)currFieldCharIter == acceptedCharsInField - 1) {
                 acceptedCharsInField *= 2;
-                currField = (char*)realloc(currField, acceptedCharsInField);
+                void * temp = realloc(currField, acceptedCharsInField);
+                if ( temp != NULL )
+                {
+                    currField = (char*)temp;
+                }
             }
         }
         lastCharIsQuote = (currChar == '\"') ? 1 : 0;
@@ -225,7 +233,7 @@ void _CsvParser_setErrorMessage(CsvParser *csvParser, const char *errorMessage) 
     if (csvParser->errMsg_ != NULL) {
         free(csvParser->errMsg_);
     }
-    int errMsgLen = strlen(errorMessage);
+    unsigned long errMsgLen = strlen(errorMessage);
     csvParser->errMsg_ = (char*)malloc(errMsgLen + 1);
     strcpy(csvParser->errMsg_, errorMessage);
 }
