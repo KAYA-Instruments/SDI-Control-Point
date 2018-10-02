@@ -44,8 +44,8 @@ class InOutBox : public DctWidgetBox
     Q_OBJECT
 
 public:
-    explicit InOutBox( QWidget * parent = 0 );
-    ~InOutBox();
+    explicit InOutBox( QWidget * parent = nullptr );
+    ~InOutBox() Q_DECL_OVERRIDE;
 
     int BayerPattern() const;
     void setBayerPattern( const int );

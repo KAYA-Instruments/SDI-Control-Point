@@ -50,9 +50,14 @@ public:
         , m_cacheWidth( 0 )
         , m_cacheHeight( 0 )
         , m_outerRadius( 0 )
+#if defined(SKINNED_DIAL_DIRECTION_DETECTION)
+        , m_mousePoint( 0, 0 );
+        , m_mouseAngle( 0.0 );
+        , m_direction( Unknown );
+#endif
     {
         // do nothing
-    };
+    }
    
     PrivateData( QPixmap * c_back, QPixmap * c_needle, int c_angle )
         : m_background( new QPixmap( *c_back ) )
@@ -68,9 +73,14 @@ public:
         , m_cacheWidth( 0 )
         , m_cacheHeight( 0 )
         , m_outerRadius( 0 )
+#if defined(SKINNED_DIAL_DIRECTION_DETECTION)
+        , m_mousePoint( 0, 0 );
+        , m_mouseAngle( 0.0 );
+        , m_direction( Unknown );
+#endif
     {
         // do nothing
-    };
+    }
 
     ~PrivateData()
     {
@@ -78,7 +88,7 @@ public:
         delete m_needle;
         delete m_cacheBackground;
         delete m_cacheNeedle;
-    };
+    }
 
     QPixmap *               m_background;
     QPixmap *               m_needle;
@@ -114,13 +124,13 @@ QPixmap SkinnedDial::PrivateData::_rotatePix( QPixmap *p_pix, float p_deg, bool 
     // all rotation is CCW, so calculate for the "right" side of the knob
     if ( p_dir == false )
     {
-        p_deg = 360.0 - p_deg;
+        p_deg = 360.0f - p_deg;
     }
 
     // perform rotation, transforming around the center of the image
     QTransform trans;
     trans.translate(  p_pix->width()/2.0 , p_pix->height()/2.0 );
-    trans.rotate( p_deg );
+    trans.rotate( static_cast<qreal>(p_deg) );
     trans.translate( -p_pix->width()/2.0 , -p_pix->height()/2.0 );
     QPixmap outPix = p_pix->transformed( trans, Qt::SmoothTransformation );
 
@@ -401,13 +411,13 @@ void SkinnedDial::paintEvent( QPaintEvent *pe )
         int median = ( this->maximum() - abs(this->minimum()) ) / 2;
         if ( curVal < median )
         {
-            float pct = (float)abs( curVal - median ) / (float)abs( this->minimum() - median );
-            rotNeedle = d_data->_rotatePix( &rotNeedle, (float)(d_data->m_maxDeg) * pct, false );
+            float pct = static_cast<float>(abs( curVal - median )) / static_cast<float>(abs( this->minimum() - median ));
+            rotNeedle = d_data->_rotatePix( &rotNeedle, static_cast<float>(d_data->m_maxDeg) * pct, false );
         }
         else
         {
-            float pct = (float)abs( curVal - median ) / (float)abs( this->maximum() - median );
-            rotNeedle = d_data->_rotatePix( &rotNeedle, (float)(d_data->m_maxDeg) * pct, true );
+            float pct = static_cast<float>(abs( curVal - median )) / static_cast<float>(abs( this->maximum() - median ));
+            rotNeedle = d_data->_rotatePix( &rotNeedle, static_cast<float>(d_data->m_maxDeg) * pct, true );
         }
 
         d_data->m_cacheVal = curVal;

@@ -37,11 +37,11 @@
 #define CMD_GET_VERSION                         ( "version\n" )
 
 #define CMD_SYNC_VERSION_SYS_PLATFORM           ( "platform" )
-#define CMD_VERSION_SYS_PLATFORM                ( "platform : %[^\t\r\n]\n" )
+#define CMD_VERSION_SYS_PLATFORM                ( "platform : %49[^\t\r\n]\n" )
 #define CMD_GET_SYS_PLATFORM_NO_PARMS           ( 1 )
 
 #define CMD_SYNC_VERSION_DEV_NAME               ( "device name" )
-#define CMD_VERSION_DEV_NAME                    ( "device name : %[^\t\r\n]\n" )
+#define CMD_VERSION_DEV_NAME                    ( "device name : %49[^\t\r\n]\n" )
 #define CMD_GET_DEV_NAME_NO_PARMS               ( 1 )
                                                
 #define CMD_SYNC_VERSION_SYS_ID                 ( "system-id" )
@@ -53,7 +53,7 @@
 #define CMD_GET_HW_REVISION_NO_PARMS            ( 1 )
                                                
 #define CMD_SYNC_VERSION_SYS_VALIDITY           ( "system validity" )
-#define CMD_VERSION_SYS_VALIDITY                ( "system validity: %[^\t\r\n]\n" )
+#define CMD_VERSION_SYS_VALIDITY                ( "system validity: %49[^\t\r\n]\n" )
 #define CMD_GET_SYS_VALIDITY_NO_PARAMS          ( 1 )
                                                
 #define CMD_SYNC_VERSION_FEAT_MASK_HW           ( "feature mask HW" )
@@ -73,15 +73,15 @@
 #define CMD_GET_LOADER_VERSION_NO_PARMS         ( 2 )
                                                
 #define CMD_SYNC_VERSION_SW_RELEASE_ID          ( "sw-release-id" )
-#define CMD_VERSION_SW_RELEASE_ID               ( "sw-release-id  : %[^\t\r\n]\n" )
+#define CMD_VERSION_SW_RELEASE_ID               ( "sw-release-id  : %49[^\t\r\n]\n" )
 #define CMD_GET_SW_RELEASE_ID_NO_PARMS          ( 1 )
 
 #define CMD_SYNC_VERSION_SW_RELEASE_DATE        ( "sw-release-date" )
-#define CMD_VERSION_SW_RELEASE_DATE             ( "sw-release-date: %[^\t\r\n]\n" )
+#define CMD_VERSION_SW_RELEASE_DATE             ( "sw-release-date: %49[^\t\r\n]\n" )
 #define CMD_GET_SW_RELEASE_DATE_NO_PARMS        ( 1 )
 
 #define CMD_SYNC_VERSION_SW_BUILD_DATE          ( "sw-build-date" )
-#define CMD_VERSION_SW_BUILD_DATE               ( "sw-build-date : %[^\t\r\n]\n" )
+#define CMD_VERSION_SW_BUILD_DATE               ( "sw-build-date : %49[^\t\r\n]\n" )
 #define CMD_GET_SW_BUILD_DATE_NO_PARMS          ( 1 )
 
 #define CMD_GET_VERSION_NUM_RESPONSE_LINES      ( 13 )
@@ -157,7 +157,7 @@
  *****************************************************************************/
 #define CMD_GET_TEMP                            ( "temp %i\n" )
 #define CMD_SYNC_TEMP                           ( "temp " )
-#define CMD_GET_TEMP_RESPONSE                   ( "temp %i %i.%i %s\n" )
+#define CMD_GET_TEMP_RESPONSE                   ( "temp %i %i.%i %15s\n" )
 #define CMD_GET_TEMP_NO_PARMS                   ( 4 )
 
 /******************************************************************************
@@ -201,7 +201,7 @@
  * @brief command "name"
  *****************************************************************************/
 #define CMD_GET_NAME                            ( "name\n" )
-#define CMD_GET_NAME_REPLY                      ( "name %[^\t\r\n]\n" )
+#define CMD_GET_NAME_REPLY                      ( "name %49[^\t\r\n]\n" )
 #define CMD_SET_NAME                            ( "name %s\n" )
 #define CMD_SYNC_NAME                           ( "name " )
 #define CMD_GET_NAME_NO_PARMS                   ( 1 )
@@ -210,7 +210,7 @@
  * @brief command "identify"
  *****************************************************************************/
 #define CMD_GET_DEVICE_LIST                     ( "identify\n" )
-#define CMD_GET_DEVICE_LIST_REPLY               ( "id: %s %u %u %u %[^\t\r\n]\n%n" )
+#define CMD_GET_DEVICE_LIST_REPLY               ( "id: %49s %u %u %u %49[^\t\r\n]\n%n" )
 #define CMD_SYNC_DEVICE_LIST                    ( "id: ")
 #define CMD_GET_DEVICE_LIST_NO_PARAMS           ( 5 )
 #define CMD_DEVICE_LIST_MAX_DEVICES             ( 100 )     // Has to be equal to (MAX_DEVICE_ID + 1) which is defined in defines.h
@@ -1372,7 +1372,7 @@ static int get_device_list
             while ( s )
             {
                 // parse command
-                unsigned int offset = 0;
+                int offset = 0;
                 ctrl_protocol_device_t device;
                 int res = sscanf( s, CMD_GET_DEVICE_LIST_REPLY, device.device_platform,
                                                                 &device.rs485_address,

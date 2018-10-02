@@ -90,7 +90,7 @@
 #define CMD_GET_WB_PRESET                   ( "wb_preset\n" )
 #define CMD_SET_WB_PRESET                   ( "wb_preset %i\n" )
 #define CMD_SYNC_WB_PRESET                  ( "%i= " )
-#define CMD_REGEXP_WB_PRESET                ( "%i= %[^(](%iK)\n" )
+#define CMD_REGEXP_WB_PRESET                ( "%i= %20[^(](%iK)\n" )
 
 /******************************************************************************
  * @brief command "stat_exp"
@@ -357,7 +357,7 @@ static int get_aec_weights
             while ( s )
             {
                 int index = 0, weight = 0;
-                unsigned int offset = 0;
+                int offset = 0;
 
                 // parse command
                 int res = sscanf( s, CMD_SET_AEC_WEIGHTn, &index, &weight, &offset );

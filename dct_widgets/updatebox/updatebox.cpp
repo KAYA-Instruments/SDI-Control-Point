@@ -66,9 +66,9 @@ namespace Ui {
 #define VERSION_DOWNLOAD_SYNC       ( "version: " )
 #define VERSION_DOWNLOAD_PARSE      ( "version: V%d_%d_%d\n" )
 #define FILE0_DOWNLOAD_SYNC         ( "file0: ")
-#define FILE0_DOWNLOAD_PARSE        ( "file0: %s %s\n" )
+#define FILE0_DOWNLOAD_PARSE        ( "file0: %127s %32s\n" )
 #define FILE1_DOWNLOAD_SYNC         ( "file1: ")
-#define FILE1_DOWNLOAD_PARSE        ( "file1: %s %s\n" )
+#define FILE1_DOWNLOAD_PARSE        ( "file1: %127s %32s\n" )
 #define DOWNLOAD_SERVER             ( "https://gitlab.com/dreamchip/provideo-downloads/raw/master/auto_update/" )
 #define GUI_DOWNLOAD_PAGE           ( "https://gitlab.com/dreamchip/provideo-downloads/wikis/provideo-gui" )
 
@@ -196,7 +196,7 @@ static bool fileTypeMatches( const updateType type, const QString & fn )
     }
 
     quint32 d[2];
-    f.read( (char *)d, sizeof(quint32) * 2 );
+    f.read( reinterpret_cast<char *>(d), sizeof(quint32) * 2 );
     f.close();
 
     // Condor 4k
@@ -250,7 +250,7 @@ public:
         , m_current_gui_version({0, 0, 0})
         , m_server_gui_version({0, 0, 0})
         , m_network_manager( new QNetworkAccessManager( parent) )
-        , m_download_dir( NULL )
+        , m_download_dir( nullptr )
     {
         // setup ui
         m_ui->setupUi( parent );
@@ -655,7 +655,7 @@ void UpdateBox::setSystemState( SystemStates state, bool force )
  *****************************************************************************/
 unsigned int UpdateBox::getTotalNumUpdates()
 {
-    int numUpdates = 0;
+    unsigned int numUpdates = 0;
 
     /* Loop over all update configs, if a file path exits, this update has
      * to be performed */
@@ -815,7 +815,7 @@ void UpdateBox::onDownloadProgress( qint64 bytesReceived, qint64 bytesTotal )
     int progress = 0;
     if ( bytesTotal > 0 )
     {
-         progress = (int)( (bytesReceived * 100) / bytesTotal );
+         progress = static_cast<int>( (bytesReceived * 100) / bytesTotal );
     }
 
     // Emit download progress signal
@@ -1128,7 +1128,7 @@ void UpdateBox::downloadUpdate()
     if ( checksumError || !updateValid )
     {
         delete d_data->m_download_dir;
-        d_data->m_download_dir = NULL;
+        d_data->m_download_dir = nullptr;
 
         // Reset server version
         d_data->m_ui->letServerFirmwareVersion->setText( "No valid Version found" );
@@ -1797,7 +1797,7 @@ void UpdateBox::onFlashLoaderError( int error )
 void UpdateBox::onReadbackProgress( quint32 progress )
 {
     d_data->m_ui->progressBar->setFormat( "Read %p%" );
-    d_data->m_ui->progressBar->setValue( progress );
+    d_data->m_ui->progressBar->setValue( static_cast<int>(progress) );
 }
 
 /******************************************************************************
@@ -1806,7 +1806,7 @@ void UpdateBox::onReadbackProgress( quint32 progress )
 void UpdateBox::onEraseProgress( quint32 progress )
 {
     d_data->m_ui->progressBar->setFormat( "Erase %p%" );
-    d_data->m_ui->progressBar->setValue( progress );
+    d_data->m_ui->progressBar->setValue( static_cast<int>(progress) );
     d_data->m_erase_cnt = progress;
     setSystemState( FlashState );
 }
@@ -1817,7 +1817,7 @@ void UpdateBox::onEraseProgress( quint32 progress )
 void UpdateBox::onProgramProgress( quint32 progress )
 {
     d_data->m_ui->progressBar->setFormat( "Program %p%" );
-    d_data->m_ui->progressBar->setValue( progress );
+    d_data->m_ui->progressBar->setValue( static_cast<int>(progress) );
     d_data->m_program_cnt = progress;
     setSystemState( FlashState );
 }
@@ -1828,7 +1828,7 @@ void UpdateBox::onProgramProgress( quint32 progress )
 void UpdateBox::onVerifyProgress( quint32 progress )
 {
     d_data->m_ui->progressBar->setFormat( "Verify %p%" );
-    d_data->m_ui->progressBar->setValue( progress );
+    d_data->m_ui->progressBar->setValue( static_cast<int>(progress) );
     d_data->m_verify_cnt = progress;
     setSystemState( FlashState );
 }

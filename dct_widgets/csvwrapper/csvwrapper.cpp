@@ -51,7 +51,7 @@ int loadTableCsv( const QString & path, const int maxNumRows, const QVector<QPai
     int ret = 0;
     while ( (row = CsvParser_getRow(csvparser)) && (rowCount < maxNumRows) && (ret == 0) )
     {
-        const char **rowFields = CsvParser_getFields(row);
+        char **rowFields = CsvParser_getFields(row);
         int numColsTable = CsvParser_getNumFields(row);
         int numColsVector = cols.length();
 
@@ -69,7 +69,7 @@ int loadTableCsv( const QString & path, const int maxNumRows, const QVector<QPai
         // Get value and append to vector if it is in the legal range
         for (int col = 0 ; col < numColsTable ; col++)
         {
-            int value = strtol(rowFields[col], NULL, 10);
+            int value = static_cast<int>(strtol(rowFields[col], nullptr, 10));
             int minValue = boundaries.at(col).first;
             int maxValue = boundaries.at(col).second;
             if ( (value >= minValue) && (value <= maxValue) )
@@ -129,11 +129,11 @@ int saveTableCsv(const QString & path, const QVector<QVector<int>> & cols)
 
             // Convert data to c string
             std::string tempString = std::to_string(value);
-            char data[tempString.length()];
-            strcpy(data, tempString.c_str());
+            std::vector<char>data(tempString.length());
+            strcpy(&data.front(), tempString.c_str());
 
             // Write to the table
-            if ( CsvWriter_writeField(csvWriter, data) )
+            if ( CsvWriter_writeField(csvWriter, &data.front()) )
             {
                 // Show error message if write failed
                 QMessageBox msgBox;

@@ -36,8 +36,8 @@ class DpccBox : public DctWidgetBox
     Q_OBJECT
 
 public:
-    explicit DpccBox( QWidget * parent = 0 );
-    ~DpccBox();
+    explicit DpccBox( QWidget * parent = nullptr );
+    ~DpccBox() Q_DECL_OVERRIDE;
 
     // Show or hide UI elements
     void setFullDpccFeatureSetVisible( bool visible );

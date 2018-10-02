@@ -70,8 +70,8 @@
 /******************************************************************************
  * @brief command "fpnc_get_values"
  *****************************************************************************/
-#define CMD_GET_FPNC_VALUE                  ( "fpnc_get_values %i %i %i\n" )
-#define CMD_GET_FPNC_VALUE_LINE             ( "fpnc_get_values %i %i %i %i\n" )
+#define CMD_GET_FPNC_VALUE                  ( "fpnc_get_values %u %u %u\n" )
+#define CMD_GET_FPNC_VALUE_LINE             ( "fpnc_get_values %u %u %u %u\n" )
 #define CMD_SYNC_FPNC_VALUE                 ( "fpnc_get_values " )
 #define CMD_GET_FPNC_VALUE_LINE_NO_PARMS    ( 4 )
 
@@ -415,7 +415,7 @@ static int get_fpnc_correction_data
     sprintf( command, CMD_GET_FPNC_VALUE, v->page, v->column, v->offset );
     
     // send get-command to control channel
-    ctrl_channel_send_request( channel, (uint8_t *)command, strlen(command) );
+    ctrl_channel_send_request( channel, (uint8_t *)command, (int)strlen(command) );
 
     // read response from provideo device
     res = evaluate_get_response( channel, data, sizeof(data) );

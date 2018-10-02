@@ -420,7 +420,7 @@ static int get_dpcc_table
             while ( s )
             {
                 int x =0, y = 0;
-                unsigned int offset = 0;
+                int offset = 0;
 
                 // parse command
                 int res = sscanf( s, CMD_SET_DPCC_PIXELn, &x, &y, &offset );

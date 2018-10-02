@@ -57,7 +57,7 @@ namespace Ui {
 #define DPCC_SETTINGS_STORAGE               ( "storage" )
 #define DPCC_SETTINGS_Y_POSITIONS           ( "yPositions" )
 #define DPCC_SETTINGS_X_POSITIONS           ( "xPositions" )
-#define DPCC_TABLE_MAX_NO_ROWS              ( (int)MAX_DPCC_NO_PIXEL )    // See <ctrl_protocol/ctrl_protocol_dpcc.h>
+#define DPCC_TABLE_MAX_NO_ROWS              ( static_cast<int>(MAX_DPCC_NO_PIXEL) )    // See <ctrl_protocol/ctrl_protocol_dpcc.h>
 #define DPCC_TABLE_MAX_NO_COLUMNS           ( 2 )
 
 /******************************************************************************
@@ -120,7 +120,7 @@ class DpccDelegate : public QItemDelegate
 {
 public:
     // create a single editable table-cell
-    QWidget* createEditor( QWidget * parent, const QStyleOptionViewItem &, const QModelIndex & index) const
+    QWidget* createEditor( QWidget * parent, const QStyleOptionViewItem &, const QModelIndex & index) const Q_DECL_OVERRIDE
     {
         QLineEdit * edit = new QLineEdit( parent );
 
@@ -141,7 +141,7 @@ public:
     }
 
     // transfer value from data-model into line-edit
-    void setEditorData( QWidget * editor, const QModelIndex & idx ) const
+    void setEditorData( QWidget * editor, const QModelIndex & idx ) const Q_DECL_OVERRIDE
     {
         int value = idx.model()->data( idx, Qt::EditRole ).toInt();
         QLineEdit * edt = static_cast< QLineEdit * >( editor );
@@ -149,7 +149,7 @@ public:
     }    
 
     // transfer value from line_edit into data-model
-    void setModelData( QWidget * editor, QAbstractItemModel * model, const QModelIndex &idx ) const
+    void setModelData( QWidget * editor, QAbstractItemModel * model, const QModelIndex &idx ) const Q_DECL_OVERRIDE
     {
         QLineEdit * edt = static_cast< QLineEdit * >( editor );
         QString value = edt->text();
@@ -157,7 +157,7 @@ public:
     }
 
     // set geometry of line-edit
-    void updateEditorGeometry( QWidget * editor, const QStyleOptionViewItem & option, const QModelIndex & ) const
+    void updateEditorGeometry( QWidget * editor, const QStyleOptionViewItem & option, const QModelIndex & ) const Q_DECL_OVERRIDE
     {
         editor->setGeometry( option.rect );
     }
@@ -212,12 +212,12 @@ public:
         delete m_ui;
         delete m_delegate;
         delete m_model;
-    };
+    }
     
     // initialize data model
     void initDataModel()
     {
-        m_model = new QStandardItemModel( 0, DPCC_TABLE_MAX_NO_COLUMNS, NULL );
+        m_model = new QStandardItemModel( 0, DPCC_TABLE_MAX_NO_COLUMNS, nullptr );
         m_model->setHorizontalHeaderItem( 0, new QStandardItem(QString("Row (Y)")) );
         m_model->setHorizontalHeaderItem( 1, new QStandardItem(QString("Col (X)")) );
     }
@@ -546,19 +546,24 @@ void DpccBox::onAddClicked()
  *****************************************************************************/
 void DpccBox::onRemoveClicked()
 {
-    QItemSelectionModel * select = (QItemSelectionModel *)d_data->m_ui->tblPositions->selectionModel();
+    QItemSelectionModel * select = d_data->m_ui->tblPositions->selectionModel();
 
     if ( select->hasSelection() )
     {
+        // Get list of selected rows
         QModelIndexList list = select->selectedRows();
-        foreach ( QModelIndex index, list )
+        QModelIndexList::ConstIterator listIterator = list.constEnd();
+
+        // Remove all rows in the list starting with the last row
+        while ( listIterator != list.constBegin() )
         {
-            d_data->m_ui->tblPositions->model()->removeRow( index.row() );
+            --listIterator;     // Decrement first because constEnd() points to the element behind the last list entry
+            d_data->m_ui->tblPositions->model()->removeRow( (*listIterator).row() );
         }
 
         // Select next row (if there is one)
         int rowCount = d_data->m_ui->tblPositions->model()->rowCount();
-        if (list.last().row() < rowCount)
+        if ( list.last().row() < rowCount)
         {
             d_data->m_ui->tblPositions->setCurrentIndex(list.last());
         }
@@ -617,7 +622,7 @@ void DpccBox::onImportClicked()
         "Comma Seperated Values (CSV) File (*.csv);;All files (*.*)"
     );
 
-    if ( NULL != d_data->m_filename )
+    if ( nullptr != d_data->m_filename )
     {
         QFileInfo file( d_data->m_filename );
         if ( file.suffix().isEmpty() )
@@ -659,7 +664,7 @@ void DpccBox::onExportClicked()
         "Comma Seperated Values (CSV) File (*.csv);;All files (*.*)"
     );
 
-    if ( NULL != d_data->m_filename )
+    if ( nullptr != d_data->m_filename )
     {
         QFileInfo file( d_data->m_filename );
         if ( file.suffix().isEmpty() )
@@ -856,12 +861,12 @@ void DpccBox::onDpccVideoModeChanged( int mode )
 
     // Get the resolution corresponding to the video mode
     int xRes, yRes;
-    GetVideoModeResolution((VideoMode)mode, xRes, yRes);
+    GetVideoModeResolution( static_cast<VideoMode>(mode), xRes, yRes );
 
     // If the model is empty, just apply the new boundaries
     if ( d_data->m_ui->tblPositions->model()->rowCount() == 0 )
     {
-        d_data->m_delegate->setBounds(yRes - 1, xRes - 1);  // valid values: 0 ... (yRes - 1), 0 ... (xRes - 1)
+        d_data->m_delegate->setBounds( yRes - 1, xRes - 1 );  // valid values: 0 ... (yRes - 1), 0 ... (xRes - 1)
     }
     // If the resolution has changed, the data in the table is not valid anymore
     else if ( yRes != (d_data->m_delegate->getFirstColBound() + 1) || xRes != (d_data->m_delegate->getSecondColBound() + 1) )
@@ -870,12 +875,13 @@ void DpccBox::onDpccVideoModeChanged( int mode )
         // Show a Dialog to save the current table
         setNormalCursor();
         QMessageBox msgBox;
-        msgBox.setWindowTitle("Defect Pixel Correction");
-        msgBox.setText("The camera resolution has been changed.");
-        msgBox.setInformativeText("Your defect pixel table does not match the new resolution and has to be cleared.\n\nDo you want to save your old table?");
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setDefaultButton(QMessageBox::Yes);
-        msgBox.setIcon(QMessageBox::Question);
+        msgBox.setWindowTitle( "Defect Pixel Correction" );
+        msgBox.setText( "The camera resolution has been changed." );
+        msgBox.setInformativeText( "Your defect pixel table does not match the new resolution and has to be cleared.\n\n"
+                                   "Do you want to save your old table?" );
+        msgBox.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
+        msgBox.setDefaultButton( QMessageBox::Yes );
+        msgBox.setIcon( QMessageBox::Question );
 
         int ret = msgBox.exec();
         switch (ret)
@@ -894,7 +900,7 @@ void DpccBox::onDpccVideoModeChanged( int mode )
 
         // Clear the table, apply the new bounds
         onClearClicked();
-        d_data->m_delegate->setBounds(yRes - 1, xRes - 1);  // valid values: 0 ... (yRes - 1), 0 ... (xRes - 1)
+        d_data->m_delegate->setBounds( yRes - 1, xRes - 1 );  // valid values: 0 ... (yRes - 1), 0 ... (xRes - 1)
 
         // Also clear the table on the device, as the data is not valid anymore
         // @TODO Maybe this will be done directly in the camera if the resolution changes,

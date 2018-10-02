@@ -45,9 +45,9 @@ public:
     enum Direction { Unknown=0, CounterClockWise=1, ClockWise=2 };
 #endif // SKINNED_DIAL_DIRECTION_DETECTION
 
-    explicit SkinnedDial( QWidget * parent = 0 );
-    SkinnedDial( QPixmap * c_back, QPixmap * c_needle, int c_angle, QWidget * parent = 0);
-    ~SkinnedDial();
+    explicit SkinnedDial( QWidget * parent = nullptr );
+    SkinnedDial( QPixmap * c_back, QPixmap * c_needle, int c_angle, QWidget * parent = nullptr );
+    ~SkinnedDial() Q_DECL_OVERRIDE;
 
     QPixmap backgroundImage() const;
     void setBackgroundImage(QPixmap p_img);

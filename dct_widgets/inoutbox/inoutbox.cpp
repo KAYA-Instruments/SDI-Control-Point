@@ -56,15 +56,15 @@ namespace Ui {
 class SpinBoxStyle : public QProxyStyle
 {
 public:
-    SpinBoxStyle( QStyle *style = 0 ) : QProxyStyle(style) { }
+    SpinBoxStyle( QStyle *style = nullptr ) : QProxyStyle(style) { }
 
     int styleHint
     (
         StyleHint hint,
-        const QStyleOption * option = 0,
-        const QWidget * widget = 0,
-        QStyleHintReturn * returnData = 0
-    ) const
+        const QStyleOption * option = nullptr,
+        const QWidget * widget = nullptr,
+        QStyleHintReturn * returnData = nullptr
+    ) const Q_DECL_OVERRIDE
     {
         if ( hint == QStyle::SH_SpinBox_ClickAutoRepeatThreshold )
         {
@@ -135,6 +135,8 @@ public:
         , m_cntEvents( 0 )
         , m_maxEvents( 5 )
         , m_sbxStyle( new SpinBoxStyle() )
+        , m_AecSetup{}
+        , m_LscSetup{}
         , m_AptMin( 125 )
         , m_AptMax( 16000 )
         , m_AptEnable( true )
@@ -142,14 +144,14 @@ public:
         , m_weightDialog( new AecWeightsDialog() )
     {
         // do nothing
-    };
+    }
 
     ~PrivateData()
     {
         delete m_ui;
         delete m_sbxStyle;
         delete m_weightDialog;
-    };
+    }
 
     Ui::UI_InOutBox *   m_ui;           /**< ui handle */
     int                 m_cntEvents;    /**< ignore move-events if slider moving */
@@ -197,20 +199,20 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->sbxControlSpeed->setRange( 3, 30 );
     d_data->m_ui->sldControlSpeed->setRange( 3, 30 );
 
-    d_data->m_ui->sbxK->setRange( 0.0f, 2.0f );
-    d_data->m_ui->sbxK->setSingleStep( 0.01f );
+    d_data->m_ui->sbxK->setRange( 0.0, 2.0 );
+    d_data->m_ui->sbxK->setSingleStep( 0.01 );
     d_data->m_ui->sbxK->setKeyboardTracking( false );
     d_data->m_ui->sldK->setRange( 0, 200 );
     d_data->m_ui->sldK->setPageStep( 10 );
 
-    d_data->m_ui->sbxOffset->setRange( 0.0f, 1.0f );
-    d_data->m_ui->sbxOffset->setSingleStep( 0.01f );
+    d_data->m_ui->sbxOffset->setRange( 0.0, 1.0 );
+    d_data->m_ui->sbxOffset->setSingleStep( 0.01 );
     d_data->m_ui->sbxOffset->setKeyboardTracking( false );
     d_data->m_ui->sldOffset->setRange( 0, 100 );
     d_data->m_ui->sldOffset->setPageStep( 5 );
 
-    d_data->m_ui->sbxSlope->setRange( 0.0f, 2.0f );
-    d_data->m_ui->sbxSlope->setSingleStep( 0.01f );
+    d_data->m_ui->sbxSlope->setRange( 0.0, 2.0 );
+    d_data->m_ui->sbxSlope->setSingleStep( 0.01 );
     d_data->m_ui->sbxSlope->setKeyboardTracking( false );
     d_data->m_ui->sldSlope->setRange( 0, 200 );
     d_data->m_ui->sldSlope->setPageStep( 10 );
@@ -228,19 +230,19 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     // fill bayer pattern combo box
     for ( int i=BayerPatternFirst; i<BayerPatternMax; i++ )
     {
-        addBayerPattern( GetBayerPatternName( (enum BayerPattern)i ), i );
+        addBayerPattern( GetBayerPatternName( static_cast<enum BayerPattern>(i) ), i );
     }
 
     // fill sdi2-mode combo box
     for ( int i=Sdi2ModeFirst; i<Sdi2ModeMax; i++ )
     {
-        addSdi2Mode( GetSdi2ModeName( (enum Sdi2Mode)i ), i );
+        addSdi2Mode( GetSdi2ModeName( static_cast<enum Sdi2Mode>(i) ), i );
     }
 
     // fill downscale mode combo boxes
     for ( int i=DownscaleModeFirst; i<DownscaleModeMax; i++ )
     {
-        addDownscaleMode( GetDownscaleModeName( (enum DownscaleMode)i ), i );
+        addDownscaleMode( GetDownscaleModeName( static_cast<enum DownscaleMode>(i) ), i );
     }
 
     // Note: Flip modes depend on the device and are added in "setFlipModeVisible()"
@@ -248,7 +250,7 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     // fill genlock-mode combo box
     for ( int i=GenLockModeFirst; i<GenLockModeMax; i++ )
     {
-        addGenlockMode( GetGenlockModeName( (enum GenLockMode)i ), i );
+        addGenlockMode( GetGenlockModeName( static_cast<enum GenLockMode>(i) ), i );
     }
 
     // overrule auto-repeat threshold
@@ -1348,7 +1350,7 @@ void InOutBox::onCameraInfoChange( int min_gain, int max_gain, int min_exposure,
     for ( int i = IsoValueFirst; i < IsoValueMax; i++ )
     {
         // Get the iso value
-        int iso = GetIsoValue( (IsoValue)i );
+        int iso = GetIsoValue( static_cast<IsoValue>(i) );
         int gain = isoToGain( iso );
 
         // Check if iso value is in valid iso range for this video mode
@@ -1383,7 +1385,7 @@ void InOutBox::onCameraInfoChange( int min_gain, int max_gain, int min_exposure,
     for ( int i = ExposureTimeFirst; i < ExposureTimeMax; i++ )
     {
         // Get the iso value
-        int exposure = GetExposureTime( (ExposureTime)i );
+        int exposure = GetExposureTime( static_cast<ExposureTime>(i) );
 
         // Check if iso value is in valid iso range for this video mode
         if ( exposure < min_exposure )
@@ -1399,7 +1401,7 @@ void InOutBox::onCameraInfoChange( int min_gain, int max_gain, int min_exposure,
         else
         {
             // Gain is within range, add to combo box
-            d_data->m_ui->cbxExposure->addItem( GetExposureTimeString((ExposureTime)i), exposure );
+            d_data->m_ui->cbxExposure->addItem( GetExposureTimeString( static_cast<ExposureTime>(i)), exposure );
         }
     }
 
@@ -2092,7 +2094,7 @@ void InOutBox::onCbxAecEnableChange( int value )
     enableAecWidgets( enable );
     enableCamConfWidgets( !enable );
 
-    d_data->m_AecSetup.run = (int)enable;
+    d_data->m_AecSetup.run = enable;
 
     setWaitCursor();
     emit AecEnableChanged( d_data->m_AecSetup.run );
@@ -2114,7 +2116,7 @@ void InOutBox::onCbxAecWeightChange( int value )
 {
     bool enable = (value == Qt::Checked) ? true : false;
 
-    d_data->m_AecSetup.useCustomWeighting = (int)enable;
+    d_data->m_AecSetup.useCustomWeighting = enable;
 
     // Run enable aec widgets to enable / disable the set weighting button
     enableAecWidgets( d_data->m_AecSetup.run );
@@ -2520,31 +2522,31 @@ void InOutBox::updateLscWidgets( void )
 
     // k
     d_data->m_ui->sbxK->blockSignals( true );
-    d_data->m_ui->sbxK->setValue( d_data->m_LscSetup.k );
+    d_data->m_ui->sbxK->setValue( static_cast<double>(d_data->m_LscSetup.k) );
     d_data->m_ui->sbxK->setEnabled( d_data->m_LscSetup.enable );
     d_data->m_ui->sbxK->blockSignals( false );
     d_data->m_ui->sldK->blockSignals( true );
-    d_data->m_ui->sldK->setValue( (int)(d_data->m_LscSetup.k * 100.0f) );
+    d_data->m_ui->sldK->setValue( static_cast<int>(d_data->m_LscSetup.k * 100.0f) );
     d_data->m_ui->sldK->setEnabled( d_data->m_LscSetup.enable );
     d_data->m_ui->sldK->blockSignals( false );
 
     // offset
     d_data->m_ui->sbxOffset->blockSignals( true );
-    d_data->m_ui->sbxOffset->setValue( d_data->m_LscSetup.offset );
+    d_data->m_ui->sbxOffset->setValue( static_cast<double>(d_data->m_LscSetup.offset) );
     d_data->m_ui->sbxOffset->setEnabled( d_data->m_LscSetup.enable );
     d_data->m_ui->sbxOffset->blockSignals( false );
     d_data->m_ui->sldOffset->blockSignals( true );
-    d_data->m_ui->sldOffset->setValue( (int)(d_data->m_LscSetup.offset * 100.0f) );
+    d_data->m_ui->sldOffset->setValue( static_cast<int>(d_data->m_LscSetup.offset * 100.0f) );
     d_data->m_ui->sldOffset->setEnabled( d_data->m_LscSetup.enable );
     d_data->m_ui->sldOffset->blockSignals( false );
 
     // slope
     d_data->m_ui->sbxSlope->blockSignals( true );
-    d_data->m_ui->sbxSlope->setValue( d_data->m_LscSetup.slope );
+    d_data->m_ui->sbxSlope->setValue( static_cast<double>(d_data->m_LscSetup.slope) );
     d_data->m_ui->sbxSlope->setEnabled( d_data->m_LscSetup.enable );
     d_data->m_ui->sbxSlope->blockSignals( false );
     d_data->m_ui->sldSlope->blockSignals( true );
-    d_data->m_ui->sldSlope->setValue( (int)(d_data->m_LscSetup.slope * 100.0f) );
+    d_data->m_ui->sldSlope->setValue( static_cast<int>(d_data->m_LscSetup.slope * 100.0f) );
     d_data->m_ui->sldSlope->setEnabled( d_data->m_LscSetup.enable );
     d_data->m_ui->sldSlope->blockSignals( false );
 }
@@ -2609,7 +2611,7 @@ QVector<int> InOutBox::createAecVector( void )
 {
     // pack aec setup values into vector
     QVector<int> values(10);
-    values[0] = (int)d_data->m_AecSetup.run;
+    values[0] = static_cast<int>(d_data->m_AecSetup.run);
     values[1] = d_data->m_AecSetup.setPoint;
     values[2] = d_data->m_AecSetup.speed;
     values[3] = d_data->m_AecSetup.ClmTolerance;
@@ -2618,7 +2620,7 @@ QVector<int> InOutBox::createAecVector( void )
     values[6] = d_data->m_AecSetup.costAperture;
     values[7] = d_data->m_AecSetup.tAf;
     values[8] = d_data->m_AecSetup.maxGain;
-    values[9] = (int)d_data->m_AecSetup.useCustomWeighting;
+    values[9] = static_cast<int>(d_data->m_AecSetup.useCustomWeighting);
     return ( values );
 }
 
@@ -2633,9 +2635,9 @@ QVector<uint> InOutBox::createLscVector( void )
 
     /* The parameters k, offset and slope have to be converted from
      * float to Q2.30 fixed point format */
-    values[1] = (uint)(d_data->m_LscSetup.k * (float)(1u << 30u));
-    values[2] = (uint)(d_data->m_LscSetup.offset * (float)(1u << 30u));
-    values[3] = (uint)(d_data->m_LscSetup.slope * (float)(1u << 30u));
+    values[1] = static_cast<uint>(d_data->m_LscSetup.k * static_cast<float>(1u << 30u));
+    values[2] = static_cast<uint>(d_data->m_LscSetup.offset * static_cast<float>(1u << 30u));
+    values[3] = static_cast<uint>(d_data->m_LscSetup.slope * static_cast<float>(1u << 30u));
     return ( values );
 }
 
@@ -2823,13 +2825,13 @@ void InOutBox::onLscChange( QVector<uint> values )
 {
     if ( values.count() == 4 )
     {
-        d_data->m_LscSetup.enable = (bool)values[0];
+        d_data->m_LscSetup.enable = static_cast<bool>(values[0]);
 
         /* The parameters k, offset and slope have to be converted from
          * Q2.30 fixed point format to float */
-        d_data->m_LscSetup.k      = (float)values[1] / (float)(1u << 30u);
-        d_data->m_LscSetup.offset = (float)values[2] / (float)(1u << 30u);
-        d_data->m_LscSetup.slope  = (float)values[3] / (float)(1u << 30u);
+        d_data->m_LscSetup.k      = static_cast<float>(values[1]) / static_cast<float>(1u << 30u);
+        d_data->m_LscSetup.offset = static_cast<float>(values[2]) / static_cast<float>(1u << 30u);
+        d_data->m_LscSetup.slope  = static_cast<float>(values[3]) / static_cast<float>(1u << 30u);
 
         updateLscWidgets();
     }
@@ -2856,10 +2858,10 @@ void InOutBox::onCbxLscEnableChange( int value )
  *****************************************************************************/
 void InOutBox::onSldKChange( int value )
 {
-    float sbxValue = (float)value / 100.0f;
+    float sbxValue = static_cast<float>(value) / 100.0f;
 
     d_data->m_ui->sbxK->blockSignals( true );
-    d_data->m_ui->sbxK->setValue( sbxValue );
+    d_data->m_ui->sbxK->setValue( static_cast<double>(sbxValue) );
     d_data->m_ui->sbxK->blockSignals( false );
 
     d_data->m_LscSetup.k = sbxValue;
@@ -2892,13 +2894,13 @@ void InOutBox::onSldKReleased()
  *****************************************************************************/
 void InOutBox::onSbxKChange( double value )
 {
-    int sldValue = (int)(value * 100.0f);
+    int sldValue = static_cast<int>(value * 100.0);
 
     d_data->m_ui->sldK->blockSignals( true );
     d_data->m_ui->sldK->setValue( sldValue );
     d_data->m_ui->sldK->blockSignals( false );
 
-    d_data->m_LscSetup.k = value;
+    d_data->m_LscSetup.k = static_cast<float>(value);
 
     setWaitCursor();
     emit LscChanged( createLscVector() );
@@ -2910,10 +2912,10 @@ void InOutBox::onSbxKChange( double value )
  *****************************************************************************/
 void InOutBox::onSldOffsetChange( int value )
 {
-    float sbxValue = (float)value / 100.0f;
+    float sbxValue = static_cast<float>(value * 100.0);
 
     d_data->m_ui->sbxOffset->blockSignals( true );
-    d_data->m_ui->sbxOffset->setValue( sbxValue );
+    d_data->m_ui->sbxOffset->setValue( static_cast<double>(sbxValue) );
     d_data->m_ui->sbxOffset->blockSignals( false );
 
     d_data->m_LscSetup.offset = sbxValue;
@@ -2946,13 +2948,13 @@ void InOutBox::onSldOffsetReleased()
  *****************************************************************************/
 void InOutBox::onSbxOffsetChange( double value )
 {
-    int sldValue = (int)(value * 100.0f);
+    int sldValue = static_cast<int>(value * 100.0);
 
     d_data->m_ui->sldOffset->blockSignals( true );
     d_data->m_ui->sldOffset->setValue( sldValue );
     d_data->m_ui->sldOffset->blockSignals( false );
 
-    d_data->m_LscSetup.offset = value;
+    d_data->m_LscSetup.offset = static_cast<float>(value);
 
     setWaitCursor();
     emit LscChanged( createLscVector() );
@@ -2964,10 +2966,10 @@ void InOutBox::onSbxOffsetChange( double value )
  *****************************************************************************/
 void InOutBox::onSldSlopeChange( int value )
 {
-    float sbxValue = (float)value / 100.0f;
+    float sbxValue = static_cast<float>(value * 100.0);
 
     d_data->m_ui->sbxSlope->blockSignals( true );
-    d_data->m_ui->sbxSlope->setValue( sbxValue );
+    d_data->m_ui->sbxSlope->setValue( static_cast<double>(sbxValue) );
     d_data->m_ui->sbxSlope->blockSignals( false );
 
     d_data->m_LscSetup.slope = sbxValue;
@@ -3000,13 +3002,13 @@ void InOutBox::onSldSlopeReleased()
  *****************************************************************************/
 void InOutBox::onSbxSlopeChange( double value )
 {
-    int sldValue = (int)(value * 100.0f);
+    int sldValue = static_cast<int>(value * 100.0);
 
     d_data->m_ui->sldSlope->blockSignals( true );
     d_data->m_ui->sldSlope->setValue( sldValue );
     d_data->m_ui->sldSlope->blockSignals( false );
 
-    d_data->m_LscSetup.slope = value;
+    d_data->m_LscSetup.slope = static_cast<float>(value);
 
     setWaitCursor();
     emit LscChanged( createLscVector() );
