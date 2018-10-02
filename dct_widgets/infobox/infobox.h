@@ -52,6 +52,7 @@ protected:
     void applySettings( void ) Q_DECL_OVERRIDE;
 
 signals:
+    void GetRunTimeRequest();
     void GetTempRequest( uint8_t id );
     void GetMaxTempRequest();
     void GetFanSpeedRequest();

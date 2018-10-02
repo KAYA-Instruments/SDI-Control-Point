@@ -781,6 +781,14 @@ void ProVideoSystemItf::GetRunTime()
 }
 
 /******************************************************************************
+ * ProVideoSystemItf::onGetRunTimeRequest
+ *****************************************************************************/
+void ProVideoSystemItf::onGetRunTimeRequest()
+{
+    GetRunTime();
+}
+
+/******************************************************************************
  * ProVideoSystemItf::GetTemp
  *****************************************************************************/
 void ProVideoSystemItf::GetTemp( uint8_t id )

@@ -858,6 +858,7 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         connect( m_ui->infoBox, SIGNAL(FanTargetChanged(uint8_t)), dev->GetProVideoSystemItf(), SLOT(onFanTargetChange(uint8_t)) );
     }
 
+    connect( m_ui->infoBox, SIGNAL(GetRunTimeRequest()), dev->GetProVideoSystemItf(), SLOT(onGetRunTimeRequest()) );
     connect( m_ui->infoBox, SIGNAL(GetTempRequest(uint8_t)), dev->GetProVideoSystemItf(), SLOT(onGetTempRequest(uint8_t)) );
     connect( m_ui->infoBox, SIGNAL(GetMaxTempRequest()), dev->GetProVideoSystemItf(), SLOT(onGetMaxTempRequest()) );
     connect( m_ui->infoBox, SIGNAL(GetFanSpeedRequest()), dev->GetProVideoSystemItf(), SLOT(onGetFanSpeedRequest()) );

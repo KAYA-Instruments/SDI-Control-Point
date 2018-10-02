@@ -406,6 +406,8 @@ void InfoBox::onOverTempCountChange( uint32_t count )
  *****************************************************************************/
 void InfoBox::onUpdateTimerExpired()
 {
+    emit GetRunTimeRequest();
+
     if ( d_data->m_numTempSensors > 0 )
     {
         emit GetTempRequest( 0u );

@@ -47,12 +47,12 @@ public:
         m_broadcastAddress = 0;
         m_isBroadcastMaster = false;
         m_ProVideoSystemItf = new ProVideoSystemItf( c, p );
-    };
+    }
 
     ~PrivateData()
     {
         delete m_ProVideoSystemItf;
-    };
+    }
 
     QString m_systemPlatform;
     QString m_deviceName;
@@ -110,7 +110,7 @@ ProVideoSystemItf * ProVideoDevice::GetProVideoSystemItf() const
  *****************************************************************************/
 IspItf * ProVideoDevice::GetIspItf() const
 {
-    return NULL;
+    return nullptr;
 }
 
 /******************************************************************************
@@ -118,7 +118,7 @@ IspItf * ProVideoDevice::GetIspItf() const
  *****************************************************************************/
 CprocItf * ProVideoDevice::GetCprocItf() const
 {
-    return NULL;
+    return nullptr;
 }
 
 /******************************************************************************
@@ -126,7 +126,7 @@ CprocItf * ProVideoDevice::GetCprocItf() const
  *****************************************************************************/
 AutoItf * ProVideoDevice::GetAutoItf() const
 {
-    return NULL;
+    return nullptr;
 }
 
 /******************************************************************************
@@ -134,7 +134,7 @@ AutoItf * ProVideoDevice::GetAutoItf() const
  *****************************************************************************/
 CamItf * ProVideoDevice::GetCamItf() const
 {
-    return NULL;
+    return nullptr;
 }
 
 /******************************************************************************
@@ -142,7 +142,7 @@ CamItf * ProVideoDevice::GetCamItf() const
  *****************************************************************************/
 MccItf * ProVideoDevice::GetMccItf() const
 {
-    return NULL;
+    return nullptr;
 }
 
 /******************************************************************************
@@ -150,7 +150,7 @@ MccItf * ProVideoDevice::GetMccItf() const
  *****************************************************************************/
 LutItf * ProVideoDevice::GetLutItf() const
 {
-    return NULL;
+    return nullptr;
 }
 
 /******************************************************************************
@@ -158,7 +158,7 @@ LutItf * ProVideoDevice::GetLutItf() const
  *****************************************************************************/
 ChainItf * ProVideoDevice::GetChainItf() const
 {
-    return NULL;
+    return nullptr;
 }
 
 /******************************************************************************
@@ -166,7 +166,7 @@ ChainItf * ProVideoDevice::GetChainItf() const
  *****************************************************************************/
 IrisItf * ProVideoDevice::GetIrisItf() const
 {
-    return NULL;
+    return nullptr;
 }
 
 /******************************************************************************
@@ -174,7 +174,7 @@ IrisItf * ProVideoDevice::GetIrisItf() const
  *****************************************************************************/
 KneeItf * ProVideoDevice::GetKneeItf() const
 {
-    return NULL;
+    return nullptr;
 }
 
 /******************************************************************************
@@ -182,7 +182,7 @@ KneeItf * ProVideoDevice::GetKneeItf() const
  *****************************************************************************/
 DpccItf * ProVideoDevice::GetDpccItf() const
 {
-    return NULL;
+    return nullptr;
 }
 
 /******************************************************************************
@@ -190,7 +190,7 @@ DpccItf * ProVideoDevice::GetDpccItf() const
  *****************************************************************************/
 OsdItf * ProVideoDevice::GetOsdItf() const
 {
-    return NULL;
+    return nullptr;
 }
 
 /******************************************************************************
@@ -198,7 +198,7 @@ OsdItf * ProVideoDevice::GetOsdItf() const
  *****************************************************************************/
 bool ProVideoDevice::GetCopyFlag() const
 {
-    return NULL;
+    return false;
 }
 
 /******************************************************************************
@@ -311,7 +311,7 @@ unsigned int ProVideoDevice::getBroadcastAddress()
  *****************************************************************************/
 void ProVideoDevice::onBroadcastMasterModeChange( uint8_t isBroadcastMaster )
 {
-    d_data->m_isBroadcastMaster = (bool)isBroadcastMaster;
+    d_data->m_isBroadcastMaster = static_cast<bool>(isBroadcastMaster);
 }
 
 /******************************************************************************

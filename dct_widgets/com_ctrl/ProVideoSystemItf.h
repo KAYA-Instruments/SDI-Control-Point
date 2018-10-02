@@ -184,6 +184,7 @@ public slots:
     void onRS485BroadcastMasterChange( int32_t master_address );
     void onPromptChange( uint8_t flag );
     void onDebugLevelChange( uint8_t level );
+    void onGetRunTimeRequest();
     void onGetTempRequest( uint8_t id );
     void onGetMaxTempRequest();
     void onMaxTempReset();
