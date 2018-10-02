@@ -4,6 +4,15 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
+Version **1.1.8** - 02.10.2018
+
+* Updated QCustomPlot library to version 2.0.1 which officially supports Qt 5.11
+* The runtime counter in the info tab will now be automatically updated every second (like the temperature values)
+* Fixed more Clang warnings (this is an ongoing task)
+* Fixed some potential memory leaks reported by Cppcheck
+
+## Older Releases:
+
 Version **1.1.7** - 26.09.2018
 
 * The maximum temperature readout command now reads both the persistent and the user reset-able maximum temperature
@@ -15,8 +24,6 @@ Version **1.1.7** - 26.09.2018
 * Fixed potential bugs where the timeout for dpc and aec weight transmision could be shorter than 1s (since the timer only had 1 second resolution)
 * Made the device dropdown field expanding to make device names better readable
 * Fixed some Clang warnings (this is an ongoing task)
-
-## Older Releases:
 
 Version **1.1.6** - 14.08.2018
 
