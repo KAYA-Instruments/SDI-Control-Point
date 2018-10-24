@@ -100,7 +100,7 @@ How to crosscompile a QT5 project using MXE:
    ```# <mxe root>/usr/i686-w64-mingw32.static/qt5/bin/qmake```
 6. Build the application:  
    ```# make```
-7. The resulting executable will be placed in ```<project folder>/application/release/ProVideo.exe```. If you want to deploy the executable, do not forget to place the file ```<project folder>/application/tools/flashloader.exe``` in a folder named ```tools``` on the same folder as the executable, otherwise firmware updates will not be possible.
+7. The resulting executable will be placed in ```<project folder>/application/release/ProVideo.exe```. If you want to deploy the executable, do not forget to place the file ```<project folder>/application/tools/flashloader.exe``` in a folder named ```tools``` in the same folder as the executable, otherwise firmware updates will not be possible.
 
 The above steps will build a Win32 static executable. To use dynamic libraries or generate a 64 bit executable you have to use a different MXE_TARGET in step 2:
 
@@ -109,7 +109,7 @@ The above steps will build a Win32 static executable. To use dynamic libraries o
 * MinGW-w64, 64-bit, static libs: ```# make qtbase qtserialport MXE_TARGETS=x86_64-w64-mingw32.static```
 * MinGW-w64, 64-bit, shared libs: ```# make qtbase qtserialport MXE_TARGETS=x86_64-w64-mingw32.shared```
 
+And use the according toolchain-path in step 5.
+
 By default MXE currently uses GCC 5, if you want to use a newer GCC Version, e.g. GCC 8 add the following string to the make command from step 2: ```MXE_PLUGIN_DIRS='plugins/gcc8'```
 A complete example building MXE with 8 threads and GCC 8 would look like this: ```# make -j 8 qtbase qtserialport MXE_PLUGIN_DIRS='plugins/gcc8'```
-
-And use the according toolchain-path in step 5.
