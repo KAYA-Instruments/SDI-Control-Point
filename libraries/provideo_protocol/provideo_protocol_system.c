@@ -157,8 +157,8 @@
  *****************************************************************************/
 #define CMD_GET_TEMP                            ( "temp %i\n" )
 #define CMD_SYNC_TEMP                           ( "temp " )
-#define CMD_GET_TEMP_RESPONSE                   ( "temp %i %i.%i %15s\n" )
-#define CMD_GET_TEMP_NO_PARMS                   ( 4 )
+#define CMD_GET_TEMP_RESPONSE                   ( "temp %i %f %15s\n" )
+#define CMD_GET_TEMP_NO_PARMS                   ( 3 )
 
 /******************************************************************************
  * @brief command "max_temp"
@@ -1640,12 +1640,13 @@ static int get_temp
         char * s = strstr( data, CMD_SYNC_TEMP );
         if ( s )
         {
-            int id, integer, fractional;
+            int id;
+            float value;
             char name[16];
-            res = sscanf( s, CMD_GET_TEMP_RESPONSE, &id, &integer, &fractional, name );
+            res = sscanf( s, CMD_GET_TEMP_RESPONSE, &id, &value, name );
             if ( (res == CMD_GET_TEMP_NO_PARMS) && (UINT32(id) == temp->id) )
             {
-                temp->temp = (float)(INT32(integer)) + ((float)(UINT32(fractional))) / 10.0f;
+                temp->temp = value;
                 strcpy( temp->name, name );
                 return ( 0 );
             }

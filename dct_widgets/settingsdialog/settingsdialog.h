@@ -25,6 +25,9 @@
 
 #include <QDialog>
 #include <QValidator>
+#include <QSettings>
+
+#include <dct_widgets_base.h>
 
 namespace Ui {
     class SettingsDialog;
@@ -35,20 +38,25 @@ class SettingsDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit SettingsDialog(QWidget *parent = 0);
+    explicit SettingsDialog(QWidget *parent = nullptr);
     ~SettingsDialog();
 
     // Show or hide UI elements
     void setBroadcastSettingsVisible( const bool value );
     void setRS232SettingsVisible( const bool value );
 
+    // Set state of Ui elements
+    void setEngineeringModeChecked( bool checked );
+    void setConnectionCheckChecked( bool checked );
+
 signals:
     void DeviceNameChanged( QString name );
     void UpdateDeviceName();
     void ResetToDefaultsClicked();
     void SystemSettingsChanged( int rs232Baudrate, int rs485Baudrate, int rs485Address, int rs485BroadcastAddress );
-    void EngineeringModeChanged( bool flag );
+    void WidgetModeChanged( DctWidgetBox::Mode mode );
     void DebugTerminalVisibilityChanged( bool visible );
+    void ConnectionCheckChanged( bool enabled );
 
     void ResyncRequest( void );
     void SaveSettings( void );
@@ -72,6 +80,7 @@ private slots:
     void onBtnApplySerialPortSettingsClicked();
     void onCbxEngineeringModeChange( int value );
     void onCbxShowDebugTerminalChange( int value );
+    void onCbxConnectionCheckChange( int value );
 
 private:
     Ui::SettingsDialog *        m_ui;   // GUI instance

@@ -42,13 +42,14 @@
 /******************************************************************************
  * local definitions
  *****************************************************************************/
-#define CON_DIALOG_INTERFACE        ( "interface" )
-#define CON_DIALOG_PORT             ( "port" )
-#define CON_DIALOG_SPEED            ( "baudrate" )
-#define CON_DIALOG_DATABITS         ( "databits" )
-#define CON_DIALOG_PARITY           ( "parity" )
-#define CON_DIALOG_STOPBITS         ( "stopbits" )
-#define CON_DIALOG_DEVICE_ADDRESS   ( "dev-address" )
+#define CON_SETTINGS_SECTION_NAME            ( "CON" )
+#define CON_SETTINGS_DIALOG_INTERFACE        ( "interface" )
+#define CON_SETTINGS_DIALOG_PORT             ( "port" )
+#define CON_SETTINGS_DIALOG_SPEED            ( "baudrate" )
+#define CON_SETTINGS_DIALOG_DATABITS         ( "databits" )
+#define CON_SETTINGS_DIALOG_PARITY           ( "parity" )
+#define CON_SETTINGS_DIALOG_STOPBITS         ( "stopbits" )
+#define CON_SETTINGS_DIALOG_DEVICE_ADDRESS   ( "dev-address" )
 
 /******************************************************************************
  * ConnectDialog::ConnectDialog
@@ -110,13 +111,19 @@ ConnectDialog::ConnectDialog( QWidget * parent )
     setWindowFlags( Qt::CustomizeWindowHint | Qt::WindowTitleHint );
 
     // Try to load connection settings from file
-    QString m_SettingsFile = QDir::homePath() + "/.application.ini";
+    QString m_SettingsFile = QDir::homePath() + "/" + QString(SETTINGS_FILE_NAME);
 
     if ( fileExists( m_SettingsFile ))
     {
         QSettings settings( m_SettingsFile, QSettings::IniFormat );
-        this->loadSettings( settings );
-        qDebug() << "loaded connection settings file";
+        if ( loadConSettings( settings ) )
+        {
+            qDebug() << "loaded connection settings from file";
+        }
+        else
+        {
+            qDebug() << "failed loading connection settings from file";
+        }
     }
 }
 
@@ -229,7 +236,12 @@ bool ConnectDialog::fileExists( QString & path )
  *****************************************************************************/
 bool ConnectDialog::isConnected()
 {
-    return ( (m_connectedDevice == nullptr) ? false : true );
+    if ( m_connectedDevice != nullptr )
+    {
+        return m_connectedDevice->isConnected();
+    }
+
+    return false;
 }
 
 /******************************************************************************
@@ -249,7 +261,6 @@ bool ConnectDialog::connectWithDevice()
     // Close the active connection first (in case we try to reconnect)
     getActiveChannel()->Close();
     bOpen = ( openInterface() == 0 ) ? true : false;
-    qDebug() << "open     :" << bOpen;
 
     // II. Create a generic device and try to connect with it
     ProVideoDevice genericDevice ( getActiveChannel(), new ProVideoProtocol() );
@@ -263,7 +274,6 @@ bool ConnectDialog::connectWithDevice()
             retryCount++;
         }
     }
-    qDebug() << "connected:" << bConnected;
 
     // III. Check for known device
     if ( bConnected )
@@ -277,7 +287,6 @@ bool ConnectDialog::connectWithDevice()
         // Close the connection
         getActiveChannel()->Close();
     }
-    qDebug() << "known    :" << bIsKnown;
 
     // IV. Create and initialize a specialized device which matches the HW
     QString systemPlatform = genericDevice.getSystemPlatform();
@@ -309,9 +318,9 @@ bool ConnectDialog::connectWithDevice()
             m_connectedDevice = connectedDevice;
 
             // Save settings
-            QString m_SettingsFile = QDir::homePath() + "/.application.ini";
+            QString m_SettingsFile = QDir::homePath() + "/" + QString(SETTINGS_FILE_NAME);
             QSettings settings( m_SettingsFile, QSettings::IniFormat );
-            saveSettings( settings );
+            saveConSettings( settings );
 
             // Call onBroadcastChange slot with "false", this will disable broadcast mode
             onBroadcastChange( false );
@@ -498,96 +507,80 @@ void ConnectDialog::setChannelRS485( ComChannelSerial * c )
 }
 
 /******************************************************************************
- * ConnectDialog::loadSettings
+ * ConnectDialog::loadConSettings
  *****************************************************************************/
-bool ConnectDialog::loadSettings( QSettings &s )
+bool ConnectDialog::loadConSettings( QSettings &s )
 {
     QString string;
     int value;
+    int result = 0;
 
-    Interface iface = static_cast<Interface>(s.value(CON_DIALOG_INTERFACE, "").toInt());
-    if ( setActiveInterface( iface ) )
-    {
-        return ( false );
-    }
+    s.beginGroup( CON_SETTINGS_SECTION_NAME );
+
+    Interface iface = static_cast<Interface>(s.value(CON_SETTINGS_DIALOG_INTERFACE, "").toInt());
+    result += setActiveInterface( iface );
 
     if ( (Rs232 == iface) || (Rs485 == iface) )
     {
         // load serial port settings
 
         // serial port
-        string = s.value(CON_DIALOG_PORT, "").toString();
-        if ( setActiveChannelName( iface, string ) )
-        {
-            return ( false );
-        }
+        string = s.value(CON_SETTINGS_DIALOG_PORT, "").toString();
+        result += setActiveChannelName( iface, string );
 
         // baudrate
-        value = s.value(CON_DIALOG_SPEED, "").toInt();
-        if ( setActiveBaudRate( iface, value ) )
-        {
-            return ( false );
-        }
+        value = s.value(CON_SETTINGS_DIALOG_SPEED, "").toInt();
+        result += setActiveBaudRate( iface, value );
 
         // number of data-bits
-        value = s.value(CON_DIALOG_DATABITS, "").toInt();
-        if ( setActiveDataBits( iface, value ) )
-        {
-            return ( false );
-        }
+        value = s.value(CON_SETTINGS_DIALOG_DATABITS, "").toInt();
+        result += setActiveDataBits( iface, value );
 
         // parity
-        string = s.value(CON_DIALOG_PARITY, "").toString();
-        if ( setActiveParity( iface, string ) )
-        {
-            return ( false );
-        }
+        string = s.value(CON_SETTINGS_DIALOG_PARITY, "").toString();
+        result += setActiveParity( iface, string );
 
         // number of stop-bits
-        value = s.value(CON_DIALOG_STOPBITS, "").toInt();
-        if ( setActiveStopBits( iface, value ) )
-        {
-            return ( false );
-        }
+        value = s.value(CON_SETTINGS_DIALOG_STOPBITS, "").toInt();
+        result += setActiveStopBits( iface, value );
 
         if ( Rs485 == iface )
         {
-            value = s.value(CON_DIALOG_DEVICE_ADDRESS, "").toInt();
-            if ( setActiveDeviceAddress( iface, value ) )
-            {
-                return ( false );
-            }
+            value = s.value(CON_SETTINGS_DIALOG_DEVICE_ADDRESS, "").toInt();
+            result += setActiveDeviceAddress( iface, value );
         }
-
-        return ( true );
     }
 
-    // default return
-    return ( false );
+    s.endGroup();
+    return ( result != 0 ? false : true );
 }
 
 /******************************************************************************
- * ConnectDialog::saveSettings
+ * ConnectDialog::saveConSettings
  *****************************************************************************/
-void ConnectDialog::saveSettings( QSettings &s )
+void ConnectDialog::saveConSettings( QSettings &s )
 {
+    s.beginGroup( CON_SETTINGS_SECTION_NAME );
+
     Interface iface = getActiveInterface();
-    s.setValue( CON_DIALOG_INTERFACE, iface );
+    s.setValue( CON_SETTINGS_DIALOG_INTERFACE, iface );
 
     if ( (Rs232 == iface) || (Rs485 == iface) )
     {
         // save serial port settings
-        s.setValue( CON_DIALOG_PORT             , getActiveChannelName() );
-        s.setValue( CON_DIALOG_SPEED            , getActiveBaudRate() );
-        s.setValue( CON_DIALOG_DATABITS         , getActiveDataBits() );
-        s.setValue( CON_DIALOG_PARITY           , getActiveParity() );
-        s.setValue( CON_DIALOG_STOPBITS         , getActiveStopBits() );
+        s.setValue( CON_SETTINGS_DIALOG_PORT             , getActiveChannelName() );
+        s.setValue( CON_SETTINGS_DIALOG_SPEED            , getActiveBaudRate() );
+        s.setValue( CON_SETTINGS_DIALOG_DATABITS         , getActiveDataBits() );
+        s.setValue( CON_SETTINGS_DIALOG_PARITY           , getActiveParity() );
+        s.setValue( CON_SETTINGS_DIALOG_STOPBITS         , getActiveStopBits() );
 
         if ( Rs485 == iface )
         {
-            s.setValue( CON_DIALOG_DEVICE_ADDRESS   , getActiveDeviceAddress() );
+            s.setValue( CON_SETTINGS_DIALOG_DEVICE_ADDRESS   , getActiveDeviceAddress() );
         }
     }
+
+    s.endGroup();
 }
 
 /******************************************************************************
@@ -1728,8 +1721,8 @@ void ConnectDialog::accept()
  *****************************************************************************/
 void ConnectDialog::reject()
 {
-    // Check if a connection is established
-    if ( this->isConnected() )
+    // Check if connection has been established
+    if ( m_connectedDevice != nullptr )
     {
         // Check if connection settings got changed by the user
         ctrl_channel_rs232_open_config_t currentRs232Config = getRs232Config();

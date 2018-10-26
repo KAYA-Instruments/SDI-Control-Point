@@ -64,9 +64,10 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     connect( m_ui->btnResetToDefaults, SIGNAL(clicked(bool)), this, SLOT(onBtnResetToDefaultsClicked()) );
     connect( m_ui->btnApplySerialPortSettings, SIGNAL(clicked(bool)), this, SLOT(onBtnApplySerialPortSettingsClicked()) );
 
-    // connect control settings
+    // connect Ui settings
     connect( m_ui->cbxEngineeringMode, SIGNAL(stateChanged(int)), this, SLOT(onCbxEngineeringModeChange(int)) );
     connect( m_ui->cbxDebugTerminal, SIGNAL(stateChanged(int)), this, SLOT(onCbxShowDebugTerminalChange(int)) );
+    connect( m_ui->cbxConnectionCheck, SIGNAL(stateChanged(int)), this, SLOT(onCbxConnectionCheckChange(int)) );
 
     // Set device ID ranges
     m_ui->sbxRS485Address->setRange( 0, MAX_DEVICE_ID );
@@ -92,6 +93,30 @@ void SettingsDialog::showEvent( QShowEvent* event )
     // Resize window to minimum size
     QApplication::processEvents();
     this->resize( this->minimumSizeHint() );
+}
+
+/******************************************************************************
+ * SettingsDialog::setEngineeringModeChecked
+ *****************************************************************************/
+void SettingsDialog::setEngineeringModeChecked( bool checked )
+{
+    /* This function is used to set the engineering mode checkbox when the
+     * main window is loading its Ui settings from ini file. */
+    m_ui->cbxEngineeringMode->blockSignals( true );
+    m_ui->cbxEngineeringMode->setChecked( checked );
+    m_ui->cbxEngineeringMode->blockSignals( false );
+}
+
+/******************************************************************************
+ * SettingsDialog::setConnectionCheckChecked
+ *****************************************************************************/
+void SettingsDialog::setConnectionCheckChecked( bool checked )
+{
+    /* This function is used to set the conneciton check checkbox when the
+     * main window is loading its Ui settings from ini file. */
+    m_ui->cbxConnectionCheck->blockSignals( true );
+    m_ui->cbxConnectionCheck->setChecked( checked );
+    m_ui->cbxConnectionCheck->blockSignals( false );
 }
 
 /******************************************************************************
@@ -142,7 +167,7 @@ void SettingsDialog::onRS485BaudrateChange( uint32_t baudrate )
  *****************************************************************************/
 void SettingsDialog::onRS485AddressChange( uint32_t address )
 {
-    m_ui->sbxRS485Address->setValue( address );
+    m_ui->sbxRS485Address->setValue( static_cast<int>(address) );
 }
 
 /******************************************************************************
@@ -150,7 +175,7 @@ void SettingsDialog::onRS485AddressChange( uint32_t address )
  *****************************************************************************/
 void SettingsDialog::onRS485BroadcastAddressChange( uint32_t address )
 {
-    m_ui->sbxRS485BroadcastAddress->setValue( address );
+    m_ui->sbxRS485BroadcastAddress->setValue( static_cast<int>(address) );
 }
 
 /******************************************************************************
@@ -282,7 +307,8 @@ void SettingsDialog::onBtnApplySerialPortSettingsClicked()
  *****************************************************************************/
 void SettingsDialog::onCbxEngineeringModeChange( int value )
 {
-    emit EngineeringModeChanged( (Qt::Unchecked == value) ? false : true );
+    // Show or hide advanced settings
+    emit WidgetModeChanged( (Qt::Unchecked == value) ? DctWidgetBox::Normal : DctWidgetBox::Advanced );
 }
 
 /******************************************************************************
@@ -292,6 +318,15 @@ void SettingsDialog::onCbxShowDebugTerminalChange( int value )
 {
     // Show or hide the debug terminal
     emit DebugTerminalVisibilityChanged( (Qt::Unchecked == value) ? false : true );
+}
+
+/******************************************************************************
+ * SettingsDialog::onCbxConnectionCheckChange
+ *****************************************************************************/
+void SettingsDialog::onCbxConnectionCheckChange( int value )
+{
+    // Enable or disable periodic connection check
+    emit ConnectionCheckChanged( (Qt::Unchecked == value) ? false : true );
 }
 
 /******************************************************************************

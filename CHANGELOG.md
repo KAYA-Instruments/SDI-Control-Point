@@ -4,14 +4,20 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
+Version **1.1.9** - Yet to be released
+
+* Added a periodic connection check. The GUI will now check every 2 seconds if the connected device is still available. If a device is disconnected the GUI offers to open the connect dialog. This setting can be disabled in the Settings Dialog.
+* The Engineering Mode, Debug Terminal and the new periodic Connection Check are now stored in the applications .ini file in the users home folder (like the connection settings of the Connection Dialog). This ensures that the GUI opens with the same config like it was closed by the user.
+* Fixed a few more Clang warnings (this is an ongoing task)
+
+## Older Releases:
+
 Version **1.1.8** - 02.10.2018
 
 * Updated QCustomPlot library to version 2.0.1 which officially supports Qt 5.11
 * The runtime counter in the info tab will now be automatically updated every second (like the temperature values)
 * Fixed more Clang warnings (this is an ongoing task)
 * Fixed some potential memory leaks reported by Cppcheck
-
-## Older Releases:
 
 Version **1.1.7** - 26.09.2018
 

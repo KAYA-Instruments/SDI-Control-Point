@@ -82,8 +82,8 @@ public:
     int openInterface();
 
     // settings
-    bool loadSettings( QSettings & );
-    void saveSettings( QSettings & );
+    bool loadConSettings( QSettings & );
+    void saveConSettings( QSettings & );
     
     Interface getActiveInterface() const;
     int setActiveInterface( ConnectDialog::Interface iface );

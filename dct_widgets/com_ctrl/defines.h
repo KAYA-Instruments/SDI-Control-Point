@@ -30,6 +30,7 @@
  *****************************************************************************/
 #define MAX_NUM_CHAINS                  ( 2 )
 #define MAX_DEVICE_ID                   ( 99 )
+#define SETTINGS_FILE_NAME              ( ".provideo-gui.ini" )
 
 /******************************************************************************
  * lens shading correction segmentation mode

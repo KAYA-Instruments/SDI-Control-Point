@@ -47,7 +47,7 @@ public:
     PrivateData()
         : m_ui( new Ui::UI_InfoBox ),
           m_numTempSensors( 0 ),
-          m_updateTimer( new QTimer )
+          m_updateTimer()
     {
         // do nothing
     }
@@ -55,12 +55,11 @@ public:
     ~PrivateData()
     {
         delete m_ui;
-        delete m_updateTimer;
     }
 
     Ui::UI_InfoBox *    m_ui;                   /**< ui handle */
     unsigned int        m_numTempSensors;       /**< number of Temperature sensors which are available */
-    QTimer *            m_updateTimer;          /**< timer which regularly updates temperature and fan data */
+    QTimer              m_updateTimer;          /**< timer which regularly updates temperature and fan data */
 };
 
 /******************************************************************************
@@ -97,7 +96,7 @@ InfoBox::InfoBox( QWidget * parent ) : DctWidgetBox( parent )
     // setup timer to update the temperature / fan data every second
     /* The timer will be started with every show event and stopped when a
      * hide event occurs. This ensures it is only running when it is needed. */
-    connect( d_data->m_updateTimer, SIGNAL(timeout()), this, SLOT(onUpdateTimerExpired()) );
+    connect( &d_data->m_updateTimer, SIGNAL(timeout()), this, SLOT(onUpdateTimerExpired()) );
 
     // connect temperature reset button
     connect( d_data->m_ui->btnResetMaxTemp, SIGNAL(clicked(bool)), this, SLOT(onResetMaxTempClicked()) );
@@ -129,8 +128,8 @@ void InfoBox::showEvent( QShowEvent* event )
     // Update temperature and fan readouts
     onUpdateTimerExpired();
 
-    // Start the update timer to upate them automatically every 1s
-    d_data->m_updateTimer->start(1000);
+    // Start the update timer to upate them automatically every second
+    d_data->m_updateTimer.start( 1000 );
 }
 
 /******************************************************************************
@@ -142,7 +141,7 @@ void InfoBox::hideEvent( QHideEvent* event )
     DctWidgetBox::hideEvent( event );
 
     // Start the update timer
-    d_data->m_updateTimer->stop();
+    d_data->m_updateTimer.stop();
 }
 
 /******************************************************************************

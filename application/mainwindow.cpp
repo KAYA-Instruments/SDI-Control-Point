@@ -43,15 +43,12 @@
 #define MAIN_SETTINGS_SYSTEM_PLATFORM       ( "platform" )
 
 /******************************************************************************
- * fileExists
+ * Ui Settings which are stored in .ini file
  *****************************************************************************/
-static bool fileExists( QString & path )
-{
-    QFileInfo check_file( path );
-
-    // check if file exists and if yes: Is it really a file and no directory?
-    return ( check_file.exists() && check_file.isFile() );
-}
+#define UI_SETTINGS_SECTION_NAME            ( "UI" )
+#define UI_SETTING_WIDGET_MODE              ( "widget_mode" )
+#define UI_SETTING_SHOW_DEBUG_TERMINAL      ( "show_debug_terminal" )
+#define UI_SETTING_ENABLE_CONNECTION_CHECK  ( "enable_connection_check" )
 
 /******************************************************************************
  * MainWindow::MainWindow
@@ -64,7 +61,12 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
     , m_DebugTerminal( nullptr )
     , m_cbxConnectedDevices( nullptr )
     , m_dev ( nullptr )
+    , m_resizeTimer()
+    , m_checkConnectionTimer()
     , m_ScrollbarsNeeded( false )
+    , m_WidgetMode( DctWidgetBox::Normal )
+    , m_ShowDebugTerminal( false )
+    , m_EnableConnectionCheck( true )
 {
     // Create ui
     m_ui->setupUi( this );
@@ -99,6 +101,21 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
     // Configure the resize timer
     m_resizeTimer.setSingleShot( true );
     connect( &m_resizeTimer, SIGNAL(timeout()), this, SLOT(onResizeMainWindow()) );
+
+    // Configure the check connection timer
+    /* The timer will be started as soon as a device has been connected, it
+     * will be stopped when the connection is lost. */
+    connect( &m_checkConnectionTimer, SIGNAL(timeout()), this, SLOT(onCheckConnection()) );
+
+    // Try to load main window settings from file
+    QString m_SettingsFile = QDir::homePath() + "/" + QString(SETTINGS_FILE_NAME);
+
+    if ( fileExists( m_SettingsFile ))
+    {
+        QSettings settings( m_SettingsFile, QSettings::IniFormat );
+        this->loadUiSettings( settings );
+        qDebug() << "loaded ui settings from file";
+    }
 }
 
 /******************************************************************************
@@ -106,6 +123,11 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
  *****************************************************************************/
 MainWindow::~MainWindow()
 {
+    // Save Ui settings
+    QString m_SettingsFile = QDir::homePath() + "/" + QString(SETTINGS_FILE_NAME);
+    QSettings settings( m_SettingsFile, QSettings::IniFormat );
+    saveUiSettings( settings );
+
     delete m_SettingsDlg;
     delete m_DebugTerminal;
     delete m_ui;
@@ -365,8 +387,65 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
         }
     }
 
+    // Show or hide advanced settings
+    onWidgetModeChange( m_WidgetMode );
+
     // Resize main window
     onResizeMainWindow( true );
+}
+
+/******************************************************************************
+ * MainWindow::fileExists
+ *****************************************************************************/
+bool MainWindow::fileExists( QString & path )
+{
+    QFileInfo check_file( path );
+
+    // check if file exists and if yes: Is it really a file and no directory?
+    return ( check_file.exists() && check_file.isFile() );
+}
+
+
+/******************************************************************************
+ * MainWindow::loadUiSettings
+ *****************************************************************************/
+void MainWindow::loadUiSettings( QSettings &s )
+{
+    // load Ui settings
+    s.beginGroup( UI_SETTINGS_SECTION_NAME );
+
+    // engineering mode
+    m_WidgetMode = static_cast<DctWidgetBox::Mode>( s.value( UI_SETTING_WIDGET_MODE, m_WidgetMode ).toInt() );
+    m_SettingsDlg->setEngineeringModeChecked( m_WidgetMode == DctWidgetBox::Advanced ? true : false );
+
+    /* Note: Enginering mode enables advanced settings in all visible
+     * tabs. This is set at the end of setupUI() by calling onWidgetModeChange(),
+     * when the active widgets for the current device have been determined. */
+
+    // debug terminal
+    m_ShowDebugTerminal = s.value( UI_SETTING_SHOW_DEBUG_TERMINAL, m_ShowDebugTerminal ).toBool();
+    emit setDockWidgetVisible( m_ShowDebugTerminal );
+
+    // connection check
+    m_EnableConnectionCheck = s.value( UI_SETTING_ENABLE_CONNECTION_CHECK, m_EnableConnectionCheck ).toBool();
+    m_SettingsDlg->setConnectionCheckChecked( m_EnableConnectionCheck );
+
+    /* Note connection check is started at the end of connectToDevice() */
+
+    s.endGroup();
+}
+
+/******************************************************************************
+ * MainWindow::saveUiSettings
+ *****************************************************************************/
+void MainWindow::saveUiSettings( QSettings &s )
+{
+    // save Ui settings
+    s.beginGroup( UI_SETTINGS_SECTION_NAME );
+    s.setValue( UI_SETTING_WIDGET_MODE, m_WidgetMode );
+    s.setValue( UI_SETTING_SHOW_DEBUG_TERMINAL, m_ShowDebugTerminal );
+    s.setValue( UI_SETTING_ENABLE_CONNECTION_CHECK, m_EnableConnectionCheck );
+    s.endGroup();
 }
 
 /******************************************************************************
@@ -964,6 +1043,12 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
     //////////////////////////
     m_dev->resync();
 
+    // Start the check connection timer, check if device is still connected every 2 seconds
+    if ( m_EnableConnectionCheck )
+    {
+        m_checkConnectionTimer.start( 2000 );
+    }
+
     // Close message box
     infoDlg.close();
 }
@@ -1044,6 +1129,45 @@ void MainWindow::onResizeMainWindow( bool force )
 }
 
 /******************************************************************************
+ * MainWindow::onCheckConnection
+ *****************************************************************************/
+void MainWindow::onCheckConnection()
+{
+    if ( m_ConnectDlg && !m_ConnectDlg->isConnected() )
+    {
+        if ( !m_ConnectDlg->isVisible() && !m_SettingsDlg->isVisible() )
+        {
+            // Connection to device lost, stop check connection timer
+            m_checkConnectionTimer.stop();
+
+            // Ask user if he wants to reconnect
+            QMessageBox msgBox;
+            msgBox.setWindowTitle( "Connection lost" );
+            msgBox.setText( "The connection to the device has been lost. Maybe the device is turned off or "
+                            "its serial port settings got changed.");
+            msgBox.setInformativeText( "Do you want to open the Connect Dialog now?\n\n"
+                                       "If you want to disable the device connection check, click the 'Ignore' button. "
+                                       "You can later enable it again in the Settings Dialog." );
+            msgBox.setStandardButtons( QMessageBox::Yes | QMessageBox::No | QMessageBox::Ignore );
+            msgBox.setDefaultButton( QMessageBox::Yes );
+            int ret = msgBox.exec();
+
+            if ( ret == QMessageBox::Yes )
+            {
+                // Call on connect clicked to reconnect
+                onConnectClicked();
+            }
+            else if ( ret == QMessageBox::Ignore )
+            {
+                // Disable connection check, also uncheck it in the settings dialog
+                onConnectionCheckChange( false );
+                m_SettingsDlg->setConnectionCheckChecked( false );
+            }
+        }
+    }
+}
+
+/******************************************************************************
  * MainWindow::setConnectDlg
  *****************************************************************************/
 void MainWindow::setConnectDlg( ConnectDialog * dlg )
@@ -1084,7 +1208,8 @@ void MainWindow::setSettingsDlg( SettingsDialog * dlg )
         connect( m_SettingsDlg, SIGNAL(UpdateDeviceName()), this, SLOT(onUpdateDeviceName()) );
         connect( m_SettingsDlg, SIGNAL(ResyncRequest()), this, SLOT(onResyncRequest()) );
         connect( m_SettingsDlg, SIGNAL(SystemSettingsChanged(int,int,int,int)), this, SLOT(onSystemSettingsChange(int,int,int,int)) );
-        connect( m_SettingsDlg, SIGNAL(EngineeringModeChanged(bool)), this, SLOT(onEngineeringModeChange(bool)) );
+        connect( m_SettingsDlg, SIGNAL(WidgetModeChanged(DctWidgetBox::Mode)), this, SLOT(onWidgetModeChange(DctWidgetBox::Mode)) );
+        connect( m_SettingsDlg, SIGNAL(ConnectionCheckChanged(bool)), this, SLOT(onConnectionCheckChange(bool)) );
         connect( m_SettingsDlg, SIGNAL(SaveSettings()), this, SLOT( onSaveSettingsClicked()) );
     }
 }
@@ -1118,6 +1243,7 @@ void MainWindow::setDebugTerminal( DebugTerminal * dlg )
         {
             connect( dock->toggleViewAction(), SIGNAL(toggled(bool)), m_SettingsDlg, SLOT( onDebugTerminalVisibilityChange(bool)) );
             connect( m_SettingsDlg, SIGNAL(DebugTerminalVisibilityChanged(bool)), dock, SLOT(setVisible(bool)) );
+            connect( this, SIGNAL(setDockWidgetVisible(bool)), dock, SLOT(setVisible(bool)) );
         }
 
         connect( dock, SIGNAL(topLevelChanged(bool)), this, SLOT(onDebugTerminalTopLevelChange(bool)) );
@@ -1761,15 +1887,37 @@ void MainWindow::onCopyFlagChange( bool value )
 }
 
 /******************************************************************************
- * MainWindow::onEngineeringModeChange
+ * MainWindow::onWidgetModeChange
  *****************************************************************************/
-void MainWindow::onEngineeringModeChange( bool value )
+void MainWindow::onWidgetModeChange( DctWidgetBox::Mode mode )
 {
-    DctWidgetBox::Mode m = value ? DctWidgetBox::Advanced : DctWidgetBox::Normal;
+    // Set widget mode for all active widgets
     for ( int i = 0; i < m_activeWidgets.length(); i++ )
     {
-        m_activeWidgets[i]->setMode( m );
+        m_activeWidgets[i]->setMode( mode );
     }
+
+    // Store widget mode
+    m_WidgetMode = mode;
+}
+
+/******************************************************************************
+ * MainWindow::onConnectionCheckChange
+ *****************************************************************************/
+void MainWindow::onConnectionCheckChange( bool enable )
+{
+    // Start or stop connection timer
+    if ( enable && !m_checkConnectionTimer.isActive() )
+    {
+        m_checkConnectionTimer.start( 2000 );
+    }
+    else
+    {
+        m_checkConnectionTimer.stop();
+    }
+
+    // Store check connection flag
+    m_EnableConnectionCheck = enable;
 }
 
 /******************************************************************************
@@ -1817,6 +1965,13 @@ void MainWindow::onDebugTerminalVisibilityChange( bool visible )
          * completely closed which causes the main window to think that it still requires
          * space and it is not correctly resized. */
         m_resizeTimer.start( 1 );
+    }
+
+    /* Store debug terminal visible state only if GUI is still visible (to avoid
+     * resetting it on application close) */
+    if ( this->isVisible() )
+    {
+        m_ShowDebugTerminal = visible;
     }
 }
 
