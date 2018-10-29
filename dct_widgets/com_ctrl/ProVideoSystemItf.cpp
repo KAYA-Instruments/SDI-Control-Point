@@ -582,36 +582,39 @@ void ProVideoSystemItf::GetDeviceList( uint32_t timeout )
                         GET_CHANNEL_INSTANCE(this),
                         sizeof(devices), (uint8_t *)&devices );
 
-        // Convert to QList
+        // Convert to QList, if get device list command was succesfull
         QList<rs485Device> deviceList;
-        for ( int i = 0; i <= MAX_DEVICE_ID; i++ )
+        if ( res == 0 )
         {
-            // If entry contains a valid device
-            if ( devices[i].device_platform[0] != 0u )
+            for ( int i = 0; i <= MAX_DEVICE_ID; i++ )
             {
-                // Add it to list
-                rs485Device device;
-                device.device_name = QString::fromLocal8Bit( (char*)devices[i].device_name );
-
-                /* Check if device name contains valid characters. When devices come
-                 * fresh from the factory they might have garbage device names which can
-                 * crash the GUI. */
-                bool containsNonASCII = device.device_name.contains(QRegularExpression(QStringLiteral("[^\\x{0000}-\\x{007F}]")));
-                if ( containsNonASCII )
+                // If entry contains a valid device
+                if ( devices[i].device_platform[0] != 0u )
                 {
-                    device.device_name = QString("???");
-                }
+                    // Add it to list
+                    rs485Device device;
+                    device.device_name = QString::fromLocal8Bit( (char*)devices[i].device_name );
 
-                device.device_platform = QString::fromLocal8Bit( (char*)devices[i].device_platform );
-                device.rs485_address = devices[i].rs485_address;
-                device.rs485_bc_address = devices[i].rs485_bc_address;
-                device.rs485_bc_master = devices[i].rs485_bc_master;
-                deviceList.append( device );
-            }
-            // Else: Last valid device was found, stop iterating over the array
-            else
-            {
-                break;
+                    /* Check if device name contains valid characters. When devices come
+                     * fresh from the factory they might have garbage device names which can
+                     * crash the GUI. */
+                    bool containsNonASCII = device.device_name.contains(QRegularExpression(QStringLiteral("[^\\x{0000}-\\x{007F}]")));
+                    if ( containsNonASCII )
+                    {
+                        device.device_name = QString("???");
+                    }
+
+                    device.device_platform = QString::fromLocal8Bit( (char*)devices[i].device_platform );
+                    device.rs485_address = devices[i].rs485_address;
+                    device.rs485_bc_address = devices[i].rs485_bc_address;
+                    device.rs485_bc_master = devices[i].rs485_bc_master;
+                    deviceList.append( device );
+                }
+                // Else: Last valid device was found, stop iterating over the array
+                else
+                {
+                    break;
+                }
             }
         }
 

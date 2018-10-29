@@ -132,15 +132,21 @@ ConnectDialog::ConnectDialog( QWidget * parent )
  *****************************************************************************/
 ConnectDialog::~ConnectDialog()
 {
-    delete m_ui;
-
+    // Close com ports and delete them
+    m_rs232->Close();
     delete m_rs232;
+
+    m_rs485->Close();
     delete m_rs485;
 
+    // Delete connected device
     if (m_connectedDevice != nullptr)
     {
         delete m_connectedDevice;
     }
+
+    // Delete GUI instance
+    delete m_ui;
 }
 
 /******************************************************************************
