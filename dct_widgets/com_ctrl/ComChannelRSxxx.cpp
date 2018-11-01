@@ -124,6 +124,7 @@ static int ctrl_channel_qtserial_rs232_open
     {
         com->getPort()->close();
         delete com->getPort();
+        com->setPort( nullptr );
     }
 
     // create a new serial-port instance
@@ -394,6 +395,7 @@ static int ctrl_channel_qtserial_rs4xx_open
     {
         com->getPort()->close();
         delete com->getPort();
+        com->setPort( nullptr );
     }
 
     // create a new serial-port instance
