@@ -147,10 +147,17 @@
 /******************************************************************************
  * Flip mode names
  *****************************************************************************/
-#define FLIP_MODE_OFF                   ( "off" )
-#define FLIP_MODE_VERTICAL              ( "vertical" )
-#define FLIP_MODE_HORIZONTAL            ( "horizontal" )
-#define FLIP_MODE_ROTATED               ( "rotated" )
+#define FLIP_MODE_OFF                   ( "Off" )
+#define FLIP_MODE_VERTICAL              ( "Vertical" )
+#define FLIP_MODE_HORIZONTAL            ( "Horizontal" )
+#define FLIP_MODE_ROTATED               ( "Rotated" )
+
+/******************************************************************************
+ * LOG mode names
+ *****************************************************************************/
+#define LOG_MODE_OFF                    ( "Off (User-Defined Gamma)" )
+#define LOG_MODE_HLG                    ( "HLG (Hybrid LOG Gamma Curve)" )
+#define LOG_MODE_PQ                     ( "PQ (PQ Gamma Curve)" )
 
 /******************************************************************************
  * known devices
@@ -401,6 +408,18 @@ enum FlipMode
     FlipModeMax
 };
 
+/******************************************************************************
+ * LOG mode
+ *****************************************************************************/
+enum LogMode
+{
+    LogModeFirst = 0,
+    LogModeOff   = 0,   /**< LOG mode off, normal operation, LUTs can be programmed by user */
+    LogModeHLG   = 1,   /**< HLG LOG mode, LUTs are fixed to HLG, gain is halved in device */
+    LogModePQ    = 2,   /**< PQ LOG mode, LUTs are fixed to PQ, gain is halved in device */
+    LogModeMax
+};
+
 // return if the name belongs to a known device
 bool DeviceIsKnown(const QString & deviceName);
 
@@ -445,6 +464,9 @@ QString GetDownscaleModeName( DownscaleMode mode );
 
 // return corresponding flipe mode name 
 QString GetFlipModeName( FlipMode mode );
+
+// return corresponding LOG mode name
+QString GetLogModeName( LogMode mode );
 
 #endif // _DEFINES_H_
 

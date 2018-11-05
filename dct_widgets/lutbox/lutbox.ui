@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>834</width>
-    <height>931</height>
+    <height>943</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -989,12 +989,12 @@
            </widget>
           </item>
           <item>
-           <widget class="QRadioButton" name="rbFixedPQ">
+           <widget class="QRadioButton" name="rbFixedHLG">
             <property name="toolTip">
-             <string>Use fixed gamma curve according to Rec. 2100 PQ standard.</string>
+             <string>Use fixed gamma curve according to Rec. 2100 HLG standard.</string>
             </property>
             <property name="text">
-             <string>Rec. 2100 - PQ</string>
+             <string>Rec. 2100 - HLG</string>
             </property>
             <property name="autoExclusive">
              <bool>false</bool>
@@ -1002,12 +1002,12 @@
            </widget>
           </item>
           <item>
-           <widget class="QRadioButton" name="rbFixedHLG">
+           <widget class="QRadioButton" name="rbFixedPQ">
             <property name="toolTip">
-             <string>Use fixed gamma curve according to Rec. 2100 HLG standard.</string>
+             <string>Use fixed gamma curve according to Rec. 2100 PQ standard.</string>
             </property>
             <property name="text">
-             <string>Rec. 2100 - HLG</string>
+             <string>Rec. 2100 - PQ</string>
             </property>
             <property name="autoExclusive">
              <bool>false</bool>

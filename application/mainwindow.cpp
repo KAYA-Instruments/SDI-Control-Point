@@ -329,6 +329,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
     m_ui->inoutBox->setGenLockVisible(deviceFeatures.hasChainGenLock);
     m_ui->inoutBox->setTimeCodeVisible(deviceFeatures.hasChainTimeCode, deviceFeatures.hasChainTimeCodeHold);
     m_ui->inoutBox->setFlipModeVisible(deviceFeatures.hasChainFlipVertical, deviceFeatures.hasChainFlipHorizontal);
+    m_ui->inoutBox->setLogModeVisible(deviceFeatures.hasLutItf);
     m_ui->inoutBox->setTestPatternVisible(deviceFeatures.hasOsdTestPattern);
     m_ui->inoutBox->setAudioEnableVisible(deviceFeatures.hasChainAudio);
 
@@ -782,6 +783,11 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
 
         connect( dev->GetLutItf(), SIGNAL(LutFixedModeChanged(int)), m_ui->lutBox, SLOT(onLutFixedModeChange(int)) );
         connect( m_ui->lutBox, SIGNAL(LutFixedModeChanged(int)), dev->GetLutItf(), SLOT(onLutFixedModeChange(int)) );
+
+        connect( dev->GetLutItf(), SIGNAL(LogModeChanged(int)), m_ui->inoutBox, SLOT(onLogModeChange(int)) );
+        connect( m_ui->inoutBox, SIGNAL(LogModeChanged(int)), dev->GetLutItf(), SLOT(onLogModeChange(int)) );
+        connect( dev->GetLutItf(), SIGNAL(LogModeChanged(int)), m_ui->lutBox, SLOT(onLogModeChange(int)) );
+        connect( m_ui->inoutBox, SIGNAL(LogModeChanged(int)),  m_ui->lutBox, SLOT(onLogModeChange(int)) );
 
         connect( dev->GetLutItf(), SIGNAL(LutPresetChanged(int)), m_ui->lutBox, SLOT(onLutPresetChange(int)) );
         connect( m_ui->lutBox, SIGNAL(LutPresetChanged(int)), dev->GetLutItf(), SLOT(onLutPresetChange(int)) );

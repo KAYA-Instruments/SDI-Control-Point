@@ -48,6 +48,7 @@ void LutItf::resync()
     // operational mode
     GetLutMode();
     GetLutFixedMode();
+    GetLogMode();
 
     // preset
     // Note: Do this before GetLutFastGamma() otherwise the Lutbox might display the wrong plot
@@ -71,15 +72,17 @@ void LutItf::GetLutEnable( int id )
     // Is there a signal listener
     if ( receivers(SIGNAL(LutEnableChanged(int,int))) > 0 )
     {
-        ctrl_protocol_enable_t v = { .id = (uint8_t)id, .flag = 0u };
+        ctrl_protocol_enable_t v;
+        v.id = static_cast<uint8_t>(id);
+        v.flag = 0u;
     
         // read enable state from device
         int res = ctrl_protocol_get_lut_enable( GET_PROTOCOL_INSTANCE(this),
-            GET_CHANNEL_INSTANCE(this), sizeof(v), (uint8_t *)&v );
+            GET_CHANNEL_INSTANCE(this), sizeof(v), reinterpret_cast<uint8_t *>(&v) );
         HANDLE_ERROR( res );
         
         // emit a LutEnableChanged signal
-        emit LutEnableChanged( id, (int)v.flag );
+        emit LutEnableChanged( id, static_cast<int>(v.flag) );
     }
 }
 
@@ -99,7 +102,7 @@ void LutItf::GetLutMode()
         HANDLE_ERROR( res );
 
         // emit a LutModeChanged signal
-        emit LutModeChanged( (int)mode );
+        emit LutModeChanged( static_cast<int>(mode) );
     }
 }
 
@@ -119,7 +122,27 @@ void LutItf::GetLutFixedMode()
         HANDLE_ERROR( res );
 
         // emit a LutFixedModeChanged signal
-        emit LutFixedModeChanged( (int)mode );
+        emit LutFixedModeChanged( static_cast<int>(mode) );
+    }
+}
+
+/******************************************************************************
+ * LutItf::GetLogMode
+ *****************************************************************************/
+void LutItf::GetLogMode()
+{
+    // Is there a signal listener
+    if ( receivers(SIGNAL(LogModeChanged(int))) > 0 )
+    {
+        uint8_t mode = 0u;
+
+        // read mode from device
+        int res = ctrl_protocol_get_log_mode( GET_PROTOCOL_INSTANCE(this),
+            GET_CHANNEL_INSTANCE(this), &mode );
+        HANDLE_ERROR( res );
+
+        // emit a LogModeChanged signal
+        emit LogModeChanged( static_cast<int>(mode) );
     }
 }
 
@@ -139,7 +162,7 @@ void LutItf::GetLutPreset()
         HANDLE_ERROR( res );
         
         // emit a LutPresetChanged signal
-        emit LutPresetChanged( (int)value );
+        emit LutPresetChanged( static_cast<int>(value) );
     }
 }
 
@@ -159,7 +182,7 @@ void LutItf::GetLutValuesRed()
         HANDLE_ERROR( res );
         
         QVector<int> d( MAX_VALUES_LUT );
-        for( unsigned i=0u; i<MAX_VALUES_LUT; i++ )
+        for( int i = 0u; i < static_cast<int>(MAX_VALUES_LUT); i++ )
         { 
             d[i] = v[i];
         }
@@ -185,7 +208,7 @@ void LutItf::GetLutValuesGreen()
         HANDLE_ERROR( res );
         
         QVector<int> d( MAX_VALUES_LUT );
-        for( unsigned i=0u; i<MAX_VALUES_LUT; i++ )
+        for( int i = 0u; i < static_cast<int>(MAX_VALUES_LUT); i++ )
         { 
             d[i] = v[i];
         }
@@ -211,7 +234,7 @@ void LutItf::GetLutValuesBlue()
         HANDLE_ERROR( res );
         
         QVector<int> d( MAX_VALUES_LUT );
-        for( unsigned i=0u; i<MAX_VALUES_LUT; i++ )
+        for( int i = 0u; i < static_cast<int>(MAX_VALUES_LUT); i++ )
         { 
             d[i] = v[i];
         }
@@ -236,15 +259,15 @@ void LutItf::GetLutSampleValuesRed()
 
         // read red samples from device
         int res = ctrl_protocol_get_lut_sample_red( GET_PROTOCOL_INSTANCE(this),
-            GET_CHANNEL_INSTANCE(this), sizeof(v), (uint8_t *)&v );
+            GET_CHANNEL_INSTANCE(this), sizeof(v), reinterpret_cast<uint8_t *>(&v) );
         HANDLE_ERROR( res );
         
-        QVector<int> x( v.no );
-        QVector<int> y( v.no );
-        for( unsigned i=0u; i<v.no; i++ )
-        { 
-            x[i] = v.x_i[i];
-            y[i] = v.y_i[i];
+        QVector<int> x( static_cast<int>(v.no) );
+        QVector<int> y( static_cast<int>(v.no) );
+        for( int i = 0u; i < static_cast<int>(v.no); i++ )
+        {
+            x[i] = static_cast<unsigned short>(v.x_i[i]);
+            y[i] = static_cast<unsigned short>(v.y_i[i]);
         }
         
         // emit a LutSampleValuesRedChanged signal
@@ -267,15 +290,15 @@ void LutItf::GetLutSampleValuesGreen()
 
         // read green samples from device
         int res = ctrl_protocol_get_lut_sample_green( GET_PROTOCOL_INSTANCE(this),
-            GET_CHANNEL_INSTANCE(this), sizeof(v), (uint8_t *)&v );
+            GET_CHANNEL_INSTANCE(this), sizeof(v), reinterpret_cast<uint8_t *>(&v) );
         HANDLE_ERROR( res );
         
-        QVector<int> x( v.no );
-        QVector<int> y( v.no );
-        for( unsigned i=0u; i<v.no; i++ )
-        { 
-            x[i] = v.x_i[i];
-            y[i] = v.y_i[i];
+        QVector<int> x( static_cast<int>(v.no) );
+        QVector<int> y( static_cast<int>(v.no) );
+        for( int i = 0u; i < static_cast<int>(v.no); i++ )
+        {
+            x[i] = static_cast<unsigned short>(v.x_i[i]);
+            y[i] = static_cast<unsigned short>(v.y_i[i]);
         }
         
         // emit a LutSampleValuesGreenChanged signal
@@ -298,15 +321,15 @@ void LutItf::GetLutSampleValuesBlue()
 
         // read blue samples from device
         int res = ctrl_protocol_get_lut_sample_blue( GET_PROTOCOL_INSTANCE(this),
-            GET_CHANNEL_INSTANCE(this), sizeof(v), (uint8_t *)&v );
+            GET_CHANNEL_INSTANCE(this), sizeof(v), reinterpret_cast<uint8_t *>(&v) );
         HANDLE_ERROR( res );
         
-        QVector<int> x( v.no );
-        QVector<int> y( v.no );
-        for( unsigned i=0u; i<v.no; i++ )
-        { 
-            x[i] = v.x_i[i];
-            y[i] = v.y_i[i];
+        QVector<int> x( static_cast<int>(v.no) );
+        QVector<int> y( static_cast<int>(v.no) );
+        for( int i = 0u; i < static_cast<int>(v.no); i++ )
+        {
+            x[i] = static_cast<unsigned short>(v.x_i[i]);
+            y[i] = static_cast<unsigned short>(v.y_i[i]);
         }
         
         // emit a LutSampleValuesBlueChanged signal
@@ -329,15 +352,15 @@ void LutItf::GetLutSampleValuesMaster()
 
         // read blue samples from device
         int res = ctrl_protocol_get_lut_sample_master( GET_PROTOCOL_INSTANCE(this),
-            GET_CHANNEL_INSTANCE(this), sizeof(v), (uint8_t *)&v );
+            GET_CHANNEL_INSTANCE(this), sizeof(v), reinterpret_cast<uint8_t *>(&v) );
         HANDLE_ERROR( res );
         
-        QVector<int> x( v.no );
-        QVector<int> y( v.no );
-        for( unsigned i=0u; i<v.no; i++ )
-        { 
-            x[i] = v.x_i[i];
-            y[i] = v.y_i[i];
+        QVector<int> x( static_cast<int>(v.no) );
+        QVector<int> y( static_cast<int>(v.no) );
+        for( int i = 0u; i < static_cast<int>(v.no); i++ )
+        {
+            x[i] = static_cast<unsigned short>(v.x_i[i]);
+            y[i] = static_cast<unsigned short>(v.y_i[i]);
         }
 
         // emit a LutSampleValuesBlueChanged signal
@@ -361,7 +384,7 @@ void LutItf::GetLutFastGamma()
         HANDLE_ERROR( res );
 
         // emit a LutPresetChanged signal
-        emit LutFastGammaChanged( (int)gamma );
+        emit LutFastGammaChanged( static_cast<int>(gamma) );
     }
 }
 
@@ -370,11 +393,13 @@ void LutItf::GetLutFastGamma()
  *****************************************************************************/
 void LutItf::onLutEnableChange( int id, int value )
 {
-    ctrl_protocol_enable_t v = { .id = (uint8_t)id, .flag = (uint8_t)value };
+    ctrl_protocol_enable_t v;
+    v.id = static_cast<uint8_t>(id);
+    v.flag = static_cast<uint8_t>(value);
 
     // set LUT enable state on device
     int res = ctrl_protocol_set_lut_enable( GET_PROTOCOL_INSTANCE(this),
-        GET_CHANNEL_INSTANCE(this), sizeof(v), (uint8_t *)&v );
+        GET_CHANNEL_INSTANCE(this), sizeof(v), reinterpret_cast<uint8_t *>(&v) );
     HANDLE_ERROR( res );
 }
 
@@ -385,7 +410,7 @@ void LutItf::onLutModeChange( int mode )
 {
     // set LUT operational mode on device
     int res = ctrl_protocol_set_lut_mode( GET_PROTOCOL_INSTANCE(this),
-        GET_CHANNEL_INSTANCE(this), (uint8_t)mode );
+        GET_CHANNEL_INSTANCE(this), static_cast<uint8_t>(mode) );
     HANDLE_ERROR( res );
 
     // If mode was changed to interpolation mode, sync sample data
@@ -417,7 +442,32 @@ void LutItf::onLutFixedModeChange( int mode )
 {
     // set LUT fixed gamma curve on device
     int res = ctrl_protocol_set_lut_fixed_mode( GET_PROTOCOL_INSTANCE(this),
-        GET_CHANNEL_INSTANCE(this), (uint8_t)mode );
+        GET_CHANNEL_INSTANCE(this), static_cast<uint8_t>(mode) );
+    HANDLE_ERROR( res );
+}
+
+/******************************************************************************
+ * LutItf::onLogModeChange
+ *****************************************************************************/
+void LutItf::onLogModeChange( int mode )
+{
+    // set LOG mode on device
+    int res = ctrl_protocol_set_log_mode( GET_PROTOCOL_INSTANCE(this),
+        GET_CHANNEL_INSTANCE(this), static_cast<uint8_t>(mode) );
+
+    /* In case swtich was successful, notify LOG mode was changed to get
+     * new gain range and current gain value in CamItf, then update
+     * current lut mode and lut fixed mode. */
+    if ( res == 0 )
+    {
+        // Notify other interfaces that LOG mode got changed
+        emit NotifyLogModeChanged();
+
+        // Update LUT Mode and LUT Fixed Mode which are changed by LOG mode command
+        GetLutMode();
+        GetLutFixedMode();
+    }
+
     HANDLE_ERROR( res );
 }
 
@@ -428,7 +478,7 @@ void LutItf::onLutPresetChange( int value )
 {
     // set LUT preset storage on device
     int res = ctrl_protocol_set_lut_preset( GET_PROTOCOL_INSTANCE(this),
-        GET_CHANNEL_INSTANCE(this), (uint8_t)value );
+        GET_CHANNEL_INSTANCE(this), static_cast<uint8_t>(value) );
     HANDLE_ERROR( res );
     
     // sync sample data 
@@ -445,7 +495,7 @@ void LutItf::onLutWriteIndexChange( int value )
 {
     // set LUT read/write address for all tables on device
     int res = ctrl_protocol_set_lut_write_index( GET_PROTOCOL_INSTANCE(this),
-        GET_CHANNEL_INSTANCE(this), (uint16_t)value );
+        GET_CHANNEL_INSTANCE(this), static_cast<uint16_t>(value) );
     HANDLE_ERROR( res );
 }
 
@@ -456,7 +506,7 @@ void LutItf::onLutWriteIndexRedChange( int value )
 {
     // set LUT read/write address for red tables on device
     int res = ctrl_protocol_set_lut_write_index_red( GET_PROTOCOL_INSTANCE(this),
-        GET_CHANNEL_INSTANCE(this), (uint16_t)value );
+        GET_CHANNEL_INSTANCE(this), static_cast<uint16_t>(value) );
     HANDLE_ERROR( res );
 }
 
@@ -467,7 +517,7 @@ void LutItf::onLutWriteIndexGreenChange( int value )
 {
     // set LUT read/write address for green tables on device
     int res = ctrl_protocol_set_lut_write_index_red( GET_PROTOCOL_INSTANCE(this),
-        GET_CHANNEL_INSTANCE(this), (uint16_t)value );
+        GET_CHANNEL_INSTANCE(this), static_cast<uint16_t>(value) );
     HANDLE_ERROR( res );
 }
 
@@ -478,7 +528,7 @@ void LutItf::onLutWriteIndexBlueChange( int value )
 {
     // set LUT read/write address for blue tables on device
     int res = ctrl_protocol_set_lut_write_index_blue( GET_PROTOCOL_INSTANCE(this),
-        GET_CHANNEL_INSTANCE(this), (uint16_t)value );
+        GET_CHANNEL_INSTANCE(this), static_cast<uint16_t>(value) );
     HANDLE_ERROR( res );
 }
 
@@ -495,19 +545,17 @@ void LutItf::onLutRec709Change
     int brightness
 )
 {
-    ctrl_protocol_rec709_t values =
-    {
-        .threshold   = (uint16_t)threshold,
-        .lcontrast   = (uint16_t)lcontrast,
-        .lbrightness = (int16_t )lbrightness,
-        .contrast    = (uint16_t)contrast,
-        .gamma       = (uint16_t)gamma,
-        .brightness  = (int16_t )brightness
-    };
+    ctrl_protocol_rec709_t values;
+    values.threshold   = static_cast<uint16_t>(threshold);
+    values.lcontrast   = static_cast<uint16_t>(lcontrast);
+    values.lbrightness = static_cast<int16_t>(lbrightness);
+    values.contrast    = static_cast<uint16_t>(contrast);
+    values.gamma       = static_cast<uint16_t>(gamma);
+    values.brightness  = static_cast<int16_t>(brightness);
 
     // set mcc enable state on device
     int res = ctrl_protocol_set_lut_rec709( GET_PROTOCOL_INSTANCE(this),
-        GET_CHANNEL_INSTANCE(this), sizeof(ctrl_protocol_rec709_t), (uint8_t *)&values );
+        GET_CHANNEL_INSTANCE(this), sizeof(ctrl_protocol_rec709_t), reinterpret_cast<uint8_t *>(&values) );
     HANDLE_ERROR( res );
 
     // sync sample data 
@@ -527,12 +575,12 @@ void LutItf::onLutSampleValuesChange( QVector<int> x, QVector<int> y )
         ctrl_protocol_samples_t v;
         
         memset( &v, 0, sizeof(v) );
-        v.no = x.count();
+        v.no = static_cast<uint32_t>(x.count());
         
-        for( unsigned i=0u; i<v.no; i++ )
-        { 
-            v.x_i[i] = x[i];
-            v.y_i[i] = y[i];
+        for( int i = 0u; i < static_cast<int>(v.no); i++ )
+        {
+            v.x_i[i] = static_cast<unsigned short>(x[i]);
+            v.y_i[i] = static_cast<unsigned short>(y[i]);
         }
 
         // set LUT reset on device (to delete sample points)
@@ -542,7 +590,7 @@ void LutItf::onLutSampleValuesChange( QVector<int> x, QVector<int> y )
 
         // set LUT sample on device
         res = ctrl_protocol_set_lut_sample( GET_PROTOCOL_INSTANCE(this),
-            GET_CHANNEL_INSTANCE(this), sizeof(v), (uint8_t *)&v );
+            GET_CHANNEL_INSTANCE(this), sizeof(v), reinterpret_cast<uint8_t *>(&v) );
         HANDLE_ERROR( res );
     }
 }
@@ -557,12 +605,12 @@ void LutItf::onLutSampleValuesRedChange( QVector<int> x, QVector<int> y )
         ctrl_protocol_samples_t v;
         
         memset( &v, 0, sizeof(v) );
-        v.no = x.count();
+        v.no = static_cast<uint32_t>(x.count());
         
-        for( unsigned i=0u; i<v.no; i++ )
-        { 
-            v.x_i[i] = x[i];
-            v.y_i[i] = y[i];
+        for( int i = 0u; i < static_cast<int>(v.no); i++ )
+        {
+            v.x_i[i] = static_cast<unsigned short>(x[i]);
+            v.y_i[i] = static_cast<unsigned short>(y[i]);
         }
 
         // set LUT reset on device (to delete sample points)
@@ -572,7 +620,7 @@ void LutItf::onLutSampleValuesRedChange( QVector<int> x, QVector<int> y )
 
         // set LUT sample on device
         res = ctrl_protocol_set_lut_sample_red( GET_PROTOCOL_INSTANCE(this),
-            GET_CHANNEL_INSTANCE(this), sizeof(v), (uint8_t *)&v );
+            GET_CHANNEL_INSTANCE(this), sizeof(v), reinterpret_cast<uint8_t *>(&v) );
         HANDLE_ERROR( res );
     }
 }
@@ -587,12 +635,12 @@ void LutItf::onLutSampleValuesGreenChange( QVector<int> x, QVector<int> y )
         ctrl_protocol_samples_t v;
         
         memset( &v, 0, sizeof(v) );
-        v.no = x.count();
+        v.no = static_cast<uint32_t>(x.count());
         
-        for( unsigned i=0u; i<v.no; i++ )
-        { 
-            v.x_i[i] = x[i];
-            v.y_i[i] = y[i];
+        for( int i = 0u; i < static_cast<int>(v.no); i++ )
+        {
+            v.x_i[i] = static_cast<unsigned short>(x[i]);
+            v.y_i[i] = static_cast<unsigned short>(y[i]);
         }
 
         // set LUT reset on device (to delete sample points)
@@ -602,7 +650,7 @@ void LutItf::onLutSampleValuesGreenChange( QVector<int> x, QVector<int> y )
 
         // set LUT sample on device
         res = ctrl_protocol_set_lut_sample_green( GET_PROTOCOL_INSTANCE(this),
-            GET_CHANNEL_INSTANCE(this), sizeof(v), (uint8_t *)&v );
+            GET_CHANNEL_INSTANCE(this), sizeof(v), reinterpret_cast<uint8_t *>(&v) );
         HANDLE_ERROR( res );
     }
 }
@@ -617,12 +665,12 @@ void LutItf::onLutSampleValuesBlueChange( QVector<int> x, QVector<int> y )
         ctrl_protocol_samples_t v;
         
         memset( &v, 0, sizeof(v) );
-        v.no = x.count();
+        v.no = static_cast<uint32_t>(x.count());
         
-        for( unsigned i=0u; i<v.no; i++ )
+        for( int i = 0u; i < static_cast<int>(v.no); i++ )
         {
-            v.x_i[i] = x[i];
-            v.y_i[i] = y[i];
+            v.x_i[i] = static_cast<unsigned short>(x[i]);
+            v.y_i[i] = static_cast<unsigned short>(y[i]);
         }
 
         // set LUT reset on device (to delete sample points)
@@ -632,7 +680,7 @@ void LutItf::onLutSampleValuesBlueChange( QVector<int> x, QVector<int> y )
 
         // set LUT sample on device
         res = ctrl_protocol_set_lut_sample_blue( GET_PROTOCOL_INSTANCE(this),
-            GET_CHANNEL_INSTANCE(this), sizeof(v), (uint8_t *)&v );
+            GET_CHANNEL_INSTANCE(this), sizeof(v), reinterpret_cast<uint8_t *>(&v) );
         HANDLE_ERROR( res );
     }
 }
@@ -647,12 +695,12 @@ void LutItf::onLutSampleValuesMasterChange( QVector<int> x, QVector<int> y )
         ctrl_protocol_samples_t v;
         
         memset( &v, 0, sizeof(v) );
-        v.no = x.count();
+        v.no = static_cast<uint32_t>(x.count());
         
-        for( unsigned i=0u; i<v.no; i++ )
+        for( int i = 0u; i < static_cast<int>(v.no); i++ )
         {
-            v.x_i[i] = x[i];
-            v.y_i[i] = y[i];
+            v.x_i[i] = static_cast<unsigned short>(x[i]);
+            v.y_i[i] = static_cast<unsigned short>(y[i]);
         }
 
         // set LUT reset on device (to delete sample points)
@@ -662,7 +710,7 @@ void LutItf::onLutSampleValuesMasterChange( QVector<int> x, QVector<int> y )
 
         // set LUT sample on device
         res = ctrl_protocol_set_lut_sample_master( GET_PROTOCOL_INSTANCE(this),
-            GET_CHANNEL_INSTANCE(this), sizeof(v), (uint8_t *)&v );
+            GET_CHANNEL_INSTANCE(this), sizeof(v), reinterpret_cast<uint8_t *>(&v) );
         HANDLE_ERROR( res );
     }
 }
@@ -822,6 +870,6 @@ void LutItf::onLutFastGammaChange( int gamma )
 {
     // set LUT fast gamma on device
     int res = ctrl_protocol_set_lut_fast_gamma( GET_PROTOCOL_INSTANCE(this),
-        GET_CHANNEL_INSTANCE(this), (int16_t)gamma );
+        GET_CHANNEL_INSTANCE(this), static_cast<int16_t>(gamma) );
     HANDLE_ERROR( res );
 }

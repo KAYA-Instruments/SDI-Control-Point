@@ -63,6 +63,9 @@ public slots:
 
     // notifier slot for video-mode change
     void onNotifyVideoModeChange();
+
+    // notifier slot for LOG mode change
+    void onNotifyLogModeChange();
 };
 
 #endif // _CAM_INTERFACE_H_

@@ -48,6 +48,7 @@ public:
     // operational mode
     void GetLutMode();
     void GetLutFixedMode();
+    void GetLogMode();
 
     // preset storage
     void GetLutPreset();
@@ -73,6 +74,7 @@ signals:
     // operational mode storage
     void LutModeChanged( int mode );
     void LutFixedModeChanged( int mode );
+    void LogModeChanged( int mode );
 
     // preset storage
     void LutPresetChanged( int value );
@@ -96,6 +98,10 @@ signals:
 
     // fast gamma
     void LutFastGammaChanged( int gamma );
+
+    // new LOG mode is set
+    // This is used to synchronize other interface components.
+    void NotifyLogModeChanged();
      
 public slots:
     // enable status
@@ -104,6 +110,7 @@ public slots:
     // operational mode
     void onLutModeChange( int mode );
     void onLutFixedModeChange( int mode );
+    void onLogModeChange( int mode );
     
     // preset storage
     void onLutPresetChange( int value );

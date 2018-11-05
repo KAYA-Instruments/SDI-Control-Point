@@ -312,4 +312,8 @@ FORMS    += ../dct_widgets/mcceqbox/mcceqbox.ui                             \
 
 RESOURCES += ../resource/resource.qrc
 
-DISTFILES += ../resource/doc/third-party-licenses.txt
+DISTFILES += ../resource/doc/third-party-licenses.txt \
+    ../CHANGELOG.md \
+    ../README.md \
+    ../third-party-licenses.txt \
+    ../LICENSE

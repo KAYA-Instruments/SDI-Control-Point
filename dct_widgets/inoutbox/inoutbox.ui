@@ -684,25 +684,6 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="0">
-       <widget class="QLabel" name="lblTestPattern">
-        <property name="minimumSize">
-         <size>
-          <width>140</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>140</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Test Pattern</string>
-        </property>
-       </widget>
-      </item>
       <item row="5" column="1">
        <widget class="QComboBox" name="cbxFlipMode">
         <property name="minimumSize">
@@ -720,7 +701,7 @@
        </widget>
       </item>
       <item row="5" column="0">
-       <widget class="QLabel" name="lblFlip">
+       <widget class="QLabel" name="lblFlipMode">
         <property name="minimumSize">
          <size>
           <width>140</width>
@@ -751,22 +732,6 @@
           <width>16777215</width>
           <height>16777215</height>
          </size>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="1">
-       <widget class="QCheckBox" name="cbxTestPattern">
-        <property name="minimumSize">
-         <size>
-          <width>170</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="toolTip">
-         <string>Enable to show a Color Chart when no Input is detected</string>
-        </property>
-        <property name="text">
-         <string/>
         </property>
        </widget>
       </item>
@@ -896,6 +861,51 @@
          <string/>
         </property>
        </widget>
+      </item>
+      <item row="7" column="4">
+       <widget class="QCheckBox" name="cbxTestPattern">
+        <property name="minimumSize">
+         <size>
+          <width>170</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Enable to show a Color Chart when no Input is detected</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="3">
+       <widget class="QLabel" name="lblTestPattern">
+        <property name="minimumSize">
+         <size>
+          <width>140</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>140</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Test Pattern</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="lblLogMode">
+        <property name="text">
+         <string>LOG Mode</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="QComboBox" name="cbxLogMode"/>
       </item>
      </layout>
     </widget>
@@ -1267,7 +1277,6 @@ Note: This will only hold the timecode in the SDI output, the timecode on the de
   <tabstop>cbxVideoMode</tabstop>
   <tabstop>cbxSdi2Mode</tabstop>
   <tabstop>cbxFlipMode</tabstop>
-  <tabstop>cbxTestPattern</tabstop>
   <tabstop>cbxSdi1Downscaler</tabstop>
   <tabstop>cbxSdi2Downscaler</tabstop>
   <tabstop>cbxAudioEnable</tabstop>

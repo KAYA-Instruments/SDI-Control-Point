@@ -83,6 +83,8 @@ public:
     void setSdi2Downscaler( const QString mode );
     QString FlipMode() const;
     void setFlipMode( const QString mode );
+    QString LogMode() const;
+    void setLogMode( const QString mode );
     bool TestPattern() const;
     void setTestPattern( const bool value );
     bool AudioEnable() const;
@@ -104,6 +106,7 @@ public:
     void addSdi2Mode( QString name, int id );
     void addDownscaleMode( QString name, int id );
     void addFlipMode( QString name, int id );
+    void addLogMode( QString name, int id );
 
     // Show or hide UI elements
     void setCameraSettingsVisible(const bool value);
@@ -115,6 +118,7 @@ public:
     void setSdi2ModeVisible(const bool value);
     void setDownscaleModeVisible(const bool value);
     void setFlipModeVisible(const bool vertical, const bool horizontal);
+    void setLogModeVisible(const bool value);
     void setTestPatternVisible(const bool value);
     void setAudioEnableVisible(const bool value);
 
@@ -150,6 +154,7 @@ signals:
     void ChainSdi2ModeChanged( int value );
     void ChainDownscaleModeChanged( int sdi_out_idx, bool downscale, bool interlace );
     void ChainFlipModeChanged( int value );
+    void LogModeChanged( int value );
     void OsdTestPatternChanged( int value );
     void ChainAudioEnableChanged( bool enable );
     
@@ -181,6 +186,7 @@ public slots:
     void onChainSdi2ModeChange( int value );
     void onChainDownscaleModeChange( int sdi_out_idx, bool downscale, bool interlace );
     void onChainFlipModeChange( int value );
+    void onLogModeChange( int value );
     void onOsdTestPatternChange( int value );
     void onChainAudioEnableChange( bool enable );
 
@@ -225,6 +231,7 @@ private slots:
     void onCbxSdi1DownscalerChange( int index );
     void onCbxSdi2DownscalerChange( int index );
     void onCbxFlipModeChange( int index );
+    void onCbxLogModeChange( int index );
     void onCbxTestPatternChange( int value );
     void onCbxAudioEnableChange( int value );
     

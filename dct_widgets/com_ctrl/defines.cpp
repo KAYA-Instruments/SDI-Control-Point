@@ -566,3 +566,20 @@ QString GetFlipModeName( FlipMode mode )
     }
 }
 
+/******************************************************************************
+ * GetLogModeName()
+ *****************************************************************************/
+QString GetLogModeName( LogMode mode )
+{
+    switch ( mode )
+    {
+        case LogModeOff:
+            return ( QString(LOG_MODE_OFF) );
+        case LogModeHLG:
+            return ( QString(LOG_MODE_HLG) );
+        case LogModePQ:
+            return ( QString(LOG_MODE_PQ) );
+        default:
+            return ( QString::null );
+    }
+}

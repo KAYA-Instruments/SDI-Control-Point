@@ -6,8 +6,9 @@ All releases are tagged in Git with their version number.
 
 Version **1.1.9** - Yet to be released
 
-* Added a periodic connection check. The GUI will now check every 2 seconds if the connected device is still available. If a device is disconnected the GUI offers to open the connect dialog. This setting can be disabled in the Settings Dialog.
-* The Engineering Mode, Debug Terminal and the new periodic Connection Check are now stored in the applications .ini file in the users home folder (like the connection settings of the Connection Dialog). This ensures that the GUI opens with the same config like it was closed by the user.
+* Added a periodic connection check. The GUI will now check every 2 seconds if the connected device is still available. If a device is disconnected the GUI offers to open the connect dialog. This setting can be disabled in the Settings Dialog
+* The Engineering Mode, Debug Terminal and the new periodic Connection Check are now stored in the applications .ini file in the users home folder (like the connection settings of the Connection Dialog). This ensures that the GUI opens with the same config like it was closed by the user
+* Added Options to set the new "LOG mode" setting. The in-out-box now has a combo box to switch between LOG mode off, HLG and PQ mode. In LOG HLG or PG gamma curve settings are disabled
 * Fixed a few more Clang warnings (this is an ongoing task)
 
 ## Older Releases:
@@ -24,7 +25,7 @@ Version **1.1.7** - 26.09.2018
 * The maximum temperature readout command now reads both the persistent and the user reset-able maximum temperature
 * Added readout of current fan speed and added a spin box to setup the target temperature of the fan control for supported devices
 * Fixed a rare crash that occured when a device reported a device name that did contain non-ASCII characters
-* The info tab now has a timer to update the temperature / fan values every second. This is only done when the info tab is visible. To make sure no errors occur due to this automatic update, the com channel now has a lock on the read / write functions to make it thread safe.
+* The info tab now has a timer to update the temperature / fan values every second. This is only done when the info tab is visible. To make sure no errors occur due to this automatic update, the com channel now has a lock on the read / write functions to make it thread safe
 * Fixed a bug where the automatic detection would detect devices double and / or with incomplete names
 * Fixed potential bugs where the same could have happened in dpc and and aec weight transmision
 * Fixed potential bugs where the timeout for dpc and aec weight transmision could be shorter than 1s (since the timer only had 1 second resolution)

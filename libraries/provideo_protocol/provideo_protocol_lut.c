@@ -232,6 +232,14 @@
 #define CMD_GET_LUT_FAST_GAMMA_NO_PARMS         ( 1 )
 #define CMD_SET_LUT_FAST_GAMMA_TMO              ( 3000 )
 
+/******************************************************************************
+ * @brief command "lut_mode"
+ *****************************************************************************/
+#define CMD_GET_LOG_MODE                        ( "log_mode \n" )
+#define CMD_SET_LOG_MODE                        ( "log_mode %i\n" )
+#define CMD_SYNC_LOG_MODE                       ( "log_mode " )
+#define CMD_GET_LOG_MODE_NO_PARMS               ( 1 )
+#define CMD_SET_LOG_MODE_TMO                    ( 5000 )
 
 /******************************************************************************
  * protocol helper function
@@ -758,15 +766,16 @@ static int set_lut_enable
 }
 
 /**************************************************************************//**
- * @brief Gets the operational mode of gamma LUT module
+ * @brief Gets the currently configured LOG mode on the device.
  *
  * @param[in]  ctx      private protocol context
  * @param[in]  channel  control channel to send the request
- * @param[out] mode     current mode
+ * @param[in]   mode     current mode (0 = normal operation (LOG mode off),
+ *                                     1 = HLG LOG mode)
  *
  * @return     0 on success, error-code otherwise
  *****************************************************************************/
-static int get_lut_mode
+static int get_log_mode
 (
     void * const                ctx,
     ctrl_channel_handle_t const channel,
@@ -786,7 +795,7 @@ static int get_lut_mode
 
     // command call to get 1 parameter from provideo system
     res = get_param_int_X( channel, 2,
-            CMD_GET_LUT_MODE, CMD_SYNC_LUT_MODE, CMD_SET_LUT_MODE, &v );
+            CMD_GET_LOG_MODE, CMD_SYNC_LOG_MODE, CMD_SET_LOG_MODE, &v );
 
     // return error code
     if ( res < 0 )
@@ -795,7 +804,7 @@ static int get_lut_mode
     }
 
     // return -EFAULT if number of parameter not matching
-    else if ( res != CMD_GET_LUT_MODE_NO_PARMS )
+    else if ( res != CMD_GET_LOG_MODE_NO_PARMS )
     {
         return ( -EFAULT );
     }
@@ -807,16 +816,16 @@ static int get_lut_mode
 }
 
 /**************************************************************************//**
- * @brief Sets the operational mode of the LUT module
+ * @brief Set the LOG mode on the device.
  *
  * @param[in]  ctx      private protocol context
  * @param[in]  channel  control channel to send the request
- * @param[in]  mode     mode to set (0 = interpolate, 1 = fast gamma,
- *                      2 = fixed gamma curve)
+ * @param[in]   mode     mode to set (0 = normal operation (LOG mode off),
+ *                                    1 = HLG LOG mode)
  *
  * @return     0 on success, error-code otherwise
  *****************************************************************************/
-static int set_lut_mode
+static int set_log_mode
 (
     void * const                ctx,
     ctrl_channel_handle_t const channel,
@@ -826,7 +835,7 @@ static int set_lut_mode
     (void) ctx;
 
     return ( set_param_int_X_with_tmo( channel,
-                                       CMD_SET_LUT_MODE, CMD_SET_LUT_MODE_TMO,
+                                       CMD_SET_LOG_MODE, CMD_SET_LOG_MODE_TMO,
                                        INT( mode ) ) );
 }
 
@@ -1673,6 +1682,79 @@ static int set_lut_fast_gamma
                                        INT( gamma ) ) );
 }
 
+/**************************************************************************//**
+ * @brief Gets the operational mode of gamma LUT module
+ *
+ * @param[in]  ctx      private protocol context
+ * @param[in]  channel  control channel to send the request
+ * @param[out] mode     current mode
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+static int get_lut_mode
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    uint8_t * const             mode
+)
+{
+    (void) ctx;
+
+    int v;
+    int res;
+
+    // parameter check
+    if ( !mode )
+    {
+        return ( -EINVAL );
+    }
+
+    // command call to get 1 parameter from provideo system
+    res = get_param_int_X( channel, 2,
+            CMD_GET_LUT_MODE, CMD_SYNC_LUT_MODE, CMD_SET_LUT_MODE, &v );
+
+    // return error code
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
+    // return -EFAULT if number of parameter not matching
+    else if ( res != CMD_GET_LUT_MODE_NO_PARMS )
+    {
+        return ( -EFAULT );
+    }
+
+    // type-cast to range
+    *mode = UINT8( v );
+
+    return ( 0 );
+}
+
+/**************************************************************************//**
+ * @brief Sets the operational mode of the LUT module
+ *
+ * @param[in]  ctx      private protocol context
+ * @param[in]  channel  control channel to send the request
+ * @param[in]  mode     mode to set (0 = interpolate, 1 = fast gamma,
+ *                      2 = fixed gamma curve)
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+static int set_lut_mode
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    uint8_t const               mode
+)
+{
+    (void) ctx;
+
+    return ( set_param_int_X_with_tmo( channel,
+                                       CMD_SET_LUT_MODE, CMD_SET_LUT_MODE_TMO,
+                                       INT( mode ) ) );
+}
+
 /******************************************************************************
  * ISP protocol driver declaration
  *****************************************************************************/
@@ -1716,7 +1798,9 @@ static ctrl_protocol_lut_drv_t provideo_lut_drv =
     .set_lut_interpolate_green  = set_lut_interpolate_green,
     .set_lut_interpolate_blue   = set_lut_interpolate_blue,
     .get_lut_fast_gamma         = get_lut_fast_gamma,
-    .set_lut_fast_gamma         = set_lut_fast_gamma
+    .set_lut_fast_gamma         = set_lut_fast_gamma,
+    .get_log_mode               = get_log_mode,
+    .set_log_mode               = set_log_mode
 };
 
 /******************************************************************************

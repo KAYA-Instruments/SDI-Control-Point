@@ -180,6 +180,8 @@ public slots:
 
     void onLutFastGammaChange( int );
 
+    void onLogModeChange( int );
+
 private:
     void SetXRangeChanged( const QCPRange &, QCustomPlot * );
     void SetYRangeChanged( const QCPRange &, QCustomPlot * );

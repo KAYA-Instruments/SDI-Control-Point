@@ -102,6 +102,7 @@ public:
 #define INOUT_SETTINGS_SDI1_DOWNSCALER              ( "sdi1_downscaler" )
 #define INOUT_SETTINGS_SDI2_DOWNSCALER              ( "sdi2_downscaler" )
 #define INOUT_SETTINGS_FLIP_MODE                    ( "flip_mode" )
+#define INOUT_SETTINGS_LOG_MODE                     ( "log_mode" )
 #define INOUT_SETTINGS_TEST_PATTERN                 ( "test_pattern" )
 #define INOUT_SETTINGS_AUDIO_ENABLE                 ( "audio_enable" )
 
@@ -247,6 +248,12 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
 
     // Note: Flip modes depend on the device and are added in "setFlipModeVisible()"
 
+    // fill LOG mode combo box
+    for ( int i=LogModeFirst; i<LogModeMax; i++ )
+    {
+        addLogMode( GetLogModeName( static_cast<enum LogMode>(i) ), i );
+    }
+
     // fill genlock-mode combo box
     for ( int i=GenLockModeFirst; i<GenLockModeMax; i++ )
     {
@@ -289,6 +296,7 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->cbxSdi1Downscaler, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxSdi1DownscalerChange(int)) );
     connect( d_data->m_ui->cbxSdi2Downscaler, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxSdi2DownscalerChange(int)) );
     connect( d_data->m_ui->cbxFlipMode, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxFlipModeChange(int)) );
+    connect( d_data->m_ui->cbxLogMode, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxLogModeChange(int)) );
     connect( d_data->m_ui->cbxTestPattern, SIGNAL(stateChanged(int)), this, SLOT(onCbxTestPatternChange(int)) );
     connect( d_data->m_ui->btnIsoMinus, SIGNAL(clicked()), this, SLOT(onBtnIsoMinusClicked()) );
     connect( d_data->m_ui->btnIsoPlus, SIGNAL(clicked()), this, SLOT(onBtnIsoPlusClicked()) );
@@ -797,7 +805,7 @@ void InOutBox::setSdi2Downscaler( const QString mode )
 }
 
 /******************************************************************************
- * InOutBox::VideoMode
+ * InOutBox::FlipMode
  *****************************************************************************/
 QString InOutBox::FlipMode() const
 {
@@ -817,6 +825,30 @@ void InOutBox::setFlipMode( const QString mode )
         d_data->m_ui->cbxFlipMode->blockSignals( false );
 
         emit ChainFlipModeChanged( d_data->m_ui->cbxFlipMode->itemData( index ).toInt() );
+    }
+}
+
+/******************************************************************************
+ * InOutBox::LogMode
+ *****************************************************************************/
+QString InOutBox::LogMode() const
+{
+    return ( d_data->m_ui->cbxLogMode->currentText() );
+}
+
+/******************************************************************************
+ * InOutBox::setLogMode
+ *****************************************************************************/
+void InOutBox::setLogMode( const QString mode )
+{
+    int index = d_data->m_ui->cbxLogMode->findText( mode );
+    if ( index != -1 )
+    {
+        d_data->m_ui->cbxLogMode->blockSignals( true );
+        d_data->m_ui->cbxLogMode->setCurrentIndex( index );
+        d_data->m_ui->cbxLogMode->blockSignals( false );
+
+        emit LogModeChanged( d_data->m_ui->cbxLogMode->itemData( index ).toInt() );
     }
 }
 
@@ -1034,6 +1066,7 @@ void InOutBox::saveSettings( QSettings & s )
     s.setValue( INOUT_SETTINGS_SDI1_DOWNSCALER              , Sdi1Downscaler() );
     s.setValue( INOUT_SETTINGS_SDI2_DOWNSCALER              , Sdi2Downscaler() );
     s.setValue( INOUT_SETTINGS_FLIP_MODE                    , FlipMode() );
+    s.setValue( INOUT_SETTINGS_LOG_MODE                     , LogMode() );
     s.setValue( INOUT_SETTINGS_TEST_PATTERN                 , TestPattern() );
     s.setValue( INOUT_SETTINGS_AUDIO_ENABLE                 , AudioEnable() );
 
@@ -1061,6 +1094,7 @@ void InOutBox::applySettings( void )
     EmitDownscaleChanged( 1,  d_data->m_ui->cbxSdi1Downscaler->currentData().toInt() );
     EmitDownscaleChanged( 2,  d_data->m_ui->cbxSdi2Downscaler->currentData().toInt() );
     emit ChainFlipModeChanged( d_data->m_ui->cbxFlipMode->currentData().toInt() );
+    emit LogModeChanged( d_data->m_ui->cbxLogMode->currentData().toInt() );
     emit OsdTestPatternChanged( TestPattern() );
     emit ChainAudioEnableChanged( AudioEnable() );
 
@@ -1148,6 +1182,16 @@ void InOutBox::addFlipMode( QString name, int id )
     d_data->m_ui->cbxFlipMode->blockSignals( true );
     d_data->m_ui->cbxFlipMode->addItem( name, id );
     d_data->m_ui->cbxFlipMode->blockSignals( false );
+}
+
+/******************************************************************************
+ * InOutBox::addLogMode
+ *****************************************************************************/
+void InOutBox::addLogMode( QString name, int id )
+{
+    d_data->m_ui->cbxLogMode->blockSignals( true );
+    d_data->m_ui->cbxLogMode->addItem( name, id );
+    d_data->m_ui->cbxLogMode->blockSignals( false );
 }
 
 /******************************************************************************
@@ -1258,16 +1302,25 @@ void InOutBox::setFlipModeVisible(const bool vertical, const bool horizontal)
         }
 
         // show combo box and label
-        d_data->m_ui->lblFlip->setVisible(true);
+        d_data->m_ui->lblFlipMode->setVisible(true);
         d_data->m_ui->cbxFlipMode->setVisible(true);
     }
     // else if flip is not available
     else
     {
         // hide combo box and label
-        d_data->m_ui->lblFlip->setVisible(false);
+        d_data->m_ui->lblFlipMode->setVisible(false);
         d_data->m_ui->cbxFlipMode->setVisible(false);
     }
+}
+
+/******************************************************************************
+ * InOutBox::setLogModeVisible
+ *****************************************************************************/
+void InOutBox::setLogModeVisible(const bool value)
+{
+    d_data->m_ui->lblLogMode->setVisible(value);
+    d_data->m_ui->cbxLogMode->setVisible(value);
 }
 
 /******************************************************************************
@@ -1513,6 +1566,21 @@ void InOutBox::onChainFlipModeChange( int value )
         d_data->m_ui->cbxFlipMode->blockSignals( false );
     }
 }
+
+/******************************************************************************
+ * InOutBox::onLogModeChange
+ *****************************************************************************/
+void InOutBox::onLogModeChange( int value )
+{
+    int index = d_data->m_ui->cbxLogMode->findData( value );
+    if ( index != -1 )
+    {
+        d_data->m_ui->cbxLogMode->blockSignals( true );
+        d_data->m_ui->cbxLogMode->setCurrentIndex( index );
+        d_data->m_ui->cbxLogMode->blockSignals( false );
+    }
+}
+
 
 /******************************************************************************
  * InOutBox::onOsdTestPatternChange
@@ -1989,6 +2057,16 @@ void InOutBox::onCbxFlipModeChange( int index )
 {
     setWaitCursor();
     emit ChainFlipModeChanged( d_data->m_ui->cbxFlipMode->itemData( index ).toInt() );
+    setNormalCursor();
+}
+
+/******************************************************************************
+ * InOutBox::onCbxLogModeChange
+ *****************************************************************************/
+void InOutBox::onCbxLogModeChange( int index )
+{
+    setWaitCursor();
+    emit LogModeChanged( d_data->m_ui->cbxLogMode->itemData( index ).toInt() );
     setNormalCursor();
 }
 

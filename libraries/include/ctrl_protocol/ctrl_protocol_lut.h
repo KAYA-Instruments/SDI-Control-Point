@@ -733,6 +733,40 @@ int ctrl_protocol_set_lut_fast_gamma
 );
 
 /**************************************************************************//**
+ * @brief Gets the currently configured LOG mode on the device.
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[in]   mode     current mode (0 = normal operation (LOG mode off),
+ *                                     1 = HLG LOG mode)
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_log_mode
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t * const              mode
+);
+
+/**************************************************************************//**
+ * @brief Set the LOG mode on the device.
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[in]   mode     mode to set (0 = normal operation (LOG mode off),
+ *                                    1 = HLG LOG mode)
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_set_log_mode
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t const                mode
+);
+
+/**************************************************************************//**
  * @brief GAMMA protocol driver implementation
  *****************************************************************************/
 typedef struct ctrl_protocol_lut_drv_s
@@ -776,6 +810,8 @@ typedef struct ctrl_protocol_lut_drv_s
     ctrl_protocol_run_t             set_lut_interpolate_blue;
     ctrl_protocol_get_int16_t       get_lut_fast_gamma;
     ctrl_protocol_set_int16_t       set_lut_fast_gamma;
+    ctrl_protocol_get_uint8_t       get_log_mode;
+    ctrl_protocol_set_uint8_t       set_log_mode;
 } ctrl_protocol_lut_drv_t;
 
 /******************************************************************************

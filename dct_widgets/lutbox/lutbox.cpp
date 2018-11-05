@@ -50,21 +50,21 @@ namespace Ui {
  *****************************************************************************/
 enum LutMode
 {
-    LUT_MODE_INVALID = -1,      /**< for range check */
-    LUT_MODE_FIRST   = 0,       /**< Table based interpolation mode (load table, do cubic spline interpolate) */
-    LUT_MODE_INTERPOLATE = 0,   /**< Table based interpolation mode (load table, do cubic spline interpolate) */
-    LUT_MODE_FAST_GAMMA = 1,    /**< Fast gamma function with direct computation and without interpolation */
-    LUT_MODE_FIXED = 2,         /**< Fixed gamma table that can not be edited */
+    LUT_MODE_INVALID     = -1,  /**< for range check */
+    LUT_MODE_FIRST       =  0,  /**< Table based interpolation mode (load table, do cubic spline interpolate) */
+    LUT_MODE_INTERPOLATE =  0,  /**< Table based interpolation mode (load table, do cubic spline interpolate) */
+    LUT_MODE_FAST_GAMMA  =  1,  /**< Fast gamma function with direct computation and without interpolation */
+    LUT_MODE_FIXED       =  2,  /**< Fixed gamma table that can not be edited */
     LUT_MODE_MAX                /**< number of available components */
 };
 
 enum LutFixedMode
 {
     LUT_FIXED_INVALID = -1,     /**< for range check */
-    LUT_FIXED_FIRST   = 0,      /**< Default Rec.709 gamma curve */
-    LUT_FIXED_REC709 = 0,       /**< Default Rec.709 gamma curve */
-    LUT_FIXED_PQ = 1,           /**< PQ gamma curve function specified in Rec. ITU-R BT.2100 used for HDR content */
-    LUT_FIXED_HLG = 2,          /**< Hybrid Log-Gamma (HLG) function specified in Rec. ITU-R BT.2100 used for HDR content */
+    LUT_FIXED_FIRST   =  0,     /**< Default Rec.709 gamma curve */
+    LUT_FIXED_REC709  =  0,     /**< Default Rec.709 gamma curve */
+    LUT_FIXED_PQ      =  1,     /**< PQ gamma curve function specified in Rec. ITU-R BT.2100 used for HDR content */
+    LUT_FIXED_HLG     =  2,     /**< Hybrid Log-Gamma (HLG) function specified in Rec. ITU-R BT.2100 used for HDR content */
     LUT_FIXED_MAX               /**< number of available components */
 };
 
@@ -190,7 +190,7 @@ public:
     }
 
     // create a single editable table-cell
-    QWidget* createEditor( QWidget * parent, const QStyleOptionViewItem &, const QModelIndex & ) const
+    QWidget* createEditor( QWidget * parent, const QStyleOptionViewItem &, const QModelIndex & ) const Q_DECL_OVERRIDE
     {
         QLineEdit * edit = new QLineEdit( parent );
 
@@ -202,7 +202,7 @@ public:
     }
 
     // transfer value from data-model into line-edit
-    void setEditorData( QWidget * editor, const QModelIndex & idx ) const
+    void setEditorData( QWidget * editor, const QModelIndex & idx ) const Q_DECL_OVERRIDE
     {
         int value = idx.model()->data( idx, Qt::EditRole ).toInt();
         QLineEdit * edt = static_cast< QLineEdit * >( editor );
@@ -210,7 +210,7 @@ public:
     }    
 
     // transfer value from line_edit into data-model
-    void setModelData( QWidget * editor, QAbstractItemModel * model, const QModelIndex &idx ) const
+    void setModelData( QWidget * editor, QAbstractItemModel * model, const QModelIndex &idx ) const Q_DECL_OVERRIDE
     {
         QLineEdit * edt = static_cast< QLineEdit * >( editor );
         QString value = edt->text();
@@ -218,7 +218,7 @@ public:
     }
 
     // set geometry of line-edit
-    void updateEditorGeometry( QWidget * editor, const QStyleOptionViewItem & option, const QModelIndex & ) const
+    void updateEditorGeometry( QWidget * editor, const QStyleOptionViewItem & option, const QModelIndex & ) const Q_DECL_OVERRIDE
     {
         editor->setGeometry( option.rect );
     }
@@ -355,7 +355,7 @@ public:
         delete m_model[Green];
         delete m_model[Red];
         delete m_model[Master];
-    };
+    }
     
     // set Rec.709 
     void initRec709Default()
@@ -449,7 +449,7 @@ public:
     // initialize data model and interpolation context
     void initDataModel( LutChannel ch )
     {
-        m_model[ch] =  new QStandardItemModel( 0, LUT_TABLE_NO_COLUMNS, NULL );
+        m_model[ch] =  new QStandardItemModel( 0, LUT_TABLE_NO_COLUMNS, nullptr );
         m_model[ch]->setHorizontalHeaderItem( 0, new QStandardItem(QString("X")) );
         m_model[ch]->setHorizontalHeaderItem( 1, new QStandardItem(QString("Y")) );
 
@@ -502,7 +502,7 @@ public:
     void setSamples( LutChannel ch, QVector<int> &x, QVector<int> &y )
     {
         Q_ASSERT( x.count() == y.count() );
-        Q_ASSERT( m_model[ch] != NULL );
+        Q_ASSERT( m_model[ch] != nullptr );
         
         // update data model (add or remove rows)
         int rc   = m_model[ch]->rowCount();
@@ -1711,7 +1711,7 @@ void LutBox::onImportClicked()
         "Comma Seperated Values (CSV) File (*.csv);;All files (*.*)"
     );
 
-    if ( NULL != d_data->m_filename )
+    if ( nullptr != d_data->m_filename )
     {
         QFileInfo file( d_data->m_filename );
         if ( file.suffix().isEmpty() )
@@ -1754,7 +1754,7 @@ void LutBox::onExportClicked()
         "Comma Seperated Values (CSV) File (*.csv);;All files (*.*)"
     );
 
-    if ( NULL != d_data->m_filename )
+    if ( nullptr != d_data->m_filename )
     {
         QFileInfo file( d_data->m_filename );
         if ( file.suffix().isEmpty() )
@@ -1924,6 +1924,15 @@ void LutBox::onLutFastGammaChange( int gamma )
         // Draw the fast gamma curve in the master plot
         d_data->drawFastGammaPlot( Master, LutFastGamma() );
     }
+}
+/******************************************************************************
+ * LutBox::onLogModeChange
+ *****************************************************************************/
+void LutBox::onLogModeChange( int mode )
+{
+    this->setEnabled( mode == 0 ? true : false );
+
+    emit LutModeChanged( LutMode() );
 }
 
 /******************************************************************************

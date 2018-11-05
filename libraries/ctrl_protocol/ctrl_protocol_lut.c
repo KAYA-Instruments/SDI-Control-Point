@@ -647,6 +647,37 @@ int ctrl_protocol_get_lut_fast_gamma
 }
 
 /******************************************************************************
+ * ctrl_protocol_get_log_mode
+ *****************************************************************************/
+int ctrl_protocol_get_log_mode
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t * const              mode
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), get_log_mode );
+    CHECK_NOT_NULL( mode );
+    return ( LUT_DRV(protocol->drv)->get_log_mode( protocol->ctx, channel, mode ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_log_mode
+ *****************************************************************************/
+int ctrl_protocol_set_log_mode
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t const                mode
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), set_log_mode );
+    return ( LUT_DRV(protocol->drv)->set_log_mode( protocol->ctx, channel, mode ) );
+}
+
+/******************************************************************************
  * ctrl_protocol_set_lut_fast_gamma
  *****************************************************************************/
 int ctrl_protocol_set_lut_fast_gamma
