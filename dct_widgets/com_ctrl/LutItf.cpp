@@ -463,9 +463,14 @@ void LutItf::onLogModeChange( int mode )
         // Notify other interfaces that LOG mode got changed
         emit NotifyLogModeChanged();
 
-        // Update LUT Mode and LUT Fixed Mode which are changed by LOG mode command
+        // Update LUT settings which might got changed by LOG mode command
         GetLutMode();
         GetLutFixedMode();
+        GetLutFastGamma();
+        GetLutSampleValuesMaster();
+        GetLutSampleValuesRed();
+        GetLutSampleValuesGreen();
+        GetLutSampleValuesBlue();
     }
 
     HANDLE_ERROR( res );

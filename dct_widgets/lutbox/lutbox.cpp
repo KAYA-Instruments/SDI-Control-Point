@@ -1931,8 +1931,6 @@ void LutBox::onLutFastGammaChange( int gamma )
 void LutBox::onLogModeChange( int mode )
 {
     this->setEnabled( mode == 0 ? true : false );
-
-    emit LutModeChanged( LutMode() );
 }
 
 /******************************************************************************

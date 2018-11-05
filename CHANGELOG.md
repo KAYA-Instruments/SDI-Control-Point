@@ -8,7 +8,7 @@ Version **1.1.9** - Yet to be released
 
 * Added a periodic connection check. The GUI will now check every 2 seconds if the connected device is still available. If a device is disconnected the GUI offers to open the connect dialog. This setting can be disabled in the Settings Dialog
 * The Engineering Mode, Debug Terminal and the new periodic Connection Check are now stored in the applications .ini file in the users home folder (like the connection settings of the Connection Dialog). This ensures that the GUI opens with the same config like it was closed by the user
-* Added Options to set the new "LOG mode" setting. The in-out-box now has a combo box to switch between LOG mode off, HLG and PQ mode. In LOG HLG or PG gamma curve settings are disabled
+* Added Options to set the new "LOG mode" setting. The in-out-box now has a combo box to switch between LOG mode off, HLG and PQ mode. In LOG HLG or PQ mode gamma curve settings are disabled
 * Fixed a few more Clang warnings (this is an ongoing task)
 
 ## Older Releases:
