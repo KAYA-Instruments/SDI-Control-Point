@@ -58,8 +58,8 @@ public:
         bool                                isBroadcastMaster;
     };
 
-    explicit ConnectDialog(QWidget *parent = 0);
-    ~ConnectDialog();
+    explicit ConnectDialog(QWidget *parent = nullptr);
+    ~ConnectDialog() Q_DECL_OVERRIDE;
 
     void setChannelRS232( ComChannelSerial * com );
     ComChannelSerial * getChannelRS232()
@@ -82,8 +82,8 @@ public:
     int openInterface();
 
     // settings
-    bool loadSettings( QSettings & );
-    void saveSettings( QSettings & );
+    bool loadConSettings( QSettings & );
+    void saveConSettings( QSettings & );
     
     Interface getActiveInterface() const;
     int setActiveInterface( ConnectDialog::Interface iface );

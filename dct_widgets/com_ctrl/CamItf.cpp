@@ -136,3 +136,11 @@ void CamItf::onNotifyVideoModeChange()
     GetCameraExposure();    // to get new exposure
 }
 
+/******************************************************************************
+ * CamItf::onNotifyLogModeChange
+ *****************************************************************************/
+void CamItf::onNotifyLogModeChange()
+{
+    GetCameraInfo();        // to get new gain/exposure time ranges
+    GetCameraGain();        // to get new gain
+}

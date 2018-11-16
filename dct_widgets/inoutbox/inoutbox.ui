@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>700</width>
-    <height>975</height>
+    <width>722</width>
+    <height>983</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -684,25 +684,6 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="0">
-       <widget class="QLabel" name="lblTestPattern">
-        <property name="minimumSize">
-         <size>
-          <width>140</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>140</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Test Pattern</string>
-        </property>
-       </widget>
-      </item>
       <item row="5" column="1">
        <widget class="QComboBox" name="cbxFlipMode">
         <property name="minimumSize">
@@ -720,7 +701,7 @@
        </widget>
       </item>
       <item row="5" column="0">
-       <widget class="QLabel" name="lblFlip">
+       <widget class="QLabel" name="lblFlipMode">
         <property name="minimumSize">
          <size>
           <width>140</width>
@@ -751,22 +732,6 @@
           <width>16777215</width>
           <height>16777215</height>
          </size>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="1">
-       <widget class="QCheckBox" name="cbxTestPattern">
-        <property name="minimumSize">
-         <size>
-          <width>170</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="toolTip">
-         <string>Enable to show a Color Chart when no Input is detected</string>
-        </property>
-        <property name="text">
-         <string/>
         </property>
        </widget>
       </item>
@@ -855,6 +820,9 @@
           <height>0</height>
          </size>
         </property>
+        <property name="toolTip">
+         <string>Use &quot;Downscale&quot; to convert e.g. 2160p50 to 1080p50, use &quot;Downscale and Interalce&quot; to convert it to 1080i50</string>
+        </property>
        </widget>
       </item>
       <item row="1" column="3">
@@ -897,6 +865,70 @@
         </property>
        </widget>
       </item>
+      <item row="7" column="4">
+       <widget class="QCheckBox" name="cbxTestPattern">
+        <property name="minimumSize">
+         <size>
+          <width>170</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Enable to show a Color Chart when no Input is detected</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="3">
+       <widget class="QLabel" name="lblTestPattern">
+        <property name="minimumSize">
+         <size>
+          <width>140</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>140</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Test Pattern</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="lblLogEnable">
+        <property name="minimumSize">
+         <size>
+          <width>170</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>LOG</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="QCheckBox" name="cbxLogEnable">
+        <property name="minimumSize">
+         <size>
+          <width>170</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Use a LOG Gamma Curve to preserve more Highlights</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -912,41 +944,10 @@
       <string>Genlock Configuration</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
-      <item row="0" column="1">
-       <widget class="QComboBox" name="cbxGenLockMode">
-        <property name="minimumSize">
-         <size>
-          <width>200</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QSpinBox" name="sbxGenLockOffsetVertical">
-        <property name="minimumSize">
-         <size>
-          <width>200</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="minimum">
-         <number>-4095</number>
-        </property>
-        <property name="maximum">
-         <number>4095</number>
+      <item row="3" column="1">
+       <widget class="QCheckBox" name="cbxGenLockTermination">
+        <property name="text">
+         <string/>
         </property>
        </widget>
       </item>
@@ -954,7 +955,7 @@
        <widget class="QLabel" name="lblGenLockOffsetVertical">
         <property name="minimumSize">
          <size>
-          <width>210</width>
+          <width>0</width>
           <height>0</height>
          </size>
         </property>
@@ -969,43 +970,11 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="lblGenLockMode">
-        <property name="minimumSize">
-         <size>
-          <width>210</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Genlock Mode</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>0</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
       <item row="3" column="0">
        <widget class="QLabel" name="lblGenLockTermination">
         <property name="minimumSize">
          <size>
-          <width>210</width>
+          <width>0</width>
           <height>0</height>
          </size>
         </property>
@@ -1020,18 +989,11 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="QCheckBox" name="cbxGenLockTermination">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="0">
        <widget class="QLabel" name="lblGenLockOffsetHorizontal">
         <property name="minimumSize">
          <size>
-          <width>210</width>
+          <width>0</width>
           <height>0</height>
          </size>
         </property>
@@ -1046,11 +1008,17 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QSpinBox" name="sbxGenlockOffsetHorizontal">
+      <item row="1" column="1">
+       <widget class="QSpinBox" name="sbxGenLockOffsetVertical">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimumSize">
          <size>
-          <width>200</width>
+          <width>0</width>
           <height>0</height>
          </size>
         </property>
@@ -1065,6 +1033,91 @@
         </property>
         <property name="maximum">
          <number>4095</number>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QSpinBox" name="sbxGenlockOffsetHorizontal">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="minimum">
+         <number>-4095</number>
+        </property>
+        <property name="maximum">
+         <number>4095</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="lblGenLockMode">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Genlock Mode</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>0</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="cbxGenLockMode">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" rowspan="4">
+       <widget class="QLabel" name="lblGenlock4kNote">
+        <property name="text">
+         <string>Note on Using Genlock with 4K:
+
+Since there is no 4K Genlock Standard in place, the device locks to normal 2K Tri-Level-Sync Signals. The line and pixel offsets refer to the 2K reference, not the 4K output image.</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -1267,7 +1320,6 @@ Note: This will only hold the timecode in the SDI output, the timecode on the de
   <tabstop>cbxVideoMode</tabstop>
   <tabstop>cbxSdi2Mode</tabstop>
   <tabstop>cbxFlipMode</tabstop>
-  <tabstop>cbxTestPattern</tabstop>
   <tabstop>cbxSdi1Downscaler</tabstop>
   <tabstop>cbxSdi2Downscaler</tabstop>
   <tabstop>cbxAudioEnable</tabstop>

@@ -44,13 +44,13 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow( ConnectDialog * connectDialog = NULL, QWidget * parent = 0 );
-    ~MainWindow();
+    explicit MainWindow( ConnectDialog * connectDialog = nullptr, QWidget * parent = nullptr );
+    ~MainWindow() Q_DECL_OVERRIDE;
 
     void connectToDevice(ProVideoDevice * );
 
 protected:
-    void closeEvent(QCloseEvent *event) override;
+    void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
 
 signals:
     // chain selection status
@@ -66,6 +66,9 @@ signals:
 
     // broadcast
     void BroadcastChanged( bool enable );
+
+    // dock widget
+    void setDockWidgetVisible( bool visible );
 
 private slots:
     void onDeviceConnected( ProVideoDevice * device );
@@ -90,7 +93,8 @@ private slots:
     void onSdiOutChange( int value );
     void onSplitScreenChange( bool flag );
     void onCopyFlagChange( bool flag );
-    void onEngineeringModeChange( bool flag );
+    void onWidgetModeChange( DctWidgetBox::Mode mode );
+    void onConnectionCheckChange( bool enable );
     void onBroadcastChange(uint8_t flag );
     void onDebugTerminalTopLevelChange( bool floating );
     void onDebugTerminalVisibilityChange( bool visible );
@@ -102,6 +106,7 @@ private slots:
 
     void onLockCurrentTabPage( bool lock );
     void onResizeMainWindow( bool force = false );
+    void onCheckConnection();
 
 private:
     Ui::MainWindow *        m_ui;
@@ -113,12 +118,19 @@ private:
     QString                 m_filename;
     QList<DctWidgetBox *>   m_activeWidgets;
     QTimer                  m_resizeTimer;
+    QTimer                  m_checkConnectionTimer;
     bool                    m_ScrollbarsNeeded;
+    DctWidgetBox::Mode      m_WidgetMode;
+    bool                    m_ShowDebugTerminal;
+    bool                    m_EnableConnectionCheck;
 
     void setConnectDlg( ConnectDialog * );
     void setSettingsDlg( SettingsDialog * );
     void setDebugTerminal( DebugTerminal * );
     void setupUI(ProVideoDevice::features deviceFeatures);
+    bool fileExists( QString & path );
+    void loadUiSettings( QSettings &s );
+    void saveUiSettings( QSettings &s );
 
     void updateDeviceList();
 };

@@ -37,7 +37,7 @@ class KneeInterpolation::PrivateData
 {
 public:
     PrivateData()
-        : m_ctx( NULL ),
+        : m_ctx( nullptr ),
           knee( 0 ),
           slope( 0 ),
           clip( 0 )
@@ -48,22 +48,22 @@ public:
             showError( -ENOMEM, __FILE__, __FUNCTION__, __LINE__ );
             return;
         }
-        Q_ASSERT( m_ctx != NULL );
+        Q_ASSERT( m_ctx != nullptr );
 
         clear();
-    };
+    }
  
     ~PrivateData()
     {
         clear();
-        m_ctx = NULL;
-    };
+        m_ctx = nullptr;
+    }
 
     void clear()
     {
         int res = sm_knee_interpolation_reset( m_ctx );
         Q_ASSERT( res == 0 );
-    };
+    }
 
     void setConfig( uint8_t knee, uint16_t slope, uint8_t clip )
     {
@@ -82,13 +82,13 @@ public:
         uint32_t  y = 0;
 
         // compute new gain
-        res = sm_knee_interpolation_calc( m_ctx, (uint32_t)x, &y, CFG_WDR_INPUT_WIDTH, CFG_WDR_GAIN_COMMA );
+        res = sm_knee_interpolation_calc( m_ctx, static_cast<uint32_t>(x), &y, CFG_WDR_INPUT_WIDTH, CFG_WDR_GAIN_COMMA );
         Q_ASSERT( res == 0 );
 
         // clip gain
         y &= CFG_WDR_GAIN_MASK;
  
-        return ( (int)y );
+        return ( static_cast<int>(y) );
     }
 
     knee_interpolation_ctx_t *  m_ctx;

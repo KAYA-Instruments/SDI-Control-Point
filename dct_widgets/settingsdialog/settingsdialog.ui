@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>550</width>
-    <height>722</height>
+    <height>774</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -63,7 +63,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Note: The Serial Interface settings can not be changed in Multi-Camera-Mode as this would result in address collisions. Please keep in mind that if you change the device name, all devices will have the same name.</string>
+         <string>The Serial Interface settings can not be changed in Multi-Camera-Mode as this would result in address collisions. Please keep in mind that if you change the device name, all devices will have the same name.</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
@@ -274,7 +274,7 @@
       <item>
        <widget class="QLabel" name="lblNote2">
         <property name="text">
-         <string>Note: The Serial Interface Settings and the Device Name will not be reset.</string>
+         <string>The Serial Interface Settings and the Device Name will not be reset.</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
@@ -319,6 +319,16 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
+       <widget class="QLabel" name="lblNote4">
+        <property name="text">
+         <string>These Settings get stored automatically, when the GUI is closed and are restored when the GUI is opened.</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QCheckBox" name="cbxEngineeringMode">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -335,6 +345,13 @@
        <widget class="QCheckBox" name="cbxDebugTerminal">
         <property name="text">
          <string>Show Debug Terminal</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="cbxConnectionCheck">
+        <property name="text">
+         <string>Enable Check for Disconnected Device</string>
         </property>
        </widget>
       </item>
@@ -366,7 +383,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Note: Please click the save Button below to permanetly save your changes in the device's flash memory. Alternatively you can use the save button in the main window.</string>
+      <string>Please click the save Button below to permanetly save your changes in the device's flash memory. Alternatively you can use the save button in the main window.</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>

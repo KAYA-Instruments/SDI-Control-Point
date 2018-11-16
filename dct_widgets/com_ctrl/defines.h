@@ -30,6 +30,7 @@
  *****************************************************************************/
 #define MAX_NUM_CHAINS                  ( 2 )
 #define MAX_DEVICE_ID                   ( 99 )
+#define SETTINGS_FILE_NAME              ( ".provideo-gui.ini" )
 
 /******************************************************************************
  * lens shading correction segmentation mode
@@ -146,10 +147,10 @@
 /******************************************************************************
  * Flip mode names
  *****************************************************************************/
-#define FLIP_MODE_OFF                   ( "off" )
-#define FLIP_MODE_VERTICAL              ( "vertical" )
-#define FLIP_MODE_HORIZONTAL            ( "horizontal" )
-#define FLIP_MODE_ROTATED               ( "rotated" )
+#define FLIP_MODE_OFF                   ( "Off" )
+#define FLIP_MODE_VERTICAL              ( "Vertical" )
+#define FLIP_MODE_HORIZONTAL            ( "Horizontal" )
+#define FLIP_MODE_ROTATED               ( "Rotated" )
 
 /******************************************************************************
  * known devices
@@ -398,6 +399,17 @@ enum FlipMode
     FlipModeHorizontal  = 2,    /**< horizontel flipped (readout starts at upper right corner) */
     FlipModeRotated     = 3,    /**< rotated by 180° (readout starts at lower right corner) */
     FlipModeMax
+};
+
+/******************************************************************************
+ * LOG mode
+ *****************************************************************************/
+enum LogMode
+{
+    LogModeFirst = 0,
+    LogModeOff   = 0,   /**< LOG mode off, normal operation, LUTs can be programmed by user */
+    LogModeHLG   = 1,   /**< HLG LOG mode, LUTs are fixed to HLG, gain is halved in device */
+    LogModeMax
 };
 
 // return if the name belongs to a known device

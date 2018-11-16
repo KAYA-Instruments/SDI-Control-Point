@@ -198,6 +198,10 @@ public:
         QObject::connect( m_ChainItf, SIGNAL(NotifyVideoModeChanged()),
                           m_CamItf  , SLOT(onNotifyVideoModeChange()) );
 
+        // NotifyLogModeChanged
+        QObject::connect( m_LutItf, SIGNAL(NotifyLogModeChanged()),
+                          m_CamItf  , SLOT(onNotifyLogModeChange()) );
+
         // NotifyCameraGainChanged
         QObject::connect( m_CamItf  , SIGNAL(NotifyCameraGainChanged()),
                           m_IspItf  , SLOT(onNotifyCameraGainChange()) );

@@ -6,8 +6,8 @@
 
 # This version number is shown in the Application, it should be
 # updated before each release!
-VERSION = 1.1.8
-DEFINES += VERSION_STRING=\\\"1.1.8\\\"
+VERSION = 1.1.9
+DEFINES += VERSION_STRING=\\\"1.1.9\\\"
 
 QMAKE_TARGET_COMPANY = "Dream Chip Technologies GmbH"
 QMAKE_TARGET_PRODUCT = "ProVideo GUI"
@@ -312,4 +312,8 @@ FORMS    += ../dct_widgets/mcceqbox/mcceqbox.ui                             \
 
 RESOURCES += ../resource/resource.qrc
 
-DISTFILES += ../resource/doc/third-party-licenses.txt
+DISTFILES += ../resource/doc/third-party-licenses.txt \
+    ../CHANGELOG.md \
+    ../README.md \
+    ../third-party-licenses.txt \
+    ../LICENSE

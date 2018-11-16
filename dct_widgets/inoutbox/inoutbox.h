@@ -83,6 +83,8 @@ public:
     void setSdi2Downscaler( const QString mode );
     QString FlipMode() const;
     void setFlipMode( const QString mode );
+    bool LogMode() const;
+    void setLogMode( const bool value);
     bool TestPattern() const;
     void setTestPattern( const bool value );
     bool AudioEnable() const;
@@ -115,6 +117,7 @@ public:
     void setSdi2ModeVisible(const bool value);
     void setDownscaleModeVisible(const bool value);
     void setFlipModeVisible(const bool vertical, const bool horizontal);
+    void setLogModeVisible(const bool value);
     void setTestPatternVisible(const bool value);
     void setAudioEnableVisible(const bool value);
 
@@ -150,6 +153,7 @@ signals:
     void ChainSdi2ModeChanged( int value );
     void ChainDownscaleModeChanged( int sdi_out_idx, bool downscale, bool interlace );
     void ChainFlipModeChanged( int value );
+    void LogModeChanged( int value );
     void OsdTestPatternChanged( int value );
     void ChainAudioEnableChanged( bool enable );
     
@@ -181,6 +185,7 @@ public slots:
     void onChainSdi2ModeChange( int value );
     void onChainDownscaleModeChange( int sdi_out_idx, bool downscale, bool interlace );
     void onChainFlipModeChange( int value );
+    void onLogModeChange( int value );
     void onOsdTestPatternChange( int value );
     void onChainAudioEnableChange( bool enable );
 
@@ -225,6 +230,7 @@ private slots:
     void onCbxSdi1DownscalerChange( int index );
     void onCbxSdi2DownscalerChange( int index );
     void onCbxFlipModeChange( int index );
+    void onCbxLogEnableChange( int value );
     void onCbxTestPatternChange( int value );
     void onCbxAudioEnableChange( int value );
     
@@ -281,6 +287,7 @@ private:
 
     int gainToIso( int gain ) const;
     int isoToGain( int iso ) const;
+    void show4kGenlockNote( int mode );
     void EmitDownscaleChanged( int sdi_out_idx, int combo_box_idx );
 
 };

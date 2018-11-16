@@ -102,6 +102,7 @@ public:
 #define INOUT_SETTINGS_SDI1_DOWNSCALER              ( "sdi1_downscaler" )
 #define INOUT_SETTINGS_SDI2_DOWNSCALER              ( "sdi2_downscaler" )
 #define INOUT_SETTINGS_FLIP_MODE                    ( "flip_mode" )
+#define INOUT_SETTINGS_LOG_MODE                     ( "log_mode" )
 #define INOUT_SETTINGS_TEST_PATTERN                 ( "test_pattern" )
 #define INOUT_SETTINGS_AUDIO_ENABLE                 ( "audio_enable" )
 
@@ -289,6 +290,7 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->cbxSdi1Downscaler, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxSdi1DownscalerChange(int)) );
     connect( d_data->m_ui->cbxSdi2Downscaler, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxSdi2DownscalerChange(int)) );
     connect( d_data->m_ui->cbxFlipMode, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxFlipModeChange(int)) );
+    connect( d_data->m_ui->cbxLogEnable, SIGNAL(stateChanged(int)), this, SLOT(onCbxLogEnableChange(int)) );
     connect( d_data->m_ui->cbxTestPattern, SIGNAL(stateChanged(int)), this, SLOT(onCbxTestPatternChange(int)) );
     connect( d_data->m_ui->btnIsoMinus, SIGNAL(clicked()), this, SLOT(onBtnIsoMinusClicked()) );
     connect( d_data->m_ui->btnIsoPlus, SIGNAL(clicked()), this, SLOT(onBtnIsoPlusClicked()) );
@@ -378,6 +380,22 @@ int InOutBox::gainToIso( int gain ) const
 int InOutBox::isoToGain( int iso ) const
 {
     return ( (iso * 1000) / d_data->m_minIso );
+}
+
+/******************************************************************************
+ * show4kGenlockNote
+ *****************************************************************************/
+void InOutBox::show4kGenlockNote( int mode )
+{
+    /* If this is a 4K / UHD video mode, show the note on genlock and 4k */
+    if ( mode >= VideoModeFirstUHD  && mode <= VideoModeLast4K )
+    {
+        d_data->m_ui->lblGenlock4kNote->setVisible( true );
+    }
+    else
+    {
+        d_data->m_ui->lblGenlock4kNote->setVisible( false );
+    }
 }
 
 /******************************************************************************
@@ -718,6 +736,7 @@ void InOutBox::setVideoMode( const QString mode )
     {
         d_data->m_ui->cbxVideoMode->blockSignals( true );
         d_data->m_ui->cbxVideoMode->setCurrentIndex( index );
+        show4kGenlockNote( d_data->m_ui->cbxVideoMode->itemData( index ).toInt() );
         d_data->m_ui->cbxVideoMode->blockSignals( false );
 
         emit ChainVideoModeChanged( d_data->m_ui->cbxVideoMode->itemData( index ).toInt() );
@@ -797,7 +816,7 @@ void InOutBox::setSdi2Downscaler( const QString mode )
 }
 
 /******************************************************************************
- * InOutBox::VideoMode
+ * InOutBox::FlipMode
  *****************************************************************************/
 QString InOutBox::FlipMode() const
 {
@@ -818,6 +837,26 @@ void InOutBox::setFlipMode( const QString mode )
 
         emit ChainFlipModeChanged( d_data->m_ui->cbxFlipMode->itemData( index ).toInt() );
     }
+}
+
+/******************************************************************************
+ * InOutBox::LogMode
+ *****************************************************************************/
+bool InOutBox::LogMode() const
+{
+    return ( d_data->m_ui->cbxLogEnable->isChecked());
+}
+
+/******************************************************************************
+ * InOutBox::setLogMode
+ *****************************************************************************/
+void InOutBox::setLogMode( const bool value )
+{
+    d_data->m_ui->cbxLogEnable->blockSignals( true );
+    d_data->m_ui->cbxLogEnable->setChecked( value );
+    d_data->m_ui->cbxLogEnable->blockSignals( false );
+
+    emit LogModeChanged( value ? 1 : 0 );
 }
 
 /******************************************************************************
@@ -1034,6 +1073,7 @@ void InOutBox::saveSettings( QSettings & s )
     s.setValue( INOUT_SETTINGS_SDI1_DOWNSCALER              , Sdi1Downscaler() );
     s.setValue( INOUT_SETTINGS_SDI2_DOWNSCALER              , Sdi2Downscaler() );
     s.setValue( INOUT_SETTINGS_FLIP_MODE                    , FlipMode() );
+    s.setValue( INOUT_SETTINGS_LOG_MODE                     , LogMode() );
     s.setValue( INOUT_SETTINGS_TEST_PATTERN                 , TestPattern() );
     s.setValue( INOUT_SETTINGS_AUDIO_ENABLE                 , AudioEnable() );
 
@@ -1061,7 +1101,8 @@ void InOutBox::applySettings( void )
     EmitDownscaleChanged( 1,  d_data->m_ui->cbxSdi1Downscaler->currentData().toInt() );
     EmitDownscaleChanged( 2,  d_data->m_ui->cbxSdi2Downscaler->currentData().toInt() );
     emit ChainFlipModeChanged( d_data->m_ui->cbxFlipMode->currentData().toInt() );
-    emit OsdTestPatternChanged( TestPattern() );
+    emit LogModeChanged( LogMode() ? 1 : 0 );
+    emit OsdTestPatternChanged( TestPattern() ? 1 : 0 );
     emit ChainAudioEnableChanged( AudioEnable() );
 
     emit BayerPatternChanged( BayerPattern() );
@@ -1258,16 +1299,25 @@ void InOutBox::setFlipModeVisible(const bool vertical, const bool horizontal)
         }
 
         // show combo box and label
-        d_data->m_ui->lblFlip->setVisible(true);
+        d_data->m_ui->lblFlipMode->setVisible(true);
         d_data->m_ui->cbxFlipMode->setVisible(true);
     }
     // else if flip is not available
     else
     {
         // hide combo box and label
-        d_data->m_ui->lblFlip->setVisible(false);
+        d_data->m_ui->lblFlipMode->setVisible(false);
         d_data->m_ui->cbxFlipMode->setVisible(false);
     }
+}
+
+/******************************************************************************
+ * InOutBox::setLogModeVisible
+ *****************************************************************************/
+void InOutBox::setLogModeVisible(const bool value)
+{
+    d_data->m_ui->lblLogEnable->setVisible(value);
+    d_data->m_ui->cbxLogEnable->setVisible(value);
 }
 
 /******************************************************************************
@@ -1451,6 +1501,7 @@ void InOutBox::onChainVideoModeChange( int value )
     {
         d_data->m_ui->cbxVideoMode->blockSignals( true );
         d_data->m_ui->cbxVideoMode->setCurrentIndex( index );
+        show4kGenlockNote( d_data->m_ui->cbxVideoMode->itemData( index ).toInt() );
         d_data->m_ui->cbxVideoMode->blockSignals( false );
     }
 }
@@ -1515,6 +1566,17 @@ void InOutBox::onChainFlipModeChange( int value )
 }
 
 /******************************************************************************
+ * InOutBox::onLogModeChange
+ *****************************************************************************/
+void InOutBox::onLogModeChange( int value )
+{
+    // set value of checkbox
+    d_data->m_ui->cbxLogEnable->blockSignals( true );
+    d_data->m_ui->cbxLogEnable->setCheckState( value ? Qt::Checked : Qt::Unchecked );
+    d_data->m_ui->cbxLogEnable->blockSignals( false );
+}
+
+/******************************************************************************
  * InOutBox::onOsdTestPatternChange
  *****************************************************************************/
 void InOutBox::onOsdTestPatternChange( int value )
@@ -1535,7 +1597,6 @@ void InOutBox::onChainAudioEnableChange( bool enable )
     d_data->m_ui->cbxAudioEnable->setCheckState( enable ? Qt::Checked : Qt::Unchecked );
     d_data->m_ui->cbxAudioEnable->blockSignals( false );
 }
-
 
 /******************************************************************************
  * InOutBox::onChainGenlockModeChange
@@ -1945,6 +2006,7 @@ void InOutBox::onCbxVideoModeChange( int index )
 {
     setWaitCursor();
     emit ChainVideoModeChanged( d_data->m_ui->cbxVideoMode->itemData( index ).toInt() );
+    show4kGenlockNote( d_data->m_ui->cbxVideoMode->itemData( index ).toInt() );
     setNormalCursor();
 }
 
@@ -1989,6 +2051,16 @@ void InOutBox::onCbxFlipModeChange( int index )
 {
     setWaitCursor();
     emit ChainFlipModeChanged( d_data->m_ui->cbxFlipMode->itemData( index ).toInt() );
+    setNormalCursor();
+}
+
+/******************************************************************************
+ * InOutBox::onCbxLogEnableChange
+ *****************************************************************************/
+void InOutBox::onCbxLogEnableChange( int value )
+{
+    setWaitCursor();
+    emit LogModeChanged( (value == Qt::Checked) ? 1 : 0 );
     setNormalCursor();
 }
 

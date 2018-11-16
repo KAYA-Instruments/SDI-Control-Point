@@ -565,4 +565,3 @@ QString GetFlipModeName( FlipMode mode )
             return ( QString::null );
     }
 }
-

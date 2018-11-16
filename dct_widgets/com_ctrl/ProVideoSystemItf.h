@@ -42,6 +42,7 @@ typedef struct rs485Device
 class MaskInterpreter
 {
 public:
+    virtual ~MaskInterpreter() {}
     virtual QStringList interpret( const uint32_t mask ) = 0;
 };
 
@@ -52,8 +53,8 @@ class ProVideoSystemItf : public ProVideoItf
 public:
     explicit ProVideoSystemItf( ComChannel * c, ComProtocol * p )
         : ProVideoItf( c, p ),
-          m_HwMask( NULL ),
-          m_SwMask( NULL )
+          m_HwMask( nullptr ),
+          m_SwMask( nullptr )
     { }
  
     // resync all settings
