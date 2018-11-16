@@ -4,11 +4,13 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
-Version **1.1.9** - Yet to be released
+Version **1.1.9** - 16.11.2018
 
-* Added a periodic connection check. The GUI will now check every 2 seconds if the connected device is still available. If a device is disconnected the GUI offers to open the connect dialog. This setting can be disabled in the Settings Dialog
+* Fixed a bug where an illegal device list would be passed to the connect dialog
+* Fixed a rare segmentation fault when reconnecting to a device
+* Added a periodic connection check. The GUI will now check every 2 seconds if the connected device is still available. If a device is disconnected the GUI offers to open the connect dialog. This setting is disabled by default, it can be enabled in the Settings Dialog
 * The Engineering Mode, Debug Terminal and the new periodic Connection Check are now stored in the applications .ini file in the users home folder (like the connection settings of the Connection Dialog). This ensures that the GUI opens with the same config like it was closed by the user
-* Added Options to set the new "LOG mode" setting. The in-out-box now has a combo box to switch between LOG mode off, HLG and PQ mode. In LOG HLG or PQ mode gamma curve settings are disabled
+* Added Options to set the new "LOG mode" setting. The in-out-box now has a check box toggle LOG mode. In LOG mode the gamma curve settings in the lookup table tab are disabled
 * Fixed a few more Clang warnings (this is an ongoing task)
 
 ## Older Releases:
