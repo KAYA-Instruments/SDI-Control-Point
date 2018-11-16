@@ -66,7 +66,7 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
     , m_ScrollbarsNeeded( false )
     , m_WidgetMode( DctWidgetBox::Normal )
     , m_ShowDebugTerminal( false )
-    , m_EnableConnectionCheck( true )
+    , m_EnableConnectionCheck( false )
 {
     // Create ui
     m_ui->setupUi( this );

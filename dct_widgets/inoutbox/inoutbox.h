@@ -83,8 +83,8 @@ public:
     void setSdi2Downscaler( const QString mode );
     QString FlipMode() const;
     void setFlipMode( const QString mode );
-    QString LogMode() const;
-    void setLogMode( const QString mode );
+    bool LogMode() const;
+    void setLogMode( const bool value);
     bool TestPattern() const;
     void setTestPattern( const bool value );
     bool AudioEnable() const;
@@ -106,7 +106,6 @@ public:
     void addSdi2Mode( QString name, int id );
     void addDownscaleMode( QString name, int id );
     void addFlipMode( QString name, int id );
-    void addLogMode( QString name, int id );
 
     // Show or hide UI elements
     void setCameraSettingsVisible(const bool value);
@@ -231,7 +230,7 @@ private slots:
     void onCbxSdi1DownscalerChange( int index );
     void onCbxSdi2DownscalerChange( int index );
     void onCbxFlipModeChange( int index );
-    void onCbxLogModeChange( int index );
+    void onCbxLogEnableChange( int value );
     void onCbxTestPatternChange( int value );
     void onCbxAudioEnableChange( int value );
     
@@ -288,6 +287,7 @@ private:
 
     int gainToIso( int gain ) const;
     int isoToGain( int iso ) const;
+    void show4kGenlockNote( int mode );
     void EmitDownscaleChanged( int sdi_out_idx, int combo_box_idx );
 
 };
