@@ -1631,6 +1631,7 @@ void ConnectDialog::onReopenSerialConnection( void )
     // Show message box while trying to reconnect
     QMessageBox msgBox;
     msgBox.setWindowTitle( "Restarting Device" );
+    msgBox.setWindowIcon( QIcon(":/icons/connect_128x128.png") );
     msgBox.setText( "The update was successful and the device is now restarting.\n\n"
                     "It can take up to 30 seconds until the device is accessible again, please be patient." );
     msgBox.setWindowModality( Qt::ApplicationModal );

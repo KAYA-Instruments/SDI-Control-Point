@@ -105,6 +105,8 @@ private slots:
     void onResolutionMaskChange( uint32_t id0, uint32_t id1, uint32_t id2 );
 
     void onLockCurrentTabPage( bool lock );
+    void onBootIntoUpdateMode();
+    void onReopenSerialConnection();
     void onResizeMainWindow( bool force = false );
     void onCheckConnection();
 

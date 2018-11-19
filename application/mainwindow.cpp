@@ -80,8 +80,12 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
      * debug terminal is connected to signals / slots of the settings dialog */
     setDebugTerminal(new DebugTerminal( this ));
 
-    // GUI has to be locked down during update procedure
+    /* GUI has to be locked down during update procedure, also the reconnect timer
+     * has to be disabled with the "BootIntoUpdateMode" event and re-enabled with
+     * the "ReopenSerialConnection*/
     connect( m_ui->updBox, SIGNAL(LockCurrentTabPage(bool)), this, SLOT(onLockCurrentTabPage(bool)) );
+    connect( m_ui->updBox, SIGNAL(BootIntoUpdateMode()), this, SLOT(onBootIntoUpdateMode()) );
+    connect( m_ui->updBox, SIGNAL(ReopenSerialConnection()), this, SLOT(onReopenSerialConnection()) );
     
     // Connect toolbar actions
     connect( m_ui->actionConnect        , SIGNAL( triggered() ), this, SLOT( onConnectClicked() ) );
@@ -1111,6 +1115,29 @@ void MainWindow::onLockCurrentTabPage( bool lock )
 
     // If lock is enabled, also lock the toolbar
     m_ui->toolBar->setEnabled( !lock );
+}
+
+/******************************************************************************
+ * MainWindow::onBootIntoUpdateMode
+ *****************************************************************************/
+void MainWindow::onBootIntoUpdateMode()
+{
+    // When booting into update mode, stop the reconnect timer
+    m_checkConnectionTimer.stop();
+}
+
+/******************************************************************************
+ * MainWindow::onReopenSerialConnection
+ *****************************************************************************/
+void MainWindow::onReopenSerialConnection()
+{
+    /* When the serial connection is re-opened (usually this happens after
+     * performing a firmware update) the check connection timer has to be
+     * restarted, if it is enabled in the settings. */
+    if ( m_EnableConnectionCheck )
+    {
+        m_checkConnectionTimer.start( 2000 );
+    }
 }
 
 /******************************************************************************
