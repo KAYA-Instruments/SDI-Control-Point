@@ -10,7 +10,7 @@ depends.mk
 
 # Qt user project files #
 #########################
-*.pro.user
+*.pro.user*
 
 # Qt build folders #
 ####################
