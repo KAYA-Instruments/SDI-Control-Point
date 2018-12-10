@@ -4,6 +4,12 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
+Version **1.1.10** - 10.12.2018
+
+* Fixed an issue where the "LOG mode" would not be saved (restored) by the save (load) settings function.
+
+## Older Releases:
+
 Version **1.1.9** - 16.11.2018
 
 * Fixed a bug where an illegal device list would be passed to the connect dialog
@@ -12,8 +18,6 @@ Version **1.1.9** - 16.11.2018
 * The Engineering Mode, Debug Terminal and the new periodic Connection Check are now stored in the applications .ini file in the users home folder (like the connection settings of the Connection Dialog). This ensures that the GUI opens with the same config like it was closed by the user
 * Added Options to set the new "LOG mode" setting. The in-out-box now has a check box toggle LOG mode. In LOG mode the gamma curve settings in the lookup table tab are disabled
 * Fixed a few more Clang warnings (this is an ongoing task)
-
-## Older Releases:
 
 Version **1.1.8** - 02.10.2018
 

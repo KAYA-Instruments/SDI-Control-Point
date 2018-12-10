@@ -111,6 +111,8 @@ public:
 #define INOUT_SETTINGS_GENLOCK_OFFSET_HORIZONTAL    ( "genlock_offset_horizontal" )
 #define INOUT_SETTINGS_GENLOCK_TERMINATION          ( "genlock_termination" )
 
+#define INOUT_SETTINGS_LOG_MODE                     ( "log_mode" )
+
 typedef struct aec_setup_t {
     bool run;
     int setPoint;
@@ -1040,6 +1042,8 @@ void InOutBox::loadSettings( QSettings & s )
     setGenLockTermination( s.value( INOUT_SETTINGS_GENLOCK_TERMINATION ).toBool() );
     setGenLockMode( s.value( INOUT_SETTINGS_GENLOCK_MODE ).toString() );
 
+    setLogMode( s.value( INOUT_SETTINGS_LOG_MODE ).toBool() );
+
     s.endGroup();
 }
 
@@ -1081,6 +1085,8 @@ void InOutBox::saveSettings( QSettings & s )
     s.setValue( INOUT_SETTINGS_GENLOCK_OFFSET_VERTICAL      , GenLockOffsetVertical() );
     s.setValue( INOUT_SETTINGS_GENLOCK_OFFSET_HORIZONTAL    , GenLockOffsetHorizontal() );
     s.setValue( INOUT_SETTINGS_GENLOCK_TERMINATION          , GenLockTermination() );
+
+    s.setValue (INOUT_SETTINGS_LOG_MODE                     , LogMode() );
 
     s.endGroup();
 }
