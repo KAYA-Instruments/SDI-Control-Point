@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2017 Dream Chip Technologies GmbH
+ * Copyright (C) 2019 Dream Chip Technologies GmbH
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,9 +15,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *****************************************************************************/
 /**
- * @file    ctrl_protocol_iris.c
+ * @file    ctrl_protocol_lens.c
  *
- * @brief   Implementation of generic iris functions
+ * @brief   Implementation of lens control functions
  *
  *****************************************************************************/
 #include <stdio.h>
@@ -31,12 +31,12 @@
 /******************************************************************************
  * @brief Macro for type-casting to function driver 
  *****************************************************************************/
-#define IRIS_DRV( drv )     ((ctrl_protocol_iris_drv_t *)drv)
+#define LENS_DRV( drv )     ((ctrl_protocol_lens_drv_t *)drv)
 
 /******************************************************************************
- * ctrl_protocol_get_iris_setup
+ * ctrl_protocol_get_lens_settings
  *****************************************************************************/
-int ctrl_protocol_get_iris_setup
+int ctrl_protocol_get_lens_settings
 (
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel, 
@@ -45,15 +45,15 @@ int ctrl_protocol_get_iris_setup
 )
 {
     CHECK_HANDLE( protocol );
-    CHECK_DRV_FUNC( IRIS_DRV(protocol->drv), get_iris_setup );
+    CHECK_DRV_FUNC( LENS_DRV(protocol->drv), get_lens_settings );
     CHECK_NOT_NULL( values );
-    return ( IRIS_DRV(protocol->drv)->get_iris_setup( protocol->ctx, channel, no, values ) );
+    return ( LENS_DRV(protocol->drv)->get_lens_settings( protocol->ctx, channel, no, values ) );
 }
 
 /******************************************************************************
- * ctrl_protocol_set_iris_setup
+ * ctrl_protocol_set_lens_settings
  *****************************************************************************/
-int ctrl_protocol_set_iris_setup
+int ctrl_protocol_set_lens_settings
 (
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel, 
@@ -62,51 +62,49 @@ int ctrl_protocol_set_iris_setup
 )
 {
     CHECK_HANDLE( protocol );
-    CHECK_DRV_FUNC( IRIS_DRV(protocol->drv), set_iris_setup );
-    return ( IRIS_DRV(protocol->drv)->set_iris_setup( protocol->ctx, channel, no, values ) );
+    CHECK_DRV_FUNC( LENS_DRV(protocol->drv), set_lens_settings );
+    return ( LENS_DRV(protocol->drv)->set_lens_settings( protocol->ctx, channel, no, values ) );
 }
 
-/******************************************************************************
- * ctrl_protocol_get_iris_apt
- *****************************************************************************/
-int ctrl_protocol_get_iris_apt
-(
-    ctrl_protocol_handle_t const protocol,
-    ctrl_channel_handle_t const  channel, 
-    int32_t * const              pos
-)
-{
-    CHECK_HANDLE( protocol );
-    CHECK_DRV_FUNC( IRIS_DRV(protocol->drv), get_iris_apt );
-    CHECK_NOT_NULL( pos );
-    return ( IRIS_DRV(protocol->drv)->get_iris_apt( protocol->ctx, channel, pos ) );
-}
+///******************************************************************************
+// * ctrl_protocol_get_iris_apt
+// *****************************************************************************/
+//int ctrl_protocol_get_iris_apt
+//(
+//    ctrl_protocol_handle_t const protocol,
+//    ctrl_channel_handle_t const  channel,
+//    int32_t * const              pos
+//)
+//{
+//    CHECK_HANDLE( protocol );
+//    CHECK_DRV_FUNC( LENS_DRV(protocol->drv), get_iris_apt );
+//    CHECK_NOT_NULL( pos );
+//    return ( LENS_DRV(protocol->drv)->get_iris_apt( protocol->ctx, channel, pos ) );
+//}
+
+///******************************************************************************
+// * ctrl_protocol_set_iris_setup
+// *****************************************************************************/
+//int ctrl_protocol_set_iris_apt
+//(
+//    ctrl_protocol_handle_t const protocol,
+//    ctrl_channel_handle_t const  channel,
+//    int32_t const                pos
+//)
+//{
+//    CHECK_HANDLE( protocol );
+//    CHECK_DRV_FUNC( LENS_DRV(protocol->drv), set_iris_apt );
+//    return ( LENS_DRV(protocol->drv)->set_iris_apt( protocol->ctx, channel, pos ) );
+//}
 
 /******************************************************************************
- * ctrl_protocol_set_iris_setup
+ * ctrl_protocol_lens_register
  *****************************************************************************/
-int ctrl_protocol_set_iris_apt
-(
-    ctrl_protocol_handle_t const protocol,
-    ctrl_channel_handle_t const  channel, 
-    int32_t const                pos
-)
-{
-    CHECK_HANDLE( protocol );
-    CHECK_DRV_FUNC( IRIS_DRV(protocol->drv), set_iris_apt );
-    return ( IRIS_DRV(protocol->drv)->set_iris_apt( protocol->ctx, channel, pos ) );
-}
-
-
-
-/******************************************************************************
- * ctrl_protocol_iris_register
- *****************************************************************************/
-int ctrl_protocol_iris_register
+int ctrl_protocol_lens_register
 (
     ctrl_protocol_handle_t const     handle,
     void * const                     ctx,
-    ctrl_protocol_iris_drv_t * const drv
+    ctrl_protocol_lens_drv_t * const drv
 )
 {
     CHECK_HANDLE( handle );
@@ -118,9 +116,9 @@ int ctrl_protocol_iris_register
 }
 
 /******************************************************************************
- * ctrl_protocol_iris_unregister
+ * ctrl_protocol_lens_unregister
  *****************************************************************************/
-int ctrl_protocol_iris_unregister
+int ctrl_protocol_lens_unregister
 (
     ctrl_protocol_handle_t const handle
 )
@@ -132,4 +130,3 @@ int ctrl_protocol_iris_unregister
 
     return ( 0 );
 }
-

@@ -32,7 +32,7 @@ class Condor4kDevice : public ProVideoDevice
 public:
     explicit Condor4kDevice( ComChannel * c, ComProtocol * p );
     Condor4kDevice( const ProVideoDevice &baseObj );
-    ~Condor4kDevice();
+    ~Condor4kDevice() override;
 
     // set communication channel
     void setComChannel( ComChannel * ) override;
@@ -50,7 +50,7 @@ public:
     MccItf *        GetMccItf() const override;
     LutItf *        GetLutItf() const override;
     ChainItf *      GetChainItf() const override;
-    IrisItf *       GetIrisItf() const override;
+    LensItf *       GetLensItf() const override;
     KneeItf *       GetKneeItf() const override;
     DpccItf *       GetDpccItf() const override;
 

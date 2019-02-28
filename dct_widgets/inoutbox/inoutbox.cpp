@@ -729,7 +729,7 @@ QString InOutBox::VideoMode() const
 }
 
 /******************************************************************************
- * InOutBox::VideoMode
+ * InOutBox::setVideoMode
  *****************************************************************************/
 void InOutBox::setVideoMode( const QString mode )
 {

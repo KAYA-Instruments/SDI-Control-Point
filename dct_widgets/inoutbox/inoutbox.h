@@ -99,14 +99,6 @@ public:
     bool GenLockTermination() const;
     void setGenLockTermination( const bool value );
 
-    void addBayerPattern( QString name, int id );
-    void clearAllVideoModes();
-    void addVideoMode( QString name, int id );
-    void addGenlockMode( QString name, int id );
-    void addSdi2Mode( QString name, int id );
-    void addDownscaleMode( QString name, int id );
-    void addFlipMode( QString name, int id );
-
     // Show or hide UI elements
     void setCameraSettingsVisible(const bool value);
     void setAutoExposureSettingsVisible(const bool value);
@@ -121,12 +113,21 @@ public:
     void setTestPatternVisible(const bool value);
     void setAudioEnableVisible(const bool value);
 
+    void addVideoMode( QString name, int id );
+    void clearAllVideoModes();
+
 protected:
     void prepareMode( const Mode ) Q_DECL_OVERRIDE;
 
     void loadSettings( QSettings & s ) Q_DECL_OVERRIDE;
     void saveSettings( QSettings & s ) Q_DECL_OVERRIDE;
     void applySettings( void ) Q_DECL_OVERRIDE;
+
+    void addBayerPattern( QString name, int id );
+    void addGenlockMode( QString name, int id );
+    void addSdi2Mode( QString name, int id );
+    void addDownscaleMode( QString name, int id );
+    void addFlipMode( QString name, int id );
 
     void UpdateIsoPlusMinusButtons();
     void UpdateExposurePlusMinusButtons();
@@ -289,7 +290,6 @@ private:
     int isoToGain( int iso ) const;
     void show4kGenlockNote( int mode );
     void EmitDownscaleChanged( int sdi_out_idx, int combo_box_idx );
-
 };
 
 #endif // __IN_OUT_BOX_H__

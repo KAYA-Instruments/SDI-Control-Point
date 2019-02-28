@@ -455,6 +455,24 @@ QString GetSdiModeName( SdiMode mode )
 }
 
 /******************************************************************************
+ * GetLensProfile()
+ *****************************************************************************/
+QString GetLensProfileName( LensProfile profile )
+{
+    switch ( profile )
+    {
+        case LensProfileUnknown:
+            return ( QString(LENS_PROFILE_NAME_UNKOWN) );
+        case LensProfileDctKit:
+            return ( QString(LENS_PROFILE_NAME_DCT_KIT) );
+        case LensProfileICS:
+            return ( QString(LENS_PROFILE_NAME_I_CS) );
+        default:
+            return ( QString::null );
+    }
+}
+
+/******************************************************************************
  * GetCsModeName()
  *****************************************************************************/
 QString GetColorSpaceModeName( ColorSpaceMode mode )

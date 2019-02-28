@@ -186,6 +186,7 @@ public:
         m_LutItf        = new LutItf( c, p->clone( ComProtocol::LUT_INSTANCE, m_userCtx ) );
         m_ChainItf      = new ChainItf( c, p->clone( ComProtocol::CHAIN_INSTANCE, m_userCtx ) );
         m_IrisItf       = new IrisItf( c, p->clone( ComProtocol::IRIS_INSTANCE, m_userCtx ) );
+        m_LensItf       = new LensItf( c, p->clone( ComProtocol::LENS_INSTANCE, m_userCtx ) );
         m_KneeItf       = new KneeItf( c, p->clone( ComProtocol::KNEE_INSTANCE, m_userCtx ) );
         m_DpccItf       = new DpccItf( c, p->clone( ComProtocol::DPCC_INSTANCE, m_userCtx ) );
 
@@ -207,7 +208,7 @@ public:
         QObject::connect( m_CamItf  , SIGNAL(NotifyCameraGainChanged()),
                           m_IspItf  , SLOT(onNotifyCameraGainChange()) );
         
-    };
+    }
 
     ~PrivateData()
     {
@@ -220,6 +221,7 @@ public:
         delete m_LutItf->GetComProtocol();
         delete m_ChainItf->GetComProtocol();
         delete m_IrisItf->GetComProtocol();
+        delete m_LensItf->GetComProtocol();
         delete m_KneeItf->GetComProtocol();
         delete m_DpccItf->GetComProtocol();
 
@@ -232,13 +234,14 @@ public:
         delete m_LutItf;
         delete m_ChainItf;
         delete m_IrisItf;
+        delete m_LensItf;
         delete m_KneeItf;
         delete m_DpccItf;
 
         // clear user context 
         m_protocol->deleteUserContext( m_userCtx );
-        m_userCtx = NULL;
-    };
+        m_userCtx = nullptr;
+    }
 
     IspItf *        m_IspItf;
     CprocItf *      m_CprocItf;
@@ -248,6 +251,7 @@ public:
     LutItf *        m_LutItf;
     ChainItf *      m_ChainItf;
     IrisItf *       m_IrisItf;
+    LensItf *       m_LensItf;
     KneeItf *       m_KneeItf;
     DpccItf *       m_DpccItf;
 
@@ -298,6 +302,7 @@ XbowDevice::features XbowDevice::getSupportedFeatures()
     deviceFeatures.hasChainFlipHorizontal   = true;
     deviceFeatures.hasAutoItf               = true;
     deviceFeatures.hasIrisItf               = true;
+    deviceFeatures.hasLensItf               = true;
     deviceFeatures.hasIspItf                = true;
     deviceFeatures.hasIspLsc                = true;
     deviceFeatures.hasIspMasterBlackLevel   = true;
@@ -387,6 +392,14 @@ ChainItf * XbowDevice::GetChainItf() const
 IrisItf * XbowDevice::GetIrisItf() const
 {
     return ( d_data->m_IrisItf );
+}
+
+/******************************************************************************
+ * XbowDevice::GetLensItf()
+ *****************************************************************************/
+LensItf * XbowDevice::GetLensItf() const
+{
+    return ( d_data->m_LensItf );
 }
 
 /******************************************************************************

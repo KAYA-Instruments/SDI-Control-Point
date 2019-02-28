@@ -102,6 +102,27 @@
             </item>
            </layout>
           </widget>
+          <widget class="QWidget" name="tabLensDriver">
+           <attribute name="icon">
+            <iconset resource="../resource/resource.qrc">
+             <normaloff>:/images/tab/lens.png</normaloff>:/images/tab/lens.png</iconset>
+           </attribute>
+           <attribute name="title">
+            <string/>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_14">
+            <item>
+             <widget class="LensDriverBox" name="lensDriverBox">
+              <property name="toolTip">
+               <string>LensDriverBox</string>
+              </property>
+              <property name="whatsThis">
+               <string>LensDriverBox</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
           <widget class="QWidget" name="tabBlack">
            <attribute name="icon">
             <iconset resource="../resource/resource.qrc">
@@ -567,6 +588,11 @@
    <class>DpccBox</class>
    <extends>QWidget</extends>
    <header>dpccbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>LensDriverBox</class>
+   <extends>QWidget</extends>
+   <header>lensdriverbox.h</header>
   </customwidget>
  </customwidgets>
  <resources>

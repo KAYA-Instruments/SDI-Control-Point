@@ -46,11 +46,12 @@ public:
         OSD_INSTANCE,
         TIMECODE_INSTANCE,
         IRIS_INSTANCE,
+        LENS_INSTANCE,
         KNEE_INSTANCE,
         DPCC_INSTANCE
     };
 
-    explicit ComProtocol( instanceType i, void * UsrCtx = NULL );
+    explicit ComProtocol( instanceType i, void * UsrCtx = nullptr );
     virtual ~ComProtocol();
 
     instanceType GetInstanceType() const
@@ -63,7 +64,7 @@ public:
         return ( m_protocol );
     }
 
-    virtual ComProtocol * clone( instanceType i, void * UsrCtx = NULL ) const = 0;
+    virtual ComProtocol * clone( instanceType i, void * UsrCtx = nullptr ) const = 0;
     virtual void * createUserContext() const = 0;
     virtual void deleteUserContext( void * UsrCtx ) = 0;
     virtual bool CopyFlag( void * UsrCtx ) const = 0;

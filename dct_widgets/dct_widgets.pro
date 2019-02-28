@@ -1,11 +1,11 @@
 # Should be updated before each release!
-VERSION = 1.1.5
-DEFINES += VERSION_STRING=\\\"1.1.5\\\"
+VERSION = 1.1.11
+DEFINES += VERSION_STRING=\\\"1.1.11\\\"
 
 QMAKE_TARGET_COMPANY = "Dream Chip Technologies GmbH"
 QMAKE_TARGET_PRODUCT = "ProVideo Widget Collection"
 QMAKE_TARGET_DESCRIPTION = "Collection of Widgets used for the ProVideo GUI"
-QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2018, Dream Chip Technologies GmbH"
+QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2019, Dream Chip Technologies GmbH"
 
 QT += network
 greaterThan(QT_MAJOR_VERSION, 4) {
@@ -65,7 +65,8 @@ INCLUDEPATH += ../libraries/include     \
                playbackbox              \
                fpncbox                  \
                kneebox                  \
-               dpccbox
+               dpccbox                  \
+               lensdriverbox
 
 HEADERS      = fmtspinbox/fmtspinbox.h                              \
                skinneddial/skinneddial.h                            \
@@ -95,6 +96,7 @@ HEADERS      = fmtspinbox/fmtspinbox.h                              \
                kneebox/kneebox.h                                    \
                kneebox/knee_interpolation.h                         \
                dpccbox/dpccbox.h                                    \
+               lensdriverbox/lensdriverbox.h                        \
                ../libraries/include/csv/csvparser.h                 \
                ../libraries/include/csv/csvwriter.h                 \
                ../libraries/include/simple_math/cubic.h             \
@@ -140,6 +142,7 @@ SOURCES      = fmtspinbox/fmtspinbox.cpp                            \
                kneebox/kneebox.cpp                                  \
                kneebox/knee_interpolation.cpp                       \
                dpccbox/dpccbox.cpp                                  \
+               lensdriverbox/lensdriverbox.cpp                      \
                ../libraries/csv/csvparser.c                         \
                ../libraries/csv/csvwriter.c                         \
                ../libraries/simple_math/rgb2ycbcr.c                 \
@@ -177,6 +180,7 @@ FORMS       += singlechannelknobbox/singlechannelknobbox.ui         \
                fpncbox/fpncbox.ui                                   \
                kneebox/kneebox.ui                                   \
                dpccbox/dpccbox.ui                                   \
+               lensdriverbox/lensdriverbox.ui                       \
                textviewer/textviewer.ui                             \
                infodialog/infodialog.ui                             \
                aecweightsdialog/aecweightsdialog.ui

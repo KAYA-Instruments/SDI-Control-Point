@@ -108,6 +108,13 @@
 #define SDI_MODE_NAME_EXTENDED          ( "Extended Range" )
 
 /******************************************************************************
+ * lens profile names
+ *****************************************************************************/
+#define LENS_PROFILE_NAME_UNKOWN        ( "Unkown Profile, choose from list" )
+#define LENS_PROFILE_NAME_DCT_KIT       ( "DCT Lens Driver Kit" )
+#define LENS_PROFILE_NAME_I_CS          ( "Computar i-CS Lens" )
+
+/******************************************************************************
  * color space output mode names
  *****************************************************************************/
 #define COLOR_SPACE_MODE_NAME_YUV       ( "YUV" )
@@ -330,6 +337,18 @@ enum SdiMode
 };
 
 /******************************************************************************
+ * lens control profiles
+ *****************************************************************************/
+enum LensProfile
+{
+    LensProfileFirst    = 0,
+    LensProfileUnknown  = 0,
+    LensProfileDctKit   = 1,
+    LensProfileICS      = 2,
+    LensProfileMax,
+};
+
+/******************************************************************************
  * color space mode
  *****************************************************************************/
 enum ColorSpaceMode
@@ -438,6 +457,9 @@ int GetIsoValue( IsoValue isoIndex );
     
 // return corresponding sdi-mode name 
 QString GetSdiModeName( SdiMode mode );
+
+// return corresponding lens profile name
+QString GetLensProfileName( LensProfile profile );
     
 // return corresponding sdi-mode name 
 QString GetColorSpaceModeName( ColorSpaceMode mode );

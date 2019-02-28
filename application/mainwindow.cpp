@@ -251,21 +251,20 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
 
     // Remove all Tabs, clear active widget list
     m_activeWidgets.clear();
-    m_ui->tabWidget->removeTab(m_ui->tabWidget->indexOf(m_ui->tabInOut));
-    m_ui->tabWidget->removeTab(m_ui->tabWidget->indexOf(m_ui->tabBlack));
-    m_ui->tabWidget->removeTab(m_ui->tabWidget->indexOf(m_ui->tabWb));
-    m_ui->tabWidget->removeTab(m_ui->tabWidget->indexOf(m_ui->tabFlt));
-    m_ui->tabWidget->removeTab(m_ui->tabWidget->indexOf(m_ui->tabMcc));
-    m_ui->tabWidget->removeTab(m_ui->tabWidget->indexOf(m_ui->tabKnee));
-    m_ui->tabWidget->removeTab(m_ui->tabWidget->indexOf(m_ui->tabGamma));
-    m_ui->tabWidget->removeTab(m_ui->tabWidget->indexOf(m_ui->tabDpcc));
-    m_ui->tabWidget->removeTab(m_ui->tabWidget->indexOf(m_ui->tabOut));
-    m_ui->tabWidget->removeTab(m_ui->tabWidget->indexOf(m_ui->tabInfo));
-    m_ui->tabWidget->removeTab(m_ui->tabWidget->indexOf(m_ui->tabUpdate));
+    int numTabs = m_ui->tabWidget->count();
+    for ( int i = 0; i < numTabs; i++ )
+    {
+        m_ui->tabWidget->removeTab( 0 );
+    }
 
     // Add only those tabs, which are supported by the device, add them to the active widget list
     m_activeWidgets.append(m_ui->inoutBox);
     m_ui->tabWidget->addTab(m_ui->tabInOut, QIcon(":/images/tab/inout.png"), "");
+    if (deviceFeatures.hasLensItf)
+    {
+        m_activeWidgets.append(m_ui->lensDriverBox);
+        m_ui->tabWidget->addTab(m_ui->lensDriverBox, QIcon(":/images/tab/lens.png"), "");
+    }
     if (deviceFeatures.hasIspItf)
     {
         m_activeWidgets.append(m_ui->blackBox);
@@ -528,6 +527,12 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         // connect camera exposure
         connect( dev->GetCamItf(), SIGNAL(CameraExposureChanged(int)), m_ui->inoutBox, SLOT(onCameraExposureChange(int)) );
         connect( m_ui->inoutBox, SIGNAL(CameraExposureChanged(int)), dev->GetCamItf(), SLOT(onCameraExposureChange(int)) );
+    }
+
+    if (deviceFeatures.hasLensItf)
+    {
+        connect( dev->GetLensItf(), SIGNAL(LensSettingsChanged(QVector<int>)), m_ui->lensDriverBox, SLOT(onLensSettingsChange(QVector<int>)) );
+        connect( m_ui->lensDriverBox, SIGNAL(LensSettingsChanged(QVector<int>)), dev->GetLensItf(), SLOT(onLensSettingsChange(QVector<int>)) );
     }
 
     if (deviceFeatures.hasIspItf)

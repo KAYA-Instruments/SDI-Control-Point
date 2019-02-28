@@ -6,13 +6,13 @@
 
 # This version number is shown in the Application, it should be
 # updated before each release!
-VERSION = 1.1.9
-DEFINES += VERSION_STRING=\\\"1.1.9\\\"
+VERSION = 1.1.11
+DEFINES += VERSION_STRING=\\\"1.1.11\\\"
 
 QMAKE_TARGET_COMPANY = "Dream Chip Technologies GmbH"
 QMAKE_TARGET_PRODUCT = "ProVideo GUI"
 QMAKE_TARGET_DESCRIPTION = "GUI to control ProVideo cameras and image processors"
-QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2018, Dream Chip Technologies GmbH"
+QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2019, Dream Chip Technologies GmbH"
 
 RC_ICONS = ../resource/icons/dct_icon.ico
 
@@ -77,6 +77,7 @@ INCLUDEPATH += ../libraries/include ..              \
                ../dct_widgets/updatebox             \
                ../dct_widgets/kneebox               \
                ../dct_widgets/dpccbox               \
+               ../dct_widgets/lensdriverbox         \
                ../dct_widgets/textviewer            \
                ../dct_widgets/debugterminal
 
@@ -94,6 +95,7 @@ SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
            ../dct_widgets/kneebox/kneebox.cpp                               \
            ../dct_widgets/kneebox/knee_interpolation.cpp                    \
            ../dct_widgets/dpccbox/dpccbox.cpp                               \
+           ../dct_widgets/lensdriverbox/lensdriverbox.cpp                   \
            ../dct_widgets/connectdialog/connectdialog.cpp                   \
            ../dct_widgets/settingsdialog/settingsdialog.cpp                 \
            ../dct_widgets/infodialog/infodialog.cpp                         \
@@ -179,7 +181,10 @@ SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
            ../libraries/csv/csvwriter.c                                     \
            ../libraries/qcustomplot/qcustomplot.cpp                         \
            mainwindow.cpp                                                   \
-           main.cpp
+           main.cpp \
+    ../dct_widgets/com_ctrl/LensItf.cpp \
+    ../libraries/ctrl_protocol/ctrl_protocol_lens.c \
+    ../libraries/provideo_protocol/provideo_protocol_lens.c
 
 
 HEADERS  += ../libraries/include                                                \
@@ -198,6 +203,7 @@ HEADERS  += ../libraries/include                                                
             ../dct_widgets/kneebox/kneebox.h                                    \
             ../dct_widgets/kneebox/knee_interpolation.h                         \
             ../dct_widgets/dpccbox/dpccbox.h                                    \
+            ../dct_widgets/lensdriverbox/lensdriverbox.h                        \
             ../dct_widgets/btnarraybox/btnarraybox.h                            \
             ../dct_widgets/singlechannelknobbox/singlechannelknobbox.h          \
             ../dct_widgets/triplechannelknobbox/triplechannelknobbox.h          \
@@ -286,7 +292,10 @@ HEADERS  += ../libraries/include                                                
             ../libraries/include/provideo_protocol/provideo_protocol_playback.h \
             ../libraries/include/provideo_protocol/provideo_protocol_system.h   \
             ../libraries/include/provideo_protocol/provideo_protocol_tflt.h     \
-            mainwindow.h
+            mainwindow.h \
+    ../dct_widgets/com_ctrl/LensItf.h \
+    ../libraries/include/ctrl_protocol/ctrl_protocol_lens.h \
+    ../libraries/include/provideo_protocol/provideo_protocol_lens.h
 
 FORMS    += ../dct_widgets/mcceqbox/mcceqbox.ui                             \
             ../dct_widgets/wbbox/wbbox.ui                                   \
@@ -299,6 +308,7 @@ FORMS    += ../dct_widgets/mcceqbox/mcceqbox.ui                             \
             ../dct_widgets/updatebox/updatebox.ui                           \
             ../dct_widgets/kneebox/kneebox.ui                               \
             ../dct_widgets/dpccbox/dpccbox.ui                               \
+            ../dct_widgets/lensdriverbox/lensdriverbox.ui                   \
             ../dct_widgets/mccslider/mccslider.ui                           \
             ../dct_widgets/singlechannelknobbox/singlechannelknobbox.ui     \
             ../dct_widgets/triplechannelknobbox/triplechannelknobbox.ui     \

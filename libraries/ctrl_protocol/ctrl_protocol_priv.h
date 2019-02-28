@@ -40,6 +40,7 @@
 #include <ctrl_protocol/ctrl_protocol_iris.h>
 #include <ctrl_protocol/ctrl_protocol_knee.h>
 #include <ctrl_protocol/ctrl_protocol_dpcc.h>
+#include <ctrl_protocol/ctrl_protocol_lens.h>
 
 #ifdef __cplusplus
 extern "C" {

@@ -206,7 +206,7 @@ public:
         QObject::connect( m_CamItf  , SIGNAL(NotifyCameraGainChanged()),
                           m_IspItf  , SLOT(onNotifyCameraGainChange()) );
 
-    };
+    }
 
     ~PrivateData()
     {
@@ -234,8 +234,8 @@ public:
 
         // clear user context
         m_protocol->deleteUserContext( m_userCtx );
-        m_userCtx = NULL;
-    };
+        m_userCtx = nullptr;
+    }
 
     IspItf *        m_IspItf;
     CprocItf *      m_CprocItf;

@@ -32,7 +32,7 @@ class CooperDevice : public ProVideoDevice
 public:
     explicit CooperDevice( ComChannel * c, ComProtocol * p );
     CooperDevice( const ProVideoDevice &baseObj );
-    ~CooperDevice();
+    ~CooperDevice() override;
 
     // set communication channel
     void setComChannel( ComChannel * ) override;
