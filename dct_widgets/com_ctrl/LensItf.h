@@ -42,45 +42,45 @@ public:
     void resync() override;
 
     void GetLensSettings();
-//    void GetLensActive();
+    void GetLensActive();
 
-//    void GetLensFocusPosition();
-//    void GetLensZoomPosition();
-//    void GetLensIrisPosition();
-//    void GetLensFilterPosition();
+    void GetLensFocusPosition();
+    void GetLensZoomPosition();
+    void GetLensIrisPosition();
+    void GetLensFilterPosition();
 
-//    void GetLensFocusSettings();
-//    void GetLensZoomSettings();
-//    void GetLensIrisSettings();
-//    void GetLensFilterSettings();
+    void GetLensFocusSettings();
+    void GetLensZoomSettings();
+    void GetLensIrisSettings();
+    void GetLensFilterSettings();
 
 signals:
     void LensSettingsChanged( QVector<int> values );
-//    void LensActiveChanged( bool active );
+    void LensActiveChanged( bool active );
 
-//    void LensFocusPositionChanged( int pos );
-//    void LensZoomPositionChanged( int pos );
-//    void LensIrisPositionChanged( int pos );
-//    void LensFilterPositionChanged( int pos );
+    void LensFocusPositionChanged( int pos );
+    void LensZoomPositionChanged( int pos );
+    void LensIrisPositionChanged( int pos );
+    void LensFilterPositionChanged( int pos );
 
-//    void LensFocusSettingsChanged( int speed, int stepMode, int torque );
-//    void LensZoomSettingsChanged( int speed, int stepMode, int torque );
-//    void LensIrisSettingsChanged( int speed, int stepMode, int torque );
-//    void LensFilterSettingsChanged( int speed, int stepMode, int torque );
+    void LensFocusSettingsChanged( int speed, int stepMode, int torque );
+    void LensZoomSettingsChanged( int speed, int stepMode, int torque );
+    void LensIrisSettingsChanged( int speed, int stepMode, int torque );
+    void LensFilterSettingsChanged( int speed, int stepMode, int torque );
 
 public slots:
     void onLensSettingsChange( QVector<int> values );
-//    void onLensActiveChange( bool active );
+    void onLensActiveChange( bool active );
 
-//    void onLensFocusPositionChange( int pos );
-//    void onLensZoomPositionChange( int pos );
-//    void onLensIrisPositionChange( int pos );
-//    void onLensFilterPositionChange( int pos );
+    void onLensFocusPositionChange( int pos );
+    void onLensZoomPositionChange( int pos );
+    void onLensIrisPositionChange( int pos );
+    void onLensFilterPositionChange( int pos );
 
-//    void onLensFocusSettingsChange( int pos );
-//    void onLensZoomSettingsChange( int pos );
-//    void onLensIrisSettingsChange( int pos );
-//    void onLensFilterSettingsChange( int pos );
+    void onLensFocusSettingsChange( int speed, int stepMode, int torque );
+    void onLensZoomSettingsChange( int speed, int stepMode, int torque );
+    void onLensIrisSettingsChange( int speed, int stepMode, int torque );
+    void onLensFilterSettingsChange( int speed, int stepMode, int torques );
 };
 
 #endif // _LENS_INTERFACE_H_

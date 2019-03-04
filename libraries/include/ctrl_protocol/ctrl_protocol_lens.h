@@ -40,7 +40,11 @@ extern "C" {
 /**************************************************************************//**
  * @brief Number of lens setting values
  *****************************************************************************/
-#define NO_VALUES_LENS_SETTINGS     ( 11 )
+#define NO_VALUES_LENS_SETTINGS             ( 11 )
+#define NO_VALUES_LENS_FOCUS_SETTINGS       ( 11 )
+#define NO_VALUES_LENS_ZOOM_SETTINGS        ( 11 )
+#define NO_VALUES_LENS_IRIS_SETTINGS        ( 11 )
+#define NO_VALUES_LENS_FILTER_SETTINGS      ( 11 )
 
 /**************************************************************************//**
  * @brief Gets the current lens settings
@@ -78,6 +82,324 @@ int ctrl_protocol_set_lens_settings
     int32_t * const              values
 );
 
+
+/**************************************************************************//**
+ * @brief Gets the current active status
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[out]  act      pointer to active value
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_lens_active
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int32_t * const              act
+);
+
+/**************************************************************************//**
+ * @brief Sets active status
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[out]  act      new active status
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_set_lens_active
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int32_t *const               act
+);
+
+
+
+
+/**************************************************************************//**
+ * @brief Gets the focus position
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[out]  pos      pointer to position value
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_lens_focus_position
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int32_t * const              pos
+);
+
+/**************************************************************************//**
+ * @brief Sets focus position value
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[out]  pos      pointer to position value
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_set_lens_focus_position
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int32_t *const               pos
+);
+
+
+/**************************************************************************//**
+ * @brief Gets the current lens focus settings
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[in]   no       number of array/list items
+ * @param[out]  values   array (memory pointer) to fill
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_lens_focus_settings
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    int32_t * const              values
+);
+
+/**************************************************************************//**
+ * @brief Sets lens focus settings
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[in]   no       number of array/list items
+ * @param[out]  values   array (memory pointer) to fill
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_set_lens_focus_settings
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    int32_t * const              values
+);
+
+
+/**************************************************************************//**
+ * @brief Gets the zoom position
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[out]  pos      pointer to position value
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_lens_zoom_position
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int32_t * const              pos
+);
+
+/**************************************************************************//**
+ * @brief Sets zoom position value
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[out]  pos      pointer to position value
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_set_lens_zoom_position
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int32_t *const               pos
+);
+
+
+/**************************************************************************//**
+ * @brief Gets the current lens zoom settings
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[in]   no       number of array/list items
+ * @param[out]  values   array (memory pointer) to fill
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_lens_zoom_settings
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    int32_t * const              values
+);
+
+/**************************************************************************//**
+ * @brief Sets lens zoom settings
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[in]   no       number of array/list items
+ * @param[out]  values   array (memory pointer) to fill
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_set_lens_zoom_settings
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    int32_t * const              values
+);
+
+
+/**************************************************************************//**
+ * @brief Gets the iris position
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[out]  pos      pointer to position value
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_lens_iris_position
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int32_t * const              act
+);
+
+/**************************************************************************//**
+ * @brief Sets iris position value
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[out]  pos      pointer to position value
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_set_lens_iris_position
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int32_t *const               pos
+);
+
+
+/**************************************************************************//**
+ * @brief Gets the current lens iris settings
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[in]   no       number of array/list items
+ * @param[out]  values   array (memory pointer) to fill
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_lens_iris_settings
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    int32_t * const              values
+);
+
+/**************************************************************************//**
+ * @brief Sets lens iris settings
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[in]   no       number of array/list items
+ * @param[out]  values   array (memory pointer) to fill
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_set_lens_iris_settings
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    int32_t * const              values
+);
+
+
+/**************************************************************************//**
+ * @brief Gets the filter position
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[out]  pos      pointer to position value
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_lens_filter_position
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int32_t * const              act
+);
+
+/**************************************************************************//**
+ * @brief Sets filter position value
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[out]  pos      pointer to position value
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_set_lens_filter_position
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int32_t *const               pos
+);
+
+
+/**************************************************************************//**
+ * @brief Gets the current lens filter settings
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[in]   no       number of array/list items
+ * @param[out]  values   array (memory pointer) to fill
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_lens_filter_settings
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    int32_t * const              values
+);
+
+/**************************************************************************//**
+ * @brief Sets lens filter settings
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[in]   no       number of array/list items
+ * @param[out]  values   array (memory pointer) to fill
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_set_lens_filter_settings
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    int32_t * const              values
+);
+
+
+
+
 ///**************************************************************************//**
 // * @brief Gets the current iris aperture
 // *
@@ -114,6 +436,31 @@ typedef struct ctrl_protocol_lens_drv_s
 {
     ctrl_protocol_int32_array_t     get_lens_settings;
     ctrl_protocol_int32_array_t     set_lens_settings;
+
+    ctrl_protocol_get_int32_t       get_lens_active;
+    ctrl_protocol_get_int32_t       set_lens_active;
+
+    ctrl_protocol_get_int32_t       get_lens_focus_position;
+    ctrl_protocol_get_int32_t       set_lens_focus_position;
+    ctrl_protocol_int32_array_t     get_lens_focus_settings;
+    ctrl_protocol_int32_array_t     set_lens_focus_settings;
+
+    ctrl_protocol_get_int32_t       get_lens_zoom_position;
+    ctrl_protocol_get_int32_t       set_lens_zoom_position;
+    ctrl_protocol_int32_array_t     get_lens_zoom_settings;
+    ctrl_protocol_int32_array_t     set_lens_zoom_settings;
+
+    ctrl_protocol_get_int32_t       get_lens_iris_position;
+    ctrl_protocol_get_int32_t       set_lens_iris_position;
+    ctrl_protocol_int32_array_t     get_lens_iris_settings;
+    ctrl_protocol_int32_array_t     set_lens_iris_settings;
+
+    ctrl_protocol_get_int32_t       get_lens_filter_position;
+    ctrl_protocol_get_int32_t       set_lens_filter_position;
+    ctrl_protocol_int32_array_t     get_lens_filter_settings;
+    ctrl_protocol_int32_array_t     set_lens_filter_settings;
+
+
 //    ctrl_protocol_get_int32_t       get_iris_apt;
 //    ctrl_protocol_set_int32_t       set_iris_apt;
 } ctrl_protocol_lens_drv_t;

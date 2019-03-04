@@ -66,36 +66,302 @@ int ctrl_protocol_set_lens_settings
     return ( LENS_DRV(protocol->drv)->set_lens_settings( protocol->ctx, channel, no, values ) );
 }
 
-///******************************************************************************
-// * ctrl_protocol_get_iris_apt
-// *****************************************************************************/
-//int ctrl_protocol_get_iris_apt
-//(
-//    ctrl_protocol_handle_t const protocol,
-//    ctrl_channel_handle_t const  channel,
-//    int32_t * const              pos
-//)
-//{
-//    CHECK_HANDLE( protocol );
-//    CHECK_DRV_FUNC( LENS_DRV(protocol->drv), get_iris_apt );
-//    CHECK_NOT_NULL( pos );
-//    return ( LENS_DRV(protocol->drv)->get_iris_apt( protocol->ctx, channel, pos ) );
-//}
 
-///******************************************************************************
-// * ctrl_protocol_set_iris_setup
-// *****************************************************************************/
-//int ctrl_protocol_set_iris_apt
-//(
-//    ctrl_protocol_handle_t const protocol,
-//    ctrl_channel_handle_t const  channel,
-//    int32_t const                pos
-//)
-//{
-//    CHECK_HANDLE( protocol );
-//    CHECK_DRV_FUNC( LENS_DRV(protocol->drv), set_iris_apt );
-//    return ( LENS_DRV(protocol->drv)->set_iris_apt( protocol->ctx, channel, pos ) );
-//}
+/******************************************************************************
+ * ctrl_protocol_get_lens_active
+ *****************************************************************************/
+int ctrl_protocol_get_lens_active
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int32_t * const              act
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LENS_DRV(protocol->drv), get_lens_active );
+    CHECK_NOT_NULL( act );
+    return ( LENS_DRV(protocol->drv)->get_lens_active( protocol->ctx, channel, act ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lens_active
+ *****************************************************************************/
+int ctrl_protocol_set_lens_active
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int32_t * const              act
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LENS_DRV(protocol->drv), set_lens_active );
+    return ( LENS_DRV(protocol->drv)->set_lens_active( protocol->ctx, channel, act ) );
+}
+
+
+/******************************************************************************
+ * ctrl_protocol_get_lens_focus_position
+ *****************************************************************************/
+int ctrl_protocol_get_lens_focus_position
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int32_t * const              pos
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LENS_DRV(protocol->drv), get_lens_focus_position );
+    CHECK_NOT_NULL( pos );
+    return ( LENS_DRV(protocol->drv)->get_lens_focus_position( protocol->ctx, channel, pos ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lens_focus_position
+ *****************************************************************************/
+int ctrl_protocol_set_lens_focus_position
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int32_t * const              pos
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LENS_DRV(protocol->drv), set_lens_focus_position );
+    return ( LENS_DRV(protocol->drv)->set_lens_focus_position( protocol->ctx, channel, pos ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_lens_focus_settings
+ *****************************************************************************/
+int ctrl_protocol_get_lens_focus_settings
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    int32_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LENS_DRV(protocol->drv), get_lens_focus_settings );
+    CHECK_NOT_NULL( values );
+    return ( LENS_DRV(protocol->drv)->get_lens_focus_settings( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lens_focus_settings
+ *****************************************************************************/
+int ctrl_protocol_set_lens_focus_settings
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    int32_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LENS_DRV(protocol->drv), set_lens_focus_settings );
+    return ( LENS_DRV(protocol->drv)->set_lens_focus_settings( protocol->ctx, channel, no, values ) );
+}
+
+
+
+/******************************************************************************
+ * ctrl_protocol_get_lens_zoom_position
+ *****************************************************************************/
+int ctrl_protocol_get_lens_zoom_position
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int32_t * const              pos
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LENS_DRV(protocol->drv), get_lens_zoom_position );
+    CHECK_NOT_NULL( pos );
+    return ( LENS_DRV(protocol->drv)->get_lens_zoom_position( protocol->ctx, channel, pos ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lens_zoom_position
+ *****************************************************************************/
+int ctrl_protocol_set_lens_zoom_position
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int32_t * const              pos
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LENS_DRV(protocol->drv), set_lens_zoom_position );
+    return ( LENS_DRV(protocol->drv)->set_lens_zoom_position( protocol->ctx, channel, pos ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_lens_zoom_settings
+ *****************************************************************************/
+int ctrl_protocol_get_lens_zoom_settings
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    int32_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LENS_DRV(protocol->drv), get_lens_zoom_settings );
+    CHECK_NOT_NULL( values );
+    return ( LENS_DRV(protocol->drv)->get_lens_zoom_settings( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lens_zoom_settings
+ *****************************************************************************/
+int ctrl_protocol_set_lens_zoom_settings
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    int32_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LENS_DRV(protocol->drv), set_lens_zoom_settings );
+    return ( LENS_DRV(protocol->drv)->set_lens_zoom_settings( protocol->ctx, channel, no, values ) );
+}
+
+
+/******************************************************************************
+ * ctrl_protocol_get_lens_iris_position
+ *****************************************************************************/
+int ctrl_protocol_get_lens_iris_position
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int32_t * const              pos
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LENS_DRV(protocol->drv), get_lens_iris_position );
+    CHECK_NOT_NULL( pos );
+    return ( LENS_DRV(protocol->drv)->get_lens_iris_position( protocol->ctx, channel, pos ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lens_iris_position
+ *****************************************************************************/
+int ctrl_protocol_set_lens_iris_position
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int32_t * const              pos
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LENS_DRV(protocol->drv), set_lens_iris_position );
+    return ( LENS_DRV(protocol->drv)->set_lens_iris_position( protocol->ctx, channel, pos ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_lens_iris_settings
+ *****************************************************************************/
+int ctrl_protocol_get_lens_iris_settings
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    int32_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LENS_DRV(protocol->drv), get_lens_iris_settings );
+    CHECK_NOT_NULL( values );
+    return ( LENS_DRV(protocol->drv)->get_lens_iris_settings( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lens_iris_settings
+ *****************************************************************************/
+int ctrl_protocol_set_lens_iris_settings
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    int32_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LENS_DRV(protocol->drv), set_lens_iris_settings );
+    return ( LENS_DRV(protocol->drv)->set_lens_iris_settings( protocol->ctx, channel, no, values ) );
+}
+
+
+/******************************************************************************
+ * ctrl_protocol_get_lens_filter_position
+ *****************************************************************************/
+int ctrl_protocol_get_lens_filter_position
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int32_t * const              pos
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LENS_DRV(protocol->drv), get_lens_filter_position );
+    CHECK_NOT_NULL( pos );
+    return ( LENS_DRV(protocol->drv)->get_lens_filter_position( protocol->ctx, channel, pos ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lens_filter_position
+ *****************************************************************************/
+int ctrl_protocol_set_lens_filter_position
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int32_t * const              pos
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LENS_DRV(protocol->drv), set_lens_filter_position );
+    return ( LENS_DRV(protocol->drv)->set_lens_filter_position( protocol->ctx, channel, pos ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_lens_filter_settings
+ *****************************************************************************/
+int ctrl_protocol_get_lens_filter_settings
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    int32_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LENS_DRV(protocol->drv), get_lens_filter_settings );
+    CHECK_NOT_NULL( values );
+    return ( LENS_DRV(protocol->drv)->get_lens_filter_settings( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_lens_filter_settings
+ *****************************************************************************/
+int ctrl_protocol_set_lens_filter_settings
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    int32_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LENS_DRV(protocol->drv), set_lens_filter_settings );
+    return ( LENS_DRV(protocol->drv)->set_lens_filter_settings( protocol->ctx, channel, no, values ) );
+}
+
+
+
+
 
 /******************************************************************************
  * ctrl_protocol_lens_register
