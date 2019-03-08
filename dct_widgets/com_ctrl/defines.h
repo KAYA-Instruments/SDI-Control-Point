@@ -349,6 +349,19 @@ enum LensProfile
 };
 
 /******************************************************************************
+ * lens control features
+ *****************************************************************************/
+enum LensFeatues
+{
+    LensFeatuesFirst  = 0,
+    LensFeatuesFocus  = 0,
+    LensFeatuesZoom   = 1,
+    LensFeatuesIris   = 2,
+    LensFeatuesFilter = 3,
+    LensFeatuesMax,
+};
+
+/******************************************************************************
  * color space mode
  *****************************************************************************/
 enum ColorSpaceMode

@@ -438,7 +438,7 @@ void Condor4kDevice::setComChannel( ComChannel * c )
     GetMccItf()     ->SetComChannel( c );
     GetLutItf()     ->SetComChannel( c );
     GetChainItf()   ->SetComChannel( c );
-    GetIrisItf()    ->SetComChannel( c );
+    GetLensItf()    ->SetComChannel( c );
     GetKneeItf()    ->SetComChannel( c );
     GetDpccItf()    ->SetComChannel( c );
 }
@@ -457,7 +457,7 @@ void Condor4kDevice::resync()
     GetMccItf()     ->resync();
     GetLutItf()     ->resync();
     GetChainItf()   ->resync();
-    GetIrisItf()    ->resync();
+    GetLensItf()    ->resync();
     GetKneeItf()    ->resync();
     GetDpccItf()    ->resync();
 }

@@ -46,6 +46,7 @@
 #define CMD_GET_LENS_ACTIVE                     ( "lens_driver_active\n" )
 #define CMD_SET_LENS_ACTIVE                     ( "lens_driver_active %i\n" )
 #define CMD_SYNC_LENS_ACTIVE                    ( "lens_driver_active " )
+#define CMD_SET_LENS_ACTIVE_TMO                 ( 15000 )
 
 /******************************************************************************
  * @brief command "lens_driver_focus_position"
@@ -227,19 +228,12 @@ static int set_lens_active
 (
         void * const                ctx,
         ctrl_channel_handle_t const channel,
-        int32_t * const             value
+        int32_t  const             value
 )
 {
     (void) ctx;
 
-    // parameter check
-    if ( value == NULL)
-    {
-        return -EINVAL;
-    }
-
-    return ( set_param_int_X( channel, CMD_SET_LENS_ACTIVE,
-                value ) );
+    return ( set_param_int_X_with_tmo( channel, CMD_SET_LENS_ACTIVE, CMD_SET_LENS_ACTIVE_TMO, INT( value ) ) );
 }
 
 
@@ -285,19 +279,19 @@ static int set_lens_focus_position
 (
         void * const                ctx,
         ctrl_channel_handle_t const channel,
-        int32_t * const             value
+        int32_t  const             value
 )
 {
     (void) ctx;
 
     // parameter check
-    if ( value == NULL)
+    if ( value < 0 || value > 100)
     {
         return -EINVAL;
     }
 
     return ( set_param_int_X( channel, CMD_SET_LENS_FOCUS_POSITION,
-                value ) );
+              INT( value ) ) );
 }
 
 /******************************************************************************
@@ -407,19 +401,19 @@ static int set_lens_zoom_position
 (
         void * const                ctx,
         ctrl_channel_handle_t const channel,
-        int32_t * const             value
+        int32_t  const             value
 )
 {
     (void) ctx;
 
     // parameter check
-    if ( value == NULL)
+    if ( value < 0 || value > 100)
     {
         return -EINVAL;
     }
 
     return ( set_param_int_X( channel, CMD_SET_LENS_ZOOM_POSITION,
-                value ) );
+               INT( value ) ) );
 }
 
 /******************************************************************************
@@ -529,19 +523,18 @@ static int set_lens_iris_position
 (
         void * const                ctx,
         ctrl_channel_handle_t const channel,
-        int32_t * const             value
+        int32_t  const             value
 )
 {
     (void) ctx;
 
     // parameter check
-    if ( value == NULL)
+    if ( value < 0 || value > 100)
     {
         return -EINVAL;
     }
-
     return ( set_param_int_X( channel, CMD_SET_LENS_IRIS_POSITION,
-                value ) );
+                INT( value ) ) );
 }
 
 /******************************************************************************
@@ -651,19 +644,19 @@ static int set_lens_filter_position
 (
         void * const                ctx,
         ctrl_channel_handle_t const channel,
-        int32_t * const             value
+        int32_t  const             value
 )
 {
     (void) ctx;
 
     // parameter check
-    if ( value == NULL)
+    if ( value < 0 || value > 100)
     {
         return -EINVAL;
     }
 
     return ( set_param_int_X( channel, CMD_SET_LENS_FILTER_POSITION,
-                value ) );
+                INT( value ) ) );
 }
 
 /******************************************************************************

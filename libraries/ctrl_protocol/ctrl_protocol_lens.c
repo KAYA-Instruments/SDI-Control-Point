@@ -90,7 +90,7 @@ int ctrl_protocol_set_lens_active
 (
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel,
-    int32_t * const              act
+    int32_t  const              act
 )
 {
     CHECK_HANDLE( protocol );
@@ -122,7 +122,7 @@ int ctrl_protocol_set_lens_focus_position
 (
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel,
-    int32_t * const              pos
+    int32_t  const              pos
 )
 {
     CHECK_HANDLE( protocol );
@@ -188,7 +188,7 @@ int ctrl_protocol_set_lens_zoom_position
 (
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel,
-    int32_t * const              pos
+    int32_t  const              pos
 )
 {
     CHECK_HANDLE( protocol );
@@ -253,7 +253,7 @@ int ctrl_protocol_set_lens_iris_position
 (
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel,
-    int32_t * const              pos
+    int32_t  const              pos
 )
 {
     CHECK_HANDLE( protocol );
@@ -318,7 +318,7 @@ int ctrl_protocol_set_lens_filter_position
 (
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel,
-    int32_t * const              pos
+    int32_t  const              pos
 )
 {
     CHECK_HANDLE( protocol );

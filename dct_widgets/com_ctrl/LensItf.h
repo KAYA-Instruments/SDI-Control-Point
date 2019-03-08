@@ -63,10 +63,10 @@ signals:
     void LensIrisPositionChanged( int pos );
     void LensFilterPositionChanged( int pos );
 
-    void LensFocusSettingsChanged( int speed, int stepMode, int torque );
-    void LensZoomSettingsChanged( int speed, int stepMode, int torque );
-    void LensIrisSettingsChanged( int speed, int stepMode, int torque );
-    void LensFilterSettingsChanged( int speed, int stepMode, int torque );
+    void LensFocusSettingsChanged( QVector<int> values );
+    void LensZoomSettingsChanged( QVector<int> values );
+    void LensIrisSettingsChanged( QVector<int> values );
+    void LensFilterSettingsChanged( QVector<int> values );
 
 public slots:
     void onLensSettingsChange( QVector<int> values );
@@ -77,10 +77,12 @@ public slots:
     void onLensIrisPositionChange( int pos );
     void onLensFilterPositionChange( int pos );
 
-    void onLensFocusSettingsChange( int speed, int stepMode, int torque );
-    void onLensZoomSettingsChange( int speed, int stepMode, int torque );
-    void onLensIrisSettingsChange( int speed, int stepMode, int torque );
-    void onLensFilterSettingsChange( int speed, int stepMode, int torques );
+    void onLensFocusSettingsChange( QVector<int> values );
+    void onLensZoomSettingsChange( QVector<int> values );
+    void onLensIrisSettingsChange( QVector<int> values );
+    void onLensFilterSettingsChange( QVector<int> values );
+
+    void onSmallResyncRequest(void);
 };
 
 #endif // _LENS_INTERFACE_H_

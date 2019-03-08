@@ -321,6 +321,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
         connect( m_ui->inoutBox, SIGNAL(ResyncRequest()), this, SLOT(onAecResyncRequest()), Qt::UniqueConnection );
     }
 
+
     // Enable / disable elements inside the tabs
     // InOut Tab
     m_ui->inoutBox->setCameraSettingsVisible(deviceFeatures.hasCamItf);
@@ -529,11 +530,6 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         connect( m_ui->inoutBox, SIGNAL(CameraExposureChanged(int)), dev->GetCamItf(), SLOT(onCameraExposureChange(int)) );
     }
 
-    if (deviceFeatures.hasLensItf)
-    {
-        connect( dev->GetLensItf(), SIGNAL(LensSettingsChanged(QVector<int>)), m_ui->lensDriverBox, SLOT(onLensSettingsChange(QVector<int>)) );
-        connect( m_ui->lensDriverBox, SIGNAL(LensSettingsChanged(QVector<int>)), dev->GetLensItf(), SLOT(onLensSettingsChange(QVector<int>)) );
-    }
 
     if (deviceFeatures.hasIspItf)
     {
@@ -628,6 +624,56 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         connect( m_ui->inoutBox, SIGNAL(IrisAptChanged(int)), dev->GetIrisItf(), SLOT(onIrisAptChange(int)) );
     }
 
+    //////////////////////////
+    // lensdriver widget
+    //////////////////////////
+
+    if (deviceFeatures.hasLensItf)
+    {
+        // lens settings
+        connect( dev->GetLensItf(), SIGNAL(LensSettingsChanged(QVector<int>)), m_ui->lensDriverBox, SLOT(onLensSettingsChange(QVector<int>)) );
+        connect( m_ui->lensDriverBox, SIGNAL(LensSettingsChanged(QVector<int>)), dev->GetLensItf(), SLOT(onLensSettingsChange(QVector<int>)) );
+
+        // lens active
+        connect( dev->GetLensItf(), SIGNAL(LensActiveChanged(bool)), m_ui->lensDriverBox, SLOT(onLensActiveChange(bool)) );
+        connect( m_ui->lensDriverBox, SIGNAL(LensActiveChanged(bool)), dev->GetLensItf(), SLOT(onLensActiveChange(bool)) );
+        connect(m_ui->lensDriverBox,SIGNAL(SmallResyncRequest(void)),dev->GetLensItf(),SLOT(onSmallResyncRequest(void)) );
+
+        // lens Focus position
+        connect( dev->GetLensItf(), SIGNAL(LensFocusPositionChanged( int ) ), m_ui->lensDriverBox, SLOT( onLensFocusPositionChange( int )) );
+        connect( m_ui->lensDriverBox, SIGNAL(LensFocusPositionChanged( int ) ), dev->GetLensItf(), SLOT( onLensFocusPositionChange( int )) );
+
+        // lens Focus Settings
+        connect( dev->GetLensItf(), SIGNAL(LensFocusSettingsChanged(QVector<int>)), m_ui->lensDriverBox, SLOT(onLensFocusSettingsChange(QVector<int>)) );
+        connect( m_ui->lensDriverBox, SIGNAL(LensFocusSettingsChanged(QVector<int>)), dev->GetLensItf(), SLOT(onLensFocusSettingsChange(QVector<int>)) );
+
+        // lens Zoom position
+        connect( dev->GetLensItf(), SIGNAL(LensZoomPositionChanged( int ) ), m_ui->lensDriverBox, SLOT( onLensZoomPositionChange( int )) );
+        connect( m_ui->lensDriverBox, SIGNAL(LensZoomPositionChanged( int ) ), dev->GetLensItf(), SLOT( onLensZoomPositionChange( int )) );
+
+        // lens Zoom Settings
+        connect( dev->GetLensItf(), SIGNAL(LensZoomSettingsChanged(QVector<int>)), m_ui->lensDriverBox, SLOT(onLensZoomSettingsChange(QVector<int>)) );
+        connect( m_ui->lensDriverBox, SIGNAL(LensZoomSettingsChanged(QVector<int>)), dev->GetLensItf(), SLOT(onLensZoomSettingsChange(QVector<int>)) );
+
+        // lens Iris position
+        connect( dev->GetLensItf(), SIGNAL(LensIrisPositionChanged( int ) ), m_ui->lensDriverBox, SLOT( onLensIrisPositionChange( int )) );
+        connect( m_ui->lensDriverBox, SIGNAL(LensIrisPositionChanged( int ) ), dev->GetLensItf(), SLOT( onLensIrisPositionChange( int )) );
+
+        // lens Iris Settings
+        connect( dev->GetLensItf(), SIGNAL(LensIrisSettingsChanged(QVector<int>)), m_ui->lensDriverBox, SLOT(onLensIrisSettingsChange(QVector<int>)) );
+        connect( m_ui->lensDriverBox, SIGNAL(LensIrisSettingsChanged(QVector<int>)), dev->GetLensItf(), SLOT(onLensIrisSettingsChange(QVector<int>)) );
+
+        // lens Filter position
+        connect( dev->GetLensItf(), SIGNAL(LensFilterPositionChanged( int ) ), m_ui->lensDriverBox, SLOT( onLensFilterPositionChange( int )) );
+        connect( m_ui->lensDriverBox, SIGNAL(LensFilterPositionChanged( int ) ), dev->GetLensItf(), SLOT( onLensFilterPositionChange( int )) );
+
+        // lens Filter Settings
+        connect( dev->GetLensItf(), SIGNAL(LensFilterSettingsChanged(QVector<int>)), m_ui->lensDriverBox, SLOT(onLensFilterSettingsChange(QVector<int>)) );
+        connect( m_ui->lensDriverBox, SIGNAL(LensFilterSettingsChanged(QVector<int>)), dev->GetLensItf(), SLOT(onLensFilterSettingsChange(QVector<int>)) );
+
+
+
+    }
     //////////////////////////
     // blacklevel widget
     //////////////////////////
@@ -2034,6 +2080,9 @@ void MainWindow::onAecResyncRequest()
         QApplication::setOverrideCursor( Qt::ArrowCursor );
     }
 }
+
+
+
 
 /******************************************************************************
  * MainWindow::onResyncRequest

@@ -52,7 +52,24 @@ public:
     ~LensDriverBox() Q_DECL_OVERRIDE;
 
     QString LensProfile() const;
+    int LensFocusPosition() const;
+    QString LensFocusSettings() const;
+    int LensZoomPosition() const;
+    QString LensZoomSettings() const;
+    int LensIrisPosition() const;
+    QString LensIrisSettings() const;
+    int LensFilterPosition() const;
+    QString LensFilterSettings() const;
+
     void setLensProfile( const QString mode );
+    void setLensFocusPosition ( int );
+    void setLensFocusSettings( const QString settings );
+    void setLensZoomPosition ( int );
+    void setLensZoomSettings( const QString settings );
+    void setLensIrisPosition ( int );
+    void setLensIrisSettings( const QString settings );
+    void setLensFilterPosition ( int );
+    void setLensFilterSettings( const QString settings );
 
 protected:
     void prepareMode( const Mode ) Q_DECL_OVERRIDE;
@@ -66,15 +83,63 @@ protected:
 private:
     lens_settings_t profileToSettings( enum LensProfile profile );
     enum LensProfile settingsToProfile( lens_settings_t settings );
+    int showLensProfilBoxes(enum LensProfile);
+    int enableLensMotorSettings(enum LensFeatues features,int motorSettings);
+
 
 signals:
     void LensSettingsChanged( QVector<int> values );
+    void LensSettingsChanged(bool);
+    void LensActiveChanged( bool active );
+
+    void SmallResyncRequest(void);
+
+    void LensFocusPositionChanged( int pos );
+    void LensZoomPositionChanged( int pos );
+    void LensIrisPositionChanged( int pos );
+    void LensFilterPositionChanged( int pos );
+    void LensFocusSettingsChanged( QVector<int>  );
+    void LensZoomSettingsChanged(  QVector<int>  );
+    void LensIrisSettingsChanged(  QVector<int>  );
+    void LensFilterSettingsChanged(  QVector<int>  );
 
 public slots:
     void onLensSettingsChange( QVector<int> values );
+    void onLensActiveChange( bool active );
+    void onLensFocusPositionChange( int pos);
+    void onLensZoomPositionChange( int pos);
+    void onLensIrisPositionChange( int pos);
+    void onLensFilterPositionChange( int pos);
+    void onLensFocusSettingsChange( QVector<int>  );
+    void onLensZoomSettingsChange(  QVector<int>  );
+    void onLensIrisSettingsChange(  QVector<int>  );
+    void onLensFilterSettingsChange( QVector<int>  );
 
 private slots:
     void onCbxLensProfileChange( int index );
+    void onBtnLensActiveChange( void );
+    void onCbxLensEnableAdvancedSettings(int check);
+
+    void onSbxLensFocusPositionChanged(int pos);
+    void onSbxLensFocusSpeedChanged(int speed);
+    void onSbxLensFocusStepModeChanged(int steMode);
+    void onSbxLensFocusTorqueChanged(int torque);
+
+    void onSbxLensZoomPositionChanged(int pos);
+    void onSbxLensZoomSpeedChanged(int speed);
+    void onSbxLensZoomStepModeChanged(int steMode);
+    void onSbxLensZoomTorqueChanged(int torque);
+
+    void onSbxLensIrisPositionChanged(int pos);
+    void onSbxLensIrisSpeedChanged(int speed);
+    void onSbxLensIrisStepModeChanged(int steMode);
+    void onSbxLensIrisTorqueChanged(int torque);
+
+    void onSbxLensFilterPositionChanged(int pos);
+    void onSbxLensFilterSpeedChanged(int speed);
+    void onSbxLensFilterStepModeChanged(int steMode);
+    void onSbxLensFilterTorqueChanged(int torque);
+
 
 private:
     class PrivateData;

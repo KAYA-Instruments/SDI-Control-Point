@@ -41,6 +41,7 @@
 #include <provideo_protocol/provideo_protocol_playback.h>
 #include <provideo_protocol/provideo_protocol_osd.h>
 #include <provideo_protocol/provideo_protocol_iris.h>
+#include <provideo_protocol/provideo_protocol_lens.h>
 #include <provideo_protocol/provideo_protocol_knee.h>
 #include <provideo_protocol/provideo_protocol_dpcc.h>
 
@@ -125,6 +126,12 @@ int provideo_protocol_init
     }
 
     res = provideo_protocol_iris_init( handle );
+    if ( res )
+    {
+        return ( res );
+    }
+
+    res = provideo_protocol_lens_init( handle );
     if ( res )
     {
         return ( res );

@@ -41,10 +41,10 @@ extern "C" {
  * @brief Number of lens setting values
  *****************************************************************************/
 #define NO_VALUES_LENS_SETTINGS             ( 11 )
-#define NO_VALUES_LENS_FOCUS_SETTINGS       ( 11 )
-#define NO_VALUES_LENS_ZOOM_SETTINGS        ( 11 )
-#define NO_VALUES_LENS_IRIS_SETTINGS        ( 11 )
-#define NO_VALUES_LENS_FILTER_SETTINGS      ( 11 )
+#define NO_VALUES_LENS_FOCUS_SETTINGS       ( 3 )
+#define NO_VALUES_LENS_ZOOM_SETTINGS        ( 3 )
+#define NO_VALUES_LENS_IRIS_SETTINGS        ( 3 )
+#define NO_VALUES_LENS_FILTER_SETTINGS      ( 3 )
 
 /**************************************************************************//**
  * @brief Gets the current lens settings
@@ -110,9 +110,9 @@ int ctrl_protocol_get_lens_active
  *****************************************************************************/
 int ctrl_protocol_set_lens_active
 (
-    ctrl_protocol_handle_t const protocol,
-    ctrl_channel_handle_t const  channel,
-    int32_t *const               act
+    ctrl_protocol_handle_t const    protocol,
+    ctrl_channel_handle_t const     channel,
+    int32_t const                   act
 );
 
 
@@ -147,7 +147,7 @@ int ctrl_protocol_set_lens_focus_position
 (
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel,
-    int32_t *const               pos
+    int32_t const               pos
 );
 
 
@@ -217,7 +217,7 @@ int ctrl_protocol_set_lens_zoom_position
 (
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel,
-    int32_t *const               pos
+    int32_t const               pos
 );
 
 
@@ -287,7 +287,7 @@ int ctrl_protocol_set_lens_iris_position
 (
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel,
-    int32_t *const               pos
+    int32_t const               pos
 );
 
 
@@ -357,7 +357,7 @@ int ctrl_protocol_set_lens_filter_position
 (
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel,
-    int32_t *const               pos
+    int32_t const               pos
 );
 
 
@@ -438,25 +438,25 @@ typedef struct ctrl_protocol_lens_drv_s
     ctrl_protocol_int32_array_t     set_lens_settings;
 
     ctrl_protocol_get_int32_t       get_lens_active;
-    ctrl_protocol_get_int32_t       set_lens_active;
+    ctrl_protocol_set_int32_t       set_lens_active;
 
     ctrl_protocol_get_int32_t       get_lens_focus_position;
-    ctrl_protocol_get_int32_t       set_lens_focus_position;
+    ctrl_protocol_set_int32_t       set_lens_focus_position;
     ctrl_protocol_int32_array_t     get_lens_focus_settings;
     ctrl_protocol_int32_array_t     set_lens_focus_settings;
 
     ctrl_protocol_get_int32_t       get_lens_zoom_position;
-    ctrl_protocol_get_int32_t       set_lens_zoom_position;
+    ctrl_protocol_set_int32_t       set_lens_zoom_position;
     ctrl_protocol_int32_array_t     get_lens_zoom_settings;
     ctrl_protocol_int32_array_t     set_lens_zoom_settings;
 
     ctrl_protocol_get_int32_t       get_lens_iris_position;
-    ctrl_protocol_get_int32_t       set_lens_iris_position;
+    ctrl_protocol_set_int32_t       set_lens_iris_position;
     ctrl_protocol_int32_array_t     get_lens_iris_settings;
     ctrl_protocol_int32_array_t     set_lens_iris_settings;
 
     ctrl_protocol_get_int32_t       get_lens_filter_position;
-    ctrl_protocol_get_int32_t       set_lens_filter_position;
+    ctrl_protocol_set_int32_t       set_lens_filter_position;
     ctrl_protocol_int32_array_t     get_lens_filter_settings;
     ctrl_protocol_int32_array_t     set_lens_filter_settings;
 
