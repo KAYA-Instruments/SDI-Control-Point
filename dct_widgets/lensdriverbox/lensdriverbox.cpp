@@ -864,8 +864,14 @@ void LensDriverBox::onLensActiveChange( bool active )
 {
     static bool last_state = false;
 
-    d_data->m_ui->lblLensActivated->setVisible(active);
-    d_data->m_ui->lblLensNotActivated->setVisible(!active);
+    if( active == true)
+    {
+        d_data->m_ui->lblLensActivated->setText("Active");
+    }
+    else
+    {
+         d_data->m_ui->lblLensActivated->setText("not Active");
+    }
 
     d_data->m_ui->gbxFocusControl->setEnabled(active);
     d_data->m_ui->gbxZoomControl->setEnabled(active);

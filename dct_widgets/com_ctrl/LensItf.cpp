@@ -89,11 +89,11 @@ void LensItf::GetLensActive()
         // get lens settings from device
         int res = ctrl_protocol_get_lens_active( GET_PROTOCOL_INSTANCE(this),
                     GET_CHANNEL_INSTANCE(this), &value );
-        HANDLE_ERROR( res );
+
 
        bool active;
 
-       if ( value == 1)
+       if ( value == 1 && res == 0)
        {
            active = true;
        }
@@ -104,6 +104,8 @@ void LensItf::GetLensActive()
 
         // emit a IrisSetupChanged signal
         emit LensActiveChanged( active );
+
+        HANDLE_ERROR( res );
     }
 }
 
