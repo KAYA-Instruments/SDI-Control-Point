@@ -99,6 +99,12 @@ const lens_settings_t settingsUnkown {
     /* .zoomMotorFeatures =   */ 0,
     /* .irisMotorFeatures =   */ 0,
     /* .filterMotorFeatures = */ 0,
+    /* .irisFStopCoefficient0=*/ 0,
+    /* .irisFStopCoefficient1=*/ 0,
+    /* .irisFStopCoefficient2=*/ 0,
+    /* .irisFStopCoefficient3=*/ 0,
+    /* .irisFStopCoefficient4=*/ 0,
+    /* .irisFStopCoefficient5=*/ 0,
 };
 
 const lens_settings_t settingsICS {
@@ -113,9 +119,15 @@ const lens_settings_t settingsICS {
     /* .zoomMotorFeatures =   */ 3,
     /* .irisMotorFeatures =   */ 3,
     /* .filterMotorFeatures = */ 0,
+    /* .irisFStopCoefficient0=*/ 0,
+    /* .irisFStopCoefficient1=*/ 0,
+    /* .irisFStopCoefficient2=*/ 0,
+    /* .irisFStopCoefficient3=*/ 0,
+    /* .irisFStopCoefficient4=*/ 0,
+    /* .irisFStopCoefficient5=*/ 0,
 };
 
-const lens_settings_t settingsDctKit {
+const lens_settings_t settingsDctKit_M0824_MPW2_iris {
     /* .address =             */ 8,
     /* .chipID =              */ 18,
     /* .controllerFeatures =  */ 1,
@@ -127,12 +139,61 @@ const lens_settings_t settingsDctKit {
     /* .zoomMotorFeatures =   */ 0,
     /* .irisMotorFeatures =   */ 11,
     /* .filterMotorFeatures = */ 0,
+    /* .irisFStopCoefficient0=*/ 0,
+    /* .irisFStopCoefficient1=*/ 0,
+    /* .irisFStopCoefficient2=*/ 0,
+    /* .irisFStopCoefficient3=*/ 0,
+    /* .irisFStopCoefficient4=*/ 0,
+    /* .irisFStopCoefficient5=*/ 0,
 };
+
+const lens_settings_t settingsDctKit_V0828_MPY_iris {
+    /* .address =             */ 8,
+    /* .chipID =              */ 18,
+    /* .controllerFeatures =  */ 1,
+    /* .focusMotorNr =        */ 1,
+    /* .zoomMotorNr =         */ 2,
+    /* .irisMotorNr =         */ 0,
+    /* .filterMotorNr =       */ 3,
+    /* .focusMotorFeatures =  */ 0,
+    /* .zoomMotorFeatures =   */ 0,
+    /* .irisMotorFeatures =   */ 11,
+    /* .filterMotorFeatures = */ 0,
+    /* .irisFStopCoefficient0=*/ 0,
+    /* .irisFStopCoefficient1=*/ 0,
+    /* .irisFStopCoefficient2=*/ 0,
+    /* .irisFStopCoefficient3=*/ 0,
+    /* .irisFStopCoefficient4=*/ 0,
+    /* .irisFStopCoefficient5=*/ 0,
+};
+
+const lens_settings_t settingsDctKit_LM6HC_iris  {
+    /* .address =             */ 8,
+    /* .chipID =              */ 18,
+    /* .controllerFeatures =  */ 1,
+    /* .focusMotorNr =        */ 1,
+    /* .zoomMotorNr =         */ 2,
+    /* .irisMotorNr =         */ 0,
+    /* .filterMotorNr =       */ 3,
+    /* .focusMotorFeatures =  */ 0,
+    /* .zoomMotorFeatures =   */ 0,
+    /* .irisMotorFeatures =   */ 11,
+    /* .filterMotorFeatures = */ 0,
+    /* .irisFStopCoefficient0=*/ 0,
+    /* .irisFStopCoefficient1=*/ 0,
+    /* .irisFStopCoefficient2=*/ 0,
+    /* .irisFStopCoefficient3=*/ 0,
+    /* .irisFStopCoefficient4=*/ 0,
+    /* .irisFStopCoefficient5=*/ 0,
+};
+
 
 const lens_settings_t lensSettingProfiles[LensProfileMax] =
 {
     settingsUnkown,
-    settingsDctKit,
+    settingsDctKit_M0824_MPW2_iris,
+    settingsDctKit_V0828_MPY_iris,
+    settingsDctKit_LM6HC_iris,
     settingsICS
 };
 

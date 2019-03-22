@@ -38,6 +38,12 @@ typedef struct lens_settings_s {
     int zoomMotorFeatures;
     int irisMotorFeatures;
     int filterMotorFeatures;
+    int irisFStopCoefficient0;
+    int irisFStopCoefficient1;
+    int irisFStopCoefficient2;
+    int irisFStopCoefficient3;
+    int irisFStopCoefficient4;
+    int irisFStopCoefficient5;
 } lens_settings_t;
 
 /******************************************************************************
