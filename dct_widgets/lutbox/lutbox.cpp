@@ -2322,7 +2322,7 @@ void LutBox::PlotClicked( QMouseEvent * evt, LutChannel ch )
         double y = plot->yAxis->pixelToCoord( (double)p.y() );
 
         // range check
-        if ( (x < 0.0f) || (x > 1.0f) || (y < 0.0f) || (y>1.0f) )
+        if ( (x < 0.0) || (x > 1.0) || (y < 0.0) || (y>1.0) )
         {
             // invalid coordinates (due to plot margins) => ignore these clicks
             return;
