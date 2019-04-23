@@ -41,8 +41,8 @@ class DebugTerminal : public QWidget
     Q_OBJECT
 
 public:
-    explicit DebugTerminal(QWidget *parent = 0);
-    ~DebugTerminal();
+    explicit DebugTerminal(QWidget *parent = nullptr);
+    ~DebugTerminal() override;
 
 signals:
     void sendData( QString data, int );
@@ -52,7 +52,8 @@ public slots:
 
 protected:
     void showEvent( QShowEvent* event ) override;
-    bool eventFilter(QObject* obj, QEvent *event);
+    void resizeEvent( QResizeEvent *event ) override;
+    bool eventFilter(QObject* obj, QEvent *event) override;
 
 private:
     Ui::DebugTerminal *ui;

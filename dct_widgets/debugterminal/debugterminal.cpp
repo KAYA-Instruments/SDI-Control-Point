@@ -23,6 +23,7 @@
  *
  *****************************************************************************/
 
+#include <QScrollBar>
 #include <QClipboard>
 #include <QMessageBox>
 #include <QKeyEvent>
@@ -78,10 +79,26 @@ void DebugTerminal::showEvent( QShowEvent* event )
 }
 
 /******************************************************************************
+ * DebugTerminal::resizeEvent
+ *****************************************************************************/
+void DebugTerminal::resizeEvent( QResizeEvent *event )
+{
+    // Call parents resize event
+    QWidget::resizeEvent( event );
+
+    // Make sure the terminal text browser is scrolled down
+    QScrollBar *scrollBar = ui->tbTerminal->verticalScrollBar();
+    scrollBar->setValue( scrollBar->maximum() );
+}
+
+/******************************************************************************
  * DebugTerminal::eventFilter
  *****************************************************************************/
 bool DebugTerminal::eventFilter(QObject* obj, QEvent *event)
 {
+    // Call parents event filter function
+    QWidget::eventFilter( obj, event );
+
     // Filter for the input line edit
     if (obj == ui->letInput)
     {
@@ -264,7 +281,7 @@ void DebugTerminal::onSaveLogClicked()
         "Select Text files (*.txt);;All files (*.*)"
     );
 
-    if ( NULL != filename )
+    if ( nullptr != filename )
     {
         QFileInfo fileInfo( filename );
         if ( fileInfo.suffix().isEmpty() )
