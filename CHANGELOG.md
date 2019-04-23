@@ -4,11 +4,18 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
+Version **1.1.11** - 23.04.2019
+
+* Added genlock crosslock controls.
+* Fixed an issue where the text of the debug terminal would not be "scrolled down" after changing it's size.
+* Experimental: Added support for lens control. This is not officially supported by the cameras yet and will be enabled with future releases.
+* Fixed a few more Clang warnings (this is an ongoing task)
+
+## Older Releases:
+
 Version **1.1.10** - 10.12.2018
 
 * Fixed an issue where the "LOG mode" would not be saved (restored) by the save (load) settings function.
-
-## Older Releases:
 
 Version **1.1.9** - 16.11.2018
 
