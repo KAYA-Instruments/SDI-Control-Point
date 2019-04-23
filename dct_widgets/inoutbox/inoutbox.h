@@ -92,6 +92,9 @@ public:
 
     QString GenLockMode() const;
     void setGenLockMode( const QString mode );
+    QString GenLockCrosslockEnable() const;
+    QString GenLockCrosslockVmode() const;
+    void setGenLockCrosslock( const QString enable, const QString vmode );
     int GenLockOffsetVertical() const;
     void setGenLockOffsetVertical( const int value );
     int GenLockOffsetHorizontal() const;
@@ -116,6 +119,9 @@ public:
     void addVideoMode( QString name, int id );
     void clearAllVideoModes();
 
+    void addGenlockCrosslockVideoMode( QString name, int id );
+    void clearAllGenlockCrosslockVideoModes();
+
 protected:
     void prepareMode( const Mode ) Q_DECL_OVERRIDE;
 
@@ -125,6 +131,7 @@ protected:
 
     void addBayerPattern( QString name, int id );
     void addGenlockMode( QString name, int id );
+    void addGenlockCrosslockEnable( QString name, int id);
     void addSdi2Mode( QString name, int id );
     void addDownscaleMode( QString name, int id );
     void addFlipMode( QString name, int id );
@@ -159,6 +166,7 @@ signals:
     void ChainAudioEnableChanged( bool enable );
     
     void ChainGenlockModeChanged( int value );
+    void ChainGenlockCrosslockChanged( int enable, int vmode );
     void ChainGenlockOffsetChanged( int vertical, int horizontal );
     void ChainGenlockTerminationChanged( int value );
 
@@ -191,6 +199,7 @@ public slots:
     void onChainAudioEnableChange( bool enable );
 
     void onChainGenlockModeChange( int value );
+    void onChainGenlockCrosslockChange( int enable, int vmode );
     void onChainGenlockOffsetChange( int vertical , int horizontal );
     void onChainGenlockTerminationChange( int value );
 
@@ -236,10 +245,10 @@ private slots:
     void onCbxAudioEnableChange( int value );
     
     void onCbxGenlockModeChange( int index );
-
+    void onCbxGenlockCrosslockEnableChange( int index );
+    void onCbxGenlockCrosslockVmodeChange( int index );
     void onSbxGenlockOffsetVerticalChange( int value );
     void onSbxGenlockOffsetHorizontalChange( int value );
-    
     void onCbxGenlockTerminationChange( int value );
 
     void onCbxAecEnableChange( int value );

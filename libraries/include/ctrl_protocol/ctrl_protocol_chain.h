@@ -390,6 +390,42 @@ int ctrl_protocol_set_genlock_mode
 );
 
 /**************************************************************************//**
+ * @brief Gets current gen-lock crosslock settings
+ *
+ * @param[in]  channel  control channel instance
+ * @param[in]  protocol control protocol instance
+ * @param[in]  no       number of array/list items
+ * @param[out] values   array (memory pointer) to fill
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_genlock_crosslock
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint8_t * const               values
+);
+
+/**************************************************************************//**
+ * @brief Sets gen-lock crosslock settings
+ *
+ * @param[in]  channel  control channel instance
+ * @param[in]  protocol control protocol instance
+ * @param[in]  no       number of array/list items
+ * @param[out] values   array (memory pointer) to fill
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_set_genlock_crosslock
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint8_t * const               values
+);
+
+/**************************************************************************//**
  * @brief Gets current gen-lock offset 
  *
  * @param[in]  channel  control channel instance
@@ -583,6 +619,8 @@ typedef struct ctrl_protocol_chain_drv_s
     ctrl_protocol_set_uint8_t    set_flip_mode;
     ctrl_protocol_get_uint8_t    get_genlock_mode;
     ctrl_protocol_set_uint8_t    set_genlock_mode;
+    ctrl_protocol_uint8_array_t  get_genlock_crosslock;
+    ctrl_protocol_uint8_array_t  set_genlock_crosslock;
     ctrl_protocol_int16_array_t  get_genlock_offset;
     ctrl_protocol_int16_array_t  set_genlock_offset;
     ctrl_protocol_get_uint8_t    get_genlock_termination;

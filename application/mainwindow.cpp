@@ -568,6 +568,9 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
             connect( dev->GetChainItf(), SIGNAL(ChainGenlockModeChanged(int)), m_ui->inoutBox, SLOT(onChainGenlockModeChange(int)) );
             connect( m_ui->inoutBox, SIGNAL(ChainGenlockModeChanged(int)), dev->GetChainItf(), SLOT(onChainGenlockModeChange(int)) );
 
+            connect( dev->GetChainItf(), SIGNAL(ChainGenlockCrosslockChanged(int, int)), m_ui->inoutBox, SLOT(onChainGenlockCrosslockChange(int, int)) );
+            connect( m_ui->inoutBox, SIGNAL(ChainGenlockCrosslockChanged(int, int)), dev->GetChainItf(), SLOT(onChainGenlockCrosslockChange(int, int)) );
+
             connect( dev->GetChainItf(), SIGNAL(ChainGenlockOffsetChanged(int, int)), m_ui->inoutBox, SLOT(onChainGenlockOffsetChange(int, int)) );
             connect( m_ui->inoutBox, SIGNAL(ChainGenlockOffsetChanged(int, int)), dev->GetChainItf(), SLOT(onChainGenlockOffsetChange(int, int)) );
 
@@ -1122,8 +1125,9 @@ void MainWindow::onResolutionMaskChange( uint32_t id0, uint32_t id1, uint32_t id
     bool supported = false;
 
     m_ui->inoutBox->clearAllVideoModes();
+    m_ui->inoutBox->clearAllGenlockCrosslockVideoModes();
 
-    // fill video-mode combo box
+    // fill video-mode and genlock crosslock vmode combo boxes
     for ( int i=VideoModeFirst; i<VideoModeMax; i++ )
     {
         if ( (i>=VideoModeFirstHD) && (i<=VideoModeLastHD) )
@@ -1144,6 +1148,7 @@ void MainWindow::onResolutionMaskChange( uint32_t id0, uint32_t id1, uint32_t id
         if ( supported )
         {
             m_ui->inoutBox->addVideoMode( GetVideoModeName( static_cast<VideoMode>(i) ), i );
+            m_ui->inoutBox->addGenlockCrosslockVideoMode( GetGenlockCrosslockVmodeName( static_cast<VideoMode>(i) ), i);
         }
     }
 }

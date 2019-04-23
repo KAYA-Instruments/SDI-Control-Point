@@ -102,6 +102,57 @@
 #define VIDEO_MODE_NAME_4Kp47_96        ( "4Kp47.96" )
 
 /******************************************************************************
+ * genlock crosslock video mode names
+ *****************************************************************************/
+#define GENLOCK_CROSSLOCK_VMODE_NAME_720p60          ( "720p60" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_720p50          ( "720p50" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_720p59_94       ( "720p59.94" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_1080p30         ( "1080p30" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_1080p25         ( "1080p25" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_1080p24         ( "1080p24" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_1080p23_98      ( "1080p23.98" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_1080p29_97      ( "1080p29.97" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_1080p50         ( "1080p50" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_1080p60         ( "1080p60" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_1080i60         ( "1080i60" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_1080i50         ( "1080i50" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_1080i59_94      ( "1080i59.94" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_1080p59_94      ( "1080p59.94" )
+
+#define GENLOCK_CROSSLOCK_VMODE_NAME_2kp30           ( "2Kp30" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_2kp25           ( "2Kp25" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_2kp24           ( "2Kp24" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_2kp23_98        ( "2Kp23.98" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_2kp29_97        ( "2Kp29.97" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_2kp50           ( "2Kp50" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_2kp60           ( "2Kp60" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_2kp59_94        ( "2Kp59.94" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_2kp48           ( "2Kp48" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_2kp47_96        ( "2Kp47.96" )
+
+#define GENLOCK_CROSSLOCK_VMODE_NAME_UHDp30          ( "1080p30 / 1080i60" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_UHDp25          ( "1080p25 / 1080i50" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_UHDp24          ( "1080p24" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_UHDp23_98       ( "1080p23.98" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_UHDp29_97       ( "1080p29.97 / 1080i59.94" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_UHDp50          ( "1080p50" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_UHDp60          ( "1080p60" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_UHDp59_94       ( "1080p59.94" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_UHDp48          ( "1080p48" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_UHDp47_96       ( "1080p47.96" )
+
+#define GENLOCK_CROSSLOCK_VMODE_NAME_4Kp30           ( "2Kp30" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_4Kp25           ( "2Kp25" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_4Kp24           ( "2Kp24" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_4Kp23_98        ( "2Kp23.98" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_4Kp29_97        ( "2Kp29.97" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_4Kp50           ( "2Kp50" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_4Kp60           ( "2Kp60" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_4Kp59_94        ( "2Kp59.94" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_4Kp48           ( "2Kp48" )
+#define GENLOCK_CROSSLOCK_VMODE_NAME_4Kp47_96        ( "2Kp47.96" )
+
+/******************************************************************************
  * sdi mode names
  *****************************************************************************/
 #define SDI_MODE_NAME_LEGAL             ( "Legal Range" )
@@ -139,6 +190,14 @@
 #define GENLOCK_MODE_DISABLE            ( "Disable" )
 #define GENLOCK_MODE_SLAVE              ( "Slave" )
 #define GENLOCK_MODE_MASTER             ( "Master" )
+
+/******************************************************************************
+ * gen-lock crosslock enable names
+ *****************************************************************************/
+#define GENLOCK_CROSSLOCK_ENABLE_DISABLE       ( "Disable" )
+#define GENLOCK_CROSSLOCK_ENABLE_PAL           ( "PAL B&B" )
+#define GENLOCK_CROSSLOCK_ENABLE_NTSC          ( "NTSC B&B" )
+#define GENLOCK_CROSSLOCK_ENABLE_OTHER_HD_MODE ("Other HD Mode")
 
 /******************************************************************************
  * SDI-2 mode names
@@ -402,6 +461,19 @@ enum GenLockMode
 };
 
 /******************************************************************************
+ * camera genlock crosslock enable
+ *****************************************************************************/
+enum GenLockCrosslockEnable
+{
+    GenLockCrosslockEnableFirst       = 0,
+    GenLockCrosslockEnableDisable     = 0,
+    GenLockCrosslockEnablePAL         = 1,
+    GenLockCrosslockEnableNTSC        = 2,
+    GenLockCrosslockEnableOtherHDMode = 3,
+    GenLockCrosslockEnableMax
+};
+
+/******************************************************************************
  * sdi2 mode 
  *****************************************************************************/
 enum Sdi2Mode
@@ -459,6 +531,9 @@ QString GetBayerPatternName( BayerPattern pattern );
 // return corresponding video-mode name 
 QString GetVideoModeName( VideoMode mode );
 
+// return corresponding genlock crosslock vmode name
+QString GetGenlockCrosslockVmodeName( VideoMode mode );
+
 // return corresponding playout speed in [ms]
 int GetVideoModeSpeed( VideoMode mode );
 
@@ -488,6 +563,9 @@ QString GetCamDepthName( CamDepth depth );
 
 // return corresponding genlock mode name 
 QString GetGenlockModeName( GenLockMode mode );
+
+// return corresponding genlock crosslock enable name
+QString GetGenlockCrosslockEnableName( GenLockCrosslockEnable enable );
 
 // return corresponding sdi2 mode name 
 QString GetSdi2ModeName( Sdi2Mode mode );

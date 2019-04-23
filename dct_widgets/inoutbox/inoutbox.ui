@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>722</width>
-    <height>983</height>
+    <height>1006</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -945,13 +945,38 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="3" column="1">
-       <widget class="QCheckBox" name="cbxGenLockTermination">
-        <property name="text">
-         <string/>
+       <widget class="QSpinBox" name="sbxGenlockOffsetHorizontal">
+        <property name="minimumSize">
+         <size>
+          <width>170</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="minimum">
+         <number>-4095</number>
+        </property>
+        <property name="maximum">
+         <number>4095</number>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
+      <item row="1" column="2">
+       <widget class="QComboBox" name="cbxGenlockCrosslockVmode">
+        <property name="minimumSize">
+         <size>
+          <width>170</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
        <widget class="QLabel" name="lblGenLockOffsetVertical">
         <property name="minimumSize">
          <size>
@@ -970,91 +995,10 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="lblGenLockTermination">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
+      <item row="1" column="0">
+       <widget class="QLabel" name="lblGenlockCrosslock">
         <property name="text">
-         <string>Genlock Termination</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="lblGenLockOffsetHorizontal">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Genlock Offset Horizontal (Pixels)</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QSpinBox" name="sbxGenLockOffsetVertical">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="minimum">
-         <number>-4095</number>
-        </property>
-        <property name="maximum">
-         <number>4095</number>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QSpinBox" name="sbxGenlockOffsetHorizontal">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="minimum">
-         <number>-4095</number>
-        </property>
-        <property name="maximum">
-         <number>4095</number>
+         <string>Genlock Crosslock</string>
         </property>
        </widget>
       </item>
@@ -1077,21 +1021,24 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="3">
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>0</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
       <item row="0" column="1">
        <widget class="QComboBox" name="cbxGenLockMode">
+        <property name="minimumSize">
+         <size>
+          <width>170</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="lblGenLockOffsetHorizontal">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -1104,14 +1051,98 @@
           <height>16777215</height>
          </size>
         </property>
+        <property name="text">
+         <string>Genlock Offset Horizontal (Pixels)</string>
+        </property>
        </widget>
       </item>
-      <item row="0" column="2" rowspan="4">
+      <item row="4" column="1">
+       <widget class="QCheckBox" name="cbxGenLockTermination">
+        <property name="minimumSize">
+         <size>
+          <width>170</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="lblGenLockTermination">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Genlock Termination</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="cbxGenlockCrosslockEnable">
+        <property name="minimumSize">
+         <size>
+          <width>170</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QSpinBox" name="sbxGenLockOffsetVertical">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>170</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="minimum">
+         <number>-4095</number>
+        </property>
+        <property name="maximum">
+         <number>4095</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="2" column="2" rowspan="3" colspan="2">
        <widget class="QLabel" name="lblGenlock4kNote">
         <property name="text">
-         <string>Note on Using Genlock with 4K:
-
-Since there is no 4K Genlock Standard in place, the device locks to normal 2K Tri-Level-Sync Signals. The line and pixel offsets refer to the 2K reference, not the 4K output image.</string>
+         <string>Note: Since a 4K Genlock standard does not exist, 4K cameras will lock to FHD / 2K Trilevel Sync signals.</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
