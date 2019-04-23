@@ -36,6 +36,9 @@ class ChainItf : public ProVideoItf
 {
     Q_OBJECT
 
+private:
+    void CheckGenlockError( int res );
+
 public:
     explicit ChainItf( ComChannel * c, ComProtocol * p )
         : ProVideoItf( c, p )

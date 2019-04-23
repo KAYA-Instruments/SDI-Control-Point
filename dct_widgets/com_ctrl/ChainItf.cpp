@@ -35,6 +35,26 @@
 #include <QtDebug>
 
 /******************************************************************************
+ * ChainItf::CheckGenlockError()
+ *****************************************************************************/
+void ChainItf::CheckGenlockError( int res )
+{
+    // check if a genlock error occured and display a message box
+    if ( res == -ENOSYS )
+    {
+        QApplication::setOverrideCursor( Qt::ArrowCursor );
+
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Genlock Error");
+        msgBox.setText("The device can not lock to the supplied sync source.\n\n"
+                       "Please make sure you have attached a valid sync signal "
+                       "that matches the currently setup video mode and genlock "
+                       "settings.");
+        msgBox.exec();
+    }
+}
+
+/******************************************************************************
  * ChainItf::resync()
  *****************************************************************************/
 void ChainItf::resync()
@@ -153,7 +173,7 @@ void ChainItf::GetChainDownscaleMode( int id )
     // Is there a signal listener
     if ( receivers(SIGNAL(ChainDownscaleModeChanged(int, bool, bool))) > 0 )
     {
-        ctrl_protocol_downscale_enable_t v = { .id = (uint8_t)id, .downscale = 0u, .interlace = 0u };
+        ctrl_protocol_downscale_enable_t v = { (uint8_t)id, 0u, 0u };
 
         // read enable state from device
         int res = ctrl_protocol_get_downscale_mode( GET_PROTOCOL_INSTANCE(this),
@@ -411,24 +431,14 @@ void ChainItf::onChainVideoModeChange( int value )
     int res = ctrl_protocol_set_video_mode( GET_PROTOCOL_INSTANCE(this),
             GET_CHANNEL_INSTANCE(this), (uint8_t)value );
 
-    /* In case swtich was successful, or if a genlock error occured,
+    /* In case switch was successful, or if a genlock error occured,
      * notify video mode was changed to get new exposure range. */
     if ( res == 0 || res == -ENOSYS )
     {
         emit NotifyVideoModeChanged();
 
-        // If a genlock error occured, display a message box
-        if ( res == -ENOSYS )
-        {
-            QApplication::setOverrideCursor( Qt::ArrowCursor );
-
-            QMessageBox msgBox;
-            msgBox.setWindowTitle("Genlock Error");
-            msgBox.setText("The device can not lock to the supplied sync source.\n\n"
-                           "Please make sure you have attached a valid sync signal "
-                           "that matches the currently setup video mode.");
-            msgBox.exec();
-        }
+        // Check for genlock error
+        CheckGenlockError( res );
     }
 
     HANDLE_ERROR( res );
@@ -506,7 +516,7 @@ void ChainItf::onChainSdiBlackLevelChange( int value )
 {
     // set sdi black level on device
     int res = ctrl_protocol_set_sdi_black( GET_PROTOCOL_INSTANCE(this),
-            GET_CHANNEL_INSTANCE(this), (uint8_t)value );
+            GET_CHANNEL_INSTANCE(this), (int8_t)value );
     HANDLE_ERROR( res );
 }
 
@@ -517,7 +527,7 @@ void ChainItf::onChainSdiWhiteLevelChange( int value )
 {
     // set sdi white level on device
     int res = ctrl_protocol_set_sdi_white( GET_PROTOCOL_INSTANCE(this),
-            GET_CHANNEL_INSTANCE(this), (uint8_t)value );
+            GET_CHANNEL_INSTANCE(this), (int8_t)value );
     HANDLE_ERROR( res );
 }
 
@@ -530,18 +540,8 @@ void ChainItf::onChainGenlockModeChange( int value )
     int res = ctrl_protocol_set_genlock_mode( GET_PROTOCOL_INSTANCE(this),
             GET_CHANNEL_INSTANCE(this), (uint8_t)value );
 
-    // check if a genlock error occured and display a message box
-    if ( res == -ENOSYS )
-    {
-        QApplication::setOverrideCursor( Qt::ArrowCursor );
-
-        QMessageBox msgBox;
-        msgBox.setWindowTitle("Genlock Error");
-        msgBox.setText("The device can not lock to the supplied sync source.\n\n"
-                       "Please make sure you have attached a valid sync signal "
-                       "that matches the currently setup video mode.");
-        msgBox.exec();
-    }
+    // Check for genlock error
+    CheckGenlockError( res );
 
     HANDLE_ERROR( res );
 }
@@ -559,6 +559,10 @@ void ChainItf::onChainGenlockCrosslockChange( int enable, int vmode )
     // set genlock crosslock on device
     int res = ctrl_protocol_set_genlock_crosslock( GET_PROTOCOL_INSTANCE(this),
             GET_CHANNEL_INSTANCE(this), 2, values );
+
+    // Check for genlock error
+    CheckGenlockError( res );
+
     HANDLE_ERROR( res );
 }
 
@@ -585,7 +589,7 @@ void ChainItf::onChainGenlockTerminationChange( int value )
 {
     // set genlock termination on device
     int res = ctrl_protocol_set_genlock_termination( GET_PROTOCOL_INSTANCE(this),
-            GET_CHANNEL_INSTANCE(this), (uint16_t)value );
+            GET_CHANNEL_INSTANCE(this), (uint8_t)value );
     HANDLE_ERROR( res );
 }
 

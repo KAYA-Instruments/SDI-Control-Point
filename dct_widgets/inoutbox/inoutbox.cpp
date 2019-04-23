@@ -962,7 +962,6 @@ void InOutBox::setGenLockCrosslock( const QString enable, const QString vmode )
         d_data->m_ui->cbxGenlockCrosslockEnable->blockSignals( true );
         d_data->m_ui->cbxGenlockCrosslockEnable->setCurrentIndex( index );
         d_data->m_ui->cbxGenlockCrosslockEnable->blockSignals( false );
-
     }
 
     index = d_data->m_ui->cbxGenlockCrosslockVmode->findText( vmode );
@@ -971,11 +970,10 @@ void InOutBox::setGenLockCrosslock( const QString enable, const QString vmode )
         d_data->m_ui->cbxGenlockCrosslockVmode->blockSignals( true );
         d_data->m_ui->cbxGenlockCrosslockVmode->setCurrentIndex( index );
         d_data->m_ui->cbxGenlockCrosslockVmode->blockSignals( false );
-
     }
 
-    emit ChainGenlockCrosslockChanged( d_data->m_ui->cbxGenlockCrosslockEnable->itemData( index ).toInt(),
-                                       d_data->m_ui->cbxGenlockCrosslockVmode->itemData( index ).toInt() );
+    emit ChainGenlockCrosslockChanged( d_data->m_ui->cbxGenlockCrosslockEnable->currentData().toInt(),
+                                       d_data->m_ui->cbxGenlockCrosslockVmode->currentData().toInt() );
 }
 
 /******************************************************************************
