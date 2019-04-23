@@ -28,7 +28,7 @@ The project contains four folders with multiple sub-directories:
 # Working on the Project
 ## Development Environment
 The easiest way to edit the software is by using the Qt Creator, which is available for free for open source development at https://info.qt.io/download-qt-for-application-development    
-It is recommended to use the latest version of Qt Creator and the Qt framework. The last tested version is Qt Creator 4.9.0 based on Qt 5.12.2.
+It is recommended to use the latest version of Qt Creator and the Qt framework. The last tested version is Qt Creator 4.9.0 with Qt 5.12.3.
 
 ## Unit Tests for C-Libraries
 The unit tests are written using an open source framework called embUnit which is available here: https://sourceforge.net/projects/embunit/  
@@ -111,5 +111,8 @@ The above steps will build a Win32 static executable. To use dynamic libraries o
 
 And use the according toolchain-path in step 5.
 
-By default MXE currently uses GCC 5, if you want to use a newer GCC Version, e.g. GCC 8 add the following string to the make command from step 2: ```MXE_PLUGIN_DIRS='plugins/gcc8'```
-A complete example building MXE with 8 threads and GCC 8 would look like this: ```# make -j 8 qtbase qtserialport MXE_PLUGIN_DIRS='plugins/gcc8'```
+By default MXE currently uses GCC 5, if you want to use a newer GCC Version, e.g. GCC 8 add the following string to the make command from step 2:  
+```MXE_PLUGIN_DIRS='plugins/gcc8'```  
+
+A complete example building MXE with 8 threads and GCC 8 would look like this:  
+```# make -j 8 qtbase qtserialport MXE_PLUGIN_DIRS='plugins/gcc8'```
