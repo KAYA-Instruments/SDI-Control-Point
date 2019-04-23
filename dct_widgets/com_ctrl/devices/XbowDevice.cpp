@@ -302,7 +302,7 @@ XbowDevice::features XbowDevice::getSupportedFeatures()
     deviceFeatures.hasChainFlipHorizontal   = true;
     deviceFeatures.hasAutoItf               = true;
     deviceFeatures.hasIrisItf               = true;
-    deviceFeatures.hasLensItf               = true;
+    //deviceFeatures.hasLensItf               = true;
     deviceFeatures.hasIspItf                = true;
     deviceFeatures.hasIspLsc                = true;
     deviceFeatures.hasIspMasterBlackLevel   = true;

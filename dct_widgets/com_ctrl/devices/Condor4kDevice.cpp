@@ -299,7 +299,7 @@ Condor4kDevice::features Condor4kDevice::getSupportedFeatures()
     deviceFeatures.hasChainFlipVertical     = true;
     deviceFeatures.hasChainFlipHorizontal   = true;
     deviceFeatures.hasAutoItf               = true;
-    deviceFeatures.hasLensItf               = true;
+//    deviceFeatures.hasLensItf               = true;
     deviceFeatures.hasIspItf                = true;
     deviceFeatures.hasIspLsc                = true;
     deviceFeatures.hasIspMasterBlackLevel   = true;
