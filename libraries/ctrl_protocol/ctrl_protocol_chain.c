@@ -321,7 +321,7 @@ int ctrl_protocol_set_sdi_white
 int ctrl_protocol_get_genlock_mode
 (
     ctrl_protocol_handle_t const protocol,
-    ctrl_channel_handle_t const  channel, 
+    ctrl_channel_handle_t const  channel,
     uint8_t * const              mode
 )
 {
@@ -337,13 +337,47 @@ int ctrl_protocol_get_genlock_mode
 int ctrl_protocol_set_genlock_mode
 (
     ctrl_protocol_handle_t const protocol,
-    ctrl_channel_handle_t const  channel, 
+    ctrl_channel_handle_t const  channel,
     uint8_t const                mode
 )
 {
     CHECK_HANDLE( protocol );
     CHECK_DRV_FUNC( CHAIN_DRV(protocol->drv), set_genlock_mode );
     return ( CHAIN_DRV(protocol->drv)->set_genlock_mode( protocol->ctx, channel, mode ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_genlock_crosslock
+ *****************************************************************************/
+int ctrl_protocol_get_genlock_crosslock
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint8_t * const               values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( CHAIN_DRV(protocol->drv), get_genlock_crosslock );
+    CHECK_NOT_NULL( values );
+    return ( CHAIN_DRV(protocol->drv)->get_genlock_crosslock( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_genlock_crosslock
+ *****************************************************************************/
+int ctrl_protocol_set_genlock_crosslock
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint8_t * const               values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( CHAIN_DRV(protocol->drv), set_genlock_crosslock );
+    CHECK_NOT_NULL( values );
+    return ( CHAIN_DRV(protocol->drv)->set_genlock_crosslock( protocol->ctx, channel, no, values ) );
 }
 
 /******************************************************************************

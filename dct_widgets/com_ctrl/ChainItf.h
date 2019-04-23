@@ -75,6 +75,9 @@ public:
     
     // genlock mode
     void GetChainGenlockMode();
+
+    // genlock crosslock
+    void GetChainGenlockCrosslock();
     
     // genlock offset
     void GetChainGenlockOffset();
@@ -119,6 +122,9 @@ signals:
     
     // genlock mode
     void ChainGenlockModeChanged( int value );
+
+    // genlock crosslock
+    void ChainGenlockCrosslockChanged( int enable, int vmode );
     
     // genlock offset
     void ChainGenlockOffsetChanged( int vertical, int horzontal );
@@ -148,6 +154,7 @@ public slots:
     void onChainSdiBlackLevelChange( int value );
     void onChainSdiWhiteLevelChange( int value );
     void onChainGenlockModeChange( int value );
+    void onChainGenlockCrosslockChange( int enable, int vmode );
     void onChainGenlockOffsetChange( int vertical, int horizontal );
     void onChainGenlockTerminationChange( int value );
     void onChainTimecodeChange( QVector<int> value );

@@ -140,7 +140,7 @@ FmtSpinBoxPlugin::FmtSpinBoxPlugin( QObject * parent )
     d_icon = QPixmap( "" );
 
     d_domXml        =  "<ui language=\"c++\">\n"
-                       " <widget class=\"FmtSpinBox\" name=\"FmtSpinBox\">\n"
+                       " <widget class=\"FmtSpinBox\" name=\"FmtSpinBoxWidget\">\n"
                        "  <property name=\"geometry\">\n"
                        "   <rect>\n"
                        "    <x>0</x>\n"
@@ -187,7 +187,7 @@ SkinnedDialPlugin::SkinnedDialPlugin( QObject * parent )
     d_icon = QPixmap( ":/designer/images/skinneddial.png" );
 
     d_domXml        =  "<ui language=\"c++\">\n"
-                       " <widget class=\"SkinnedDial\" name=\"SkinnedDial\">\n"
+                       " <widget class=\"SkinnedDial\" name=\"SkinnedDialWidget\">\n"
                        "  <property name=\"geometry\">\n"
                        "   <rect>\n"
                        "    <x>0</x>\n"
@@ -240,7 +240,7 @@ SwitchButtonPlugin::SwitchButtonPlugin( QObject * parent )
     d_icon = QPixmap( ":/designer/images/switchbutton.png" );
 
     d_domXml        =  "<ui language=\"c++\">\n"
-                       " <widget class=\"SwitchButton\" name=\"SwitchButton\">\n"
+                       " <widget class=\"SwitchButton\" name=\"SwitchButtonWidget\">\n"
                        "  <property name=\"geometry\">\n"
                        "   <rect>\n"
                        "    <x>0</x>\n"
@@ -287,7 +287,7 @@ SingleChannelKnobBoxPlugin::SingleChannelKnobBoxPlugin( QObject * parent )
     d_icon = QPixmap( ":/designer/images/singlechannelknobbox.png" );
 
     d_domXml        =  "<ui language=\"c++\">\n"
-                       " <widget class=\"SingleChannelKnobBox\" name=\"SingleChannelKnobBox\">\n"
+                       " <widget class=\"SingleChannelKnobBox\" name=\"SingleChannelKnobBoxWidget\">\n"
                        "  <property name=\"geometry\">\n"
                        "   <rect>\n"
                        "    <x>0</x>\n"
@@ -344,7 +344,7 @@ TripleChannelSliderBoxPlugin::TripleChannelSliderBoxPlugin( QObject * parent )
     d_icon = QPixmap( ":/images/back/dial-back.png" );
 
     d_domXml        =  "<ui language=\"c++\">\n"
-                       " <widget class=\"TripleChannelSliderBox\" name=\"TripleChannelSliderBox\">\n"
+                       " <widget class=\"TripleChannelSliderBox\" name=\"TripleChannelSliderBoxWidget\">\n"
                        "  <property name=\"geometry\">\n"
                        "   <rect>\n"
                        "    <x>0</x>\n"
@@ -392,7 +392,7 @@ TripleChannelKnobBoxPlugin::TripleChannelKnobBoxPlugin( QObject * parent )
     d_icon = QPixmap( ":/images/back/dial-back.png" );
 
     d_domXml        =  "<ui language=\"c++\">\n"
-                       " <widget class=\"TripleChannelKnobBox\" name=\"TripleChannelKnobBox\">\n"
+                       " <widget class=\"TripleChannelKnobBox\" name=\"TripleChannelKnobBoxWidget\">\n"
                        "  <property name=\"geometry\">\n"
                        "   <rect>\n"
                        "    <x>0</x>\n"
@@ -455,7 +455,7 @@ ButtonArrayBoxPlugin::ButtonArrayBoxPlugin( QObject * parent )
     d_icon = QPixmap( ":/images/back/dial-back.png" );
 
     d_domXml        =  "<ui language=\"c++\">\n"
-                       " <widget class=\"ButtonArrayBox\" name=\"ButtonArrayBox\">\n"
+                       " <widget class=\"ButtonArrayBox\" name=\"ButtonArrayBoxWidget\">\n"
                        "  <property name=\"geometry\">\n"
                        "   <rect>\n"
                        "    <x>0</x>\n"
@@ -507,7 +507,7 @@ PieSegmentSelectPlugin::PieSegmentSelectPlugin( QObject * parent )
     d_icon = QPixmap( ":/designer/images/piesegmentselect.png" );
 
     d_domXml        =  "<ui language=\"c++\">\n"
-                       " <widget class=\"PieSegmentSelect\" name=\"PieSegmentSelect\">\n"
+                       " <widget class=\"PieSegmentSelect\" name=\"PieSegmentSelectWidget\">\n"
                        "  <property name=\"geometry\">\n"
                        "   <rect>\n"
                        "    <x>0</x>\n"
@@ -555,7 +555,7 @@ HueSegmentSelectPlugin::HueSegmentSelectPlugin( QObject * parent )
     d_icon = QPixmap( ":/designer/images/huesegmentselect.png" );
 
     d_domXml        =  "<ui language=\"c++\">\n"
-                       " <widget class=\"HueSegmentSelect\" name=\"HueSegmentSelect\">\n"
+                       " <widget class=\"HueSegmentSelect\" name=\"HueSegmentSelectWidget\">\n"
                        "  <property name=\"geometry\">\n"
                        "   <rect>\n"
                        "    <x>0</x>\n"
@@ -602,7 +602,7 @@ MccSliderPlugin::MccSliderPlugin( QObject * parent )
     d_icon = QPixmap( "" );
 
     d_domXml        =  "<ui language=\"c++\">\n"
-                       " <widget class=\"MccSlider\" name=\"MccSlider\">\n"
+                       " <widget class=\"MccSlider\" name=\"MccSliderWidget\">\n"
                        "  <property name=\"geometry\">\n"
                        "   <rect>\n"
                        "    <x>0</x>\n"
@@ -649,7 +649,7 @@ QCustomPlotPlugin::QCustomPlotPlugin( QObject * parent )
     d_icon = QPixmap( ":/designer/images/huesegmentselect.png" );
 
     d_domXml        =  "<ui language=\"c++\">\n"
-                       " <widget class=\"QCustomPlot\" name=\"QCustomPlot\">\n"
+                       " <widget class=\"QCustomPlot\" name=\"QCustomPlotWidget\">\n"
                        "  <property name=\"geometry\">\n"
                        "   <rect>\n"
                        "    <x>0</x>\n"
@@ -697,7 +697,7 @@ WbBoxPlugin::WbBoxPlugin( QObject * parent )
     d_icon = QPixmap( ":/images/tab/thermometer.png" );
 
     d_domXml        =  "<ui language=\"c++\">\n"
-                       " <widget class=\"WbBox\" name=\"WbBox\">\n"
+                       " <widget class=\"WbBox\" name=\"WbBoxWidget\">\n"
                        "  <property name=\"geometry\">\n"
                        "   <rect>\n"
                        "    <x>0</x>\n"
@@ -752,7 +752,7 @@ MccBoxPlugin::MccBoxPlugin( QObject * parent )
     d_icon = QPixmap( ":/designer/images/piesegmentselect.png" );
 
     d_domXml        =  "<ui language=\"c++\">\n"
-                       " <widget class=\"MccBox\" name=\"MccBox\">\n"
+                       " <widget class=\"MccBox\" name=\"MccBoxWidget\">\n"
                        "  <property name=\"geometry\">\n"
                        "   <rect>\n"
                        "    <x>0</x>\n"
@@ -807,7 +807,7 @@ MccEqBoxPlugin::MccEqBoxPlugin( QObject * parent )
     d_icon = QPixmap( ":/designer/images/piesegmentselect.png" );
 
     d_domXml        =  "<ui language=\"c++\">\n"
-                       " <widget class=\"MccEqBox\" name=\"MccEqBox\">\n"
+                       " <widget class=\"MccEqBox\" name=\"MccEqBoxWidget\">\n"
                        "  <property name=\"geometry\">\n"
                        "   <rect>\n"
                        "    <x>0</x>\n"
@@ -862,7 +862,7 @@ InfoBoxPlugin::InfoBoxPlugin( QObject * parent )
     d_icon = QPixmap( ":/images/tab/info.png" );
 
     d_domXml        =  "<ui language=\"c++\">\n"
-                       " <widget class=\"InfoBox\" name=\"InfoBox\">\n"
+                       " <widget class=\"InfoBox\" name=\"InfoBoxWidget\">\n"
                        "  <property name=\"geometry\">\n"
                        "   <rect>\n"
                        "    <x>0</x>\n"
@@ -917,7 +917,7 @@ BlackLevelBoxPlugin::BlackLevelBoxPlugin( QObject * parent )
     d_icon = QPixmap( ":/images/tab/black.png" );
 
     d_domXml        =  "<ui language=\"c++\">\n"
-                       " <widget class=\"BlackLevelBox\" name=\"BlackLevelBox\">\n"
+                       " <widget class=\"BlackLevelBox\" name=\"BlackLevelBoxWidget\">\n"
                        "  <property name=\"geometry\">\n"
                        "   <rect>\n"
                        "    <x>0</x>\n"
@@ -971,7 +971,7 @@ GammaBoxPlugin::GammaBoxPlugin( QObject * parent )
     d_icon = QPixmap( ":/images/tab/gamma.png" );
 
     d_domXml        =  "<ui language=\"c++\">\n"
-                       " <widget class=\"GammaBox\" name=\"GammaBox\">\n"
+                       " <widget class=\"GammaBox\" name=\"GammaBoxWidget\">\n"
                        "  <property name=\"geometry\">\n"
                        "   <rect>\n"
                        "    <x>0</x>\n"
@@ -1025,7 +1025,7 @@ LutBoxPlugin::LutBoxPlugin( QObject * parent )
     d_icon = QPixmap( ":/images/tab/gamma.png" );
 
     d_domXml        =  "<ui language=\"c++\">\n"
-                       " <widget class=\"LutBox\" name=\"LutBox\">\n"
+                       " <widget class=\"LutBox\" name=\"LutBoxWidget\">\n"
                        "  <property name=\"geometry\">\n"
                        "   <rect>\n"
                        "    <x>0</x>\n"
@@ -1079,7 +1079,7 @@ InOutBoxPlugin::InOutBoxPlugin( QObject * parent )
     d_icon = QPixmap( ":/images/tab/inout.png" );
 
     d_domXml        =  "<ui language=\"c++\">\n"
-                       " <widget class=\"InOutBox\" name=\"InOutBox\">\n"
+                       " <widget class=\"InOutBox\" name=\"InOutBoxWidget\">\n"
                        "  <property name=\"geometry\">\n"
                        "   <rect>\n"
                        "    <x>0</x>\n"
@@ -1134,7 +1134,7 @@ OutBoxPlugin::OutBoxPlugin( QObject * parent )
     d_icon = QPixmap( ":/images/tab/out.png" );
 
     d_domXml        =  "<ui language=\"c++\">\n"
-                       " <widget class=\"OutBox\" name=\"OutBox\">\n"
+                       " <widget class=\"OutBox\" name=\"OutBoxWidget\">\n"
                        "  <property name=\"geometry\">\n"
                        "   <rect>\n"
                        "    <x>0</x>\n"
@@ -1189,7 +1189,7 @@ FltBoxPlugin::FltBoxPlugin( QObject * parent )
     d_icon = QPixmap( ":/images/tab/filter.png" );
 
     d_domXml        =  "<ui language=\"c++\">\n"
-                       " <widget class=\"FltBox\" name=\"FltBox\">\n"
+                       " <widget class=\"FltBox\" name=\"FltBoxWidget\">\n"
                        "  <property name=\"geometry\">\n"
                        "   <rect>\n"
                        "    <x>0</x>\n"
@@ -1244,7 +1244,7 @@ UpdateBoxPlugin::UpdateBoxPlugin( QObject * parent )
     d_icon = QPixmap( ":/images/tab/filter.png" );
 
     d_domXml        =  "<ui language=\"c++\">\n"
-                       " <widget class=\"UpdateBox\" name=\"UpdateBox\">\n"
+                       " <widget class=\"UpdateBox\" name=\"UpdateBoxWidget\">\n"
                        "  <property name=\"geometry\">\n"
                        "   <rect>\n"
                        "    <x>0</x>\n"
@@ -1298,7 +1298,7 @@ PlayBackBoxPlugin::PlayBackBoxPlugin( QObject * parent )
     d_icon = QPixmap( ":/images/tab/filter.png" );
 
     d_domXml        =  "<ui language=\"c++\">\n"
-                       " <widget class=\"PlayBackBox\" name=\"PlayBackBox\">\n"
+                       " <widget class=\"PlayBackBox\" name=\"PlayBackBoxWidget\">\n"
                        "  <property name=\"geometry\">\n"
                        "   <rect>\n"
                        "    <x>0</x>\n"
@@ -1353,7 +1353,7 @@ FpncBoxPlugin::FpncBoxPlugin( QObject * parent )
     d_icon = QPixmap( ":/images/tab/fpn.png" );
 
     d_domXml        =  "<ui language=\"c++\">\n"
-                       " <widget class=\"FpncBox\" name=\"FpncBox\">\n"
+                       " <widget class=\"FpncBox\" name=\"FpncBoxWidget\">\n"
                        "  <property name=\"geometry\">\n"
                        "   <rect>\n"
                        "    <x>0</x>\n"
@@ -1408,7 +1408,7 @@ KneeBoxPlugin::KneeBoxPlugin( QObject * parent )
     d_icon = QPixmap( ":/images/tab/gamma.png" );
 
     d_domXml        =  "<ui language=\"c++\">\n"
-                       " <widget class=\"KneeBox\" name=\"KneeBox\">\n"
+                       " <widget class=\"KneeBox\" name=\"KneeBoxWidget\">\n"
                        "  <property name=\"geometry\">\n"
                        "   <rect>\n"
                        "    <x>0</x>\n"
@@ -1462,7 +1462,7 @@ DpccBoxPlugin::DpccBoxPlugin( QObject * parent )
     d_icon = QPixmap( ":/images/tab/dpcc.png" );
 
     d_domXml        =  "<ui language=\"c++\">\n"
-                       " <widget class=\"DpccBox\" name=\"DpccBox\">\n"
+                       " <widget class=\"DpccBox\" name=\"DpccBoxWidget\">\n"
                        "  <property name=\"geometry\">\n"
                        "   <rect>\n"
                        "    <x>0</x>\n"
@@ -1493,6 +1493,59 @@ QWidget * DpccBoxPlugin::createWidget( QWidget * parent )
  * DpccBoxPlugin::group
  *****************************************************************************/
 QString DpccBoxPlugin::group() const
+{
+    return ( DCT_DIALOG_WIDGET_GROUP_NAME );
+}
+
+/******************************************************************************
+ * class LensDriverBoxPlugin
+ *
+ *****************************************************************************/
+
+/******************************************************************************
+ * LensDriverBoxPlugin::LensDriverBox
+ *****************************************************************************/
+LensDriverBoxPlugin::LensDriverBoxPlugin( QObject * parent )
+    : CustomWidgetInterface( parent )
+{
+    d_name          = "LensDriverBox";
+
+    d_include       = "lensdriverbox.h";
+
+    d_icon = QPixmap( ":/images/tab/lens.png" );
+
+    d_domXml        =  "<ui language=\"c++\">\n"
+                       " <widget class=\"LensDriverBox\" name=\"LensDriverBoxWidget\">\n"
+                       "  <property name=\"geometry\">\n"
+                       "   <rect>\n"
+                       "    <x>0</x>\n"
+                       "    <y>0</y>\n"
+                       "    <width>880</width>\n"
+                       "    <height>1000</height>\n"
+                       "   </rect>\n"
+                       "  </property>\n"
+                       "  <property name=\"toolTip\" >\n"
+                       "   <string>LensDriverBox</string>\n"
+                       "  </property>\n"
+                       "  <property name=\"whatsThis\" >\n"
+                       "   <string>LensDriverBox</string>\n"
+                       "  </property>\n"
+                       " </widget>\n"
+                       "</ui>\n";
+}
+
+/******************************************************************************
+ * LensDriverBoxPlugin::createWidget
+ *****************************************************************************/
+QWidget * LensDriverBoxPlugin::createWidget( QWidget * parent )
+{
+    return ( new LensDriverBox( parent ) );
+}
+
+/******************************************************************************
+ * LensDriverBoxPlugin::group
+ *****************************************************************************/
+QString LensDriverBoxPlugin::group() const
 {
     return ( DCT_DIALOG_WIDGET_GROUP_NAME );
 }
@@ -1537,6 +1590,7 @@ CustomWidgetCollectionInterface::CustomWidgetCollectionInterface( QObject * pare
     plugins.append( new FpncBoxPlugin( this ) );
     plugins.append( new KneeBoxPlugin( this ) );
     plugins.append( new DpccBoxPlugin( this ) );
+    plugins.append( new LensDriverBoxPlugin( this ) );
 }
 
 /******************************************************************************
@@ -1546,5 +1600,3 @@ QList<QDesignerCustomWidgetInterface *> CustomWidgetCollectionInterface::customW
 {
     return ( plugins );
 }
-
-

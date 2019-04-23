@@ -157,5 +157,6 @@
         <file>icons/cog-32.png</file>
         <file>icons/cog-16.png</file>
         <file>icons/terminal.png</file>
+        <file>images/tab/lens.png</file>
     </qresource>
 </RCC>

@@ -170,6 +170,14 @@ IrisItf * ProVideoDevice::GetIrisItf() const
 }
 
 /******************************************************************************
+ * ProVideoDevice::GetLensItf()
+ *****************************************************************************/
+LensItf * ProVideoDevice::GetLensItf() const
+{
+    return nullptr;
+}
+
+/******************************************************************************
  * ProVideoDevice::GetKneeItf()
  *****************************************************************************/
 KneeItf * ProVideoDevice::GetKneeItf() const

@@ -180,6 +180,17 @@ int provideo_protocol_timecode_init( ctrl_protocol_handle_t const, void * const 
 int provideo_protocol_iris_init( ctrl_protocol_handle_t const, void * const  );
 
 /**************************************************************************//**
+ * @brief      Initialize a ProVideo Lens command control protocol
+ *
+ * @param[in]  handle   protocol instance to initialize
+ * @param[in]  ctx      user protocol context
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int provideo_protocol_lens_init( ctrl_protocol_handle_t const, void * const  );
+
+
+/**************************************************************************//**
  * @brief      Initialize a ProVideo Knee command control protocol
  *
  * @param[in]  handle   protocol instance to initialize

@@ -39,6 +39,7 @@
 #include "LutItf.h"
 #include "ChainItf.h"
 #include "IrisItf.h"
+#include "LensItf.h"
 #include "KneeItf.h"
 #include "DpccItf.h"
 #include "OsdItf.h"
@@ -65,6 +66,7 @@ public:
         bool hasChainAudio;
         bool hasAutoItf;
         bool hasIrisItf;
+        bool hasLensItf;
         bool hasIspItf;
         bool hasIspLsc;
         bool hasIspSplitScreen;
@@ -137,6 +139,7 @@ public:
     virtual LutItf *    GetLutItf() const;
     virtual ChainItf *  GetChainItf() const;
     virtual IrisItf *   GetIrisItf() const;
+    virtual LensItf *   GetLensItf() const;
     virtual KneeItf *   GetKneeItf() const;
     virtual DpccItf *   GetDpccItf() const;
     virtual OsdItf *    GetOsdItf() const;

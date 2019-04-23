@@ -57,6 +57,7 @@ void ChainItf::resync()
     GetChainSdiBlackLevel();
     GetChainSdiWhiteLevel();
     GetChainGenlockMode();
+    GetChainGenlockCrosslock();
     GetChainGenlockOffset();
     GetChainGenlockTermination();
     GetChainTimecode();
@@ -159,7 +160,7 @@ void ChainItf::GetChainDownscaleMode( int id )
             GET_CHANNEL_INSTANCE(this), sizeof(v), (uint8_t *)&v );
         HANDLE_ERROR( res );
 
-        // emit a ChainGenlockOffsetChanged signal
+        // emit a ChainDownscaleModeChanged signal
         emit ChainDownscaleModeChanged( (int)v.id, (bool)v.downscale, (bool)v.interlace );
     }
 }
@@ -261,6 +262,26 @@ void ChainItf::GetChainGenlockMode()
         
         // emit a ChainGenlockModeChanged signal
         emit ChainGenlockModeChanged( (int)value );
+    }
+}
+
+/******************************************************************************
+ * ChainItf::GetChainGenlockCrosslock
+ *****************************************************************************/
+void ChainItf::GetChainGenlockCrosslock()
+{
+    // Is there a signal listener
+    if ( receivers(SIGNAL(ChainGenlockCrosslockChanged(int, int))) > 0 )
+    {
+        uint8_t values[2];
+
+        // read genlock crosslock settings from device
+        int res = ctrl_protocol_get_genlock_crosslock( GET_PROTOCOL_INSTANCE(this),
+            GET_CHANNEL_INSTANCE(this), 2, values );
+        HANDLE_ERROR( res );
+
+        // emit a ChainGenlockCrosslockChanged signal
+        emit ChainGenlockCrosslockChanged( (int)values[0], (int)values[1] );
     }
 }
 
@@ -522,6 +543,22 @@ void ChainItf::onChainGenlockModeChange( int value )
         msgBox.exec();
     }
 
+    HANDLE_ERROR( res );
+}
+
+/******************************************************************************
+ * ChainItf::onChainGenlockCrosslockChange
+ *****************************************************************************/
+void ChainItf::onChainGenlockCrosslockChange( int enable, int vmode )
+{
+    // convert to array
+    uint8_t values[2];
+    values[0] = (uint8_t)enable;
+    values[1] = (uint8_t)vmode;
+
+    // set genlock crosslock on device
+    int res = ctrl_protocol_set_genlock_crosslock( GET_PROTOCOL_INSTANCE(this),
+            GET_CHANNEL_INSTANCE(this), 2, values );
     HANDLE_ERROR( res );
 }
 

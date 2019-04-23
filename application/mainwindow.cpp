@@ -251,21 +251,20 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
 
     // Remove all Tabs, clear active widget list
     m_activeWidgets.clear();
-    m_ui->tabWidget->removeTab(m_ui->tabWidget->indexOf(m_ui->tabInOut));
-    m_ui->tabWidget->removeTab(m_ui->tabWidget->indexOf(m_ui->tabBlack));
-    m_ui->tabWidget->removeTab(m_ui->tabWidget->indexOf(m_ui->tabWb));
-    m_ui->tabWidget->removeTab(m_ui->tabWidget->indexOf(m_ui->tabFlt));
-    m_ui->tabWidget->removeTab(m_ui->tabWidget->indexOf(m_ui->tabMcc));
-    m_ui->tabWidget->removeTab(m_ui->tabWidget->indexOf(m_ui->tabKnee));
-    m_ui->tabWidget->removeTab(m_ui->tabWidget->indexOf(m_ui->tabGamma));
-    m_ui->tabWidget->removeTab(m_ui->tabWidget->indexOf(m_ui->tabDpcc));
-    m_ui->tabWidget->removeTab(m_ui->tabWidget->indexOf(m_ui->tabOut));
-    m_ui->tabWidget->removeTab(m_ui->tabWidget->indexOf(m_ui->tabInfo));
-    m_ui->tabWidget->removeTab(m_ui->tabWidget->indexOf(m_ui->tabUpdate));
+    int numTabs = m_ui->tabWidget->count();
+    for ( int i = 0; i < numTabs; i++ )
+    {
+        m_ui->tabWidget->removeTab( 0 );
+    }
 
     // Add only those tabs, which are supported by the device, add them to the active widget list
     m_activeWidgets.append(m_ui->inoutBox);
     m_ui->tabWidget->addTab(m_ui->tabInOut, QIcon(":/images/tab/inout.png"), "");
+    if (deviceFeatures.hasLensItf)
+    {
+        m_activeWidgets.append(m_ui->lensDriverBox);
+        m_ui->tabWidget->addTab(m_ui->lensDriverBox, QIcon(":/images/tab/lens.png"), "");
+    }
     if (deviceFeatures.hasIspItf)
     {
         m_activeWidgets.append(m_ui->blackBox);
@@ -321,6 +320,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
     {
         connect( m_ui->inoutBox, SIGNAL(ResyncRequest()), this, SLOT(onAecResyncRequest()), Qt::UniqueConnection );
     }
+
 
     // Enable / disable elements inside the tabs
     // InOut Tab
@@ -530,6 +530,7 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         connect( m_ui->inoutBox, SIGNAL(CameraExposureChanged(int)), dev->GetCamItf(), SLOT(onCameraExposureChange(int)) );
     }
 
+
     if (deviceFeatures.hasIspItf)
     {
         if ( deviceFeatures.hasIspLsc )
@@ -566,6 +567,9 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
             // connect gen-lock mode
             connect( dev->GetChainItf(), SIGNAL(ChainGenlockModeChanged(int)), m_ui->inoutBox, SLOT(onChainGenlockModeChange(int)) );
             connect( m_ui->inoutBox, SIGNAL(ChainGenlockModeChanged(int)), dev->GetChainItf(), SLOT(onChainGenlockModeChange(int)) );
+
+            connect( dev->GetChainItf(), SIGNAL(ChainGenlockCrosslockChanged(int, int)), m_ui->inoutBox, SLOT(onChainGenlockCrosslockChange(int, int)) );
+            connect( m_ui->inoutBox, SIGNAL(ChainGenlockCrosslockChanged(int, int)), dev->GetChainItf(), SLOT(onChainGenlockCrosslockChange(int, int)) );
 
             connect( dev->GetChainItf(), SIGNAL(ChainGenlockOffsetChanged(int, int)), m_ui->inoutBox, SLOT(onChainGenlockOffsetChange(int, int)) );
             connect( m_ui->inoutBox, SIGNAL(ChainGenlockOffsetChanged(int, int)), dev->GetChainItf(), SLOT(onChainGenlockOffsetChange(int, int)) );
@@ -623,6 +627,56 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         connect( m_ui->inoutBox, SIGNAL(IrisAptChanged(int)), dev->GetIrisItf(), SLOT(onIrisAptChange(int)) );
     }
 
+    //////////////////////////
+    // lensdriver widget
+    //////////////////////////
+
+    if (deviceFeatures.hasLensItf)
+    {
+        // lens settings
+        connect( dev->GetLensItf(), SIGNAL(LensSettingsChanged(QVector<int>)), m_ui->lensDriverBox, SLOT(onLensSettingsChange(QVector<int>)) );
+        connect( m_ui->lensDriverBox, SIGNAL(LensSettingsChanged(QVector<int>)), dev->GetLensItf(), SLOT(onLensSettingsChange(QVector<int>)) );
+
+        // lens active
+        connect( dev->GetLensItf(), SIGNAL(LensActiveChanged(bool)), m_ui->lensDriverBox, SLOT(onLensActiveChange(bool)) );
+        connect( m_ui->lensDriverBox, SIGNAL(LensActiveChanged(bool)), dev->GetLensItf(), SLOT(onLensActiveChange(bool)) );
+        connect(m_ui->lensDriverBox,SIGNAL(SmallResyncRequest(void)),dev->GetLensItf(),SLOT(onSmallResyncRequest(void)) );
+
+        // lens Focus position
+        connect( dev->GetLensItf(), SIGNAL(LensFocusPositionChanged( int ) ), m_ui->lensDriverBox, SLOT( onLensFocusPositionChange( int )) );
+        connect( m_ui->lensDriverBox, SIGNAL(LensFocusPositionChanged( int ) ), dev->GetLensItf(), SLOT( onLensFocusPositionChange( int )) );
+
+        // lens Focus Settings
+        connect( dev->GetLensItf(), SIGNAL(LensFocusSettingsChanged(QVector<int>)), m_ui->lensDriverBox, SLOT(onLensFocusSettingsChange(QVector<int>)) );
+        connect( m_ui->lensDriverBox, SIGNAL(LensFocusSettingsChanged(QVector<int>)), dev->GetLensItf(), SLOT(onLensFocusSettingsChange(QVector<int>)) );
+
+        // lens Zoom position
+        connect( dev->GetLensItf(), SIGNAL(LensZoomPositionChanged( int ) ), m_ui->lensDriverBox, SLOT( onLensZoomPositionChange( int )) );
+        connect( m_ui->lensDriverBox, SIGNAL(LensZoomPositionChanged( int ) ), dev->GetLensItf(), SLOT( onLensZoomPositionChange( int )) );
+
+        // lens Zoom Settings
+        connect( dev->GetLensItf(), SIGNAL(LensZoomSettingsChanged(QVector<int>)), m_ui->lensDriverBox, SLOT(onLensZoomSettingsChange(QVector<int>)) );
+        connect( m_ui->lensDriverBox, SIGNAL(LensZoomSettingsChanged(QVector<int>)), dev->GetLensItf(), SLOT(onLensZoomSettingsChange(QVector<int>)) );
+
+        // lens Iris position
+        connect( dev->GetLensItf(), SIGNAL(LensIrisPositionChanged( int ) ), m_ui->lensDriverBox, SLOT( onLensIrisPositionChange( int )) );
+        connect( m_ui->lensDriverBox, SIGNAL(LensIrisPositionChanged( int ) ), dev->GetLensItf(), SLOT( onLensIrisPositionChange( int )) );
+
+        // lens Iris Settings
+        connect( dev->GetLensItf(), SIGNAL(LensIrisSettingsChanged(QVector<int>)), m_ui->lensDriverBox, SLOT(onLensIrisSettingsChange(QVector<int>)) );
+        connect( m_ui->lensDriverBox, SIGNAL(LensIrisSettingsChanged(QVector<int>)), dev->GetLensItf(), SLOT(onLensIrisSettingsChange(QVector<int>)) );
+
+        // lens Filter position
+        connect( dev->GetLensItf(), SIGNAL(LensFilterPositionChanged( int ) ), m_ui->lensDriverBox, SLOT( onLensFilterPositionChange( int )) );
+        connect( m_ui->lensDriverBox, SIGNAL(LensFilterPositionChanged( int ) ), dev->GetLensItf(), SLOT( onLensFilterPositionChange( int )) );
+
+        // lens Filter Settings
+        connect( dev->GetLensItf(), SIGNAL(LensFilterSettingsChanged(QVector<int>)), m_ui->lensDriverBox, SLOT(onLensFilterSettingsChange(QVector<int>)) );
+        connect( m_ui->lensDriverBox, SIGNAL(LensFilterSettingsChanged(QVector<int>)), dev->GetLensItf(), SLOT(onLensFilterSettingsChange(QVector<int>)) );
+
+
+
+    }
     //////////////////////////
     // blacklevel widget
     //////////////////////////
@@ -1071,8 +1125,9 @@ void MainWindow::onResolutionMaskChange( uint32_t id0, uint32_t id1, uint32_t id
     bool supported = false;
 
     m_ui->inoutBox->clearAllVideoModes();
+    m_ui->inoutBox->clearAllGenlockCrosslockVideoModes();
 
-    // fill video-mode combo box
+    // fill video-mode and genlock crosslock vmode combo boxes
     for ( int i=VideoModeFirst; i<VideoModeMax; i++ )
     {
         if ( (i>=VideoModeFirstHD) && (i<=VideoModeLastHD) )
@@ -1093,6 +1148,7 @@ void MainWindow::onResolutionMaskChange( uint32_t id0, uint32_t id1, uint32_t id
         if ( supported )
         {
             m_ui->inoutBox->addVideoMode( GetVideoModeName( static_cast<VideoMode>(i) ), i );
+            m_ui->inoutBox->addGenlockCrosslockVideoMode( GetGenlockCrosslockVmodeName( static_cast<VideoMode>(i) ), i);
         }
     }
 }
@@ -2029,6 +2085,9 @@ void MainWindow::onAecResyncRequest()
         QApplication::setOverrideCursor( Qt::ArrowCursor );
     }
 }
+
+
+
 
 /******************************************************************************
  * MainWindow::onResyncRequest

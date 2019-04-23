@@ -54,6 +54,7 @@
 #include "fpncbox.h"
 #include "kneebox.h"
 #include "dpccbox.h"
+#include "lensdriverbox.h"
 
 #define DCT_BASIC_WIDGET_GROUP_NAME         ( "DCT Basic Widgets" )
 #define DCT_DIALOG_WIDGET_GROUP_NAME        ( "DCT Dialog Widgets" )
@@ -65,7 +66,7 @@ class CustomWidgetInterface: public QObject, public QDesignerCustomWidgetInterfa
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
 public:
-    explicit CustomWidgetInterface( QObject * parent = 0);
+    explicit CustomWidgetInterface( QObject * parent = nullptr );
 
     bool isContainer() const Q_DECL_OVERRIDE;
     bool isInitialized() const Q_DECL_OVERRIDE;
@@ -99,7 +100,7 @@ class CustomWidgetCollectionInterface: public QObject, public QDesignerCustomWid
     Q_INTERFACES( QDesignerCustomWidgetCollectionInterface )
 
 public:
-    CustomWidgetCollectionInterface( QObject * parent = 0 );
+    CustomWidgetCollectionInterface( QObject * parent = nullptr );
     
     QList<QDesignerCustomWidgetInterface *> customWidgets() const Q_DECL_OVERRIDE;
 
@@ -114,7 +115,7 @@ class FmtSpinBoxPlugin : public CustomWidgetInterface
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
 public:
-    explicit FmtSpinBoxPlugin( QObject * parent = 0 );
+    explicit FmtSpinBoxPlugin( QObject * parent = nullptr );
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
 };
 
@@ -125,7 +126,7 @@ class SkinnedDialPlugin: public CustomWidgetInterface
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
 public:
-    explicit SkinnedDialPlugin( QObject * parent = 0 );
+    explicit SkinnedDialPlugin( QObject * parent = nullptr );
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
 };
 
@@ -136,7 +137,7 @@ class SwitchButtonPlugin: public CustomWidgetInterface
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
 public:
-    explicit SwitchButtonPlugin( QObject * parent = 0 );
+    explicit SwitchButtonPlugin( QObject * parent = nullptr );
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
 };
 
@@ -147,7 +148,7 @@ class SingleChannelKnobBoxPlugin : public CustomWidgetInterface
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
 public:
-    explicit SingleChannelKnobBoxPlugin( QObject * parent = 0 );
+    explicit SingleChannelKnobBoxPlugin( QObject * parent = nullptr );
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
 };
 
@@ -158,7 +159,7 @@ class TripleChannelSliderBoxPlugin : public CustomWidgetInterface
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
 public:
-    explicit TripleChannelSliderBoxPlugin( QObject * parent = 0 );
+    explicit TripleChannelSliderBoxPlugin( QObject * parent = nullptr );
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
 };
 
@@ -169,7 +170,7 @@ class TripleChannelKnobBoxPlugin : public CustomWidgetInterface
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
 public:
-    explicit TripleChannelKnobBoxPlugin( QObject * parent = 0 );
+    explicit TripleChannelKnobBoxPlugin( QObject * parent = nullptr );
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
 };
 
@@ -180,7 +181,7 @@ class ButtonArrayBoxPlugin : public CustomWidgetInterface
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
 public:
-    explicit ButtonArrayBoxPlugin( QObject * parent = 0 );
+    explicit ButtonArrayBoxPlugin( QObject * parent = nullptr );
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
 };
 
@@ -191,7 +192,7 @@ class PieSegmentSelectPlugin : public CustomWidgetInterface
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
 public:
-    explicit PieSegmentSelectPlugin( QObject * parent = 0 );
+    explicit PieSegmentSelectPlugin( QObject * parent = nullptr );
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
 };
 
@@ -202,7 +203,7 @@ class HueSegmentSelectPlugin : public CustomWidgetInterface
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
 public:
-    explicit HueSegmentSelectPlugin( QObject * parent = 0 );
+    explicit HueSegmentSelectPlugin( QObject * parent = nullptr );
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
 };
 
@@ -213,7 +214,7 @@ class MccSliderPlugin : public CustomWidgetInterface
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
 public:
-    explicit MccSliderPlugin( QObject * parent = 0 );
+    explicit MccSliderPlugin( QObject * parent = nullptr );
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
 };
 
@@ -224,7 +225,7 @@ class QCustomPlotPlugin : public CustomWidgetInterface
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
 public:
-    explicit QCustomPlotPlugin( QObject * parent = 0 );
+    explicit QCustomPlotPlugin( QObject * parent = nullptr );
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
 };
 
@@ -235,7 +236,7 @@ class WbBoxPlugin : public CustomWidgetInterface
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
 public:
-    explicit WbBoxPlugin( QObject * parent = 0 );
+    explicit WbBoxPlugin( QObject * parent = nullptr );
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
     
     QString group() const Q_DECL_OVERRIDE;
@@ -248,7 +249,7 @@ class MccBoxPlugin : public CustomWidgetInterface
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
 public:
-    explicit MccBoxPlugin( QObject * parent = 0 );
+    explicit MccBoxPlugin( QObject * parent = nullptr );
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
     
     QString group() const Q_DECL_OVERRIDE;
@@ -261,7 +262,7 @@ class MccEqBoxPlugin : public CustomWidgetInterface
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
 public:
-    explicit MccEqBoxPlugin( QObject * parent = 0 );
+    explicit MccEqBoxPlugin( QObject * parent = nullptr );
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
 
     QString group() const Q_DECL_OVERRIDE;
@@ -274,7 +275,7 @@ class InfoBoxPlugin: public CustomWidgetInterface
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
 public:
-    explicit InfoBoxPlugin( QObject * parent = 0 );
+    explicit InfoBoxPlugin( QObject * parent = nullptr );
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
     
     QString group() const Q_DECL_OVERRIDE;
@@ -287,7 +288,7 @@ class BlackLevelBoxPlugin: public CustomWidgetInterface
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
 public:
-    explicit BlackLevelBoxPlugin( QObject * parent = 0 );
+    explicit BlackLevelBoxPlugin( QObject * parent = nullptr );
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
     
     QString group() const Q_DECL_OVERRIDE;
@@ -300,7 +301,7 @@ class GammaBoxPlugin: public CustomWidgetInterface
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
 public:
-    explicit GammaBoxPlugin( QObject * parent = 0 );
+    explicit GammaBoxPlugin( QObject * parent = nullptr );
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
     
     QString group() const Q_DECL_OVERRIDE;
@@ -313,7 +314,7 @@ class LutBoxPlugin: public CustomWidgetInterface
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
 public:
-    explicit LutBoxPlugin( QObject * parent = 0 );
+    explicit LutBoxPlugin( QObject * parent = nullptr );
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
     
     QString group() const Q_DECL_OVERRIDE;
@@ -326,7 +327,7 @@ class InOutBoxPlugin: public CustomWidgetInterface
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
 public:
-    explicit InOutBoxPlugin( QObject * parent = 0 );
+    explicit InOutBoxPlugin( QObject * parent = nullptr );
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
     
     QString group() const Q_DECL_OVERRIDE;
@@ -339,7 +340,7 @@ class OutBoxPlugin: public CustomWidgetInterface
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
 public:
-    explicit OutBoxPlugin( QObject * parent = 0 );
+    explicit OutBoxPlugin( QObject * parent = nullptr );
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
     
     QString group() const Q_DECL_OVERRIDE;
@@ -352,7 +353,7 @@ class FltBoxPlugin: public CustomWidgetInterface
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
 public:
-    explicit FltBoxPlugin( QObject * parent = 0 );
+    explicit FltBoxPlugin( QObject * parent = nullptr );
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
     
     QString group() const Q_DECL_OVERRIDE;
@@ -365,7 +366,7 @@ class UpdateBoxPlugin: public CustomWidgetInterface
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
 public:
-    explicit UpdateBoxPlugin( QObject * parent = 0 );
+    explicit UpdateBoxPlugin( QObject * parent = nullptr );
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
     
     QString group() const Q_DECL_OVERRIDE;
@@ -378,7 +379,7 @@ class PlayBackBoxPlugin: public CustomWidgetInterface
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
 public:
-    explicit PlayBackBoxPlugin( QObject * parent = 0 );
+    explicit PlayBackBoxPlugin( QObject * parent = nullptr );
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
     
     QString group() const Q_DECL_OVERRIDE;
@@ -391,7 +392,7 @@ class FpncBoxPlugin: public CustomWidgetInterface
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
 public:
-    explicit FpncBoxPlugin( QObject * parent = 0 );
+    explicit FpncBoxPlugin( QObject * parent = nullptr );
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
     
     QString group() const Q_DECL_OVERRIDE;
@@ -404,7 +405,7 @@ class KneeBoxPlugin: public CustomWidgetInterface
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
 public:
-    explicit KneeBoxPlugin( QObject * parent = 0 );
+    explicit KneeBoxPlugin( QObject * parent = nullptr );
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
     
     QString group() const Q_DECL_OVERRIDE;
@@ -417,7 +418,20 @@ class DpccBoxPlugin: public CustomWidgetInterface
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
 public:
-    explicit DpccBoxPlugin( QObject * parent = 0 );
+    explicit DpccBoxPlugin( QObject * parent = nullptr );
+    QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
+
+    QString group() const Q_DECL_OVERRIDE;
+};
+
+// LensDriverBoxPlugin
+class LensDriverBoxPlugin: public CustomWidgetInterface
+{
+    Q_OBJECT
+    Q_INTERFACES( QDesignerCustomWidgetInterface )
+
+public:
+    explicit LensDriverBoxPlugin( QObject * parent = nullptr );
     QWidget * createWidget( QWidget *parent ) Q_DECL_OVERRIDE;
 
     QString group() const Q_DECL_OVERRIDE;

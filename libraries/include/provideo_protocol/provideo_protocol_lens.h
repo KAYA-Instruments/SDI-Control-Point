@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2017 Dream Chip Technologies GmbH
+ * Copyright (C) 2019 Dream Chip Technologies GmbH
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,46 +15,35 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *****************************************************************************/
 /**
- * @file    IrisItf.h
+ * @file    provideo_protocol_lens.h
  *
- * @brief   Iris Processing Interface
- *
- * @note    Multiple Inheritance of an QObject is not allowed.
+ * @brief   ProVideo Lens protocol implementation
  *
  *****************************************************************************/
-#ifndef _IRIS_INTERFACE_H_
-#define _IRIS_INTERFACE_H_
+#ifndef __PROVIDEO_PROTOCOL_LENS_H__
+#define __PROVIDEO_PROTOCOL_LENS_H__
 
-#include <QObject>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#include "ProVideoItf.h"
+#include <ctrl_protocol/ctrl_protocol.h>
 
-class IrisItf : public ProVideoItf
-{
-    Q_OBJECT
+/**************************************************************************//**
+ * @brief      Register the lens protocol implementation at control protocol layer
+ *
+ * @param[in]  handle    Instance handle of control protocol layer
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int provideo_protocol_lens_init
+(
+    ctrl_protocol_handle_t const handle
+);
 
-public:
-    explicit IrisItf( ComChannel * c, ComProtocol * p )
-        : ProVideoItf( c, p )
-    { }
- 
-    // resync all settings
-    void resync() override;
+#ifdef __cplusplus
+}
+#endif
 
-    void GetIrisSetup();
-    void GetIrisApt();
-
-signals:
-    void IrisSetupChanged( QVector<int> values );
-    void IrisAptChanged( int pos );
-    void IrisAptError( void );
-
-public slots:
-    void onIrisSetupChange( QVector<int> values );
-    void onIrisAptChange( int );
-};
-
-#endif // _IRIS_INTERFACE_H_
-
-
+#endif /* __PROVIDEO_PROTOCOL_LENS_H__ */
 

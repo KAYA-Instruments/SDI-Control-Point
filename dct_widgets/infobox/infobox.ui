@@ -847,6 +847,9 @@
         <property name="suffix">
          <string> °C</string>
         </property>
+        <property name="minimum">
+         <number>30</number>
+        </property>
         <property name="maximum">
          <number>75</number>
         </property>

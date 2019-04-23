@@ -42,7 +42,7 @@
          <x>0</x>
          <y>0</y>
          <width>932</width>
-         <height>958</height>
+         <height>962</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -70,7 +70,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <property name="iconSize">
            <size>
@@ -91,7 +91,7 @@
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_7">
             <item>
-             <widget class="InOutBox" name="inoutBox">
+             <widget class="InOutBox" name="inoutBox" native="true">
               <property name="toolTip">
                <string/>
               </property>
@@ -99,6 +99,20 @@
                <string/>
               </property>
              </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tabLensDriver">
+           <attribute name="icon">
+            <iconset resource="../resource/resource.qrc">
+             <normaloff>:/images/tab/lens.png</normaloff>:/images/tab/lens.png</iconset>
+           </attribute>
+           <attribute name="title">
+            <string/>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_14">
+            <item>
+             <widget class="LensDriverBox" name="lensDriverBox" native="true"/>
             </item>
            </layout>
           </widget>
@@ -112,7 +126,7 @@
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_5">
             <item>
-             <widget class="BlackLevelBox" name="blackBox">
+             <widget class="BlackLevelBox" name="blackBox" native="true">
               <property name="toolTip">
                <string/>
               </property>
@@ -133,7 +147,7 @@
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_3">
             <item>
-             <widget class="WbBox" name="wbBox">
+             <widget class="WbBox" name="wbBox" native="true">
               <property name="toolTip">
                <string/>
               </property>
@@ -154,7 +168,7 @@
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_9">
             <item>
-             <widget class="FltBox" name="fltBox">
+             <widget class="FltBox" name="fltBox" native="true">
               <property name="toolTip">
                <string/>
               </property>
@@ -175,7 +189,7 @@
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_2">
             <item>
-             <widget class="MccEqBox" name="mccEqBox">
+             <widget class="MccEqBox" name="mccEqBox" native="true">
               <property name="toolTip">
                <string/>
               </property>
@@ -196,7 +210,7 @@
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_10">
             <item>
-             <widget class="KneeBox" name="kneeBox">
+             <widget class="KneeBox" name="kneeBox" native="true">
               <property name="toolTip">
                <string/>
               </property>
@@ -217,7 +231,7 @@
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_6">
             <item>
-             <widget class="LutBox" name="lutBox">
+             <widget class="LutBox" name="lutBox" native="true">
               <property name="toolTip">
                <string/>
               </property>
@@ -238,7 +252,7 @@
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_12">
             <item>
-             <widget class="DpccBox" name="dpccBox">
+             <widget class="DpccBox" name="dpccBox" native="true">
               <property name="toolTip">
                <string/>
               </property>
@@ -259,7 +273,7 @@
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_8">
             <item>
-             <widget class="OutBox" name="outBox">
+             <widget class="OutBox" name="outBox" native="true">
               <property name="toolTip">
                <string/>
               </property>
@@ -280,7 +294,7 @@
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_4">
             <item>
-             <widget class="InfoBox" name="infoBox">
+             <widget class="InfoBox" name="infoBox" native="true">
               <property name="toolTip">
                <string/>
               </property>
@@ -301,7 +315,7 @@
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_11">
             <item>
-             <widget class="UpdateBox" name="updBox">
+             <widget class="UpdateBox" name="updBox" native="true">
               <property name="toolTip">
                <string/>
               </property>
@@ -567,6 +581,11 @@
    <class>DpccBox</class>
    <extends>QWidget</extends>
    <header>dpccbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>LensDriverBox</class>
+   <extends>QWidget</extends>
+   <header>lensdriverbox.h</header>
   </customwidget>
  </customwidgets>
  <resources>

@@ -100,6 +100,11 @@ ProVideoProtocol::ProVideoProtocol( instanceType i, void * UsrCtx )
             res = provideo_protocol_iris_init( GetInstance(), UsrCtx );
             break;
 
+        case LENS_INSTANCE:
+            res = provideo_protocol_lens_init( GetInstance(), UsrCtx );
+            break;
+
+
         case KNEE_INSTANCE:
             res = provideo_protocol_knee_init( GetInstance(), UsrCtx );
             break;

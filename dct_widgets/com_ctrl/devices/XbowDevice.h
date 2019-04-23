@@ -32,7 +32,7 @@ class XbowDevice : public ProVideoDevice
 public:
     explicit XbowDevice( ComChannel * c, ComProtocol * p );
     XbowDevice( const ProVideoDevice &baseObj );
-    ~XbowDevice();
+    ~XbowDevice() override;
 
     // set communication channel
     void setComChannel( ComChannel * ) override;
@@ -51,6 +51,7 @@ public:
     LutItf *        GetLutItf() const override;
     ChainItf *      GetChainItf() const override;
     IrisItf *       GetIrisItf() const override;
+    LensItf *       GetLensItf() const override;
     KneeItf *       GetKneeItf() const override;
     DpccItf *       GetDpccItf() const override;
 

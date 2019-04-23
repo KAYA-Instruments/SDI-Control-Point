@@ -31,7 +31,7 @@
 /******************************************************************************
  * @brief Macro for type-casting to function driver 
  *****************************************************************************/
-#define AUTO_DRV( drv )     ((ctrl_protocol_iris_drv_t *)drv)
+#define IRIS_DRV( drv )     ((ctrl_protocol_iris_drv_t *)drv)
 
 /******************************************************************************
  * ctrl_protocol_get_iris_setup
@@ -45,9 +45,9 @@ int ctrl_protocol_get_iris_setup
 )
 {
     CHECK_HANDLE( protocol );
-    CHECK_DRV_FUNC( AUTO_DRV(protocol->drv), get_iris_setup );
+    CHECK_DRV_FUNC( IRIS_DRV(protocol->drv), get_iris_setup );
     CHECK_NOT_NULL( values );
-    return ( AUTO_DRV(protocol->drv)->get_iris_setup( protocol->ctx, channel, no, values ) );
+    return ( IRIS_DRV(protocol->drv)->get_iris_setup( protocol->ctx, channel, no, values ) );
 }
 
 /******************************************************************************
@@ -62,8 +62,8 @@ int ctrl_protocol_set_iris_setup
 )
 {
     CHECK_HANDLE( protocol );
-    CHECK_DRV_FUNC( AUTO_DRV(protocol->drv), set_iris_setup );
-    return ( AUTO_DRV(protocol->drv)->set_iris_setup( protocol->ctx, channel, no, values ) );
+    CHECK_DRV_FUNC( IRIS_DRV(protocol->drv), set_iris_setup );
+    return ( IRIS_DRV(protocol->drv)->set_iris_setup( protocol->ctx, channel, no, values ) );
 }
 
 /******************************************************************************
@@ -77,9 +77,9 @@ int ctrl_protocol_get_iris_apt
 )
 {
     CHECK_HANDLE( protocol );
-    CHECK_DRV_FUNC( AUTO_DRV(protocol->drv), get_iris_apt );
+    CHECK_DRV_FUNC( IRIS_DRV(protocol->drv), get_iris_apt );
     CHECK_NOT_NULL( pos );
-    return ( AUTO_DRV(protocol->drv)->get_iris_apt( protocol->ctx, channel, pos ) );
+    return ( IRIS_DRV(protocol->drv)->get_iris_apt( protocol->ctx, channel, pos ) );
 }
 
 /******************************************************************************
@@ -93,8 +93,8 @@ int ctrl_protocol_set_iris_apt
 )
 {
     CHECK_HANDLE( protocol );
-    CHECK_DRV_FUNC( AUTO_DRV(protocol->drv), set_iris_apt );
-    return ( AUTO_DRV(protocol->drv)->set_iris_apt( protocol->ctx, channel, pos ) );
+    CHECK_DRV_FUNC( IRIS_DRV(protocol->drv), set_iris_apt );
+    return ( IRIS_DRV(protocol->drv)->set_iris_apt( protocol->ctx, channel, pos ) );
 }
 
 
