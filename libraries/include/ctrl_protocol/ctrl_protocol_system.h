@@ -540,6 +540,38 @@ int ctrl_protocol_set_rs485_bc_master
 );
 
 /**************************************************************************//**
+ * @brief Get the current RS485 termination state.
+ *
+ * @param[in]  channel      control channel instance
+ * @param[in]  protocol     control protocol instance
+ * @param[out] enabled      current termination state
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_rs485_termination
+(
+    ctrl_protocol_handle_t const handle,
+    ctrl_channel_handle_t const  channel,
+    uint8_t * const              enabled
+);
+
+/**************************************************************************//**
+ * @brief Enable or disable the termination of the RS485 port.
+ *
+ * @param[in]  channel          control channel instance
+ * @param[in]  protocol         control protocol instance
+ * @param[in]  enable           enable or disable flag
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_set_rs485_termination
+(
+    ctrl_protocol_handle_t const handle,
+    ctrl_channel_handle_t const  channel,
+    uint8_t const                enable
+);
+
+/**************************************************************************//**
  * @brief Connection information about a device
  *****************************************************************************/
 typedef struct ctrl_protocol_device_s
@@ -901,6 +933,8 @@ typedef struct ctrl_protocol_sys_drv_s
     ctrl_protocol_set_uint32_t      set_rs485_bc_addr;
     ctrl_protocol_get_uint8_t       get_rs485_bc_master;
     ctrl_protocol_set_int32_t       set_rs485_bc_master;
+    ctrl_protocol_get_uint8_t       get_rs485_termination;
+    ctrl_protocol_set_uint8_t       set_rs485_termination;
     ctrl_protocol_uint8_array_t     get_device_list;
     ctrl_protocol_get_uint8_t       get_prompt;
     ctrl_protocol_set_uint8_t       set_prompt;

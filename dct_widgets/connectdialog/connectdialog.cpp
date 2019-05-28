@@ -1460,7 +1460,9 @@ bool ConnectDialog::scanAndConnect()
 /******************************************************************************
  * ConnectDialog::changeComportSettings
  *****************************************************************************/
-void ConnectDialog::changeComportSettings( int rs232Baudrate, int rs485Baudrate, int rs485Address, int rs485BroadcastAddress )
+void ConnectDialog::changeComportSettings( int rs232Baudrate, int rs485Baudrate,
+                                           int rs485Address, int rs485BroadcastAddress,
+                                           bool rs485Termination )
 {
     // Change RS232 Settings
     // Emit a change event to change the baudrate on the device
@@ -1495,6 +1497,9 @@ void ConnectDialog::changeComportSettings( int rs232Baudrate, int rs485Baudrate,
 
     // Emit a change event to change the broadcast address on the device
     emit RS485BroadcastAddressChanged( static_cast<uint32_t>(rs485BroadcastAddress) );
+
+    // Emit a change event to change the RS485 termination on the device
+    emit RS485TerminationChanged( rs485Termination );
 
     // Setup connect dialog with new values
     // RS232

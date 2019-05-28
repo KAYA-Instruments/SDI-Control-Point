@@ -6,8 +6,8 @@
 
 # This version number is shown in the Application, it should be
 # updated before each release!
-VERSION = 1.1.11
-DEFINES += VERSION_STRING=\\\"1.1.11\\\"
+VERSION = 1.1.12
+DEFINES += VERSION_STRING=\\\"1.1.12\\\"
 
 QMAKE_TARGET_COMPANY = "Dream Chip Technologies GmbH"
 QMAKE_TARGET_PRODUCT = "ProVideo GUI"

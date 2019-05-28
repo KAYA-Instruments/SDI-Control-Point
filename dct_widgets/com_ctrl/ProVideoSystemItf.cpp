@@ -52,6 +52,8 @@ void ProVideoSystemItf::resync()
     GetRS485BroadcastAddress();
     // sync RS485 broadcast master
     GetRS485BroadcastMaster();
+    // sync RS485 termination
+    GetRS485Termination();
     // sync prompt enable-status 
     GetPrompt();
     // sync debug-level 
@@ -559,6 +561,26 @@ void ProVideoSystemItf::GetRS485BroadcastMaster()
 }
 
 /******************************************************************************
+ * ProVideoSystemItf::GetRS485Termination
+ *****************************************************************************/
+void ProVideoSystemItf::GetRS485Termination()
+{
+    // Is there a signal listener
+    if ( receivers(SIGNAL(RS485TerminationChanged(bool))) > 0 )
+    {
+        uint8_t is_enabled = 0u;
+
+        // read current RS485 slave address
+        int res = ctrl_protocol_get_rs485_termination( GET_PROTOCOL_INSTANCE(this),
+                    GET_CHANNEL_INSTANCE(this), &is_enabled );
+        HANDLE_ERROR( res );
+
+        // emit a RS485TerminationChanged signal
+        emit RS485TerminationChanged( is_enabled > 0 ? true : false );
+    }
+}
+
+/******************************************************************************
  * ProVideoSystemItf::GetDeviceList
  *****************************************************************************/
 void ProVideoSystemItf::GetDeviceList( uint32_t timeout )
@@ -709,6 +731,17 @@ void ProVideoSystemItf::onRS485BroadcastMasterChange( int32_t master_address )
     // write RS485 broadcast address
     int res = ctrl_protocol_set_rs485_bc_master( GET_PROTOCOL_INSTANCE(this),
                     GET_CHANNEL_INSTANCE(this), master_address );
+    HANDLE_ERROR( res );
+}
+
+/******************************************************************************
+ * ProVideoSystemItf::onRS485BroadcastAddressChange
+ *****************************************************************************/
+void ProVideoSystemItf::onRS485TerminationChange( bool enabled )
+{
+    // write RS485 termination
+    int res = ctrl_protocol_set_rs485_termination( GET_PROTOCOL_INSTANCE(this),
+                    GET_CHANNEL_INSTANCE(this), enabled ? 1 : 0 );
     HANDLE_ERROR( res );
 }
 

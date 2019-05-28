@@ -179,6 +179,14 @@ void SettingsDialog::onRS485BroadcastAddressChange( uint32_t address )
 }
 
 /******************************************************************************
+ * SettingsDialog::onRS485TerminationChange
+ *****************************************************************************/
+void SettingsDialog::onRS485TerminationChange( bool enabled )
+{
+    m_ui->cbxRS485Termination->setChecked( enabled );
+}
+
+/******************************************************************************
  * SettingsDialog::onRS485BroadcastAddressChange
  *****************************************************************************/
 void SettingsDialog::onBroadcastChange( bool enable )
@@ -282,6 +290,7 @@ void SettingsDialog::onBtnApplySerialPortSettingsClicked()
     int rs485Baudrate = m_ui->cbxRS485Baudrate->itemData( m_ui->cbxRS485Baudrate->currentIndex() ).toInt();
     int rs485Address = m_ui->sbxRS485Address->value();
     int rs485BroadcastAddress = m_ui->sbxRS485BroadcastAddress->value();
+    bool rs485Termination = m_ui->cbxRS485Termination->isChecked();
 
     // check for consistency, broadcast and device address must not be identical
     if ( rs485Address == rs485BroadcastAddress )
@@ -296,7 +305,9 @@ void SettingsDialog::onBtnApplySerialPortSettingsClicked()
     else
     {
         // Emit a system settings changed event, this will trigger reconnect to the device
-        emit SystemSettingsChanged( rs232Baudrate, rs485Baudrate, rs485Address, rs485BroadcastAddress );
+        emit SystemSettingsChanged( rs232Baudrate, rs485Baudrate,
+                                    rs485Address, rs485BroadcastAddress,
+                                    rs485Termination );
 
         QApplication::setOverrideCursor( Qt::ArrowCursor );
     }

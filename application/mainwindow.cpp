@@ -1088,6 +1088,9 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
     connect( m_ConnectDlg, SIGNAL(RS485AddressChanged(uint32_t)), dev->GetProVideoSystemItf(), SLOT(onRS485AddressChange(uint32_t)) );
     connect( dev->GetProVideoSystemItf(), SIGNAL(RS485AddressChanged(uint32_t)), m_SettingsDlg, SLOT(onRS485AddressChange(uint32_t)) );
 
+    connect( m_ConnectDlg, SIGNAL(RS485TerminationChanged(bool)), dev->GetProVideoSystemItf(), SLOT(onRS485TerminationChange(bool)) );
+    connect( dev->GetProVideoSystemItf(), SIGNAL(RS485TerminationChanged(bool)), m_SettingsDlg, SLOT(onRS485TerminationChange(bool)) );
+
     if (deviceFeatures.hasSystemBroadcast)
     {
         connect( m_ConnectDlg, SIGNAL(RS485BroadcastAddressChanged(uint32_t)), dev->GetProVideoSystemItf(), SLOT(onRS485BroadcastAddressChange(uint32_t)) );
@@ -1296,7 +1299,7 @@ void MainWindow::setSettingsDlg( SettingsDialog * dlg )
 
         connect( m_SettingsDlg, SIGNAL(UpdateDeviceName()), this, SLOT(onUpdateDeviceName()) );
         connect( m_SettingsDlg, SIGNAL(ResyncRequest()), this, SLOT(onResyncRequest()) );
-        connect( m_SettingsDlg, SIGNAL(SystemSettingsChanged(int,int,int,int)), this, SLOT(onSystemSettingsChange(int,int,int,int)) );
+        connect( m_SettingsDlg, SIGNAL(SystemSettingsChanged(int,int,int,int,bool)), this, SLOT(onSystemSettingsChange(int,int,int,int,bool)) );
         connect( m_SettingsDlg, SIGNAL(WidgetModeChanged(DctWidgetBox::Mode)), this, SLOT(onWidgetModeChange(DctWidgetBox::Mode)) );
         connect( m_SettingsDlg, SIGNAL(ConnectionCheckChanged(bool)), this, SLOT(onConnectionCheckChange(bool)) );
         connect( m_SettingsDlg, SIGNAL(SaveSettings()), this, SLOT( onSaveSettingsClicked()) );
@@ -1380,10 +1383,14 @@ void MainWindow::onUpdateDeviceName()
 /******************************************************************************
  * MainWindow::onSystemSettingsChange
  *****************************************************************************/
-void MainWindow::onSystemSettingsChange( int rs232Baudrate, int rs485Baudrate, int rs485Address, int rs485BroadcastAddress )
+void MainWindow::onSystemSettingsChange( int rs232Baudrate, int rs485Baudrate,
+                                         int rs485Address, int rs485BroadcastAddress,
+                                         bool rs485Termination )
 {
     // Change the comport settings on the device and in the connect dialog
-    m_ConnectDlg->changeComportSettings(rs232Baudrate, rs485Baudrate, rs485Address, rs485BroadcastAddress);
+    m_ConnectDlg->changeComportSettings( rs232Baudrate, rs485Baudrate,
+                                         rs485Address, rs485BroadcastAddress,
+                                         rs485Termination );
 
     // Update combo box
     updateDeviceList();

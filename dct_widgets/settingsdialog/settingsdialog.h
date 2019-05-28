@@ -53,7 +53,9 @@ signals:
     void DeviceNameChanged( QString name );
     void UpdateDeviceName();
     void ResetToDefaultsClicked();
-    void SystemSettingsChanged( int rs232Baudrate, int rs485Baudrate, int rs485Address, int rs485BroadcastAddress );
+    void SystemSettingsChanged( int rs232Baudrate, int rs485Baudrate,
+                                int rs485Address, int rs485BroadcastAddress,
+                                bool rs485Termination );
     void WidgetModeChanged( DctWidgetBox::Mode mode );
     void DebugTerminalVisibilityChanged( bool visible );
     void ConnectionCheckChanged( bool enabled );
@@ -71,6 +73,7 @@ public slots:
     void onRS485BaudrateChange( uint32_t baudrate );
     void onRS485AddressChange( uint32_t address );
     void onRS485BroadcastAddressChange( uint32_t address );
+    void onRS485TerminationChange( bool enabled );
     void onBroadcastChange( bool enable );
     void onDebugTerminalVisibilityChange( bool visible );
 

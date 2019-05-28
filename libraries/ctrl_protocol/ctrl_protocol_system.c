@@ -430,6 +430,37 @@ int ctrl_protocol_set_rs485_bc_master
 }
 
 /******************************************************************************
+ * ctrl_protocol_get_rs485_termination
+ *****************************************************************************/
+int ctrl_protocol_get_rs485_termination
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t * const              enabled
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_rs485_termination );
+    CHECK_NOT_NULL( enabled );
+    return ( SYS_DRV(protocol->drv)->get_rs485_termination( protocol->ctx, channel, enabled ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_rs485_termination
+ *****************************************************************************/
+int ctrl_protocol_set_rs485_termination
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t const                enable
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), set_rs485_termination );
+    return ( SYS_DRV(protocol->drv)->set_rs485_termination( protocol->ctx, channel, enable ) );
+}
+
+/******************************************************************************
  * ctrl_protocol_set_rs485_addr
  *****************************************************************************/
 int ctrl_protocol_get_device_list

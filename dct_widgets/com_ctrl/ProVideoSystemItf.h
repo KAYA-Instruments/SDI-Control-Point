@@ -114,6 +114,9 @@ public:
     // RS485 broadcast master
     void GetRS485BroadcastMaster();
 
+    // RS485 termination
+    void GetRS485Termination();
+
     // list of connected devices
     void GetDeviceList( uint32_t timeout );
     
@@ -166,6 +169,7 @@ signals:
     void RS485AddressChanged( uint32_t address );
     void RS485BroadcastAddressChanged( uint32_t broadcast_address );
     void RS485BroadcastMasterChanged( uint8_t is_master );
+    void RS485TerminationChanged( bool enable );
     void DeviceListChanged( QList<rs485Device> device_list );
     void PromptChanged( uint8_t flag );
     void DebugLevelChanged( uint8_t level );
@@ -183,6 +187,7 @@ public slots:
     void onRS485AddressChange( uint32_t address );
     void onRS485BroadcastAddressChange( uint32_t broadcast_address );
     void onRS485BroadcastMasterChange( int32_t master_address );
+    void onRS485TerminationChange( bool enabled );
     void onPromptChange( uint8_t flag );
     void onDebugLevelChange( uint8_t level );
     void onGetRunTimeRequest();
