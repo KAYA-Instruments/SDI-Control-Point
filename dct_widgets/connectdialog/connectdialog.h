@@ -61,13 +61,11 @@ public:
     explicit ConnectDialog(QWidget *parent = nullptr);
     ~ConnectDialog() Q_DECL_OVERRIDE;
 
-    void setChannelRS232( ComChannelSerial * com );
     ComChannelSerial * getChannelRS232()
     {
         return m_rs232;
     }
 
-    void setChannelRS485( ComChannelSerial * com );
     ComChannelSerial * getChannelRS485()
     {
         return m_rs485;
@@ -168,6 +166,8 @@ private:
     ctrl_channel_rs4xx_open_config_t m_lastRs485Config;     // Last used RS485 connection settings
     ctrl_channel_rs232_open_config_t m_lastRs232Config;     // Last used RS232 connection settings
 
+    void updatePortsRS232( ComChannelSerial * com );
+    void updatePortsRS485( ComChannelSerial * com );
 
     ctrl_channel_rs4xx_open_config_t getRs485Config();
     void setRs485Config( ctrl_channel_rs4xx_open_config_t const config );
