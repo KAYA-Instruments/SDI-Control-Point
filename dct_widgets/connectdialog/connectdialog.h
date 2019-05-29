@@ -61,13 +61,11 @@ public:
     explicit ConnectDialog(QWidget *parent = nullptr);
     ~ConnectDialog() Q_DECL_OVERRIDE;
 
-    void setChannelRS232( ComChannelSerial * com );
     ComChannelSerial * getChannelRS232()
     {
         return m_rs232;
     }
 
-    void setChannelRS485( ComChannelSerial * com );
     ComChannelSerial * getChannelRS485()
     {
         return m_rs485;
@@ -116,7 +114,9 @@ public:
     // Scans for all available RS485 devices, stores them in m_detectedRS485Devices and connects to the first device found
     bool scanAndConnect();
      // Changes comport settings on the device and in the connect dialog
-    void changeComportSettings( int rs232Baudrate, int rs485Baudrate, int rs485Address , int rs485BroadcastAddress );
+    void changeComportSettings( int rs232Baudrate, int rs485Baudrate,
+                                int rs485Address , int rs485BroadcastAddress,
+                                bool rs485Termination );
     // Connect to a device from the m_detectedRS485Devices list
     bool connectToRS485DeviceByIndex( int index );
     // Update the name of the currently connected device (e.g. after name was changed by user)
@@ -133,6 +133,7 @@ signals:
     void RS485AddressChanged( uint32_t address );
     void RS485BroadcastAddressChanged( uint32_t address );
     void RS485BroadcastMasterChanged( int32_t address );
+    void RS485TerminationChanged( bool enable );
 
     // Reopen serial port
     void ReopenFailed();
@@ -168,6 +169,8 @@ private:
     ctrl_channel_rs4xx_open_config_t m_lastRs485Config;     // Last used RS485 connection settings
     ctrl_channel_rs232_open_config_t m_lastRs232Config;     // Last used RS232 connection settings
 
+    void updatePortsRS232( ComChannelSerial * com );
+    void updatePortsRS485( ComChannelSerial * com );
 
     ctrl_channel_rs4xx_open_config_t getRs485Config();
     void setRs485Config( ctrl_channel_rs4xx_open_config_t const config );

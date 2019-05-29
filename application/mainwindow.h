@@ -74,7 +74,9 @@ private slots:
     void onDeviceConnected( ProVideoDevice * device );
     void onDeviceSelectionChange( int index );
     void onUpdateDeviceName();
-    void onSystemSettingsChange( int rs232Baudrate, int rs485Baudrate, int rs485Address, int rs485BroadcastAddress );
+    void onSystemSettingsChange(int rs232Baudrate, int rs485Baudrate,
+                                int rs485Address, int rs485BroadcastAddress,
+                                bool rs485Termination);
 
     void onConnectClicked();
     void onSettingsClicked();

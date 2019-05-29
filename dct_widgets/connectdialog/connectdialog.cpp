@@ -68,9 +68,71 @@ ConnectDialog::ConnectDialog( QWidget * parent )
     // initialize UI
     m_ui->setupUi( this );
 
-    // Set control channels (this fills the combo boxes with values)
-    setChannelRS232(m_rs232);
-    setChannelRS485(m_rs485);
+    // Setup RS232 and RS485 UI elements
+    // Add Baudrate selection to comboboxes
+    // RS232
+    /* Note: Slow baudrates below 57600 baud are not supported by the GUI because
+     * the delays / wait times get to long for a fluid user experience */
+//        m_ui->cbxBaudrateRS232->addItem( QString::number(CTRL_CHANNEL_BAUDRATE_9600)  , CTRL_CHANNEL_BAUDRATE_9600 );
+//        m_ui->cbxBaudrateRS232->addItem( QString::number(CTRL_CHANNEL_BAUDRATE_19200) , CTRL_CHANNEL_BAUDRATE_19200 );
+//        m_ui->cbxBaudrateRS232->addItem( QString::number(CTRL_CHANNEL_BAUDRATE_38400) , CTRL_CHANNEL_BAUDRATE_38400 );
+    m_ui->cbxBaudrateRS232->addItem( QString::number(CTRL_CHANNEL_BAUDRATE_57600) , CTRL_CHANNEL_BAUDRATE_57600 );
+    m_ui->cbxBaudrateRS232->addItem( QString::number(CTRL_CHANNEL_BAUDRATE_115200), CTRL_CHANNEL_BAUDRATE_115200 );
+    m_ui->cbxBaudrateRS232->setCurrentIndex( m_ui->cbxBaudrateRS232->findData( CTRL_CHANNEL_BAUDRATE_DEFAULT ) );
+
+    // RS485
+    /* Note: Slow baudrates below 57600 baud are not supported by the GUI because
+     * the delays / wait times get to long for a fluid user experience */
+//        m_ui->cbxBaudrateRS485->addItem( QString::number(CTRL_CHANNEL_BAUDRATE_9600)  , CTRL_CHANNEL_BAUDRATE_9600 );
+//        m_ui->cbxBaudrateRS485->addItem( QString::number(CTRL_CHANNEL_BAUDRATE_19200) , CTRL_CHANNEL_BAUDRATE_19200 );
+//        m_ui->cbxBaudrateRS485->addItem( QString::number(CTRL_CHANNEL_BAUDRATE_38400) , CTRL_CHANNEL_BAUDRATE_38400 );
+    m_ui->cbxBaudrateRS485->addItem( QString::number(CTRL_CHANNEL_BAUDRATE_57600) , CTRL_CHANNEL_BAUDRATE_57600 );
+    m_ui->cbxBaudrateRS485->addItem( QString::number(CTRL_CHANNEL_BAUDRATE_115200), CTRL_CHANNEL_BAUDRATE_115200 );
+    m_ui->cbxBaudrateRS485->setCurrentIndex( m_ui->cbxBaudrateRS485->findData( CTRL_CHANNEL_BAUDRATE_DEFAULT ) );
+
+    // Add data-bit selection to comboboxes
+    // RS232
+    m_ui->cbxDatabitsRS232->addItem( QString::number(CTRL_CHANNEL_DATA_BITS_5), CTRL_CHANNEL_DATA_BITS_5 );
+    m_ui->cbxDatabitsRS232->addItem( QString::number(CTRL_CHANNEL_DATA_BITS_6), CTRL_CHANNEL_DATA_BITS_6 );
+    m_ui->cbxDatabitsRS232->addItem( QString::number(CTRL_CHANNEL_DATA_BITS_7), CTRL_CHANNEL_DATA_BITS_7 );
+    m_ui->cbxDatabitsRS232->addItem( QString::number(CTRL_CHANNEL_DATA_BITS_8), CTRL_CHANNEL_DATA_BITS_8 );
+    m_ui->cbxDatabitsRS232->setCurrentIndex( m_ui->cbxDatabitsRS232->findData( CTRL_CHANNEL_DATA_BITS_DEFAULT ) );
+
+    // RS485
+    m_ui->cbxDatabitsRS485->addItem( QString::number(CTRL_CHANNEL_DATA_BITS_5), CTRL_CHANNEL_DATA_BITS_5 );
+    m_ui->cbxDatabitsRS485->addItem( QString::number(CTRL_CHANNEL_DATA_BITS_6), CTRL_CHANNEL_DATA_BITS_6 );
+    m_ui->cbxDatabitsRS485->addItem( QString::number(CTRL_CHANNEL_DATA_BITS_7), CTRL_CHANNEL_DATA_BITS_7 );
+    m_ui->cbxDatabitsRS485->addItem( QString::number(CTRL_CHANNEL_DATA_BITS_8), CTRL_CHANNEL_DATA_BITS_8 );
+    m_ui->cbxDatabitsRS485->setCurrentIndex( m_ui->cbxDatabitsRS485->findData( CTRL_CHANNEL_DATA_BITS_DEFAULT ) );
+
+    // Add parity selection to comboboxes
+    // RS232
+    m_ui->cbxParityRS232->addItem( "none", CTRL_CHANNEL_PARITY_NONE );
+    m_ui->cbxParityRS232->addItem( "odd" , CTRL_CHANNEL_PARITY_ODD );
+    m_ui->cbxParityRS232->addItem( "even", CTRL_CHANNEL_PARITY_EVEN );
+    m_ui->cbxParityRS232->setCurrentIndex( m_ui->cbxParityRS232->findData( CTRL_CHANNEL_PARITY_DEFAULT ) );
+
+    // RS485
+    m_ui->cbxParityRS485->addItem( "none", CTRL_CHANNEL_PARITY_NONE );
+    m_ui->cbxParityRS485->addItem( "odd" , CTRL_CHANNEL_PARITY_ODD );
+    m_ui->cbxParityRS485->addItem( "even", CTRL_CHANNEL_PARITY_EVEN );
+    m_ui->cbxParityRS485->setCurrentIndex( m_ui->cbxParityRS485->findData( CTRL_CHANNEL_PARITY_DEFAULT ) );
+
+
+    // Add stop-bit selection to comboboxes
+    // RS232
+    m_ui->cbxStopbitsRS232->addItem( QString::number(CTRL_CHANNEL_STOP_BITS_1), CTRL_CHANNEL_STOP_BITS_1 );
+    m_ui->cbxStopbitsRS232->addItem( QString::number(CTRL_CHANNEL_STOP_BITS_2), CTRL_CHANNEL_STOP_BITS_2 );
+    m_ui->cbxStopbitsRS232->setCurrentIndex( m_ui->cbxStopbitsRS232->findData( CTRL_CHANNEL_STOP_BITS_DEFAULT ) );
+
+    // RS485
+    m_ui->cbxStopbitsRS485->addItem( QString::number(CTRL_CHANNEL_STOP_BITS_1), CTRL_CHANNEL_STOP_BITS_1 );
+    m_ui->cbxStopbitsRS485->addItem( QString::number(CTRL_CHANNEL_STOP_BITS_2), CTRL_CHANNEL_STOP_BITS_2 );
+    m_ui->cbxStopbitsRS485->setCurrentIndex( m_ui->cbxStopbitsRS485->findData( CTRL_CHANNEL_STOP_BITS_DEFAULT ) );
+
+    // Setup device ID range
+    m_ui->sbxDevAddrRS485->setRange( 0, MAX_DEVICE_ID );
+    m_ui->sbxDevAddrRS485->setValue( 1 );
 
     // hide combo boxes for data-bit, parity and stop-bit selection (user shall not change those values)
     // RS232
@@ -109,6 +171,9 @@ ConnectDialog::ConnectDialog( QWidget * parent )
     connect( m_ui->btScan, SIGNAL(clicked()), this, SLOT(onScanButtonClick()) );
 
     setWindowFlags( Qt::CustomizeWindowHint | Qt::WindowTitleHint );
+
+    // Find available com ports
+    rescan();
 
     // Try to load connection settings from file
     QString m_SettingsFile = QDir::homePath() + "/" + QString(SETTINGS_FILE_NAME);
@@ -164,6 +229,9 @@ void ConnectDialog::showEvent( QShowEvent* event )
     // Get last used RS485 and RS232 configs
     m_lastRs232Config = getRs232Config();
     m_lastRs485Config = getRs485Config();
+
+    // Check if last configs are still valid
+    rescan();
 }
 
 /******************************************************************************
@@ -376,24 +444,23 @@ bool ConnectDialog::connectWithDevice()
 }
 
 /******************************************************************************
- * ConnectDialog::setChannelRS232
+ * ConnectDialog::updatePortsRS232
  *****************************************************************************/
-void ConnectDialog::setChannelRS232( ComChannelSerial * c )
+void ConnectDialog::updatePortsRS232( ComChannelSerial * c )
 {
     if ( c )
     {
         int res;
 
-        ///////////////////////////////////////////////////////////////////////////
-        // update serial stuff
-        ///////////////////////////////////////////////////////////////////////////
-        m_ui->cbxPortRS232->clear();
-        m_ui->cbxBaudrateRS232->clear();
-        m_ui->cbxDatabitsRS232->clear();
-        m_ui->cbxParityRS232->clear();
-        m_ui->cbxStopbitsRS232->clear();
+        // Get old port name
+        QString oldPortName = m_ui->cbxPortRS232->currentText();
 
-        // add found serial ports to combobox
+        // Clear port list
+        m_ui->cbxPortRS232->clear();
+
+        /* Add found serial ports to combobox and store position of old port
+         * name if found */
+        int foundIndex = -1;
         for ( int i = 0; i < c->getNoPorts(); i++ )
         {
             ctrl_channel_name_t name;
@@ -401,66 +468,38 @@ void ConnectDialog::setChannelRS232( ComChannelSerial * c )
             if ( !res )
             {
                 m_ui->cbxPortRS232->addItem( static_cast<char *>(name), i );
+                if (QString::compare( name, oldPortName ) == 0)
+                {
+                    foundIndex = i;
+                }
             }
         }
 
-        // add number of data-bit selection to combobox
-
-        // RS232
-        /* Note: Slow baudrates below 57600 baud are not supported by the GUI because
-         * the delays / wait times get to long for a fluid user experience */
-//        m_ui->cbxBaudrateRS232->addItem( QString::number(CTRL_CHANNEL_BAUDRATE_9600)  , CTRL_CHANNEL_BAUDRATE_9600 );
-//        m_ui->cbxBaudrateRS232->addItem( QString::number(CTRL_CHANNEL_BAUDRATE_19200) , CTRL_CHANNEL_BAUDRATE_19200 );
-//        m_ui->cbxBaudrateRS232->addItem( QString::number(CTRL_CHANNEL_BAUDRATE_38400) , CTRL_CHANNEL_BAUDRATE_38400 );
-        m_ui->cbxBaudrateRS232->addItem( QString::number(CTRL_CHANNEL_BAUDRATE_57600) , CTRL_CHANNEL_BAUDRATE_57600 );
-        m_ui->cbxBaudrateRS232->addItem( QString::number(CTRL_CHANNEL_BAUDRATE_115200), CTRL_CHANNEL_BAUDRATE_115200 );
-        m_ui->cbxBaudrateRS232->setCurrentIndex( m_ui->cbxBaudrateRS232->findData( CTRL_CHANNEL_BAUDRATE_DEFAULT ) );
-
-        // add number of data-bit selection to combobox
-
-        // RS232
-        m_ui->cbxDatabitsRS232->addItem( QString::number(CTRL_CHANNEL_DATA_BITS_5), CTRL_CHANNEL_DATA_BITS_5 );
-        m_ui->cbxDatabitsRS232->addItem( QString::number(CTRL_CHANNEL_DATA_BITS_6), CTRL_CHANNEL_DATA_BITS_6 );
-        m_ui->cbxDatabitsRS232->addItem( QString::number(CTRL_CHANNEL_DATA_BITS_7), CTRL_CHANNEL_DATA_BITS_7 );
-        m_ui->cbxDatabitsRS232->addItem( QString::number(CTRL_CHANNEL_DATA_BITS_8), CTRL_CHANNEL_DATA_BITS_8 );
-        m_ui->cbxDatabitsRS232->setCurrentIndex( m_ui->cbxDatabitsRS232->findData( CTRL_CHANNEL_DATA_BITS_DEFAULT ) );
-
-        // add number of parity selection to combobox
-
-        // RS232
-        m_ui->cbxParityRS232->addItem( "none", CTRL_CHANNEL_PARITY_NONE );
-        m_ui->cbxParityRS232->addItem( "odd" , CTRL_CHANNEL_PARITY_ODD );
-        m_ui->cbxParityRS232->addItem( "even", CTRL_CHANNEL_PARITY_EVEN );
-        m_ui->cbxParityRS232->setCurrentIndex( m_ui->cbxParityRS232->findData( CTRL_CHANNEL_PARITY_DEFAULT ) );
-
-        // add number of stop-bit selection to combobox
-
-        // RS232
-        m_ui->cbxStopbitsRS232->addItem( QString::number(CTRL_CHANNEL_STOP_BITS_1), CTRL_CHANNEL_STOP_BITS_1 );
-        m_ui->cbxStopbitsRS232->addItem( QString::number(CTRL_CHANNEL_STOP_BITS_2), CTRL_CHANNEL_STOP_BITS_2 );
-        m_ui->cbxStopbitsRS232->setCurrentIndex( m_ui->cbxStopbitsRS232->findData( CTRL_CHANNEL_STOP_BITS_DEFAULT ) );
+        if (foundIndex >= 0)
+        {
+            m_ui->cbxPortRS232->setCurrentIndex( foundIndex );
+        }
     }
 }
 
 /******************************************************************************
- * ConnectDialog::setChannelRS485
+ * ConnectDialog::updatePortsRs485
  *****************************************************************************/
-void ConnectDialog::setChannelRS485( ComChannelSerial * c )
+void ConnectDialog::updatePortsRS485( ComChannelSerial * c )
 {
     if ( c )
     {
         int res;
 
-        ///////////////////////////////////////////////////////////////////////////
-        // update serial stuff
-        ///////////////////////////////////////////////////////////////////////////
-        m_ui->cbxPortRS485->clear();
-        m_ui->cbxBaudrateRS485->clear();
-        m_ui->cbxDatabitsRS485->clear();
-        m_ui->cbxParityRS485->clear();
-        m_ui->cbxStopbitsRS485->clear();
+        // Get old port name
+        QString oldPortName = m_ui->cbxPortRS485->currentText();
 
-        // add found serial ports to combobox
+        // Clear port list
+        m_ui->cbxPortRS485->clear();
+
+        /* Add found serial ports to combobox and store position of old port
+         * name if found */
+        int foundIndex = -1;
         for ( int i = 0; i < c->getNoPorts(); i++ )
         {
             ctrl_channel_name_t name;
@@ -468,47 +507,36 @@ void ConnectDialog::setChannelRS485( ComChannelSerial * c )
             if ( !res )
             {
                 m_ui->cbxPortRS485->addItem( static_cast<char *>(name), i );
+                if (QString::compare( name, oldPortName ) == 0)
+                {
+                    foundIndex = i;
+                }
             }
         }
 
-        // add number of data-bit selection to combobox
+        if (foundIndex >= 0)
+        {
+            m_ui->cbxPortRS485->setCurrentIndex( foundIndex );
+        }
 
-        // RS485
-        /* Note: Slow baudrates below 57600 baud are not supported by the GUI because
-         * the delays / wait times get to long for a fluid user experience */
-//        m_ui->cbxBaudrateRS485->addItem( QString::number(CTRL_CHANNEL_BAUDRATE_9600)  , CTRL_CHANNEL_BAUDRATE_9600 );
-//        m_ui->cbxBaudrateRS485->addItem( QString::number(CTRL_CHANNEL_BAUDRATE_19200) , CTRL_CHANNEL_BAUDRATE_19200 );
-//        m_ui->cbxBaudrateRS485->addItem( QString::number(CTRL_CHANNEL_BAUDRATE_38400) , CTRL_CHANNEL_BAUDRATE_38400 );
-        m_ui->cbxBaudrateRS485->addItem( QString::number(CTRL_CHANNEL_BAUDRATE_57600) , CTRL_CHANNEL_BAUDRATE_57600 );
-        m_ui->cbxBaudrateRS485->addItem( QString::number(CTRL_CHANNEL_BAUDRATE_115200), CTRL_CHANNEL_BAUDRATE_115200 );
-        m_ui->cbxBaudrateRS485->setCurrentIndex( m_ui->cbxBaudrateRS485->findData( CTRL_CHANNEL_BAUDRATE_DEFAULT ) );
+        // Disable scan and detect buttons if no ports are found
+        if ( c->getNoPorts() == 0)
+        {
+            m_ui->btScan->setEnabled(false);
+            m_ui->btDetect->setEnabled(false);
 
-        // add number of data-bit selection to combobox
-
-        // RS485
-        m_ui->cbxDatabitsRS485->addItem( QString::number(CTRL_CHANNEL_DATA_BITS_5), CTRL_CHANNEL_DATA_BITS_5 );
-        m_ui->cbxDatabitsRS485->addItem( QString::number(CTRL_CHANNEL_DATA_BITS_6), CTRL_CHANNEL_DATA_BITS_6 );
-        m_ui->cbxDatabitsRS485->addItem( QString::number(CTRL_CHANNEL_DATA_BITS_7), CTRL_CHANNEL_DATA_BITS_7 );
-        m_ui->cbxDatabitsRS485->addItem( QString::number(CTRL_CHANNEL_DATA_BITS_8), CTRL_CHANNEL_DATA_BITS_8 );
-        m_ui->cbxDatabitsRS485->setCurrentIndex( m_ui->cbxDatabitsRS485->findData( CTRL_CHANNEL_DATA_BITS_DEFAULT ) );
-
-        // add number of parity selection to combobox
-
-        // RS485
-        m_ui->cbxParityRS485->addItem( "none", CTRL_CHANNEL_PARITY_NONE );
-        m_ui->cbxParityRS485->addItem( "odd" , CTRL_CHANNEL_PARITY_ODD );
-        m_ui->cbxParityRS485->addItem( "even", CTRL_CHANNEL_PARITY_EVEN );
-        m_ui->cbxParityRS485->setCurrentIndex( m_ui->cbxParityRS485->findData( CTRL_CHANNEL_PARITY_DEFAULT ) );
-
-        // add number of stop-bit selection to combobox
-
-        // RS485
-        m_ui->cbxStopbitsRS485->addItem( QString::number(CTRL_CHANNEL_STOP_BITS_1), CTRL_CHANNEL_STOP_BITS_1 );
-        m_ui->cbxStopbitsRS485->addItem( QString::number(CTRL_CHANNEL_STOP_BITS_2), CTRL_CHANNEL_STOP_BITS_2 );
-        m_ui->cbxStopbitsRS485->setCurrentIndex( m_ui->cbxStopbitsRS485->findData( CTRL_CHANNEL_STOP_BITS_DEFAULT ) );
-
-        m_ui->sbxDevAddrRS485->setRange( 0, MAX_DEVICE_ID );
-        m_ui->sbxDevAddrRS485->setValue( 1 );
+            // Show error message
+            QMessageBox msgBox;
+            msgBox.setWindowTitle("No Com-Port detected");
+            msgBox.setText("There is no Com-Port available in your System. Please connect a USB-to-Serial adapter or equivalent "
+                           "device and rescan for new Com-Ports.");
+            msgBox.exec();
+        }
+        else
+        {
+            m_ui->btScan->setEnabled(true);
+            m_ui->btDetect->setEnabled(true);
+        }
     }
 }
 
@@ -1039,6 +1067,12 @@ int ConnectDialog::openInterface()
     // RS232
     if ( iface == Rs232 )
     {
+        // Check for valid port found
+        if ( m_rs232->getNoPorts() <= 0)
+        {
+            return -ENODEV;
+        }
+
         // create open configuration
         ctrl_channel_rs232_open_config_t open_cfg = getRs232Config();
 
@@ -1057,6 +1091,12 @@ int ConnectDialog::openInterface()
     // RS4xx
     else if ( iface == Rs485 )
     {
+        // Check for valid port found
+        if ( m_rs485->getNoPorts() <= 0)
+        {
+            return -ENODEV;
+        }
+
         // create open configuration
         ctrl_channel_rs4xx_open_config_t open_cfg = getRs485Config();
 
@@ -1079,22 +1119,14 @@ int ConnectDialog::openInterface()
  *****************************************************************************/
 bool ConnectDialog::detectAndConnect()
 {
-    // Check if there is at least one com port available
-    if ( QSerialPortInfo::availablePorts().count() == 0 )
-    {
-        // Show error message
-        QMessageBox msgBox;
-        msgBox.setWindowTitle("No Com-Port detected");
-        msgBox.setText("There is no Com-Port available in your System. Please connect a USB-to-Serial adapter or equivalent "
-                       "device and rescan for new Com-Ports.");
-        msgBox.exec();
-
-        // Return false to indicate connection could not be established
-        return false;
-    }
-
     // select RS485 as the active interface
     setActiveInterface( Rs485 );
+
+    // Check if there is a valid com port available
+    if ( m_active->getNoPorts() <= 0 )
+    {
+        return false;
+    }
 
     // clear list of found devices (needed if we try to reconnect, otherwise old items stay in list)
     m_detectedRS485Devices.clear();
@@ -1223,17 +1255,12 @@ bool ConnectDialog::detectAndConnect()
  *****************************************************************************/
 bool ConnectDialog::scanAndConnect()
 {
-    // Check if there is at least one com port available
-    if ( QSerialPortInfo::availablePorts().count() == 0 )
-    {
-        // Show error message
-        QMessageBox msgBox;
-        msgBox.setWindowTitle("No Com-Port detected");
-        msgBox.setText("There is no Com-Port available in your System. Please connect a USB-to-Serial adapter or equivalent "
-                       "device and rescan for new Com-Ports.");
-        msgBox.exec();
+    // select RS485 as the active interface
+    setActiveInterface( Rs485 );
 
-        // Return false to indicate connection could not be established
+    // Check if there is a valid com port available
+    if ( m_active->getNoPorts() <= 0 )
+    {
         return false;
     }
 
@@ -1249,9 +1276,6 @@ bool ConnectDialog::scanAndConnect()
                                            CTRL_CHANNEL_BAUDRATE_38400, */
                                            CTRL_CHANNEL_BAUDRATE_57600,
                                            CTRL_CHANNEL_BAUDRATE_115200 };
-
-    // select RS485 as the active interface
-    setActiveInterface( Rs485 );
 
     // clear list of found devices (needed if we try to reconnect, otherwise old items stay in list)
     m_detectedRS485Devices.clear();
@@ -1436,7 +1460,9 @@ bool ConnectDialog::scanAndConnect()
 /******************************************************************************
  * ConnectDialog::changeComportSettings
  *****************************************************************************/
-void ConnectDialog::changeComportSettings( int rs232Baudrate, int rs485Baudrate, int rs485Address, int rs485BroadcastAddress )
+void ConnectDialog::changeComportSettings( int rs232Baudrate, int rs485Baudrate,
+                                           int rs485Address, int rs485BroadcastAddress,
+                                           bool rs485Termination )
 {
     // Change RS232 Settings
     // Emit a change event to change the baudrate on the device
@@ -1471,6 +1497,9 @@ void ConnectDialog::changeComportSettings( int rs232Baudrate, int rs485Baudrate,
 
     // Emit a change event to change the broadcast address on the device
     emit RS485BroadcastAddressChanged( static_cast<uint32_t>(rs485BroadcastAddress) );
+
+    // Emit a change event to change the RS485 termination on the device
+    emit RS485TerminationChanged( rs485Termination );
 
     // Setup connect dialog with new values
     // RS232
@@ -1693,33 +1722,20 @@ void ConnectDialog::onReopenSerialConnection( void )
  *****************************************************************************/
 void ConnectDialog::accept()
 {
-    // Check if there is at least one com port available
-    if ( QSerialPortInfo::availablePorts().count() == 0 )
+    // Clear the device list, we only connect with one device now
+    m_detectedRS485Devices.clear();
+
+    // Set current device index to -1 to indicate that no device is selected
+    setCurrentRs485DeviceIndex( -1 );
+
+    // Try to connect with the device
+    if ( connectWithDevice() )
     {
-        // Show error message
-        QMessageBox msgBox;
-        msgBox.setWindowTitle("No Com-Port detected");
-        msgBox.setText("There is no Com-Port available in your System. Please connect a USB-to-Serial adapter or equivalent "
-                       "device and rescan for new Com-Ports.");
-        msgBox.exec();
-    }
-    else
-    {
-        // Clear the device list, we only connect with one device now
-        m_detectedRS485Devices.clear();
+        // GUI was successfully connected, next time the connect dialog is opend will not be the first start
+        m_firstStart = false;
 
-        // Set current device index to -1 to indicate that no device is selected
-        setCurrentRs485DeviceIndex( -1 );
-
-        // Try to connect with the device
-        if ( connectWithDevice() )
-        {
-            // GUI was successfully connected, next time the connect dialog is opend will not be the first start
-            m_firstStart = false;
-
-            // call derived function to close
-            QDialog::accept();
-        }
+        // call derived function to close
+        QDialog::accept();
     }
 }
 
@@ -1808,6 +1824,6 @@ void ConnectDialog::reject()
  *****************************************************************************/
 void ConnectDialog::rescan()
 {
-    setChannelRS232( m_rs232 );
-    setChannelRS485( m_rs485 );
+    updatePortsRS232( m_rs232 );
+    updatePortsRS485( m_rs485 );
 }

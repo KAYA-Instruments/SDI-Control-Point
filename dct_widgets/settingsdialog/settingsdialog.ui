@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>550</width>
-    <height>774</height>
+    <height>911</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -54,10 +54,13 @@
       <string>Device Settings</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
+      <property name="spacing">
+       <number>6</number>
+      </property>
       <item>
        <widget class="QLabel" name="lblNote">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -78,7 +81,7 @@
        </widget>
       </item>
       <item>
-       <layout class="QGridLayout" name="gridLayout_3">
+       <layout class="QGridLayout" name="gridLayoutName">
         <item row="0" column="0">
          <widget class="QLabel" name="lblDeviceName">
           <property name="sizePolicy">
@@ -106,12 +109,6 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>0</height>
-           </size>
-          </property>
           <property name="maxLength">
            <number>32</number>
           </property>
@@ -134,8 +131,57 @@
        </widget>
       </item>
       <item>
-       <layout class="QGridLayout" name="gridLayout_2">
+       <layout class="QGridLayout" name="gridLayoutSerial">
+        <item row="0" column="0">
+         <widget class="QLabel" name="lblRS232Baudrate">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>RS232 Baudrate</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="lblRS485Address">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>RS485 Address</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QComboBox" name="cbxRS232Baudrate">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
         <item row="3" column="0">
+         <widget class="QLabel" name="lblRS485BroadcastAddress">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>RS485 Broadcast Address</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
          <widget class="QLabel" name="lblRS485Baudrate">
           <property name="minimumSize">
            <size>
@@ -149,7 +195,7 @@
          </widget>
         </item>
         <item row="4" column="0">
-         <widget class="QLabel" name="lblRS485Address">
+         <widget class="QLabel" name="lblRS485Termination">
           <property name="minimumSize">
            <size>
             <width>200</width>
@@ -157,12 +203,12 @@
            </size>
           </property>
           <property name="text">
-           <string>RS485 Address</string>
+           <string>RS485 Termination</string>
           </property>
          </widget>
         </item>
-        <item row="2" column="1">
-         <widget class="QComboBox" name="cbxRS232Baudrate">
+        <item row="1" column="1">
+         <widget class="QComboBox" name="cbxRS485Baudrate">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -171,29 +217,13 @@
           </property>
          </widget>
         </item>
-        <item row="3" column="1">
-         <widget class="QComboBox" name="cbxRS485Baudrate">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="1">
+        <item row="2" column="1">
          <widget class="QSpinBox" name="sbxRS485Address">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>0</height>
-           </size>
           </property>
           <property name="maximum">
            <number>99</number>
@@ -203,7 +233,7 @@
           </property>
          </widget>
         </item>
-        <item row="5" column="1">
+        <item row="3" column="1">
          <widget class="QSpinBox" name="sbxRS485BroadcastAddress">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -216,33 +246,39 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="lblRS232Baudrate">
-          <property name="minimumSize">
-           <size>
-            <width>200</width>
-            <height>0</height>
-           </size>
+        <item row="4" column="1">
+         <widget class="QCheckBox" name="cbxRS485Termination">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
           </property>
           <property name="text">
-           <string>RS232 Baudrate</string>
+           <string>Enable</string>
           </property>
-         </widget>
-        </item>
-        <item row="5" column="0">
-         <widget class="QLabel" name="lblRS485BroadcastAddress">
-          <property name="minimumSize">
-           <size>
-            <width>200</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>RS485 Broadcast Address</string>
+          <property name="checked">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
        </layout>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Note: RS485 termination has to be setup according to your bus topology. Wrong termination will degrade signal quality and can cause broken device communication.</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QPushButton" name="btnApplySerialPortSettings">
@@ -273,6 +309,12 @@
       </item>
       <item>
        <widget class="QLabel" name="lblNote2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>The Serial Interface Settings and the Device Name will not be reset.</string>
         </property>
@@ -320,6 +362,12 @@
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
        <widget class="QLabel" name="lblNote4">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>These Settings get stored automatically, when the GUI is closed and are restored when the GUI is opened.</string>
         </property>
@@ -377,7 +425,7 @@
    <item>
     <widget class="QLabel" name="lblNote3">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>

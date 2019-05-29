@@ -127,6 +127,14 @@
 #define CMD_GET_RS485_BC_MASTER_NO_PARMS        ( 1 )
 
 /******************************************************************************
+ * @brief command "rs485_term"
+ *****************************************************************************/
+#define CMD_GET_RS485_TERMINATION               ( "rs485_term\n" )
+#define CMD_SET_RS485_TERMINATION               ( "rs485_term %i\n" )
+#define CMD_SYNC_RS485_TERMINATION              ( "rs485_term " )
+#define CMD_GET_RS485_TERMINATION_NO_PARMS      ( 1 )
+
+/******************************************************************************
  * @brief command "prompt" 
  *****************************************************************************/
 #define CMD_GET_PROMPT                          ( "prompt\n" )
@@ -1287,6 +1295,65 @@ static int set_rs485_bc_master
 }
 
 /******************************************************************************
+ * get_rs485_bc_master - function to get the current RS485 termination state
+ *****************************************************************************/
+static int get_rs485_termination
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    uint8_t * const             enabled
+)
+{
+    (void) ctx;
+
+    int value;
+    int res;
+
+    // parameter check
+    if ( !enabled )
+    {
+        return ( -EINVAL );
+    }
+
+    // command call to get 1 parameter from provideo system
+    res = get_param_int_X( channel, 2,
+            CMD_GET_RS485_TERMINATION, CMD_SYNC_RS485_TERMINATION, CMD_SET_RS485_TERMINATION, &value );
+
+    // return error code
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
+    // return -EFAULT if number of parameter not matching
+    else if ( res != CMD_GET_RS485_TERMINATION_NO_PARMS )
+    {
+        return ( -EFAULT );
+    }
+
+    // type-cast to range
+    *enabled = UINT8( value );
+
+    return ( 0 );
+}
+
+/******************************************************************************
+ * set_rs485_bc_master - function that enables or disabled the termination
+ *                       of the RS485 port
+ *****************************************************************************/
+static int set_rs485_termination
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    uint8_t const               enable
+)
+{
+    (void) ctx;
+
+    return ( set_param_int_X( channel, CMD_SET_RS485_TERMINATION, INT( enable ) ) );
+}
+
+/******************************************************************************
  * get_device_list - gets the list of devices which are connected to this com
  *                   port
  *****************************************************************************/
@@ -2016,6 +2083,8 @@ static ctrl_protocol_sys_drv_t provideo_sys_drv =
     .set_rs485_bc_addr            = set_rs485_bc_addr,
     .get_rs485_bc_master          = get_rs485_bc_master,
     .set_rs485_bc_master          = set_rs485_bc_master,
+    .get_rs485_termination        = get_rs485_termination,
+    .set_rs485_termination        = set_rs485_termination,
     .get_device_list              = get_device_list,
     .get_prompt                   = get_prompt,
     .set_prompt                   = set_prompt,
