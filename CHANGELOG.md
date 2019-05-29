@@ -4,14 +4,19 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
+Version **1.1.12** - 29.05.2019
+
+* The RS485 termination can now be setup from the settings dialog.
+* When reopening the connect dialog it will now automatically search for new com ports. This fixes issues where com ports that are non existent are still in the list which causes all kinds of unexpected behaviour, in the worst case an application crash.
+
+## Older Releases:
+
 Version **1.1.11** - 23.04.2019
 
 * Added genlock crosslock controls.
 * Fixed an issue where the text of the debug terminal would not be "scrolled down" after changing it's size.
 * Experimental: Added support for lens control. This is not officially supported by the cameras yet and will be enabled with future releases.
 * Fixed a few more Clang warnings (this is an ongoing task)
-
-## Older Releases:
 
 Version **1.1.10** - 10.12.2018
 
