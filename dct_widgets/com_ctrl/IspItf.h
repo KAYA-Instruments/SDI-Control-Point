@@ -79,6 +79,9 @@ public:
     // yuv conversion
     void GetColorConversionMatrix();
 
+    // color space
+    void GetColorSpace();
+
     // split-screen
     void GetSplitScreen();
 
@@ -128,6 +131,9 @@ signals:
                                        int c3, int c4, int c5,
                                        int c6, int c7, int c8 );
 
+    // color space
+    void ColorSpaceChanged( int value );
+
     // split-screen
     void SplitScreenChanged( bool value );
 
@@ -176,6 +182,9 @@ public slots:
     void onColorConversionMatrixChange( int c0, int c1, int c2,
                                         int c3, int c4, int c5,
                                         int c6, int c7, int c8 );
+
+    // color space
+    void onColorSpaceChange( int value );
 
     // split-screen
     void onSplitScreenChange( bool value );

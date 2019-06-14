@@ -223,6 +223,19 @@
 #define FLIP_MODE_ROTATED               ( "Rotated" )
 
 /******************************************************************************
+ * Log mode names
+ *****************************************************************************/
+#define LOG_MODE_OFF                    ( "Off" )
+#define LOG_MODE_HLG                    ( "HLG" )
+#define LOG_MODE_PQ                     ( "PQ" )
+
+/******************************************************************************
+ * Color space names
+ *****************************************************************************/
+#define COLOR_SPACE_REC_709             ( "Rec.709" )
+#define COLOR_SPACE_REC_2020            ( "Rec.2020" )
+
+/******************************************************************************
  * known devices
  *****************************************************************************/
 #define KNOWN_DEVICE_XBOW               ( "xbow" )
@@ -429,13 +442,13 @@ enum LensFeatues
 /******************************************************************************
  * color space mode
  *****************************************************************************/
-enum ColorSpaceMode
+enum OutputMode
 {
-    ColorSpaceModeFirst   = 0,
-    ColorSpaceModeYUV     = 0,  /**< YUV output */
-    ColorSpaceModeRAW10   = 1,  /**< RAW10 output */
-    ColorSpaceModeRAW12   = 2,  /**< RAW12 output */
-    ColorSpaceModeMax           /**< number of normally supported modes (end marker) */
+    OutputModeFirst   = 0,
+    OutputModeYUV     = 0,  /**< YUV output */
+    OutputModeRAW10   = 1,  /**< RAW10 output */
+    OutputModeRAW12   = 2,  /**< RAW12 output */
+    OutputModeMax           /**< number of normally supported modes (end marker) */
 };
 
 /******************************************************************************
@@ -519,8 +532,21 @@ enum LogMode
     LogModeFirst = 0,
     LogModeOff   = 0,   /**< LOG mode off, normal operation, LUTs can be programmed by user */
     LogModeHLG   = 1,   /**< HLG LOG mode, LUTs are fixed to HLG, gain is halved in device */
+    LogModePQ    = 2,   /**< PQ LOG mode, LUTs are fixed to PQ, max brightness can be set by user */
     LogModeMax
 };
+
+/******************************************************************************
+ * Color Space
+ *****************************************************************************/
+enum ColorSpace
+{
+    ColorSpaceFirst   = 0,
+    ColorSpaceRec709  = 0,   /**< Use normal Rec.709 color space */
+    ColorSpaceRec2020 = 1,   /**< Use extended Rec.2020 color space */
+    ColorSpaceMax
+};
+
 
 // return if the name belongs to a known device
 bool DeviceIsKnown(const QString & deviceName);
@@ -556,7 +582,7 @@ QString GetSdiModeName( SdiMode mode );
 QString GetLensProfileName( LensProfile profile );
     
 // return corresponding sdi-mode name 
-QString GetColorSpaceModeName( ColorSpaceMode mode );
+QString GetColorSpaceModeName( OutputMode mode );
 
 // return corresponding camera depth name 
 QString GetCamDepthName( CamDepth depth );
@@ -575,6 +601,12 @@ QString GetDownscaleModeName( DownscaleMode mode );
 
 // return corresponding flipe mode name 
 QString GetFlipModeName( FlipMode mode );
+
+// return corresponding log mode name
+QString GetLogModeName( LogMode mode );
+
+// return corresponding color space name
+QString GetColorSpaceName( ColorSpace mode );
 
 #endif // _DEFINES_H_
 

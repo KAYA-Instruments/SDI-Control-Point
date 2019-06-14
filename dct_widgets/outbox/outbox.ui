@@ -955,7 +955,7 @@
        </property>
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="0" column="0">
-         <widget class="QPushButton" name="btnRec709">
+         <widget class="QPushButton" name="btnBt709">
           <property name="minimumSize">
            <size>
             <width>180</width>
@@ -1021,7 +1021,7 @@
         <item row="1" column="0">
          <widget class="QPushButton" name="btnBt2020">
           <property name="text">
-           <string>BT.2020</string>
+           <string>Rec.2020</string>
           </property>
          </widget>
         </item>
@@ -1054,7 +1054,7 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>btnRec709</tabstop>
+  <tabstop>btnBt709</tabstop>
   <tabstop>btnLoad</tabstop>
   <tabstop>btnSave</tabstop>
   <tabstop>Kred</tabstop>

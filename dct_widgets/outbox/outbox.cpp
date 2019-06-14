@@ -73,21 +73,21 @@ public:
         : m_ui( new Ui::UI_OutBox )
         , m_active_chain_idx( 0 )
         , m_sdiMode( SdiModeFirst )
-        , m_csMode( ColorSpaceModeFirst )
+        , m_csMode( OutputModeFirst )
     {
         // do nothing
-    };
+    }
 
     ~PrivateData()
     {
         delete m_ui;
-    };
+    }
 
-    void setModes( SdiMode sdiMode, ColorSpaceMode csMode )
+    void setModes( SdiMode sdiMode, OutputMode csMode )
     {
-        bool enableYuvCoefficients = (csMode == ColorSpaceModeYUV) ? true : false;
+        bool enableYuvCoefficients = (csMode == OutputModeYUV) ? true : false;
         bool enableBlackWhite 
-            = ((sdiMode == SdiModeLegal) && (csMode == ColorSpaceModeYUV)) ? true : false;
+            = ((sdiMode == SdiModeLegal) && (csMode == OutputModeYUV)) ? true : false;
 
         m_ui->Kred->setEnabled( enableYuvCoefficients );
         m_ui->Kblue->setEnabled( enableYuvCoefficients );
@@ -158,7 +158,7 @@ public:
     Ui::UI_OutBox *   m_ui;                 /**< ui handle */
     int               m_active_chain_idx;   /**< index of the currently active chain */
     SdiMode           m_sdiMode;            /**< current sdi mode */
-    ColorSpaceMode    m_csMode;             /**< current color space mode */
+    OutputMode    m_csMode;             /**< current color space mode */
     
     QString           m_filename;           /**< Matrix profile name */
 };
@@ -235,9 +235,9 @@ OutBox::OutBox( QWidget * parent ) : DctWidgetBox( parent )
     // fill color space modes
     ///////////////////////////////////////
 
-    for ( int i=ColorSpaceModeFirst; i<ColorSpaceModeMax; i++ )
+    for ( int i=OutputModeFirst; i<OutputModeMax; i++ )
     {
-        addColorSpaceMode( GetColorSpaceModeName( (enum ColorSpaceMode)i ), i );
+        addColorSpaceMode( GetColorSpaceModeName( (enum OutputMode)i ), i );
     }
 
     ////////////////////
@@ -253,7 +253,7 @@ OutBox::OutBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->SdiBlack, SIGNAL(ValueChanged(int)), this, SIGNAL(SdiBlackChanged(int)) );
 
     // connect preset signals
-    connect( d_data->m_ui->btnRec709   , SIGNAL(clicked()), this, SLOT(onBt709Clicked()));
+    connect( d_data->m_ui->btnBt709    , SIGNAL(clicked()), this, SLOT(onBt709Clicked()));
     connect( d_data->m_ui->btnBt2020   , SIGNAL(clicked()), this, SLOT(onBt2020Clicked()));
     
     connect( d_data->m_ui->btnLoad     , SIGNAL(clicked()), this, SLOT(onLoadClicked()));
@@ -588,7 +588,7 @@ void OutBox::onRawModeChange( int value )
         d_data->m_ui->cbxCsMode->setCurrentIndex( index );
         d_data->m_ui->cbxCsMode->blockSignals( false );
     
-        d_data->setModes( d_data->m_sdiMode, (ColorSpaceMode)value );
+        d_data->setModes( d_data->m_sdiMode, (OutputMode)value );
     }    
 }
 
@@ -744,7 +744,7 @@ void OutBox::onLoadClicked()
         "Select Profile Files (*.yuv);;All files (*.*)"
     );
 
-    if ( NULL != d_data->m_filename )
+    if ( nullptr != d_data->m_filename )
     {
         QFileInfo file( d_data->m_filename );
         if ( file.suffix().isEmpty() )
@@ -778,7 +778,7 @@ void OutBox::onSaveClicked()
         "Select Profile Files (*.yuv);;All files (*.*)"
     );
 
-    if ( NULL != d_data->m_filename )
+    if ( nullptr != d_data->m_filename )
     {
         QFileInfo file( d_data->m_filename );
         if ( file.suffix().isEmpty() )
@@ -810,7 +810,7 @@ void OutBox::onCbxCsModeChange( int index )
 {
     int value = d_data->m_ui->cbxCsMode->itemData( index ).toInt();
 
-    d_data->setModes( d_data->m_sdiMode, (ColorSpaceMode)value );
+    d_data->setModes( d_data->m_sdiMode, (OutputMode)value );
 
     emit RawModeChanged( value );
 }

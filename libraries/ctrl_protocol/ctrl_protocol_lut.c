@@ -647,6 +647,21 @@ int ctrl_protocol_get_lut_fast_gamma
 }
 
 /******************************************************************************
+ * ctrl_protocol_set_lut_fast_gamma
+ *****************************************************************************/
+int ctrl_protocol_set_lut_fast_gamma
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int16_t const                gamma
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), set_lut_fast_gamma );
+    return ( LUT_DRV(protocol->drv)->set_lut_fast_gamma( protocol->ctx, channel, gamma ) );
+}
+
+/******************************************************************************
  * ctrl_protocol_get_log_mode
  *****************************************************************************/
 int ctrl_protocol_get_log_mode
@@ -678,18 +693,34 @@ int ctrl_protocol_set_log_mode
 }
 
 /******************************************************************************
- * ctrl_protocol_set_lut_fast_gamma
+ * ctrl_protocol_get_pq_max_brightness
  *****************************************************************************/
-int ctrl_protocol_set_lut_fast_gamma
+int ctrl_protocol_get_pq_max_brightness
 (
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel,
-    int16_t const                gamma
+    uint8_t * const              percent
 )
 {
     CHECK_HANDLE( protocol );
-    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), set_lut_fast_gamma );
-    return ( LUT_DRV(protocol->drv)->set_lut_fast_gamma( protocol->ctx, channel, gamma ) );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), get_pq_max_brightness );
+    CHECK_NOT_NULL( percent );
+    return ( LUT_DRV(protocol->drv)->get_pq_max_brightness( protocol->ctx, channel, percent ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_pq_max_brightness
+ *****************************************************************************/
+int ctrl_protocol_set_pq_max_brightness
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t const                percent
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( LUT_DRV(protocol->drv), set_pq_max_brightness );
+    return ( LUT_DRV(protocol->drv)->set_pq_max_brightness( protocol->ctx, channel, percent ) );
 }
 
 /******************************************************************************

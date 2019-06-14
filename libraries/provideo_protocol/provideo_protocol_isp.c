@@ -178,6 +178,14 @@
 #define CMD_COLOR_CROSS_OFFSET_NO_PARMS             ( 3 )
 
 /******************************************************************************
+ * @brief command "color_space"
+ *****************************************************************************/
+#define CMD_GET_COLOR_SPACE                 ( "color_space\n" )
+#define CMD_SET_COLOR_SPACE                 ( "color_space %i\n" )
+#define CMD_SYNC_COLOR_SPACE                ( "color_space " )
+#define CMD_COLOR_SPACE_NO_PARMS            ( 1 )
+
+/******************************************************************************
  * @brief command "black_sun_correction" 
  *****************************************************************************/
 #define CMD_GET_BLACK_SUN_CORRECTION        ( "black_sun_correction\n" )
@@ -1404,6 +1412,64 @@ static int set_color_cross_offset
                 INT( values[0] ), INT( values[1] ), INT( values[2] ) ) );
 }
 
+/******************************************************************************
+ * get_color_space - Get the color space.
+ *****************************************************************************/
+static int get_color_space
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    uint8_t * const             mode
+)
+{
+    (void) ctx;
+
+    int value;
+    int res;
+
+    // parameter check
+    if ( !mode )
+    {
+        return ( -EINVAL );
+    }
+
+    // command call to get 1 parameter from provideo system
+    res = get_param_int_X( channel, 2, CMD_GET_COLOR_SPACE,
+            CMD_SYNC_COLOR_SPACE, CMD_SET_COLOR_SPACE, &value );
+
+    // return error code
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
+    // return -EFAULT if number of parameter not matching
+    else if ( res != CMD_COLOR_SPACE_NO_PARMS )
+    {
+        return ( -EFAULT );
+    }
+
+    // type-cast to range
+    *mode = UINT8( value );
+
+    return ( 0 );
+}
+
+/******************************************************************************
+ * set_color_space - Set color space.
+ *****************************************************************************/
+static int set_color_space
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    uint8_t const               mode
+)
+{
+    (void) ctx;
+
+    return ( set_param_int_X( channel, CMD_SET_COLOR_SPACE, INT( mode ) ) );
+}
+
 /**************************************************************************//**
  * @brief Pro-Video protocol implementation of getting currently configured
  *        split-screen mode from provideo device.
@@ -1520,6 +1586,8 @@ static ctrl_protocol_isp_drv_t provideo_isp_drv =
     .set_color_cross        = set_color_cross,
     .get_color_cross_offset = get_color_cross_offset,
     .set_color_cross_offset = set_color_cross_offset,
+    .get_color_space        = get_color_space,
+    .set_color_space        = set_color_space,
     .get_split_screen       = get_split_screen,
     .set_split_screen       = set_split_screen,
 };

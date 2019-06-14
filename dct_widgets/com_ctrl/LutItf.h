@@ -49,6 +49,7 @@ public:
     void GetLutMode();
     void GetLutFixedMode();
     void GetLogMode();
+    void GetPQMaxBrightness();
 
     // preset storage
     void GetLutPreset();
@@ -75,6 +76,7 @@ signals:
     void LutModeChanged( int mode );
     void LutFixedModeChanged( int mode );
     void LogModeChanged( int mode );
+    void PQMaxBrightnessChanged( int mode );
 
     // preset storage
     void LutPresetChanged( int value );
@@ -111,6 +113,7 @@ public slots:
     void onLutModeChange( int mode );
     void onLutFixedModeChange( int mode );
     void onLogModeChange( int mode );
+    void onPQMaxBrightnessChange( int percent );
     
     // preset storage
     void onLutPresetChange( int value );

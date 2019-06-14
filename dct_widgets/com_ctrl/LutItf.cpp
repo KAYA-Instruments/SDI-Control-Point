@@ -49,6 +49,7 @@ void LutItf::resync()
     GetLutMode();
     GetLutFixedMode();
     GetLogMode();
+    GetPQMaxBrightness();
 
     // preset
     // Note: Do this before GetLutFastGamma() otherwise the Lutbox might display the wrong plot
@@ -143,6 +144,26 @@ void LutItf::GetLogMode()
 
         // emit a LogModeChanged signal
         emit LogModeChanged( static_cast<int>(mode) );
+    }
+}
+
+/******************************************************************************
+ * LutItf::GetPQMaxBrightness
+ *****************************************************************************/
+void LutItf::GetPQMaxBrightness()
+{
+    // Is there a signal listener
+    if ( receivers(SIGNAL(PQMaxBrightnessChanged(int))) > 0 )
+    {
+        uint8_t percent = 0u;
+
+        // read mode from device
+        int res = ctrl_protocol_get_pq_max_brightness( GET_PROTOCOL_INSTANCE(this),
+            GET_CHANNEL_INSTANCE(this), &percent );
+        HANDLE_ERROR( res );
+
+        // emit a LogModeChanged signal
+        emit PQMaxBrightnessChanged( static_cast<int>(percent) );
     }
 }
 
@@ -473,6 +494,17 @@ void LutItf::onLogModeChange( int mode )
         GetLutSampleValuesBlue();
     }
 
+    HANDLE_ERROR( res );
+}
+
+/******************************************************************************
+ * LutItf::onPQMaxBrightnessChange
+ *****************************************************************************/
+void LutItf::onPQMaxBrightnessChange( int percent )
+{
+    // set maximum PQ brigthness on device
+    int res = ctrl_protocol_set_pq_max_brightness( GET_PROTOCOL_INSTANCE(this),
+        GET_CHANNEL_INSTANCE(this), static_cast<uint8_t>(percent) );
     HANDLE_ERROR( res );
 }
 

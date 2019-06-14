@@ -242,6 +242,14 @@
 #define CMD_SET_LOG_MODE_TMO                    ( 5000 )
 
 /******************************************************************************
+ * @brief command "pq_max_brightness"
+ *****************************************************************************/
+#define CMD_GET_PQ_MAX_BRIGHTNESS               ( "pq_max_brightness \n" )
+#define CMD_SET_PQ_MAX_BRIGHTNESS               ( "pq_max_brightness %i\n" )
+#define CMD_SYNC_PQ_MAX_BRIGHTNESS              ( "pq_max_brightness " )
+#define CMD_GET_PQ_MAX_BRIGHTNESS_NO_PARMS      ( 1 )
+
+/******************************************************************************
  * protocol helper function
  *****************************************************************************/
 
@@ -770,8 +778,8 @@ static int set_lut_enable
  *
  * @param[in]  ctx      private protocol context
  * @param[in]  channel  control channel to send the request
- * @param[in]   mode     current mode (0 = normal operation (LOG mode off),
- *                                     1 = HLG LOG mode)
+ * @param[in]  mode     current mode (0 = normal operation (LOG mode off),
+ *                                    1 = HLG LOG mode)
  *
  * @return     0 on success, error-code otherwise
  *****************************************************************************/
@@ -820,8 +828,8 @@ static int get_log_mode
  *
  * @param[in]  ctx      private protocol context
  * @param[in]  channel  control channel to send the request
- * @param[in]   mode     mode to set (0 = normal operation (LOG mode off),
- *                                    1 = HLG LOG mode)
+ * @param[in]  mode     mode to set (0 = normal operation (LOG mode off),
+ *                                   1 = HLG LOG mode)
  *
  * @return     0 on success, error-code otherwise
  *****************************************************************************/
@@ -837,6 +845,82 @@ static int set_log_mode
     return ( set_param_int_X_with_tmo( channel,
                                        CMD_SET_LOG_MODE, CMD_SET_LOG_MODE_TMO,
                                        INT( mode ) ) );
+}
+
+/**************************************************************************//**
+ * @brief Gets the currently configured LOG mode on the device.
+ *
+ * @param[in]  ctx      private protocol context
+ * @param[in]  channel  control channel to send the request
+ * @param[in]  percent  maximum brigthness from 0 to 100%
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+static int get_pq_max_brightness
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    uint8_t * const             percent
+)
+{
+    (void) ctx;
+
+    int v;
+    int res;
+
+    // parameter check
+    if ( !percent )
+    {
+        return ( -EINVAL );
+    }
+
+    // command call to get 1 parameter from provideo system
+    res = get_param_int_X( channel,
+                           2,
+                           CMD_GET_PQ_MAX_BRIGHTNESS,
+                           CMD_SYNC_PQ_MAX_BRIGHTNESS,
+                           CMD_SET_PQ_MAX_BRIGHTNESS,
+                           &v );
+
+    // return error code
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
+    // return -EFAULT if number of parameter not matching
+    else if ( res != CMD_GET_PQ_MAX_BRIGHTNESS_NO_PARMS )
+    {
+        return ( -EFAULT );
+    }
+
+    // type-cast to range
+    *percent = UINT8( v );
+
+    return ( 0 );
+}
+
+/**************************************************************************//**
+ * @brief Set the maximum brigthness of the PQ curve in PQ log mode.
+ *
+ * @param[in]  ctx      private protocol context
+ * @param[in]  channel  control channel to send the request
+ * @param[in]  percent  maximum brigthness from 0 to 100%
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+static int set_pq_max_brightness
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    uint8_t const               percent
+)
+{
+    (void) ctx;
+
+    return ( set_param_int_X( channel,
+                              CMD_SET_PQ_MAX_BRIGHTNESS,
+                              INT( percent ) ) );
 }
 
 /**************************************************************************//**
@@ -1800,7 +1884,9 @@ static ctrl_protocol_lut_drv_t provideo_lut_drv =
     .get_lut_fast_gamma         = get_lut_fast_gamma,
     .set_lut_fast_gamma         = set_lut_fast_gamma,
     .get_log_mode               = get_log_mode,
-    .set_log_mode               = set_log_mode
+    .set_log_mode               = set_log_mode,
+    .get_pq_max_brightness      = get_pq_max_brightness,
+    .set_pq_max_brightness      = set_pq_max_brightness
 };
 
 /******************************************************************************

@@ -103,6 +103,8 @@ public:
 #define INOUT_SETTINGS_SDI2_DOWNSCALER              ( "sdi2_downscaler" )
 #define INOUT_SETTINGS_FLIP_MODE                    ( "flip_mode" )
 #define INOUT_SETTINGS_LOG_MODE                     ( "log_mode" )
+#define INOUT_SETTINGS_COLOR_SPACE                  ( "color_space" )
+#define INOUT_SETTINGS_PQ_MAX_BRIGHTNESS            ( "pq_max_brightness" )
 #define INOUT_SETTINGS_TEST_PATTERN                 ( "test_pattern" )
 #define INOUT_SETTINGS_AUDIO_ENABLE                 ( "audio_enable" )
 
@@ -112,8 +114,6 @@ public:
 #define INOUT_SETTINGS_GENLOCK_OFFSET_VERTICAL      ( "genlock_offset_vertical" )
 #define INOUT_SETTINGS_GENLOCK_OFFSET_HORIZONTAL    ( "genlock_offset_horizontal" )
 #define INOUT_SETTINGS_GENLOCK_TERMINATION          ( "genlock_termination" )
-
-#define INOUT_SETTINGS_LOG_MODE                     ( "log_mode" )
 
 typedef struct aec_setup_t {
     bool run;
@@ -252,6 +252,18 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
 
     // Note: Flip modes depend on the device and are added in "setFlipModeVisible()"
 
+    // fill log mode combo box
+    for ( int i=LogModeFirst; i<LogModeMax; i++ )
+    {
+        addLogMode( GetLogModeName( static_cast<enum LogMode>(i) ), i );
+    }
+
+    // fill color space combo box
+    for ( int i=ColorSpaceFirst; i<ColorSpaceMax; i++ )
+    {
+        addColorSpace( GetColorSpaceName( static_cast<enum ColorSpace>(i) ), i );
+    }
+
     // fill genlock-mode combo box
     for ( int i=GenLockModeFirst; i<GenLockModeMax; i++ )
     {
@@ -300,7 +312,9 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->cbxSdi1Downscaler, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxSdi1DownscalerChange(int)) );
     connect( d_data->m_ui->cbxSdi2Downscaler, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxSdi2DownscalerChange(int)) );
     connect( d_data->m_ui->cbxFlipMode, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxFlipModeChange(int)) );
-    connect( d_data->m_ui->cbxLogEnable, SIGNAL(stateChanged(int)), this, SLOT(onCbxLogEnableChange(int)) );
+    connect( d_data->m_ui->cbxLogMode, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxLogModeChange(int)) );
+    connect( d_data->m_ui->sbxPQMaxBrightness, SIGNAL(valueChanged(int)), this, SLOT(onSbxPQMaxBrightnessChange(int)) );
+    connect( d_data->m_ui->cbxColorSpace, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxColorSpaceChange(int)) );
     connect( d_data->m_ui->cbxTestPattern, SIGNAL(stateChanged(int)), this, SLOT(onCbxTestPatternChange(int)) );
     connect( d_data->m_ui->btnIsoMinus, SIGNAL(clicked()), this, SLOT(onBtnIsoMinusClicked()) );
     connect( d_data->m_ui->btnIsoPlus, SIGNAL(clicked()), this, SLOT(onBtnIsoPlusClicked()) );
@@ -854,21 +868,69 @@ void InOutBox::setFlipMode( const QString mode )
 /******************************************************************************
  * InOutBox::LogMode
  *****************************************************************************/
-bool InOutBox::LogMode() const
+QString InOutBox::LogMode() const
 {
-    return ( d_data->m_ui->cbxLogEnable->isChecked());
+    return ( d_data->m_ui->cbxLogMode->currentText() );
 }
 
 /******************************************************************************
  * InOutBox::setLogMode
  *****************************************************************************/
-void InOutBox::setLogMode( const bool value )
+void InOutBox::setLogMode( const QString mode )
 {
-    d_data->m_ui->cbxLogEnable->blockSignals( true );
-    d_data->m_ui->cbxLogEnable->setChecked( value );
-    d_data->m_ui->cbxLogEnable->blockSignals( false );
+    int index = d_data->m_ui->cbxLogMode->findText( mode );
+    if ( index != -1 )
+    {
+        d_data->m_ui->cbxLogMode->blockSignals( true );
+        d_data->m_ui->cbxLogMode->setCurrentIndex( index );
+        d_data->m_ui->cbxLogMode->blockSignals( false );
 
-    emit LogModeChanged( value ? 1 : 0 );
+        emit LogModeChanged( d_data->m_ui->cbxLogMode->itemData( index ).toInt() );
+    }
+}
+
+/******************************************************************************
+ * InOutBox::PQMaxBrightness
+ *****************************************************************************/
+int InOutBox::PQMaxBrightness() const
+{
+    return ( d_data->m_ui->sbxPQMaxBrightness->value() );
+}
+
+/******************************************************************************
+ * InOutBox::setPQMaxBrightness
+ *****************************************************************************/
+void InOutBox::setPQMaxBrightness( const int value )
+{
+    d_data->m_ui->sbxPQMaxBrightness->blockSignals( true );
+    d_data->m_ui->sbxPQMaxBrightness->setValue( value );
+    d_data->m_ui->sbxPQMaxBrightness->blockSignals( false );
+
+    emit PQMaxBrightnessChanged( value );
+}
+
+/******************************************************************************
+ * InOutBox::ColorSpace
+ *****************************************************************************/
+QString InOutBox::ColorSpace() const
+{
+    return ( d_data->m_ui->cbxLogMode->currentText() );
+}
+
+/******************************************************************************
+ * InOutBox::setColorSpace
+ *****************************************************************************/
+void InOutBox::setColorSpace( const QString mode )
+{
+    int index = d_data->m_ui->cbxColorSpace->findText( mode );
+    if ( index != -1 )
+    {
+        d_data->m_ui->cbxColorSpace->blockSignals( true );
+        d_data->m_ui->cbxColorSpace->setCurrentIndex( index );
+        d_data->m_ui->cbxColorSpace->blockSignals( false );
+
+        emit ColorSpaceChanged( d_data->m_ui->cbxColorSpace->itemData( index ).toInt() );
+    }
 }
 
 /******************************************************************************
@@ -1064,6 +1126,9 @@ void InOutBox::loadSettings( QSettings & s )
     setSdi1Downscaler( s.value( INOUT_SETTINGS_SDI1_DOWNSCALER ).toString() );
     setSdi2Downscaler( s.value( INOUT_SETTINGS_SDI2_DOWNSCALER ).toString() );
     setFlipMode( s.value( INOUT_SETTINGS_FLIP_MODE ).toString() );
+    setLogMode( s.value( INOUT_SETTINGS_LOG_MODE ).toString() );
+    setPQMaxBrightness( s.value( INOUT_SETTINGS_PQ_MAX_BRIGHTNESS ).toInt() );
+    setColorSpace( s.value( INOUT_SETTINGS_COLOR_SPACE ).toString() );
     setTestPattern( s.value( INOUT_SETTINGS_TEST_PATTERN ).toBool() );
     setAudioEnable( s.value( INOUT_SETTINGS_AUDIO_ENABLE ).toBool() );
 
@@ -1094,8 +1159,6 @@ void InOutBox::loadSettings( QSettings & s )
     setGenLockCrosslock( s.value( INOUT_SETTINGS_GENLOCK_CROSSLOCK_ENABLE ).toString(),
                          s.value( INOUT_SETTINGS_GENLOCK_CROSSLOCK_VMODE ).toString() );
     setGenLockMode( s.value( INOUT_SETTINGS_GENLOCK_MODE ).toString() );
-
-    setLogMode( s.value( INOUT_SETTINGS_LOG_MODE ).toBool() );
 
     s.endGroup();
 }
@@ -1131,6 +1194,8 @@ void InOutBox::saveSettings( QSettings & s )
     s.setValue( INOUT_SETTINGS_SDI2_DOWNSCALER              , Sdi2Downscaler() );
     s.setValue( INOUT_SETTINGS_FLIP_MODE                    , FlipMode() );
     s.setValue( INOUT_SETTINGS_LOG_MODE                     , LogMode() );
+    s.setValue( INOUT_SETTINGS_PQ_MAX_BRIGHTNESS            , PQMaxBrightness() );
+    s.setValue( INOUT_SETTINGS_COLOR_SPACE                  , ColorSpace() );
     s.setValue( INOUT_SETTINGS_TEST_PATTERN                 , TestPattern() );
     s.setValue( INOUT_SETTINGS_AUDIO_ENABLE                 , AudioEnable() );
 
@@ -1140,8 +1205,6 @@ void InOutBox::saveSettings( QSettings & s )
     s.setValue( INOUT_SETTINGS_GENLOCK_OFFSET_VERTICAL      , GenLockOffsetVertical() );
     s.setValue( INOUT_SETTINGS_GENLOCK_OFFSET_HORIZONTAL    , GenLockOffsetHorizontal() );
     s.setValue( INOUT_SETTINGS_GENLOCK_TERMINATION          , GenLockTermination() );
-
-    s.setValue (INOUT_SETTINGS_LOG_MODE                     , LogMode() );
 
     s.endGroup();
 }
@@ -1162,7 +1225,8 @@ void InOutBox::applySettings( void )
     EmitDownscaleChanged( 1,  d_data->m_ui->cbxSdi1Downscaler->currentData().toInt() );
     EmitDownscaleChanged( 2,  d_data->m_ui->cbxSdi2Downscaler->currentData().toInt() );
     emit ChainFlipModeChanged( d_data->m_ui->cbxFlipMode->currentData().toInt() );
-    emit LogModeChanged( LogMode() ? 1 : 0 );
+    emit LogModeChanged( d_data->m_ui->cbxLogMode->currentData().toInt() );
+    emit ColorSpaceChanged( d_data->m_ui->cbxColorSpace->currentData().toInt() );
     emit OsdTestPatternChanged( TestPattern() ? 1 : 0 );
     emit ChainAudioEnableChanged( AudioEnable() );
 
@@ -1282,6 +1346,26 @@ void InOutBox::addFlipMode( QString name, int id )
     d_data->m_ui->cbxFlipMode->blockSignals( true );
     d_data->m_ui->cbxFlipMode->addItem( name, id );
     d_data->m_ui->cbxFlipMode->blockSignals( false );
+}
+
+/******************************************************************************
+ * InOutBox::addLogMode
+ *****************************************************************************/
+void InOutBox::addLogMode( QString name, int id )
+{
+    d_data->m_ui->cbxLogMode->blockSignals( true );
+    d_data->m_ui->cbxLogMode->addItem( name, id );
+    d_data->m_ui->cbxLogMode->blockSignals( false );
+}
+
+/******************************************************************************
+ * InOutBox::addColorSpace
+ *****************************************************************************/
+void InOutBox::addColorSpace( QString name, int id )
+{
+    d_data->m_ui->cbxColorSpace->blockSignals( true );
+    d_data->m_ui->cbxColorSpace->addItem( name, id );
+    d_data->m_ui->cbxColorSpace->blockSignals( false );
 }
 
 /******************************************************************************
@@ -1409,8 +1493,13 @@ void InOutBox::setFlipModeVisible(const bool vertical, const bool horizontal)
  *****************************************************************************/
 void InOutBox::setLogModeVisible(const bool value)
 {
-    d_data->m_ui->lblLogEnable->setVisible(value);
-    d_data->m_ui->cbxLogEnable->setVisible(value);
+    d_data->m_ui->lblLogMode->setVisible(value);
+    d_data->m_ui->cbxLogMode->setVisible(value);
+
+    /* PQ max brightness is only setable in PQ log mode, so if log mode is
+     * not availbe there is no need to show those settings. */
+    d_data->m_ui->lblPQMaxBrightness->setVisible(value);
+    d_data->m_ui->sbxPQMaxBrightness->setVisible(value);
 }
 
 /******************************************************************************
@@ -1663,10 +1752,49 @@ void InOutBox::onChainFlipModeChange( int value )
  *****************************************************************************/
 void InOutBox::onLogModeChange( int value )
 {
-    // set value of checkbox
-    d_data->m_ui->cbxLogEnable->blockSignals( true );
-    d_data->m_ui->cbxLogEnable->setCheckState( value ? Qt::Checked : Qt::Unchecked );
-    d_data->m_ui->cbxLogEnable->blockSignals( false );
+    int index = d_data->m_ui->cbxLogMode->findData( value );
+    if ( index != -1 )
+    {
+        d_data->m_ui->cbxLogMode->blockSignals( true );
+        d_data->m_ui->cbxLogMode->setCurrentIndex( index );
+        d_data->m_ui->cbxLogMode->blockSignals( false );
+
+        // Show max PQ brightness settings if log mode is PQ
+        if ( index == LogModePQ )
+        {
+            d_data->m_ui->lblPQMaxBrightness->setEnabled( true );
+            d_data->m_ui->sbxPQMaxBrightness->setEnabled( true );
+        }
+        else
+        {
+            d_data->m_ui->lblPQMaxBrightness->setEnabled( false );
+            d_data->m_ui->sbxPQMaxBrightness->setEnabled( false );
+        }
+    }
+}
+
+/******************************************************************************
+ * InOutBox::onPQMaxBrightnessChange
+ *****************************************************************************/
+void InOutBox::onPQMaxBrightnessChange( int percent )
+{
+    d_data->m_ui->sbxPQMaxBrightness->blockSignals( true );
+    d_data->m_ui->sbxPQMaxBrightness->setValue( percent );
+    d_data->m_ui->sbxPQMaxBrightness->blockSignals( false );
+}
+
+/******************************************************************************
+ * InOutBox::onColorSpaceChange
+ *****************************************************************************/
+void InOutBox::onColorSpaceChange( int value )
+{
+    int index = d_data->m_ui->cbxColorSpace->findData( value );
+    if ( index != -1 )
+    {
+        d_data->m_ui->cbxColorSpace->blockSignals( true );
+        d_data->m_ui->cbxColorSpace->setCurrentIndex( index );
+        d_data->m_ui->cbxColorSpace->blockSignals( false );
+    }
 }
 
 /******************************************************************************
@@ -2173,12 +2301,44 @@ void InOutBox::onCbxFlipModeChange( int index )
 }
 
 /******************************************************************************
- * InOutBox::onCbxLogEnableChange
+ * InOutBox::onCbxLogModeChange
  *****************************************************************************/
-void InOutBox::onCbxLogEnableChange( int value )
+void InOutBox::onCbxLogModeChange( int index )
 {
     setWaitCursor();
-    emit LogModeChanged( (value == Qt::Checked) ? 1 : 0 );
+    emit LogModeChanged( d_data->m_ui->cbxLogMode->itemData( index ).toInt() );
+    setNormalCursor();
+
+    // Show max PQ brightness settings if log mode is PQ
+    if ( index == LogModePQ )
+    {
+        d_data->m_ui->lblPQMaxBrightness->setEnabled( true );
+        d_data->m_ui->sbxPQMaxBrightness->setEnabled( true );
+    }
+    else
+    {
+        d_data->m_ui->lblPQMaxBrightness->setEnabled( false );
+        d_data->m_ui->sbxPQMaxBrightness->setEnabled( false );
+    }
+}
+
+/******************************************************************************
+ * InOutBox::onSbxPQMaxBrightnessChange
+ *****************************************************************************/
+void InOutBox::onSbxPQMaxBrightnessChange( int value )
+{
+    setWaitCursor();
+    emit PQMaxBrightnessChanged( value );
+    setNormalCursor();
+}
+
+/******************************************************************************
+ * InOutBox::onCbxColorSpaceChange
+ *****************************************************************************/
+void InOutBox::onCbxColorSpaceChange( int index )
+{
+    setWaitCursor();
+    emit ColorSpaceChanged( d_data->m_ui->cbxColorSpace->itemData( index ).toInt() );
     setNormalCursor();
 }
 

@@ -83,8 +83,12 @@ public:
     void setSdi2Downscaler( const QString mode );
     QString FlipMode() const;
     void setFlipMode( const QString mode );
-    bool LogMode() const;
-    void setLogMode( const bool value);
+    QString LogMode() const;
+    void setLogMode( const QString mode);
+    int PQMaxBrightness() const;
+    void setPQMaxBrightness( const int value );
+    QString ColorSpace() const;
+    void setColorSpace( const QString mode);
     bool TestPattern() const;
     void setTestPattern( const bool value );
     bool AudioEnable() const;
@@ -135,6 +139,8 @@ protected:
     void addSdi2Mode( QString name, int id );
     void addDownscaleMode( QString name, int id );
     void addFlipMode( QString name, int id );
+    void addLogMode( QString name, int id );
+    void addColorSpace( QString name, int id );
 
     void UpdateIsoPlusMinusButtons();
     void UpdateExposurePlusMinusButtons();
@@ -162,6 +168,8 @@ signals:
     void ChainDownscaleModeChanged( int sdi_out_idx, bool downscale, bool interlace );
     void ChainFlipModeChanged( int value );
     void LogModeChanged( int value );
+    void PQMaxBrightnessChanged( int value );
+    void ColorSpaceChanged( int value );
     void OsdTestPatternChanged( int value );
     void ChainAudioEnableChanged( bool enable );
     
@@ -195,6 +203,8 @@ public slots:
     void onChainDownscaleModeChange( int sdi_out_idx, bool downscale, bool interlace );
     void onChainFlipModeChange( int value );
     void onLogModeChange( int value );
+    void onPQMaxBrightnessChange( int percent );
+    void onColorSpaceChange( int value );
     void onOsdTestPatternChange( int value );
     void onChainAudioEnableChange( bool enable );
 
@@ -240,7 +250,9 @@ private slots:
     void onCbxSdi1DownscalerChange( int index );
     void onCbxSdi2DownscalerChange( int index );
     void onCbxFlipModeChange( int index );
-    void onCbxLogEnableChange( int value );
+    void onCbxLogModeChange( int index );
+    void onSbxPQMaxBrightnessChange( int value );
+    void onCbxColorSpaceChange( int index );
     void onCbxTestPatternChange( int value );
     void onCbxAudioEnableChange( int value );
     

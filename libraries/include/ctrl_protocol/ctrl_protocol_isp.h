@@ -626,6 +626,38 @@ int ctrl_protocol_set_color_cross_offset
 );
 
 /**************************************************************************//**
+ * @brief Gets color space.
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[out]  mode     color space mode
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_color_space
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t * const              mode
+);
+
+/**************************************************************************//**
+ * @brief Sets color space.
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[in]   mode     color space mode to set
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_set_color_space
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t const                mode
+);
+
+/**************************************************************************//**
  * @brief Gets currently configured split-screen mode.
  *
  * @param[in]   channel  control channel instance
@@ -695,6 +727,8 @@ typedef struct ctrl_protocol_isp_drv_s
     ctrl_protocol_int32_array_t         set_color_cross;
     ctrl_protocol_int16_array_t         get_color_cross_offset;
     ctrl_protocol_int16_array_t         set_color_cross_offset;
+    ctrl_protocol_get_uint8_t           get_color_space;
+    ctrl_protocol_set_uint8_t           set_color_space;
     ctrl_protocol_get_uint8_t           get_split_screen;
     ctrl_protocol_set_uint8_t           set_split_screen;
 } ctrl_protocol_isp_drv_t;

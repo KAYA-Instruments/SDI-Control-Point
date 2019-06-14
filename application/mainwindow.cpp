@@ -847,6 +847,12 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         connect( dev->GetLutItf(), SIGNAL(LogModeChanged(int)), m_ui->lutBox, SLOT(onLogModeChange(int)) );
         connect( m_ui->inoutBox, SIGNAL(LogModeChanged(int)),  m_ui->lutBox, SLOT(onLogModeChange(int)) );
 
+        connect( dev->GetLutItf(), SIGNAL(PQMaxBrightnessChanged(int)), m_ui->inoutBox, SLOT(onPQMaxBrightnessChange(int)) );
+        connect( m_ui->inoutBox, SIGNAL(PQMaxBrightnessChanged(int)), dev->GetLutItf(), SLOT(onPQMaxBrightnessChange(int)) );
+
+        connect( dev->GetIspItf(), SIGNAL(ColorSpaceChanged(int)), m_ui->inoutBox, SLOT(onColorSpaceChange(int)) );
+        connect( m_ui->inoutBox, SIGNAL(ColorSpaceChanged(int)), dev->GetIspItf(), SLOT(onColorSpaceChange(int)) );
+
         connect( dev->GetLutItf(), SIGNAL(LutPresetChanged(int)), m_ui->lutBox, SLOT(onLutPresetChange(int)) );
         connect( m_ui->lutBox, SIGNAL(LutPresetChanged(int)), dev->GetLutItf(), SLOT(onLutPresetChange(int)) );
 

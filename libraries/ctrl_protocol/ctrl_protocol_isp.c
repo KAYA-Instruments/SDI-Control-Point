@@ -557,6 +557,37 @@ int ctrl_protocol_set_color_cross_offset
 }
 
 /******************************************************************************
+ * ctrl_protocol_get_color_space
+ *****************************************************************************/
+int ctrl_protocol_get_color_space
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t * const              mode
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( ISP_DRV(protocol->drv), get_color_space );
+    CHECK_NOT_NULL( mode );
+    return ( ISP_DRV(protocol->drv)->get_color_space( protocol->ctx, channel, mode ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_color_space
+ *****************************************************************************/
+int ctrl_protocol_set_color_space
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t const                mode
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( ISP_DRV(protocol->drv), set_color_space );
+    return ( ISP_DRV(protocol->drv)->set_color_space( protocol->ctx, channel, mode ) );
+}
+
+/******************************************************************************
  * ctrl_protocol_get_split_screen
  *****************************************************************************/
 int ctrl_protocol_get_split_screen

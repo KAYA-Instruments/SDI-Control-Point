@@ -767,6 +767,38 @@ int ctrl_protocol_set_log_mode
 );
 
 /**************************************************************************//**
+ * @brief Gets maximum brigthness for PQ gamma curve.
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[out]  percent  maximum brigthness (0 to 100%)
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_pq_max_brightness
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t * const              percent
+);
+
+/**************************************************************************//**
+ * @brief Sets maximum brigthness for PQ gamma curve.
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[in]   percent  maximum brigthness to set (0 to 100%)
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_set_pq_max_brightness
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t const                percent
+);
+
+/**************************************************************************//**
  * @brief GAMMA protocol driver implementation
  *****************************************************************************/
 typedef struct ctrl_protocol_lut_drv_s
@@ -812,6 +844,8 @@ typedef struct ctrl_protocol_lut_drv_s
     ctrl_protocol_set_int16_t       set_lut_fast_gamma;
     ctrl_protocol_get_uint8_t       get_log_mode;
     ctrl_protocol_set_uint8_t       set_log_mode;
+    ctrl_protocol_get_uint8_t       get_pq_max_brightness;
+    ctrl_protocol_set_uint8_t       set_pq_max_brightness;
 } ctrl_protocol_lut_drv_t;
 
 /******************************************************************************

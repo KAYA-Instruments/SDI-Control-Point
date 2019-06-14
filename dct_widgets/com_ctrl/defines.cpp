@@ -623,15 +623,15 @@ QString GetLensProfileName( LensProfile profile )
 /******************************************************************************
  * GetCsModeName()
  *****************************************************************************/
-QString GetColorSpaceModeName( ColorSpaceMode mode )
+QString GetColorSpaceModeName( OutputMode mode )
 {
     switch ( mode )
     {
-        case ColorSpaceModeYUV:
+        case OutputModeYUV:
             return ( QString(COLOR_SPACE_MODE_NAME_YUV) );
-        case ColorSpaceModeRAW10:
+        case OutputModeRAW10:
             return ( QString(COLOR_SPACE_MODE_NAME_RAW10) );
-        case ColorSpaceModeRAW12:
+        case OutputModeRAW12:
             return ( QString(COLOR_SPACE_MODE_NAME_RAW12) );
         default:
             return ( QString::null );
@@ -747,6 +747,40 @@ QString GetFlipModeName( FlipMode mode )
             return ( QString(FLIP_MODE_HORIZONTAL) );
         case FlipModeRotated:
             return ( QString(FLIP_MODE_ROTATED) );
+        default:
+            return ( QString::null );
+    }
+}
+
+/******************************************************************************
+ * GetLogModeName()
+ *****************************************************************************/
+QString GetLogModeName( LogMode mode )
+{
+    switch ( mode )
+    {
+        case LogModeOff:
+            return ( QString(LOG_MODE_OFF) );
+        case LogModeHLG:
+            return ( QString(LOG_MODE_HLG) );
+        case LogModePQ:
+            return ( QString(LOG_MODE_PQ) );
+        default:
+            return ( QString::null );
+    }
+}
+
+/******************************************************************************
+ * GetColorSpaceName()
+ *****************************************************************************/
+QString GetColorSpaceName( ColorSpace mode )
+{
+    switch ( mode )
+    {
+        case ColorSpaceRec709:
+            return ( QString(COLOR_SPACE_REC_709) );
+        case ColorSpaceRec2020:
+            return ( QString(COLOR_SPACE_REC_2020) );
         default:
             return ( QString::null );
     }

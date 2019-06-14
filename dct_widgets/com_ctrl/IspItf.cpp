@@ -62,6 +62,9 @@ void IspItf::resync()
     // sync yuv conversion
     GetColorConversionMatrix();
 
+    // sync color space
+    GetColorSpace();
+
     // split-screen
     GetSplitScreen();
 }
@@ -552,6 +555,23 @@ void IspItf::GetColorConversionMatrix()
     }
 }
 
+void IspItf::GetColorSpace()
+{
+    // Is there a signal listener
+    if ( receivers(SIGNAL(ColorSpaceChanged(int))) > 0 )
+    {
+        uint8_t value;
+
+        // read color space from device
+        int res = ctrl_protocol_get_color_space( GET_PROTOCOL_INSTANCE(this),
+            GET_CHANNEL_INSTANCE(this), &value );
+        HANDLE_ERROR( res );
+
+        // emit a BayerPatternChanged signal
+        emit ColorSpaceChanged( value );
+    }
+}
+
 /******************************************************************************
  * IspItf::GetSplitScreen
  *****************************************************************************/
@@ -874,6 +894,21 @@ void IspItf::onColorConversionMatrixChange( int c0, int c1, int c2,
                     GET_PROTOCOL_INSTANCE(this), GET_CHANNEL_INSTANCE(this),
                     NO_VALUES_COLOR_CONVERSION, c );
     HANDLE_ERROR( res );
+}
+
+/******************************************************************************
+ * IspItf::onColorSpaceChange
+ *****************************************************************************/
+void IspItf::onColorSpaceChange( int value )
+{
+    // set color space on device
+    int res = ctrl_protocol_set_color_space( GET_PROTOCOL_INSTANCE(this),
+        GET_CHANNEL_INSTANCE(this), (uint8_t)value );
+    HANDLE_ERROR( res );
+
+    // color space can change color cross and conversion settings, so reload them
+    GetColorCorrection();
+    GetColorConversionMatrix();
 }
 
 /******************************************************************************
