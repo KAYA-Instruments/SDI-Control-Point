@@ -262,6 +262,11 @@ OutBox::OutBox( QWidget * parent ) : DctWidgetBox( parent )
     // connect mode signals
     connect( d_data->m_ui->cbxSdiMode, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxSdiModeChange(int)) );
     connect( d_data->m_ui->cbxCsMode , SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxCsModeChange(int)) );
+
+    ////////////////////
+    // operation mode
+    ////////////////////
+    prepareMode( mode() );
 }
 
 /******************************************************************************
@@ -275,9 +280,12 @@ OutBox::~OutBox()
 /******************************************************************************
  * OutBox::prepareMode
  *****************************************************************************/
-void OutBox::prepareMode( const Mode )
+void OutBox::prepareMode( const Mode mode )
 {
-    // do nothing here
+    // Hide advanced features if not in engineering mode
+    bool v = (DctWidgetBox::Normal == mode) ? false : true;
+    d_data->m_ui->gbxMatrix->setVisible( v );
+    d_data->m_ui->gbxRGBtoYCbCr->setVisible( v );
 }
 
 /******************************************************************************
