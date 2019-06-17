@@ -4,12 +4,18 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
+Version **1.1.13** - 17.06.2019
+
+* The "LOG" checkbox on the inout tab has been replaced with a combo box. The user can now select between "Off", "HLG" and "PQ".
+* Added new UI elements to setup the "max PQ brightness" from the inout tab. The elements are only active when the log mode is set to "PQ".
+* The advanced color conversion features in the out tab are now only shown in engineering mode.
+
+## Older Releases:
+
 Version **1.1.12** - 29.05.2019
 
 * The RS485 termination can now be setup from the settings dialog.
 * When reopening the connect dialog it will now automatically search for new com ports. This fixes issues where com ports that are non existent are still in the list which causes all kinds of unexpected behaviour, in the worst case an application crash.
-
-## Older Releases:
 
 Version **1.1.11** - 23.04.2019
 
