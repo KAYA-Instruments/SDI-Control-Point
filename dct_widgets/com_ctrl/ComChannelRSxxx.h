@@ -136,7 +136,7 @@ public:
             return ( QSerialPortInfo(*m_port).systemLocation() );
         }
 
-        return ( QString::null );
+        return ( QString() );
     }
 
     void emitDataRecieved( char const * data );

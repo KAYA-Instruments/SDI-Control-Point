@@ -124,7 +124,7 @@ const update_config_t condor4k_fw_update =
     /* .extension   = */ "bin",
     /* .content     = */ true,      // needed to distinguish between firmware and bitstream
     /* .reversal    = */ false,
-    /* .file        = */ QString::null,
+    /* .file        = */ QString(),
     /* .description = */ "Software Update File"
 };
 
@@ -137,7 +137,7 @@ const update_config_t condor4k_bs_update =
     /* .extension   = */ "bin",
     /* .content     = */ true,      // needed to distinguish between firmware and bitstream
     /* .reversal    = */ false,
-    /* .file        = */ QString::null,
+    /* .file        = */ QString(),
     /* .description = */ "Bitstream Update File"
 };
 
@@ -155,7 +155,7 @@ const update_config_t cooper_fw_update =
     /* .extension   = */ "bin",
     /* .content     = */ true,      // needed to distinguish between firmware and bitstream
     /* .reversal    = */ false,
-    /* .file        = */ QString::null,
+    /* .file        = */ QString(),
     /* .description = */ "Software Update File"
 };
 
@@ -168,7 +168,7 @@ const update_config_t cooper_bs_update =
     /* .extension   = */ "bin",
     /* .content     = */ true,      // needed to distinguish between firmware and bitstream
     /* .reversal    = */ false,
-    /* .file        = */ QString::null,
+    /* .file        = */ QString(),
     /* .description = */ "Bitstream Update File"
 };
 
@@ -408,7 +408,7 @@ void UpdateBox::dropEvent(QDropEvent *event)
         // reset data structures
         for ( int i = 0; i < d_data->m_upd_config.count(); i++ )
         {
-            d_data->m_upd_config[i].file = QString::null;
+            d_data->m_upd_config[i].file = QString();
         }
 
         // loop over all update configs and try to find a matching binary file
@@ -566,7 +566,7 @@ void UpdateBox::setSystemState( SystemStates state, bool force )
         bool enable = true;
 
         // check if update index is in range, if it is, get file path
-        QString fn = QString::null;
+        QString fn = QString();
         if ( d_data->m_upd_idx >= 0 && d_data->m_upd_idx < d_data->m_upd_config.count() )
         {
             fn = d_data->m_upd_config[d_data->m_upd_idx].file;
@@ -661,7 +661,7 @@ unsigned int UpdateBox::getTotalNumUpdates()
      * to be performed */
     for ( int i = 0; i < d_data->m_upd_config.count(); i++ )
     {
-        if ( d_data->m_upd_config[i].file != QString::null )
+        if ( d_data->m_upd_config[i].file != QString() )
         {
             numUpdates++;
         }
@@ -716,7 +716,7 @@ void UpdateBox::getFirstUpdateIndex()
     // loop over all pending updates and check if a file was specified
     for ( int i = 0; i < d_data->m_upd_config.count(); i++ )
     {
-        if (d_data->m_upd_config[i].file != QString::null )
+        if (d_data->m_upd_config[i].file != QString() )
         {
             firstIndex = i;
             break;
@@ -750,7 +750,7 @@ void UpdateBox::getNextUpdateIndex()
     // loop over all pending updates and check if a file was specified
     for ( int i = d_data->m_upd_idx + 1; i < d_data->m_upd_config.count(); i++ )
     {
-        if (d_data->m_upd_config[i].file != QString::null )
+        if (d_data->m_upd_config[i].file != QString() )
         {
             nextIndex = i;
             break;
@@ -1324,7 +1324,7 @@ void UpdateBox::checkUpdateDirectory( QString updateDirectory  )
     // reset data structures
     for ( int i = 0; i < d_data->m_upd_config.count(); i++ )
     {
-        d_data->m_upd_config[i].file = QString::null;
+        d_data->m_upd_config[i].file = QString();
     }
 
     // Error flags
@@ -1360,7 +1360,7 @@ void UpdateBox::checkUpdateDirectory( QString updateDirectory  )
                     }
 
                     // If the file path is still empty, copy the file path and increment update counter
-                    if ( d_data->m_upd_config[i].file == QString::null )
+                    if ( d_data->m_upd_config[i].file == QString() )
                     {
                         d_data->m_upd_config[i].file = binaryFiles.filePath();
                         noFileFoundError = false;
@@ -1426,7 +1426,7 @@ void UpdateBox::checkUpdateDirectory( QString updateDirectory  )
         // reset data structures
         for ( int i = 0; i < d_data->m_upd_config.count(); i++ )
         {
-            d_data->m_upd_config[i].file = QString::null;
+            d_data->m_upd_config[i].file = QString();
         }
 
         // and disable UI elements
@@ -1459,7 +1459,7 @@ void UpdateBox::onFileNameClicked()
         QString directory;
 
         // get update directory
-        if ( updateDirectory != QString::null && QDir(d_data->m_upd_dir).exists() )
+        if ( updateDirectory != QString() && QDir(d_data->m_upd_dir).exists() )
         {
             directory = QDir(updateDirectory).absolutePath();
         }

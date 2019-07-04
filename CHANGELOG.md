@@ -4,13 +4,19 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
+Version **1.1.14** - 04.07.2019
+
+* Added new UI elements to setup the audio gain from the inout tab.
+* Disable genlock controls when genlock is in master mode.
+* Replaced functions which are deprecated in Qt 5.13 to compile without warnings.
+
+## Older Releases:
+
 Version **1.1.13** - 17.06.2019
 
 * The "LOG" checkbox on the inout tab has been replaced with a combo box. The user can now select between "Off", "HLG" and "PQ".
 * Added new UI elements to setup the "max PQ brightness" from the inout tab. The elements are only active when the log mode is set to "PQ".
 * The advanced color conversion features in the out tab are now only shown in engineering mode.
-
-## Older Releases:
 
 Version **1.1.12** - 29.05.2019
 

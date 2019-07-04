@@ -107,6 +107,7 @@ public:
 #define INOUT_SETTINGS_PQ_MAX_BRIGHTNESS            ( "pq_max_brightness" )
 #define INOUT_SETTINGS_TEST_PATTERN                 ( "test_pattern" )
 #define INOUT_SETTINGS_AUDIO_ENABLE                 ( "audio_enable" )
+#define INOUT_SETTINGS_AUDIO_GAIN                   ( "audio_gain" )
 
 #define INOUT_SETTINGS_GENLOCK_MODE                 ( "genlock_mode" )
 #define INOUT_SETTINGS_GENLOCK_CROSSLOCK_ENABLE     ( "genlock_crosslock_enable" )
@@ -321,6 +322,7 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
 
     // audio
     connect( d_data->m_ui->cbxAudioEnable , SIGNAL(stateChanged(int)), this, SLOT(onCbxAudioEnableChange(int)) );
+    connect( d_data->m_ui->sbxAudioGain, SIGNAL(valueChanged(double)), this, SLOT(onSbxAudioGainChange(double)) );
     
     // genlock
     connect( d_data->m_ui->cbxGenLockMode , SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxGenlockModeChange(int)) );
@@ -974,6 +976,26 @@ void InOutBox::setAudioEnable( const bool value )
 }
 
 /******************************************************************************
+ * InOutBox::AudioGain
+ *****************************************************************************/
+double InOutBox::AudioGain() const
+{
+    return ( d_data->m_ui->sbxAudioGain->value() );
+}
+
+/******************************************************************************
+ * InOutBox::setAudioGain
+ *****************************************************************************/
+void InOutBox::setAudioGain( const double gain )
+{
+    d_data->m_ui->sbxAudioGain->blockSignals( true );
+    d_data->m_ui->sbxAudioGain->setValue( gain );
+    d_data->m_ui->sbxAudioGain->blockSignals( false );
+
+    emit ChainAudioGainChanged( gain );
+}
+
+/******************************************************************************
  * InOutBox::GenLockMode
  *****************************************************************************/
 QString InOutBox::GenLockMode() const
@@ -1131,6 +1153,7 @@ void InOutBox::loadSettings( QSettings & s )
     setColorSpace( s.value( INOUT_SETTINGS_COLOR_SPACE ).toString() );
     setTestPattern( s.value( INOUT_SETTINGS_TEST_PATTERN ).toBool() );
     setAudioEnable( s.value( INOUT_SETTINGS_AUDIO_ENABLE ).toBool() );
+    setAudioGain( s.value( INOUT_SETTINGS_AUDIO_GAIN ).toDouble() );
 
     setBayerPattern( s.value( INOUT_SETTINGS_BAYER_PATTERN ).toInt() );
     setCameraIso( s.value( INOUT_SETTINGS_CAMERA_ISO ).toInt() );
@@ -1198,6 +1221,7 @@ void InOutBox::saveSettings( QSettings & s )
     s.setValue( INOUT_SETTINGS_COLOR_SPACE                  , ColorSpace() );
     s.setValue( INOUT_SETTINGS_TEST_PATTERN                 , TestPattern() );
     s.setValue( INOUT_SETTINGS_AUDIO_ENABLE                 , AudioEnable() );
+    s.setValue( INOUT_SETTINGS_AUDIO_GAIN                   , AudioGain() );
 
     s.setValue( INOUT_SETTINGS_GENLOCK_MODE                 , GenLockMode() );
     s.setValue( INOUT_SETTINGS_GENLOCK_CROSSLOCK_ENABLE     , GenLockCrosslockEnable() );
@@ -1229,6 +1253,7 @@ void InOutBox::applySettings( void )
     emit ColorSpaceChanged( d_data->m_ui->cbxColorSpace->currentData().toInt() );
     emit OsdTestPatternChanged( TestPattern() ? 1 : 0 );
     emit ChainAudioEnableChanged( AudioEnable() );
+    emit ChainAudioGainChanged( AudioGain() );
 
     emit BayerPatternChanged( BayerPattern() );
     emit CameraGainChanged( gainToIso(CameraIso()) );
@@ -1514,10 +1539,11 @@ void InOutBox::setTestPatternVisible(const bool value)
 /******************************************************************************
  * InOutBox::setAudioEnableVisible
  *****************************************************************************/
-void InOutBox::setAudioEnableVisible(const bool value)
+void InOutBox::setAudioVisible(const bool value)
 {
-    d_data->m_ui->lblAudioEnable->setVisible(value);
+    d_data->m_ui->lblAudio->setVisible(value);
     d_data->m_ui->cbxAudioEnable->setVisible(value);
+    d_data->m_ui->sbxAudioGain->setVisible(value);
 }
 
 
@@ -1817,6 +1843,20 @@ void InOutBox::onChainAudioEnableChange( bool enable )
     d_data->m_ui->cbxAudioEnable->blockSignals( true );
     d_data->m_ui->cbxAudioEnable->setCheckState( enable ? Qt::Checked : Qt::Unchecked );
     d_data->m_ui->cbxAudioEnable->blockSignals( false );
+
+    // Disable audio gain spin box if audio is disabled
+    d_data->m_ui->sbxAudioGain->setEnabled( enable );
+}
+
+/******************************************************************************
+ * InOutBox::onChainAudioGainChange
+ *****************************************************************************/
+void InOutBox::onChainAudioGainChange( double gain )
+{
+    // set value of spin box
+    d_data->m_ui->sbxAudioGain->blockSignals( true );
+    d_data->m_ui->sbxAudioGain->setValue( gain );
+    d_data->m_ui->sbxAudioGain->blockSignals( false );
 }
 
 /******************************************************************************
@@ -1830,7 +1870,10 @@ void InOutBox::onChainGenlockModeChange( int value )
         d_data->m_ui->cbxGenLockMode->blockSignals( true );
         d_data->m_ui->cbxGenLockMode->setCurrentIndex( index );
         d_data->m_ui->cbxGenLockMode->blockSignals( false );
-    }    
+
+        updateEnableOfGenlockSettings( value, d_data->m_ui->cbxGenlockCrosslockEnable->currentIndex() );
+    }
+
 }
 
 /******************************************************************************
@@ -1844,6 +1887,8 @@ void InOutBox::onChainGenlockCrosslockChange( int enable, int vmode )
         d_data->m_ui->cbxGenlockCrosslockEnable->blockSignals( true );
         d_data->m_ui->cbxGenlockCrosslockEnable->setCurrentIndex( index );
         d_data->m_ui->cbxGenlockCrosslockEnable->blockSignals( false );
+
+        updateEnableOfGenlockSettings( d_data->m_ui->cbxGenLockMode->currentIndex(), index);
     }
 
     index = d_data->m_ui->cbxGenlockCrosslockVmode->findData( vmode );
@@ -1854,8 +1899,6 @@ void InOutBox::onChainGenlockCrosslockChange( int enable, int vmode )
         d_data->m_ui->cbxGenlockCrosslockVmode->blockSignals( false );
     }
 
-    // Only enable crosslock video mode combo box in "Other HD Mode" crosslock mode
-    d_data->m_ui->cbxGenlockCrosslockVmode->setEnabled( enable == GenLockCrosslockEnableOtherHDMode );
 }
 
 /******************************************************************************
@@ -2358,9 +2401,25 @@ void InOutBox::onCbxTestPatternChange( int value )
 void InOutBox::onCbxAudioEnableChange( int value )
 {
     setWaitCursor();
+
     emit ChainAudioEnableChanged( (value == Qt::Checked) ? true : false );
+
+    // Disable audio gain spin box if audio is disabled
+    d_data->m_ui->sbxAudioGain->setEnabled( (value == Qt::Checked) ? true : false  );
+
     setNormalCursor();
 }
+
+/******************************************************************************
+ * InOutBox::onSbxAudioGainChange
+ *****************************************************************************/
+void InOutBox::onSbxAudioGainChange( double gain )
+{
+    setWaitCursor();
+    emit ChainAudioGainChanged( gain );
+    setNormalCursor();
+}
+
 
 /******************************************************************************
  * InOutBox::onCbxGenlockModeChange
@@ -2369,7 +2428,9 @@ void InOutBox::onCbxGenlockModeChange( int index )
 {
     setWaitCursor();
     emit ChainGenlockModeChanged( d_data->m_ui->cbxGenLockMode->itemData( index ).toInt() );
+    updateEnableOfGenlockSettings( index, d_data->m_ui->cbxGenlockCrosslockEnable->currentIndex() );
     setNormalCursor();
+
 }
 
 /******************************************************************************
@@ -2380,10 +2441,7 @@ void InOutBox::onCbxGenlockCrosslockEnableChange( int index )
     setWaitCursor();
     emit ChainGenlockCrosslockChanged( d_data->m_ui->cbxGenlockCrosslockEnable->itemData( index ).toInt(),
                                        d_data->m_ui->cbxGenlockCrosslockVmode->currentData().toInt() );
-
-    // Only enable crosslock video mode combo box in "Other HD Mode" crosslock mode
-    d_data->m_ui->cbxGenlockCrosslockVmode->setEnabled( index == GenLockCrosslockEnableOtherHDMode );
-
+    updateEnableOfGenlockSettings( d_data->m_ui->cbxGenLockMode->currentIndex(), index );
     setNormalCursor();
 }
 
@@ -2978,6 +3036,38 @@ void InOutBox::enableCamConfWidgets( bool enable )
 
     d_data->m_ui->sbxAperture->setEnabled( enable && d_data->m_AptEnable );
     d_data->m_ui->sldAperture->setEnabled( enable && d_data->m_AptEnable );
+}
+
+/******************************************************************************
+ * InOutBox::updateEnableOfGenlockSettings
+ *****************************************************************************/
+void InOutBox::updateEnableOfGenlockSettings( int genlockMode, int crosslockMode )
+{
+    if ( genlockMode == GenLockModeMaster )
+    {
+        d_data->m_ui->cbxGenlockCrosslockEnable->setEnabled( false );
+        d_data->m_ui->cbxGenlockCrosslockVmode->setEnabled( false );
+        d_data->m_ui->sbxGenLockOffsetVertical->setEnabled( false );
+        d_data->m_ui->sbxGenlockOffsetHorizontal->setEnabled( false );
+        d_data->m_ui->cbxGenLockTermination->setEnabled( false );
+    }
+    else
+    {
+        d_data->m_ui->cbxGenlockCrosslockEnable->setEnabled( true );
+
+        if ( crosslockMode == GenLockCrosslockEnableOtherHDMode )
+        {
+            d_data->m_ui->cbxGenlockCrosslockVmode->setEnabled( true );
+        }
+        else
+        {
+            d_data->m_ui->cbxGenlockCrosslockVmode->setEnabled( false );
+        }
+
+        d_data->m_ui->sbxGenLockOffsetVertical->setEnabled( true );
+        d_data->m_ui->sbxGenlockOffsetHorizontal->setEnabled( true );
+        d_data->m_ui->cbxGenLockTermination->setEnabled( true );
+    }
 }
 
 /******************************************************************************

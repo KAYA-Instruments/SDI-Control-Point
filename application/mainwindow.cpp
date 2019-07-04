@@ -27,6 +27,8 @@
 #include <QDockWidget>
 #include <QDesktopWidget>
 #include <QScrollBar>
+#include <QGuiApplication>
+#include <QScreen>
 
 #include <ProVideoDevice.h>
 #include <infodialog.h>
@@ -335,7 +337,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
     m_ui->inoutBox->setFlipModeVisible(deviceFeatures.hasChainFlipVertical, deviceFeatures.hasChainFlipHorizontal);
     m_ui->inoutBox->setLogModeVisible(deviceFeatures.hasLutItf);
     m_ui->inoutBox->setTestPatternVisible(deviceFeatures.hasOsdTestPattern);
-    m_ui->inoutBox->setAudioEnableVisible(deviceFeatures.hasChainAudio);
+    m_ui->inoutBox->setAudioVisible(deviceFeatures.hasChainAudio);
 
     // BlackBox Tab
     m_ui->blackBox->setFlareLevelVisible(deviceFeatures.hasIspFlare);
@@ -377,7 +379,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
 
         /* Check if the screen is large enough to show the GUI, if it is not, set the
          * minimum width / height to 0 again to show scroll bars */
-        if ( QApplication::desktop()->availableGeometry().height() < this->minimumSizeHint().height() )
+        if ( QGuiApplication::primaryScreen()->availableGeometry().height() < this->minimumSizeHint().height() )
         {
             m_ScrollbarsNeeded = true;
             m_ui->scrollArea->setMinimumHeight( 0 );
@@ -385,7 +387,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
             // Set minimum width to include the vertical scroll bar
             m_ui->scrollArea->setMinimumWidth( m_ui->scrollArea->widget()->minimumSizeHint().width() + m_ui->scrollArea->verticalScrollBar()->width() );
         }
-        if ( QApplication::desktop()->availableGeometry().width() < this->width() )
+        if ( QGuiApplication::primaryScreen()->availableGeometry().width() < this->width() )
         {
             m_ScrollbarsNeeded = true;
             m_ui->scrollArea->setMinimumWidth( 0 );
@@ -592,6 +594,9 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         {
             connect( dev->GetChainItf(), SIGNAL(ChainAudioEnableChanged(bool)), m_ui->inoutBox, SLOT(onChainAudioEnableChange(bool)) );
             connect( m_ui->inoutBox, SIGNAL(ChainAudioEnableChanged(bool)), dev->GetChainItf(), SLOT(onChainAudioEnableChange(bool)) );
+
+            connect( dev->GetChainItf(), SIGNAL(ChainAudioGainChanged(double)), m_ui->inoutBox, SLOT(onChainAudioGainChange(double)) );
+            connect( m_ui->inoutBox, SIGNAL(ChainAudioGainChanged(double)), dev->GetChainItf(), SLOT(onChainAudioGainChange(double)) );
         }
     }
 

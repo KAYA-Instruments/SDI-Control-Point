@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
  * Copyright (C) 2017 Dream Chip Technologies GmbH
  *
  * This program is free software: you can redistribute it and/or modify
@@ -83,6 +83,7 @@ void ChainItf::resync()
     GetChainTimecode();
     GetChainTimecodeHold();
     GetChainAudioEnable();
+    GetChainAudioGain();
 }
 
 /******************************************************************************
@@ -412,6 +413,29 @@ void ChainItf::GetChainAudioEnable()
 }
 
 /******************************************************************************
+ * ChainItf::GetChainAudioGain
+ *****************************************************************************/
+void ChainItf::GetChainAudioGain()
+{
+    // Is there a signal listener
+    if ( receivers(SIGNAL(ChainAudioGainChanged(double))) > 0 )
+    {
+        uint16_t gain_fixed;
+
+        // get audio gain from device
+        int res = ctrl_protocol_get_audio_gain( GET_PROTOCOL_INSTANCE(this),
+                    GET_CHANNEL_INSTANCE(this), &gain_fixed );
+        HANDLE_ERROR( res );
+
+        // convert 4.12 fixed point to double
+        double gain = static_cast<double>(gain_fixed) / 4096.0;
+
+        // emit a TimecodeHoldChanged signal
+        emit ChainAudioGainChanged( gain );
+    }
+}
+
+/******************************************************************************
  * ChainItf::onChainSelectedChainChange
  *****************************************************************************/
 void ChainItf::onChainSelectedChainChange( int value )
@@ -635,5 +659,25 @@ void ChainItf::onChainAudioEnableChange( bool enable )
 {
     int res = ctrl_protocol_set_audio_enable( GET_PROTOCOL_INSTANCE(this),
             GET_CHANNEL_INSTANCE(this), (uint8_t)enable );
+    HANDLE_ERROR( res );
+}
+
+/******************************************************************************
+ * ChainItf::onChainAudioGainChange
+ *****************************************************************************/
+void ChainItf::onChainAudioGainChange( double gain )
+{
+    // Convert double to 4.12 fixed point
+    gain *= 4096.0;
+
+    if ( gain < 0.0 )
+        gain = 0.0;
+    else if ( gain >= 16.0 * 4096.0 )
+        gain = 16.0 * 4096.0 - 1.0;
+
+    uint16_t gain_fixed = static_cast<uint16_t>(gain);
+
+    int res = ctrl_protocol_set_audio_gain( GET_PROTOCOL_INSTANCE(this),
+            GET_CHANNEL_INSTANCE(this), gain_fixed );
     HANDLE_ERROR( res );
 }

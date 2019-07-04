@@ -559,6 +559,37 @@ int ctrl_protocol_set_audio_enable
 }
 
 /******************************************************************************
+ * ctrl_protocol_get_audio_gain
+ *****************************************************************************/
+int ctrl_protocol_get_audio_gain
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint16_t * const             gain
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( CHAIN_DRV(protocol->drv), get_audio_gain );
+    CHECK_NOT_NULL( gain );
+    return ( CHAIN_DRV(protocol->drv)->get_audio_gain( protocol->ctx, channel, gain ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_audio_gain
+ *****************************************************************************/
+int ctrl_protocol_set_audio_gain
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint16_t const               gain
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( CHAIN_DRV(protocol->drv), set_audio_gain );
+    return ( CHAIN_DRV(protocol->drv)->set_audio_gain( protocol->ctx, channel, gain ) );
+}
+
+/******************************************************************************
  * ctrl_protocol_chain_unregister
  *****************************************************************************/
 int ctrl_protocol_chain_unregister

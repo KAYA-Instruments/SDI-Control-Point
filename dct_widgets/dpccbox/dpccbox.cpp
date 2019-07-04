@@ -99,7 +99,7 @@ static bool pairSort( QVector<int> &a, QVector<int> &b)
     }
 
     // Sort it (will sort first for x, than for y, see QPair
-    qSort(pointList.begin(), pointList.end());
+    std::sort(pointList.begin(), pointList.end());
 
     // Write the results back into the table
     a.clear();

@@ -106,7 +106,7 @@ public:
     int parseLine( QString line );
     void parseSystemId( QString name );
 
-    int runCommand( FlashLoadCommand cmd, quint32 start = 0u, quint32 count = 0u, QString fn = QString::null );
+    int runCommand( FlashLoadCommand cmd, quint32 start = 0u, quint32 count = 0u, QString fn = QString() );
     int stopCommand();
 
 signals:
