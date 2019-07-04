@@ -1541,9 +1541,8 @@ void InOutBox::setTestPatternVisible(const bool value)
  *****************************************************************************/
 void InOutBox::setAudioVisible(const bool value)
 {
-    d_data->m_ui->lblAudioEnable->setVisible(value);
+    d_data->m_ui->lblAudio->setVisible(value);
     d_data->m_ui->cbxAudioEnable->setVisible(value);
-    d_data->m_ui->lblAudioGain->setVisible(value);
     d_data->m_ui->sbxAudioGain->setVisible(value);
 }
 
@@ -1844,6 +1843,9 @@ void InOutBox::onChainAudioEnableChange( bool enable )
     d_data->m_ui->cbxAudioEnable->blockSignals( true );
     d_data->m_ui->cbxAudioEnable->setCheckState( enable ? Qt::Checked : Qt::Unchecked );
     d_data->m_ui->cbxAudioEnable->blockSignals( false );
+
+    // Disable audio gain spin box if audio is disabled
+    d_data->m_ui->sbxAudioGain->setEnabled( enable );
 }
 
 /******************************************************************************
@@ -2396,7 +2398,12 @@ void InOutBox::onCbxTestPatternChange( int value )
 void InOutBox::onCbxAudioEnableChange( int value )
 {
     setWaitCursor();
+
     emit ChainAudioEnableChanged( (value == Qt::Checked) ? true : false );
+
+    // Disable audio gain spin box if audio is disabled
+    d_data->m_ui->sbxAudioGain->setEnabled( (value == Qt::Checked) ? true : false  );
+
     setNormalCursor();
 }
 
