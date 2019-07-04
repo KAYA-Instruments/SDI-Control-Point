@@ -1870,7 +1870,10 @@ void InOutBox::onChainGenlockModeChange( int value )
         d_data->m_ui->cbxGenLockMode->blockSignals( true );
         d_data->m_ui->cbxGenLockMode->setCurrentIndex( index );
         d_data->m_ui->cbxGenLockMode->blockSignals( false );
-    }    
+
+        updateEnableOfGenlockSettings( value, d_data->m_ui->cbxGenlockCrosslockEnable->currentIndex() );
+    }
+
 }
 
 /******************************************************************************
@@ -1884,6 +1887,8 @@ void InOutBox::onChainGenlockCrosslockChange( int enable, int vmode )
         d_data->m_ui->cbxGenlockCrosslockEnable->blockSignals( true );
         d_data->m_ui->cbxGenlockCrosslockEnable->setCurrentIndex( index );
         d_data->m_ui->cbxGenlockCrosslockEnable->blockSignals( false );
+
+        updateEnableOfGenlockSettings( d_data->m_ui->cbxGenLockMode->currentIndex(), index);
     }
 
     index = d_data->m_ui->cbxGenlockCrosslockVmode->findData( vmode );
@@ -1894,8 +1899,6 @@ void InOutBox::onChainGenlockCrosslockChange( int enable, int vmode )
         d_data->m_ui->cbxGenlockCrosslockVmode->blockSignals( false );
     }
 
-    // Only enable crosslock video mode combo box in "Other HD Mode" crosslock mode
-    d_data->m_ui->cbxGenlockCrosslockVmode->setEnabled( enable == GenLockCrosslockEnableOtherHDMode );
 }
 
 /******************************************************************************
@@ -2425,7 +2428,9 @@ void InOutBox::onCbxGenlockModeChange( int index )
 {
     setWaitCursor();
     emit ChainGenlockModeChanged( d_data->m_ui->cbxGenLockMode->itemData( index ).toInt() );
+    updateEnableOfGenlockSettings( index, d_data->m_ui->cbxGenlockCrosslockEnable->currentIndex() );
     setNormalCursor();
+
 }
 
 /******************************************************************************
@@ -2436,10 +2441,7 @@ void InOutBox::onCbxGenlockCrosslockEnableChange( int index )
     setWaitCursor();
     emit ChainGenlockCrosslockChanged( d_data->m_ui->cbxGenlockCrosslockEnable->itemData( index ).toInt(),
                                        d_data->m_ui->cbxGenlockCrosslockVmode->currentData().toInt() );
-
-    // Only enable crosslock video mode combo box in "Other HD Mode" crosslock mode
-    d_data->m_ui->cbxGenlockCrosslockVmode->setEnabled( index == GenLockCrosslockEnableOtherHDMode );
-
+    updateEnableOfGenlockSettings( d_data->m_ui->cbxGenLockMode->currentIndex(), index );
     setNormalCursor();
 }
 
@@ -3034,6 +3036,38 @@ void InOutBox::enableCamConfWidgets( bool enable )
 
     d_data->m_ui->sbxAperture->setEnabled( enable && d_data->m_AptEnable );
     d_data->m_ui->sldAperture->setEnabled( enable && d_data->m_AptEnable );
+}
+
+/******************************************************************************
+ * InOutBox::updateEnableOfGenlockSettings
+ *****************************************************************************/
+void InOutBox::updateEnableOfGenlockSettings( int genlockMode, int crosslockMode )
+{
+    if ( genlockMode == GenLockModeMaster )
+    {
+        d_data->m_ui->cbxGenlockCrosslockEnable->setEnabled( false );
+        d_data->m_ui->cbxGenlockCrosslockVmode->setEnabled( false );
+        d_data->m_ui->sbxGenLockOffsetVertical->setEnabled( false );
+        d_data->m_ui->sbxGenlockOffsetHorizontal->setEnabled( false );
+        d_data->m_ui->cbxGenLockTermination->setEnabled( false );
+    }
+    else
+    {
+        d_data->m_ui->cbxGenlockCrosslockEnable->setEnabled( true );
+
+        if ( crosslockMode == GenLockCrosslockEnableOtherHDMode )
+        {
+            d_data->m_ui->cbxGenlockCrosslockVmode->setEnabled( true );
+        }
+        else
+        {
+            d_data->m_ui->cbxGenlockCrosslockVmode->setEnabled( false );
+        }
+
+        d_data->m_ui->sbxGenLockOffsetVertical->setEnabled( true );
+        d_data->m_ui->sbxGenlockOffsetHorizontal->setEnabled( true );
+        d_data->m_ui->cbxGenLockTermination->setEnabled( true );
+    }
 }
 
 /******************************************************************************

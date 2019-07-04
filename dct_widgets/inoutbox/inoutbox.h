@@ -154,6 +154,8 @@ protected:
     void enableAecWidgets( bool enable );
     void enableCamConfWidgets( bool enable );
 
+    void updateEnableOfGenlockSettings( int genlockMode, int crosslockMode );
+
     QVector<int> createAecVector( void );
     QVector<uint> createLscVector( void );
 
