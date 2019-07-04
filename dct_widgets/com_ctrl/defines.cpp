@@ -58,7 +58,7 @@ QString GetBayerPatternName( BayerPattern pattern )
             return ( QString(BAYER_PATTERN_BGGR) );
 
         default:
-            return ( QString::null );
+            return ( QString() );
     }
 }
 
@@ -202,7 +202,7 @@ QString GetVideoModeName( VideoMode mode )
             return ( QString(VIDEO_MODE_NAME_4Kp47_96) );
 
         default:
-            return ( QString::null );
+            return ( QString() );
     }
 }
 
@@ -346,7 +346,7 @@ QString GetGenlockCrosslockVmodeName( VideoMode mode )
             return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_4Kp47_96) );
 
         default:
-            return ( QString::null );
+            return ( QString() );
     }
 }
 
@@ -594,7 +594,7 @@ QString GetSdiModeName( SdiMode mode )
         case SdiModeExtended:
             return ( QString(SDI_MODE_NAME_EXTENDED) );
         default:
-            return ( QString::null );
+            return ( QString() );
     }
 }
 
@@ -616,7 +616,7 @@ QString GetLensProfileName( LensProfile profile )
         case LensProfileICS:
             return ( QString(LENS_PROFILE_NAME_I_CS) );
         default:
-            return ( QString::null );
+            return ( QString() );
     }
 }
 
@@ -634,7 +634,7 @@ QString GetColorSpaceModeName( OutputMode mode )
         case OutputModeRAW12:
             return ( QString(COLOR_SPACE_MODE_NAME_RAW12) );
         default:
-            return ( QString::null );
+            return ( QString() );
     }
 }
 
@@ -652,7 +652,7 @@ QString GetCamDepthName( CamDepth depth )
         case CamDepth12b:
             return ( QString(CAM_DEPTH_NAME_BIT_12) );
         default:
-            return ( QString::null );
+            return ( QString() );
     }
 }
 
@@ -670,7 +670,7 @@ QString GetGenlockModeName( GenLockMode mode )
         case GenLockModeMaster:
             return ( QString(GENLOCK_MODE_MASTER) );
         default:
-            return ( QString::null );
+            return ( QString() );
     }
 }
 
@@ -690,7 +690,7 @@ QString GetGenlockCrosslockEnableName( GenLockCrosslockEnable enable )
         case GenLockCrosslockEnableOtherHDMode:
         return ( QString(GENLOCK_CROSSLOCK_ENABLE_OTHER_HD_MODE) );
         default:
-            return ( QString::null );
+            return ( QString() );
     }
 }
 
@@ -710,7 +710,7 @@ QString GetSdi2ModeName( Sdi2Mode mode )
         case Sdi2ModeRAW12:
             return ( QString(SDI2_MODE_RAW12) );
         default:
-            return ( QString::null );
+            return ( QString() );
     }
 }
 
@@ -728,7 +728,7 @@ QString GetDownscaleModeName( DownscaleMode mode )
         case DownscaleModeOnAndInterlace:
             return ( QString(DOWNSCALE_MODE_ON_AND_INTERLACE) );
         default:
-            return ( QString::null );
+            return ( QString() );
     }
 }
 
@@ -748,7 +748,7 @@ QString GetFlipModeName( FlipMode mode )
         case FlipModeRotated:
             return ( QString(FLIP_MODE_ROTATED) );
         default:
-            return ( QString::null );
+            return ( QString() );
     }
 }
 
@@ -766,7 +766,7 @@ QString GetLogModeName( LogMode mode )
         case LogModePQ:
             return ( QString(LOG_MODE_PQ) );
         default:
-            return ( QString::null );
+            return ( QString() );
     }
 }
 
@@ -782,6 +782,6 @@ QString GetColorSpaceName( ColorSpace mode )
         case ColorSpaceRec2020:
             return ( QString(COLOR_SPACE_REC_2020) );
         default:
-            return ( QString::null );
+            return ( QString() );
     }
 }

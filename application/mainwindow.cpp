@@ -27,6 +27,8 @@
 #include <QDockWidget>
 #include <QDesktopWidget>
 #include <QScrollBar>
+#include <QGuiApplication>
+#include <QScreen>
 
 #include <ProVideoDevice.h>
 #include <infodialog.h>
@@ -377,7 +379,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
 
         /* Check if the screen is large enough to show the GUI, if it is not, set the
          * minimum width / height to 0 again to show scroll bars */
-        if ( QApplication::desktop()->availableGeometry().height() < this->minimumSizeHint().height() )
+        if ( QGuiApplication::primaryScreen()->availableGeometry().height() < this->minimumSizeHint().height() )
         {
             m_ScrollbarsNeeded = true;
             m_ui->scrollArea->setMinimumHeight( 0 );
@@ -385,7 +387,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
             // Set minimum width to include the vertical scroll bar
             m_ui->scrollArea->setMinimumWidth( m_ui->scrollArea->widget()->minimumSizeHint().width() + m_ui->scrollArea->verticalScrollBar()->width() );
         }
-        if ( QApplication::desktop()->availableGeometry().width() < this->width() )
+        if ( QGuiApplication::primaryScreen()->availableGeometry().width() < this->width() )
         {
             m_ScrollbarsNeeded = true;
             m_ui->scrollArea->setMinimumWidth( 0 );

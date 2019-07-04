@@ -1601,8 +1601,14 @@ void LutBox::onRemoveSampleClicked()
     if ( select->hasSelection() && (d_data->m_ui->tblSamples->model()->rowCount() > 2) )
     {
         QModelIndexList list = select->selectedRows();
+
         // sort so that rows are removed from highest index
-        qSort( list.begin(), list.end(), qGreater<QModelIndex>() );
+        /* Note: We have to sort by "less" and then reverse instead of
+         * sorting by "greater" becasue QModelIndex does not support the
+         * greater operator (Qt 5.13). */
+        std::sort( list.begin(), list.end(), std::less<QModelIndex>() );
+        std::reverse( list.begin(), list.end() );
+
         foreach ( QModelIndex index, list )
         {
             int x = d_data->m_ui->tblSamples->model()->data( index, Qt::DisplayRole ).toInt();
@@ -1792,9 +1798,9 @@ void LutBox::SampleChanged( LutChannel ch )
 
         QMap<int, int> map;
 
-        // sort so that rows are removed from highest index
-        qSort( list.begin(), list.end(), qLess<QModelIndex>() );
-        
+        // sort before adding sample
+        std::sort( list.begin(), list.end(), std::less<QModelIndex>() );
+
         foreach ( QModelIndex index, list )
         {
             int x = d_data->m_ui->tblSamples->model()->data( index, Qt::DisplayRole ).toInt();
@@ -2402,9 +2408,9 @@ void LutBox::onSelectionChange( const QItemSelection &, const QItemSelection & )
 
         QMap<int, int> map;
 
-        // sort so that rows are removed from highest index
-        qSort( list.begin(), list.end(), qLess<QModelIndex>() );
-        
+        // sort before adding sample
+        std::sort( list.begin(), list.end(), std::less<QModelIndex>() );
+
         foreach ( QModelIndex index, list )
         {
             int x = d_data->m_ui->tblSamples->model()->data( index, Qt::DisplayRole ).toInt();

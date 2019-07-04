@@ -30,15 +30,42 @@
 #include <QDebug>
 
 /******************************************************************************
+ * ButtonArrayBox::CustomToolButton
+ *
+ * A QToolButton with an additional ID field which is used to determine
+ * which of the buttons in the button array has been pressed.
+ *****************************************************************************/
+class ButtonArrayBox::CustomToolButton : public QToolButton
+{
+public:
+    CustomToolButton( QWidget *parent = nullptr ) : QToolButton( parent )
+    {
+        id = -1;
+    }
+
+    void setId( int id )
+    {
+        this->id = id;
+    }
+
+    int getId()
+    {
+        return id;
+    }
+
+private:
+    int id;
+};
+
+/******************************************************************************
  * ButtonArrayBox::PrivateData
  *****************************************************************************/
 class ButtonArrayBox::PrivateData
 {
 public:
-    PrivateData( QWidget * owner )
+    PrivateData( ButtonArrayBox * owner )
     {
         m_owner     = owner;
-        m_mapper    = new QSignalMapper( owner );
         m_layout    = new QGridLayout();
         m_max_width = 0;
         m_max_cols  = 0;
@@ -51,14 +78,13 @@ public:
         deleteButtons();
 
         delete m_layout; 
-        delete m_mapper;
     }
 
     void setPixmap( int id, QPixmap px )
     {
         if ( id < m_buttons.count() )
         {
-            QToolButton * btn = m_buttons[id];
+            CustomToolButton * btn = m_buttons[id];
             btn->setIcon( QIcon(px) );
         }
     }
@@ -70,10 +96,9 @@ public:
         m_y = 0; m_x = 0;
 
         // delete button instances 
-        foreach( QToolButton * b, m_buttons )
+        foreach( CustomToolButton * b, m_buttons )
         {
             m_layout->removeWidget( b );
-            m_mapper->removeMappings( b );
             delete b;
         }    
         
@@ -85,7 +110,7 @@ public:
     void rearrangeButtons()
     {
         // remove all buttons from layout 
-        foreach( QToolButton * b, m_buttons )
+        foreach( CustomToolButton * b, m_buttons )
         {
             m_layout->removeWidget( b );
         }
@@ -109,34 +134,35 @@ public:
     void addButton( QString label, bool new_row )
     {
         // create new button 
-        QToolButton * btn = new QToolButton( m_owner );
+        CustomToolButton * btn = new CustomToolButton( m_owner );
 
         // compute button width to present label
         QFontMetrics  fm  = btn->fontMetrics();
-        int width = fm.width( label );
+        int width = fm.horizontalAdvance( label );
         if ( m_max_width < width )
         {
             m_max_width = width;
         
             // resize all buttons to have same width
-            foreach( QToolButton * b, m_buttons )
+            foreach( CustomToolButton * b, m_buttons )
             {
                 b->setFixedWidth( m_max_width + 20 );
                 b->setFixedHeight( m_max_width + 20 );
-            }     
+            }
         }
 
         // set button label 
         btn->setText( label );
+        btn->setId( m_buttons.size() );
         btn->setFixedWidth( m_max_width + 20 );
         btn->setFixedHeight( m_max_width + 20 );
 
-        // connect button to signal mapper
-        QObject::connect( btn, SIGNAL(clicked()), m_mapper, SLOT(map()) );
+        // Connect button to button clicked event using lambda expression
+        connect(btn, &CustomToolButton::clicked, [this, btn]()
+        {
+            emit m_owner->buttonClicked( btn->getId() );
+        });
 
-        // configure signal mapper
-        m_mapper->setMapping( btn, m_buttons.size() );
-        
         // add button to vector
         m_buttons.append( btn );
         m_new_row.append( new_row );
@@ -154,17 +180,17 @@ public:
     void addButton( QString label, QPixmap px, bool new_row )
     {
         // create new button 
-        QToolButton * btn = new QToolButton( m_owner );
+        CustomToolButton * btn = new CustomToolButton( m_owner );
 
         // compute button width to present label
         QFontMetrics  fm  = btn->fontMetrics();
-        int width = fm.width( label );
+        int width = fm.horizontalAdvance( label );
         if ( m_max_width < width )
         {
             m_max_width = width;
         
             // resize all buttons to have same width
-            foreach( QToolButton * b, m_buttons )
+            foreach( CustomToolButton * b, m_buttons )
             {
                 b->setFixedWidth( m_max_width + 20 );
                 b->setFixedHeight( m_max_width + 20 );
@@ -174,17 +200,18 @@ public:
         // set button label 
         btn->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
         btn->setText( label );
+        btn->setId( m_buttons.size() );
         btn->setFixedWidth( m_max_width + 20 );
         btn->setFixedHeight( m_max_width + 20 );
         btn->setIcon( QIcon(px) );
         btn->setIconSize( QSize(60,60) );
 
-        // connect button to signal mapper
-        QObject::connect( btn, SIGNAL(clicked()), m_mapper, SLOT(map()) );
+        // Connect button to button clicked event using lambda expression
+        connect(btn, &CustomToolButton::clicked, [this, btn]()
+        {
+            emit m_owner->buttonClicked( btn->getId() );
+        });
 
-        // configure signal mapper
-        m_mapper->setMapping( btn, m_buttons.size() );
-        
         // add button to vector
         m_buttons.append( btn );
         m_new_row.append( new_row );
@@ -198,15 +225,14 @@ public:
         }
     }
 
-    QWidget *               m_owner;
-    QSignalMapper *         m_mapper;
-    QGridLayout *           m_layout;
-    QVector<QToolButton *>  m_buttons;
-    QVector<bool>           m_new_row;
-    int                     m_max_width;
-    int                     m_max_cols;
-    int                     m_x;
-    int                     m_y;
+    ButtonArrayBox *            m_owner;
+    QGridLayout *               m_layout;
+    QVector<CustomToolButton *> m_buttons;
+    QVector<bool>               m_new_row;
+    int                         m_max_width;
+    int                         m_max_cols;
+    int                         m_x;
+    int                         m_y;
 };
 
 /******************************************************************************
@@ -218,9 +244,7 @@ ButtonArrayBox::ButtonArrayBox( QWidget * parent )
     // create private data container
     d_data = new PrivateData( this );
 
-    connect( d_data->m_mapper, SIGNAL(mapped(int)), this, SLOT(onButtonClick(int)) );
-
-    setTitle( NULL );
+    setTitle( QString() );
     setLayout( d_data->m_layout );
 }
 
@@ -285,12 +309,3 @@ void ButtonArrayBox::setButtonPixmap( int id, QPixmap px )
 {
     d_data->setPixmap( id, px );
 }
-
-/******************************************************************************
- * ButtonArrayBox::buttonPressed
- *****************************************************************************/
-void ButtonArrayBox::onButtonClick( int id )
-{
-    emit buttonClicked( id );
-}
-

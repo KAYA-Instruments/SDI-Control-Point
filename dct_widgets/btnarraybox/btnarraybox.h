@@ -47,10 +47,8 @@ public:
 signals:
     void buttonClicked( int id );
 
-private slots:
-    void onButtonClick( int );
-
 private:
+    class CustomToolButton;
     class PrivateData;
     PrivateData * d_data;
 };

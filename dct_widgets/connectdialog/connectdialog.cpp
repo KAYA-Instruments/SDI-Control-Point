@@ -25,6 +25,8 @@
 #include <QMessageBox>
 #include <QProgressDialog>
 #include <QDesktopWidget>
+#include <QScreen>
+#include <QGuiApplication>
 
 #include <com_ctrl/ComChannelRSxxx.h>
 
@@ -695,7 +697,7 @@ QString ConnectDialog::getActiveChannelName() const
             break;
 
         default:
-            s = QString::null;
+            s = QString();
             break;
     }
 
@@ -864,7 +866,7 @@ QString ConnectDialog::getActiveParity() const
             break;
 
         default:
-            s = QString::null;
+            s = QString();
             break;
     }
 
@@ -1315,7 +1317,7 @@ bool ConnectDialog::scanAndConnect()
      * This fixes a problem where the progress bar is schon in the top left corner of the screen. */
     if ( !this->isVisible() )
     {
-        const QRect screen = QApplication::desktop()->screenGeometry();
+        const QRect screen = QGuiApplication::primaryScreen()->availableGeometry();
         progressDialog.move( screen.center() - progressDialog.rect().center() );
     }
 
