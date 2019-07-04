@@ -93,6 +93,8 @@ public:
     void setTestPattern( const bool value );
     bool AudioEnable() const;
     void setAudioEnable( const bool value );
+    double AudioGain() const;
+    void setAudioGain( const double gain );
 
     QString GenLockMode() const;
     void setGenLockMode( const QString mode );
@@ -118,7 +120,7 @@ public:
     void setFlipModeVisible(const bool vertical, const bool horizontal);
     void setLogModeVisible(const bool value);
     void setTestPatternVisible(const bool value);
-    void setAudioEnableVisible(const bool value);
+    void setAudioVisible(const bool value);
 
     void addVideoMode( QString name, int id );
     void clearAllVideoModes();
@@ -172,6 +174,7 @@ signals:
     void ColorSpaceChanged( int value );
     void OsdTestPatternChanged( int value );
     void ChainAudioEnableChanged( bool enable );
+    void ChainAudioGainChanged( double gain );
     
     void ChainGenlockModeChanged( int value );
     void ChainGenlockCrosslockChanged( int enable, int vmode );
@@ -207,6 +210,7 @@ public slots:
     void onColorSpaceChange( int value );
     void onOsdTestPatternChange( int value );
     void onChainAudioEnableChange( bool enable );
+    void onChainAudioGainChange( double gain );
 
     void onChainGenlockModeChange( int value );
     void onChainGenlockCrosslockChange( int enable, int vmode );
@@ -255,6 +259,7 @@ private slots:
     void onCbxColorSpaceChange( int index );
     void onCbxTestPatternChange( int value );
     void onCbxAudioEnableChange( int value );
+    void onSbxAudioGainChange( double gain );
     
     void onCbxGenlockModeChange( int index );
     void onCbxGenlockCrosslockEnableChange( int index );

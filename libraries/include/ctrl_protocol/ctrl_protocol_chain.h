@@ -599,6 +599,37 @@ int ctrl_protocol_set_audio_enable
     uint8_t const                enable
 );
 
+/**************************************************************************//**
+ * @brief Gets audio gain level
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[out]  gain     audio gain level
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_audio_gain
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint16_t * const             gain
+);
+
+/**************************************************************************//**
+ * @brief Sets audio gain level
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[in]   gain     audio gain level
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_set_audio_gain
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint16_t const               gain
+);
 
 /**************************************************************************//**
  * @brief CHAIN protocol driver implementation
@@ -637,6 +668,8 @@ typedef struct ctrl_protocol_chain_drv_s
     ctrl_protocol_set_uint8_t    set_timecode_hold;
     ctrl_protocol_get_uint8_t    get_audio_enable;
     ctrl_protocol_set_uint8_t    set_audio_enable;
+    ctrl_protocol_get_uint16_t   get_audio_gain;
+    ctrl_protocol_set_uint16_t   set_audio_gain;
 } ctrl_protocol_chain_drv_t;
 
 /**************************************************************************//**

@@ -335,7 +335,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
     m_ui->inoutBox->setFlipModeVisible(deviceFeatures.hasChainFlipVertical, deviceFeatures.hasChainFlipHorizontal);
     m_ui->inoutBox->setLogModeVisible(deviceFeatures.hasLutItf);
     m_ui->inoutBox->setTestPatternVisible(deviceFeatures.hasOsdTestPattern);
-    m_ui->inoutBox->setAudioEnableVisible(deviceFeatures.hasChainAudio);
+    m_ui->inoutBox->setAudioVisible(deviceFeatures.hasChainAudio);
 
     // BlackBox Tab
     m_ui->blackBox->setFlareLevelVisible(deviceFeatures.hasIspFlare);
@@ -592,6 +592,9 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         {
             connect( dev->GetChainItf(), SIGNAL(ChainAudioEnableChanged(bool)), m_ui->inoutBox, SLOT(onChainAudioEnableChange(bool)) );
             connect( m_ui->inoutBox, SIGNAL(ChainAudioEnableChanged(bool)), dev->GetChainItf(), SLOT(onChainAudioEnableChange(bool)) );
+
+            connect( dev->GetChainItf(), SIGNAL(ChainAudioGainChanged(double)), m_ui->inoutBox, SLOT(onChainAudioGainChange(double)) );
+            connect( m_ui->inoutBox, SIGNAL(ChainAudioGainChanged(double)), dev->GetChainItf(), SLOT(onChainAudioGainChange(double)) );
         }
     }
 

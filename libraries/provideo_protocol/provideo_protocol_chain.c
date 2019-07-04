@@ -167,6 +167,14 @@
 #define CMD_GET_AUDIO_ENABLE_NO_PARAMS      ( 1 )
 
 /******************************************************************************
+ * @brief command "audio_gain"
+ *****************************************************************************/
+#define CMD_GET_AUDIO_GAIN                  ( "audio_gain\n" )
+#define CMD_SET_AUDIO_GAIN                  ( "audio_gain %i\n" )
+#define CMD_SYNC_AUDIO_GAIN                 ( "audio_gain " )
+#define CMD_GET_AUDIO_GAIN_NO_PARAMS        ( 1 )
+
+/******************************************************************************
  * @brief command "copy_settings" 
  *****************************************************************************/
 #define CMD_COPY_SETTINGS                   ( "copy_settings %i %i\n" )
@@ -1190,6 +1198,64 @@ static int set_audio_enable
 }
 
 /******************************************************************************
+ * get_audio_gain - Gets the audio gain level.
+ *****************************************************************************/
+static int get_audio_gain
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    uint16_t * const            gain
+)
+{
+    (void) ctx;
+
+    int value;
+    int res;
+
+    // parameter check
+    if ( !gain )
+    {
+        return ( -EINVAL );
+    }
+
+    // command call to get 1 parameter from provideo system
+    res = get_param_int_X( channel, 2,
+            CMD_GET_AUDIO_GAIN, CMD_SYNC_AUDIO_GAIN, CMD_SET_AUDIO_GAIN, &value );
+
+    // return error code
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
+    // return -EFAULT if number of parameter not matching
+    else if ( res != CMD_GET_AUDIO_GAIN_NO_PARAMS )
+    {
+        return ( -EFAULT );
+    }
+
+    // type-cast to range
+    *gain = UINT16( value );
+
+    return ( 0 );
+}
+
+/******************************************************************************
+ * set_audio_gain - Sets the audio gain level.
+ *****************************************************************************/
+static int set_audio_gain
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    uint16_t const              gain
+)
+{
+    (void) ctx;
+
+    return ( set_param_int_X( channel, CMD_SET_AUDIO_GAIN, INT( gain ) ) );
+}
+
+/******************************************************************************
  * CHAIN protocol driver declaration
  *****************************************************************************/
 static ctrl_protocol_chain_drv_t provideo_chain_drv = 
@@ -1225,7 +1291,9 @@ static ctrl_protocol_chain_drv_t provideo_chain_drv =
     .get_timecode_hold       = get_timecode_hold,
     .set_timecode_hold       = set_timecode_hold,
     .get_audio_enable        = get_audio_enable,
-    .set_audio_enable        = set_audio_enable
+    .set_audio_enable        = set_audio_enable,
+    .get_audio_gain          = get_audio_gain,
+    .set_audio_gain          = set_audio_gain
 };
 
 /******************************************************************************

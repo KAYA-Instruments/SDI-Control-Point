@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>722</width>
-    <height>1046</height>
+    <height>1049</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -785,25 +785,6 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="3">
-       <widget class="QLabel" name="lblAudioEnable">
-        <property name="minimumSize">
-         <size>
-          <width>140</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>140</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Audio</string>
-        </property>
-       </widget>
-      </item>
       <item row="4" column="1">
        <widget class="QComboBox" name="cbxSdi2Mode">
         <property name="sizePolicy">
@@ -949,28 +930,6 @@
         </property>
        </spacer>
       </item>
-      <item row="5" column="4">
-       <widget class="QCheckBox" name="cbxAudioEnable">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>170</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="toolTip">
-         <string>Enable to embed audio from the internal microphine in the SDI signal</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
       <item row="4" column="3">
        <widget class="QLabel" name="lblSdi2Downscaler">
         <property name="minimumSize">
@@ -1100,6 +1059,69 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item row="5" column="3">
+       <layout class="QHBoxLayout" name="horizontalLayoutAudioEnable">
+        <item>
+         <widget class="QLabel" name="lblAudioEnable">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Audio Enable</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="cbxAudioEnable">
+          <property name="toolTip">
+           <string>Enable to embed audio from the internal microphine in the SDI signal</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="5" column="4">
+       <layout class="QHBoxLayout" name="horizontalLayoutAudioGain">
+        <property name="spacing">
+         <number>6</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="lblAudioGain">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Audio Gain</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="sbxAudioGain">
+          <property name="decimals">
+           <number>2</number>
+          </property>
+          <property name="maximum">
+           <double>16.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.100000000000000</double>
+          </property>
+          <property name="value">
+           <double>1.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
@@ -1528,7 +1550,6 @@ Note: This will only hold the timecode in the SDI output, the timecode on the de
   <tabstop>cbxFlipMode</tabstop>
   <tabstop>cbxSdi1Downscaler</tabstop>
   <tabstop>cbxSdi2Downscaler</tabstop>
-  <tabstop>cbxAudioEnable</tabstop>
   <tabstop>cbxGenLockMode</tabstop>
   <tabstop>sbxGenLockOffsetVertical</tabstop>
   <tabstop>sbxGenlockOffsetHorizontal</tabstop>

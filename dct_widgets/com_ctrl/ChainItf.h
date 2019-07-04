@@ -94,6 +94,7 @@ public:
 
     // audio
     void GetChainAudioEnable();
+    void GetChainAudioGain();
 
 signals:
     // chain selection status
@@ -141,6 +142,7 @@ signals:
 
     // audio
     void ChainAudioEnableChanged( bool enable );
+    void ChainAudioGainChanged( double gain );
 
     // new video mode is set
     // This is used to synchronize other interface components.
@@ -164,6 +166,7 @@ public slots:
     void onChainTimecodeGetRequest();
     void onChainTimecodeHoldChange( bool enable );
     void onChainAudioEnableChange( bool enable );
+    void onChainAudioGainChange( double gain );
 };
 
 #endif // _CHAIN_INTERFACE_H_
