@@ -39,7 +39,7 @@ namespace Ui {
     class UI_InOutBox;
 }
 
-#define AUTO_REPEAT_THRESHOLD    ( 5000 )
+#define AUTO_REPEAT_THRESHOLD    ( 10000 )
 
 /******************************************************************************
  * Overrule unconfigureable timer implementation in qt, there's  no property

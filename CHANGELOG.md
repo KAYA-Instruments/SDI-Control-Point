@@ -4,11 +4,12 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
-Version **1.1.14** - 04.07.2019
+Version **1.1.14** - 08.07.2019
 
 * Added new UI elements to setup the audio gain from the inout tab.
 * Disable genlock controls when genlock is in master mode.
 * Replaced functions which are deprecated in Qt 5.13 to compile without warnings.
+* Fixed a bug where the genlock offset would be changed by two lines instead of one when the increase or decrease button was pressed. This was due to the auto repeat threshold of the spin box being to short.
 
 ## Older Releases:
 
