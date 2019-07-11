@@ -24,6 +24,7 @@
 #define __LENS_DRIVER_BOX_H__
 
 #include <dct_widgets_base.h>
+#include <QItemSelection>
 #include "defines.h"
 
 typedef struct lens_settings_s {
@@ -38,13 +39,12 @@ typedef struct lens_settings_s {
     int zoomMotorFeatures;
     int irisMotorFeatures;
     int filterMotorFeatures;
-    int irisFStopCoefficient0;
-    int irisFStopCoefficient1;
-    int irisFStopCoefficient2;
-    int irisFStopCoefficient3;
-    int irisFStopCoefficient4;
-    int irisFStopCoefficient5;
 } lens_settings_t;
+
+typedef struct lens_iris_position_s {
+    QVector<int> fStops;
+    QVector<int> fStopsPos;
+} lens_iris_position_t;
 
 /******************************************************************************
  * Lens Driver Box Widget
@@ -85,6 +85,7 @@ protected:
     void applySettings( void ) Q_DECL_OVERRIDE;
 
     void addLensProfile( QString name, int id );
+    void addLensIrisAperture( QString name, int id );
 
 private:
     lens_settings_t profileToSettings( enum LensProfile profile );
@@ -97,28 +98,39 @@ signals:
     void LensSettingsChanged( QVector<int> values );
     void LensSettingsChanged(bool);
     void LensActiveChanged( bool active );
+    void LensInvertChanged( QVector<int> values );
 
     void SmallResyncRequest(void);
 
     void LensFocusPositionChanged( int pos );
+    void LensFocusFineChanged( bool en );
     void LensZoomPositionChanged( int pos );
     void LensIrisPositionChanged( int pos );
     void LensFilterPositionChanged( int pos );
     void LensFocusSettingsChanged( QVector<int>  );
     void LensZoomSettingsChanged(  QVector<int>  );
     void LensIrisSettingsChanged(  QVector<int>  );
+    void LensIrisApertureChanged( int apt );
+    void LensIrisAperturePosChanged( int pos );
     void LensFilterSettingsChanged(  QVector<int>  );
 
 public slots:
     void onLensSettingsChange( QVector<int> values );
     void onLensActiveChange( bool active );
+    void onLensInvertChange( QVector<int> );
     void onLensFocusPositionChange( int pos);
+    void onLensFocusFineChange( bool en );
     void onLensZoomPositionChange( int pos);
+    void onLensZoomInvertChange( bool en );
     void onLensIrisPositionChange( int pos);
+    void onLensIrisInvertChange( bool en );
     void onLensFilterPositionChange( int pos);
+    void onLensFilterInvertChange( bool en );
     void onLensFocusSettingsChange( QVector<int>  );
     void onLensZoomSettingsChange(  QVector<int>  );
     void onLensIrisSettingsChange(  QVector<int>  );
+    void onLensIrisSetupChange( QVector<int> values );
+    void onLensIrisAperturePosChange( int pos );
     void onLensFilterSettingsChange( QVector<int>  );
 
 private slots:
@@ -130,21 +142,30 @@ private slots:
     void onSbxLensFocusSpeedChanged(int speed);
     void onSbxLensFocusStepModeChanged(int steMode);
     void onSbxLensFocusTorqueChanged(int torque);
+    void onCbxLensFocusFineChanged( int en);
+    void onCbxLensFocusInvertChanged( int enable);
+
 
     void onSbxLensZoomPositionChanged(int pos);
     void onSbxLensZoomSpeedChanged(int speed);
     void onSbxLensZoomStepModeChanged(int steMode);
     void onSbxLensZoomTorqueChanged(int torque);
+    void onCbxLensZoomInvertChanged( int enable);
 
     void onSbxLensIrisPositionChanged(int pos);
     void onSbxLensIrisSpeedChanged(int speed);
     void onSbxLensIrisStepModeChanged(int steMode);
     void onSbxLensIrisTorqueChanged(int torque);
+    void onCbxLensIrisInvertChanged( int enable);
+    void onCbxLensIrisApertureChanged( int index);
+    void onBtnLensIrisAperturePlusChanged( void );
+    void onBtnLensIrisApertureMinusChanged( void );
 
     void onSbxLensFilterPositionChanged(int pos);
     void onSbxLensFilterSpeedChanged(int speed);
     void onSbxLensFilterStepModeChanged(int steMode);
     void onSbxLensFilterTorqueChanged(int torque);
+    void onCbxLensFilterInvertChanged( int enable);
 
 
 private:

@@ -37,11 +37,15 @@ void LensItf::resync()
 {
     GetLensSettings();
     GetLensActive();
+    GetLensInvert();
 
     GetLensFocusPosition();
+    GetLensFineFocus();
     GetLensZoomPosition();
     GetLensIrisPosition();
     GetLensFilterPosition();
+
+    GetLensIrisSetup();
 
     GetLensFocusSettings();
     GetLensZoomSettings();
@@ -109,6 +113,32 @@ void LensItf::GetLensActive()
     }
 }
 
+/******************************************************************************
+ * LensItf::GetLensSettings
+ *****************************************************************************/
+void LensItf::GetLensInvert()
+{
+    // Is there a signal listener
+    if ( receivers(SIGNAL(LensInvertChanged(QVector<int>))) > 0 )
+    {
+        int32_t value[NO_VALUES_LENS_INVERT];
+
+        // get lens invert values from device
+        int res = ctrl_protocol_get_lens_invert( GET_PROTOCOL_INSTANCE(this),
+                    GET_CHANNEL_INSTANCE(this), NO_VALUES_LENS_INVERT, &value[0] );
+        HANDLE_ERROR( res );
+
+        QVector<int> v_values( NO_VALUES_LENS_INVERT );
+        for ( int i = 0; i < NO_VALUES_LENS_INVERT; i++ ) {
+            v_values[i] = value[i];
+        }
+
+        // emit a LensInvertChanged signal
+        emit LensInvertChanged( v_values );
+    }
+}
+
+
 
 /******************************************************************************
  * LensItf::GetLensFocusPosition
@@ -129,6 +159,28 @@ void LensItf::GetLensFocusPosition()
 
         // emit a IrisSetupChanged signal
         emit LensFocusPositionChanged( value );
+    }
+}
+
+/******************************************************************************
+ * LensItf::GetLensFineFocus
+ *****************************************************************************/
+void LensItf::GetLensFineFocus()
+{
+    // Is there a signal listener
+    if ( receivers(SIGNAL(LensFocusFineChanged(bool))) > 0 )
+    {
+        int32_t value;
+
+        // get lens settings from device
+        int res = ctrl_protocol_get_lens_fine_focus( GET_PROTOCOL_INSTANCE(this),
+                    GET_CHANNEL_INSTANCE(this), &value );
+        HANDLE_ERROR( res );
+
+
+
+        // emit a LensFineFocusChanged signal
+        emit LensFocusFineChanged( value );
     }
 }
 
@@ -180,7 +232,27 @@ void LensItf::GetLensIrisPosition()
 }
 
 
+/******************************************************************************
+ * LensItf::GetLensIrisAperture
+ *****************************************************************************/
+void LensItf::GetLensIrisAperture()
+{
+    // Is there a signal listener
+    if ( receivers(SIGNAL(LensIrisApertureChanged(int))) > 0 )
+    {
+        int32_t value;
 
+        // get lens settings from device
+        int res = ctrl_protocol_get_lens_iris_aperture( GET_PROTOCOL_INSTANCE(this),
+                    GET_CHANNEL_INSTANCE(this), &value );
+        HANDLE_ERROR( res );
+
+
+
+        // emit a IrisSetupChanged signal
+        emit LensIrisApertureChanged( value );
+    }
+}
 
 /******************************************************************************
  * LensItf::GetLensFilterPosition
@@ -290,6 +362,33 @@ void LensItf::GetLensIrisSettings()
     }
 }
 
+/******************************************************************************
+ * LensItf::GetLensIrisSetup
+ *****************************************************************************/
+void LensItf::GetLensIrisSetup()
+{
+    // Is there a signal listener
+    if ( receivers(SIGNAL(LensIrisSetupChanged(QVector<int>))) > 0 )
+    {
+        int32_t value[NO_VALUES_LENS_IRIS_SETUP];
+
+        // get lens settings from device
+        int res = ctrl_protocol_get_lens_iris_setup( GET_PROTOCOL_INSTANCE(this),
+                    GET_CHANNEL_INSTANCE(this), NO_VALUES_LENS_IRIS_SETUP, &value[0] );
+        HANDLE_ERROR( res );
+
+        QVector<int> qValues;
+
+        for( int i = 0; i < NO_VALUES_LENS_IRIS_SETUP; i++)
+        {
+            qValues.append( value[i]);
+        }
+
+
+        // emit a IrisSetupChanged signal
+        emit LensIrisSetupChanged( qValues );
+    }
+}
 
 
 /******************************************************************************
@@ -368,7 +467,22 @@ void LensItf::onLensActiveChange( bool active )
     HANDLE_ERROR( res );
 }
 
+/******************************************************************************
+ * LensItf::onLensInvertChange
+ *****************************************************************************/
+void LensItf::onLensInvertChange( QVector<int> values )
+{
+    int value_array[NO_VALUES_LENS_INVERT];
+    for ( int i = 0; i < NO_VALUES_LENS_INVERT; i++ ) {
+        value_array[i] = values[i];
+    }
 
+    int res = ctrl_protocol_set_lens_invert( GET_PROTOCOL_INSTANCE(this),
+            GET_CHANNEL_INSTANCE(this), NO_VALUES_LENS_INVERT, &value_array[0]
+    );
+
+    HANDLE_ERROR( res );
+}
 
 /******************************************************************************
  * LensItf::onLensFocusPositionChange
@@ -379,6 +493,30 @@ void LensItf::onLensFocusPositionChange( int value )
 
     int res = ctrl_protocol_set_lens_focus_position( GET_PROTOCOL_INSTANCE(this),
             GET_CHANNEL_INSTANCE(this), value );
+
+    HANDLE_ERROR( res );
+}
+
+/******************************************************************************
+ * LensItf::onLensFineFocusChange
+ *****************************************************************************/
+void LensItf::onLensFocusFineChange( bool en )
+{
+    int value;
+
+    if ( en == true)
+    {
+        value = 1;
+    }
+    else
+    {
+        value = 0;
+    }
+
+    int res = ctrl_protocol_set_lens_fine_focus( GET_PROTOCOL_INSTANCE(this),
+            GET_CHANNEL_INSTANCE(this), value
+    );
+
 
     HANDLE_ERROR( res );
 }
@@ -408,6 +546,20 @@ void LensItf::onLensIrisPositionChange( int value )
 
     HANDLE_ERROR( res );
 }
+
+/******************************************************************************
+ * LensItf::onLensIrisApertureChange
+ *****************************************************************************/
+void LensItf::onLensIrisApertureChange( int value )
+{
+
+
+    int res = ctrl_protocol_set_lens_iris_aperture( GET_PROTOCOL_INSTANCE(this),
+            GET_CHANNEL_INSTANCE(this), value );
+
+    HANDLE_ERROR( res );
+}
+
 
 /******************************************************************************
  * LensItf::onLensFilterPositionChange
@@ -481,6 +633,24 @@ void LensItf::onLensIrisSettingsChange( QVector<int> values )
 
     HANDLE_ERROR( res );
 }
+
+/******************************************************************************
+ * LensItf::onLensIrisSetupChange
+ *****************************************************************************/
+void LensItf::onLensIrisSetupChange( QVector<int> values )
+{
+    int value_array[NO_VALUES_LENS_IRIS_SETUP];
+    for ( int i = 0; i < NO_VALUES_LENS_IRIS_SETUP; i++ ) {
+        value_array[i] = values[i];
+    }
+
+    int res = ctrl_protocol_set_lens_iris_setup( GET_PROTOCOL_INSTANCE(this),
+            GET_CHANNEL_INSTANCE(this), NO_VALUES_LENS_IRIS_SETUP, &value_array[0]
+    );
+
+    HANDLE_ERROR( res );
+}
+
 
 /******************************************************************************
  * LensItf::onLensFilterSettingsChange

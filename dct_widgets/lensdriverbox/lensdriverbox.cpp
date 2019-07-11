@@ -23,6 +23,11 @@
 #include <QtDebug>
 #include <QProxyStyle>
 
+#include <QModelIndex>
+#include <QStandardItemModel>
+#include <QLineEdit>
+#include <QItemDelegate>
+
 #include "lensdriverbox.h"
 #include "ui_lensdriverbox.h"
 #include "defines.h"
@@ -35,6 +40,8 @@ namespace Ui {
 }
 
 #define AUTO_REPEAT_THRESHOLD    ( 5000 )
+#define IRIS_APT_TABLE_MAX_NO_ROWS              ( 2 )
+#define IRIS_APT_TABLE_MAX_NO_COLUMNS           ( 9 )
 
 /******************************************************************************
  * Overrule unconfigureable timer implementation in qt, there's  no property
@@ -98,13 +105,7 @@ const lens_settings_t settingsUnkown {
     /* .focusMotorFeatures =  */ 0,
     /* .zoomMotorFeatures =   */ 0,
     /* .irisMotorFeatures =   */ 0,
-    /* .filterMotorFeatures = */ 0,
-    /* .irisFStopCoefficient0=*/ 0,
-    /* .irisFStopCoefficient1=*/ 0,
-    /* .irisFStopCoefficient2=*/ 0,
-    /* .irisFStopCoefficient3=*/ 0,
-    /* .irisFStopCoefficient4=*/ 0,
-    /* .irisFStopCoefficient5=*/ 0,
+    /* .filterMotorFeatures = */ 0
 };
 
 const lens_settings_t settingsICS {
@@ -118,16 +119,38 @@ const lens_settings_t settingsICS {
     /* .focusMotorFeatures =  */ 3,
     /* .zoomMotorFeatures =   */ 3,
     /* .irisMotorFeatures =   */ 3,
-    /* .filterMotorFeatures = */ 0,
-    /* .irisFStopCoefficient0=*/ 0,
-    /* .irisFStopCoefficient1=*/ 0,
-    /* .irisFStopCoefficient2=*/ 0,
-    /* .irisFStopCoefficient3=*/ 0,
-    /* .irisFStopCoefficient4=*/ 0,
-    /* .irisFStopCoefficient5=*/ 0,
+    /* .filterMotorFeatures = */ 0
 };
 
-const lens_settings_t settingsDctKit_M0824_MPW2_iris {
+const lens_settings_t settingsDctKit_iris {
+    /* .address =             */ 34,
+    /* .chipID =              */ 102,
+    /* .controllerFeatures =  */ 1,
+    /* .focusMotorNr =        */ 1,
+    /* .zoomMotorNr =         */ 2,
+    /* .irisMotorNr =         */ 0,
+    /* .filterMotorNr =       */ 3,
+    /* .focusMotorFeatures =  */ 11,
+    /* .zoomMotorFeatures =   */ 0,
+    /* .irisMotorFeatures =   */ 11,
+    /* .filterMotorFeatures = */ 0
+};
+
+const lens_settings_t settingsDctKit_focus_iris {
+    /* .address =             */ 34,
+    /* .chipID =              */ 102,
+    /* .controllerFeatures =  */ 3,
+    /* .focusMotorNr =        */ 1,
+    /* .zoomMotorNr =         */ 2,
+    /* .irisMotorNr =         */ 0,
+    /* .filterMotorNr =       */ 3,
+    /* .focusMotorFeatures =  */ 11,
+    /* .zoomMotorFeatures =   */ 0,
+    /* .irisMotorFeatures =   */ 11,
+    /* .filterMotorFeatures = */ 0
+};
+
+const lens_settings_t settingsDctKit_iris_old  {
     /* .address =             */ 8,
     /* .chipID =              */ 18,
     /* .controllerFeatures =  */ 1,
@@ -138,63 +161,90 @@ const lens_settings_t settingsDctKit_M0824_MPW2_iris {
     /* .focusMotorFeatures =  */ 0,
     /* .zoomMotorFeatures =   */ 0,
     /* .irisMotorFeatures =   */ 11,
-    /* .filterMotorFeatures = */ 0,
-    /* .irisFStopCoefficient0=*/ 0,
-    /* .irisFStopCoefficient1=*/ 0,
-    /* .irisFStopCoefficient2=*/ 0,
-    /* .irisFStopCoefficient3=*/ 0,
-    /* .irisFStopCoefficient4=*/ 0,
-    /* .irisFStopCoefficient5=*/ 0,
-};
-
-const lens_settings_t settingsDctKit_V0828_MPY_iris {
-    /* .address =             */ 8,
-    /* .chipID =              */ 18,
-    /* .controllerFeatures =  */ 1,
-    /* .focusMotorNr =        */ 1,
-    /* .zoomMotorNr =         */ 2,
-    /* .irisMotorNr =         */ 0,
-    /* .filterMotorNr =       */ 3,
-    /* .focusMotorFeatures =  */ 0,
-    /* .zoomMotorFeatures =   */ 0,
-    /* .irisMotorFeatures =   */ 11,
-    /* .filterMotorFeatures = */ 0,
-    /* .irisFStopCoefficient0=*/ 0,
-    /* .irisFStopCoefficient1=*/ 0,
-    /* .irisFStopCoefficient2=*/ 0,
-    /* .irisFStopCoefficient3=*/ 0,
-    /* .irisFStopCoefficient4=*/ 0,
-    /* .irisFStopCoefficient5=*/ 0,
-};
-
-const lens_settings_t settingsDctKit_LM6HC_iris  {
-    /* .address =             */ 8,
-    /* .chipID =              */ 18,
-    /* .controllerFeatures =  */ 1,
-    /* .focusMotorNr =        */ 1,
-    /* .zoomMotorNr =         */ 2,
-    /* .irisMotorNr =         */ 0,
-    /* .filterMotorNr =       */ 3,
-    /* .focusMotorFeatures =  */ 0,
-    /* .zoomMotorFeatures =   */ 0,
-    /* .irisMotorFeatures =   */ 11,
-    /* .filterMotorFeatures = */ 0,
-    /* .irisFStopCoefficient0=*/ 0,
-    /* .irisFStopCoefficient1=*/ 0,
-    /* .irisFStopCoefficient2=*/ 0,
-    /* .irisFStopCoefficient3=*/ 0,
-    /* .irisFStopCoefficient4=*/ 0,
-    /* .irisFStopCoefficient5=*/ 0,
+    /* .filterMotorFeatures = */ 0
 };
 
 
 const lens_settings_t lensSettingProfiles[LensProfileMax] =
 {
     settingsUnkown,
-    settingsDctKit_M0824_MPW2_iris,
-    settingsDctKit_V0828_MPY_iris,
-    settingsDctKit_LM6HC_iris,
+    settingsDctKit_iris,
+    settingsDctKit_focus_iris,
+    settingsDctKit_iris_old,
     settingsICS
+};
+
+/******************************************************************************
+ * Delegate
+ *****************************************************************************/
+class LensDriverIrisTabDelegate : public QItemDelegate
+{
+public:
+    // create a single editable table-cell
+    QWidget* createEditor( QWidget * parent, const QStyleOptionViewItem &, const QModelIndex & index) const Q_DECL_OVERRIDE
+    {
+        QLineEdit * edit = new QLineEdit( parent );
+
+        // set validator
+        int upperBound;
+        if (index.column() == 0)    // Set the upper bound of the first column
+        {
+            upperBound = m_firstColBound;
+        }
+        else                        // Set the upper bound of the second (and all other) columns
+        {
+            upperBound = m_secondColBound;
+        }
+        QIntValidator *valid = new QIntValidator( 0, upperBound, edit );
+        edit->setValidator( valid );
+
+        return ( edit );
+    }
+
+    // transfer value from data-model into line-edit
+    void setEditorData( QWidget * editor, const QModelIndex & idx ) const Q_DECL_OVERRIDE
+    {
+        int value = idx.model()->data( idx, Qt::EditRole ).toInt();
+        QLineEdit * edt = static_cast< QLineEdit * >( editor );
+        edt->setText( QString().setNum(value) );
+    }
+
+    // transfer value from line_edit into data-model
+    void setModelData( QWidget * editor, QAbstractItemModel * model, const QModelIndex &idx ) const Q_DECL_OVERRIDE
+    {
+        QLineEdit * edt = static_cast< QLineEdit * >( editor );
+        QString value = edt->text();
+        model->setData( idx, value, Qt::EditRole );
+    }
+
+    // set geometry of line-edit
+    void updateEditorGeometry( QWidget * editor, const QStyleOptionViewItem & option, const QModelIndex & ) const Q_DECL_OVERRIDE
+    {
+        editor->setGeometry( option.rect );
+    }
+
+    // Set the upper bound for first end second column
+    void setBounds(int firstColBound, int secondColBound)
+    {
+        m_firstColBound = firstColBound;
+        m_secondColBound = secondColBound;
+    }
+
+    // Get the upper bound of the first column
+    int getFirstColBound()
+    {
+        return m_firstColBound;
+    }
+
+    // Get the upper bound of the second column
+    int getSecondColBound()
+    {
+        return m_secondColBound;
+    }
+
+private:
+    int m_firstColBound;
+    int m_secondColBound;
 };
 
 /******************************************************************************
@@ -203,20 +253,103 @@ const lens_settings_t lensSettingProfiles[LensProfileMax] =
 class LensDriverBox::PrivateData
 {
 public:
-    PrivateData()
+    PrivateData(QWidget * parent)
         : m_ui( new Ui::UI_LensDriverBox )
         , m_cntEvents( 0 )
         , m_maxEvents( 5 )
         , m_sbxStyle( new SpinBoxStyle() )
         , m_LensSettings{}
+        , m_LensIrisTable{}
+        , m_delegate( new LensDriverIrisTabDelegate )
+
     {
-        // do nothing
+        // initialize UI
+        m_ui->setupUi( parent );
+        initDataModel();
+        m_ui->tblIrisAptPosition->setItemDelegate( m_delegate );
+        m_ui->tblIrisAptPosition->horizontalHeader()->setSectionResizeMode( QHeaderView::Stretch );
+        m_ui->tblIrisAptPosition->setSelectionBehavior( QAbstractItemView::SelectItems );
+        setDataModel();
+
+        m_delegate->setBounds( 500, 500 );
     }
 
     ~PrivateData()
     {
         delete m_ui;
         delete m_sbxStyle;
+        delete m_model;
+    }
+
+
+    // initialize data model
+    void initDataModel()
+    {
+        m_model = new QStandardItemModel( 0, IRIS_APT_TABLE_MAX_NO_COLUMNS, nullptr );
+        m_model->setVerticalHeaderItem( 0, new QStandardItem(QString("F-Stop")) );
+        m_model->setVerticalHeaderItem( 1, new QStandardItem(QString("Position")) );
+    }
+
+
+
+    // replace data model of the table view widget with our custom model
+    void setDataModel()
+    {
+        // see http://doc.qt.io/qt-5.7/qabstractitemview.html#setModel
+        // get pointer to old selection model
+        QItemSelectionModel *m = m_ui->tblIrisAptPosition->selectionModel();
+        // set new data model
+        m_ui->tblIrisAptPosition->setModel( m_model );
+        // delete old selection model
+        delete m;
+    }
+
+    // set positions in tableview widget
+    void fillTable( QVector<int> &Fstop, QVector<int> &FstopPos )
+    {
+        Q_ASSERT( Fstop.count() == FstopPos.count() );
+        Q_ASSERT( m_model != NULL );
+
+        // update data model (add or remove rows)
+        int numColModel = m_model->columnCount();
+        int numColInput = Fstop.count();
+        if ( numColModel < numColInput )
+        {
+            m_model->insertColumns( 0, numColInput - numColModel );
+        }
+        else
+        {
+            m_model->removeColumns( 0, numColInput - numColModel );
+        }
+
+        // set values
+        for ( int i=0; i < Fstop.count(); ++i )
+        {
+            QModelIndex Fstop_i    = m_model->index( 0, i, QModelIndex() );
+            QModelIndex FstopPos_i = m_model->index( 1, i, QModelIndex() );
+
+
+            // set alignment
+            m_model->setData( Fstop_i, QVariant(Qt::AlignVCenter | Qt::AlignRight), Qt::TextAlignmentRole );
+            m_model->setData( FstopPos_i, QVariant(Qt::AlignVCenter | Qt::AlignRight), Qt::TextAlignmentRole );
+
+            // set used or clear unsed sample values
+            m_model->setData( Fstop_i, Fstop[i] );
+            m_model->setData( FstopPos_i, FstopPos[i] );
+
+        }
+    }
+
+    void getDataFromModel( QVector<int> &yPos, QVector<int> &xPos  )
+    {
+        yPos.clear();
+        xPos.clear();
+
+        for ( int i=0; i<m_model->rowCount(); i ++ )
+        {
+            yPos.append( m_model->data( m_model->index(i, 0), Qt::DisplayRole ).toInt() );
+            xPos.append( m_model->data( m_model->index(i, 1), Qt::DisplayRole ).toInt() );
+        }
     }
 
     Ui::UI_LensDriverBox *  m_ui;           /**< ui handle */
@@ -224,7 +357,10 @@ public:
     int                     m_maxEvents;    /**< number of ignored move-events */
     SpinBoxStyle *          m_sbxStyle;     /**< proxy style to overrule not implemented spinbox properties */
 
+    LensDriverIrisTabDelegate * m_delegate;                /**< delegation class */
+    QStandardItemModel *    m_model;                        /**< data model */
     lens_settings_t         m_LensSettings;
+    lens_iris_position_t    m_LensIrisTable;
 };
 
 /******************************************************************************
@@ -233,10 +369,9 @@ public:
 LensDriverBox::LensDriverBox( QWidget * parent ) : DctWidgetBox( parent )
 {
     // create private data container
-    d_data = new PrivateData;
+    d_data = new PrivateData( this );
 
-    // initialize UI
-    d_data->m_ui->setupUi( this );
+
 
     // overrule auto-repeat threshold
     d_data->m_ui->sbxFocusPosition->setStyle( d_data->m_sbxStyle );
@@ -319,12 +454,26 @@ LensDriverBox::LensDriverBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->sbxFilterStepMode->setVisible(false);
     d_data->m_ui->sbxFilterTorque->setVisible(false);
 
+    d_data->m_ui->cbxFocusFineEnable->setVisible(false);
+    d_data->m_ui->cbxFocusInvertEnable->setVisible(false);
+    d_data->m_ui->cbxZoomInvertEnable->setVisible(false);
+    d_data->m_ui->cbxIrisInvertEnable->setVisible(false);
+    d_data->m_ui->cbxFilterInvertEnable->setVisible(false);
+
+    d_data->m_ui->lblIrisFStopTable->setVisible(false);
+    d_data->m_ui->tblIrisAptPosition->setVisible(false);
+
+
+
+
 
     // fill settings combo box
     for ( int i = LensProfileFirst; i < LensProfileMax; i++ )
     {
         addLensProfile( GetLensProfileName( static_cast<enum LensProfile>(i) ), i );
     }
+
+    addLensIrisAperture( "Chose Apeture",0);
 
     // connect internal signals
 
@@ -342,6 +491,8 @@ LensDriverBox::LensDriverBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->sbxFocusSpeed, SIGNAL(valueChanged(int)), this, SLOT(onSbxLensFocusSpeedChanged(int)));
     connect( d_data->m_ui->sbxFocusStepMode, SIGNAL(valueChanged(int)), this, SLOT(onSbxLensFocusStepModeChanged(int)));
     connect( d_data->m_ui->sbxFocusTorque, SIGNAL(valueChanged(int)), this, SLOT(onSbxLensFocusTorqueChanged(int)));
+    connect( d_data->m_ui->cbxFocusFineEnable, SIGNAL(stateChanged(int)), this, SLOT(onCbxLensFocusFineChanged(int)) );
+    connect( d_data->m_ui->cbxFocusInvertEnable, SIGNAL(stateChanged(int)), this, SLOT(onCbxLensFocusInvertChanged(int)) );
 
     // Zoom Elements
     connect( d_data->m_ui->sbxZoomPosition, SIGNAL(valueChanged(int)), this, SLOT(onSbxLensZoomPositionChanged(int)));
@@ -350,6 +501,7 @@ LensDriverBox::LensDriverBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->sbxZoomSpeed, SIGNAL(valueChanged(int)), this, SLOT(onSbxLensZoomSpeedChanged(int)));
     connect( d_data->m_ui->sbxZoomStepMode, SIGNAL(valueChanged(int)), this, SLOT(onSbxLensZoomStepModeChanged(int)));
     connect( d_data->m_ui->sbxZoomTorque, SIGNAL(valueChanged(int)), this, SLOT(onSbxLensZoomTorqueChanged(int)));
+    connect( d_data->m_ui->cbxZoomInvertEnable, SIGNAL(stateChanged(int)), this, SLOT(onCbxLensZoomInvertChanged(int)) );
 
     // Iris Elements
     connect( d_data->m_ui->sbxIrisPosition, SIGNAL(valueChanged(int)), this, SLOT(onSbxLensIrisPositionChanged(int)));
@@ -358,6 +510,14 @@ LensDriverBox::LensDriverBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->sbxIrisSpeed, SIGNAL(valueChanged(int)), this, SLOT(onSbxLensIrisSpeedChanged(int)));
     connect( d_data->m_ui->sbxIrisStepMode, SIGNAL(valueChanged(int)), this, SLOT(onSbxLensIrisStepModeChanged(int)));
     connect( d_data->m_ui->sbxIrisTorque, SIGNAL(valueChanged(int)), this, SLOT(onSbxLensIrisTorqueChanged(int)));
+    connect( d_data->m_ui->cbxIrisInvertEnable, SIGNAL(stateChanged(int)), this, SLOT(onCbxLensIrisInvertChanged(int)) );
+    connect( d_data->m_ui->cbxLensIrisAperture, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxLensIrisApertureChanged ( int )));
+
+    connect( this, SIGNAL(LensIrisAperturePosChanged( int )), this, SLOT(onLensIrisPositionChange(int )));
+    connect( this, SIGNAL(LensIrisAperturePosChanged( int )), this, SLOT( onLensIrisAperturePosChange( int )));
+
+    connect( d_data->m_ui->btnIrisAptPlus, SIGNAL(clicked()), this, SLOT(onBtnLensIrisAperturePlusChanged( void ) ));
+    connect( d_data->m_ui->btnIrisAptMinus, SIGNAL(clicked()), this, SLOT(onBtnLensIrisApertureMinusChanged( void ) ));
 
     // Filter Elements
     connect( d_data->m_ui->sbxFilterPosition, SIGNAL(valueChanged(int)), this, SLOT(onSbxLensFilterPositionChanged(int)));
@@ -366,6 +526,7 @@ LensDriverBox::LensDriverBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->sbxFilterSpeed, SIGNAL(valueChanged(int)), this, SLOT(onSbxLensFilterSpeedChanged(int)));
     connect( d_data->m_ui->sbxFilterStepMode, SIGNAL(valueChanged(int)), this, SLOT(onSbxLensFilterStepModeChanged(int)));
     connect( d_data->m_ui->sbxFilterTorque, SIGNAL(valueChanged(int)), this, SLOT(onSbxLensFilterTorqueChanged(int)));
+    connect( d_data->m_ui->cbxFilterInvertEnable, SIGNAL(stateChanged(int)), this, SLOT(onCbxLensFilterInvertChanged(int)) );
 
 
 
@@ -479,6 +640,15 @@ void LensDriverBox::addLensProfile( QString name, int id )
     d_data->m_ui->cbxLensProfile->blockSignals( false );
 }
 
+/******************************************************************************
+ * LensDriverBox::addLensIrisAperture
+ *****************************************************************************/
+void LensDriverBox::addLensIrisAperture( QString name, int id )
+{
+    d_data->m_ui->cbxLensIrisAperture->blockSignals( true );
+    d_data->m_ui->cbxLensIrisAperture->addItem( name, id );
+    d_data->m_ui->cbxLensIrisAperture->blockSignals( false );
+}
 
 /******************************************************************************
  * LensDriverBox::LensProfile
@@ -643,6 +813,10 @@ void LensDriverBox::setLensIrisPosition( int iris )
         d_data->m_ui->sbxIrisPosition->blockSignals( true );
         d_data->m_ui->sbxIrisPosition->setValue(iris);
         d_data->m_ui->sbxIrisPosition->blockSignals( false );
+
+        d_data->m_ui->sldIrisPosition->blockSignals( true );
+        d_data->m_ui->sldIrisPosition->setValue(iris);
+        d_data->m_ui->sldIrisPosition->blockSignals( false );
 
         emit LensIrisPositionChanged( iris );
 }
@@ -914,6 +1088,8 @@ void LensDriverBox::onLensSettingsChange( QVector<int> values )
     d_data->m_ui->cbxLensProfile->blockSignals( true );
     d_data->m_ui->cbxLensProfile->setCurrentIndex( settingsToProfile(settings) );
     d_data->m_ui->cbxLensProfile->blockSignals( false );
+
+
 }
 
 
@@ -945,6 +1121,36 @@ void LensDriverBox::onLensActiveChange( bool active )
     }
     last_state = active;
 
+    if( active == true && d_data->m_LensSettings.chipID >= 100 )
+    {
+        d_data->m_ui->cbxLensProfile->setEnabled( false );
+    }
+    else
+    {
+         d_data->m_ui->cbxLensProfile->setEnabled( true );
+    }
+}
+
+/******************************************************************************
+ * LensDriverBox::onLensInvertChange
+ *****************************************************************************/
+void LensDriverBox::onLensInvertChange( QVector<int> values )
+{
+    d_data->m_ui->cbxFocusInvertEnable->blockSignals(true);
+    d_data->m_ui->cbxFocusInvertEnable->setChecked( bool( values.value(3)) );
+    d_data->m_ui->cbxFocusInvertEnable->blockSignals(false);
+
+    d_data->m_ui->cbxZoomInvertEnable->blockSignals(true);
+    d_data->m_ui->cbxZoomInvertEnable->setChecked( bool( values.value(2)) );
+    d_data->m_ui->cbxZoomInvertEnable->blockSignals(false);
+
+    d_data->m_ui->cbxIrisInvertEnable->blockSignals(true);
+    d_data->m_ui->cbxIrisInvertEnable->setChecked( bool( values.value(1)) );
+    d_data->m_ui->cbxIrisInvertEnable->blockSignals(false);
+
+    d_data->m_ui->cbxFilterInvertEnable->blockSignals(true);
+    d_data->m_ui->cbxFilterInvertEnable->setChecked( bool( values.value(0)) );
+    d_data->m_ui->cbxFilterInvertEnable->blockSignals(false);
 }
 
 /******************************************************************************
@@ -962,6 +1168,17 @@ void LensDriverBox::onLensFocusPositionChange( int pos )
 }
 
 /******************************************************************************
+ * LensDriverBox::onLensFocusFineChange
+ *****************************************************************************/
+void LensDriverBox::onLensFocusFineChange( bool en )
+{
+    d_data->m_ui->cbxFocusFineEnable->blockSignals( true );
+    d_data->m_ui->cbxFocusFineEnable->setChecked( en);
+    d_data->m_ui->cbxFocusFineEnable->blockSignals( false );
+}
+
+
+/******************************************************************************
  * LensDriverBox::onLensZoomPositionChange
  *****************************************************************************/
 void LensDriverBox::onLensZoomPositionChange( int pos )
@@ -973,6 +1190,16 @@ void LensDriverBox::onLensZoomPositionChange( int pos )
     d_data->m_ui->sldZoomPosition->blockSignals( true );
     d_data->m_ui->sldZoomPosition->setValue(pos);
     d_data->m_ui->sldZoomPosition->blockSignals( false );
+}
+
+/******************************************************************************
+ * LensDriverBox::onLensZoomInvertChange
+ *****************************************************************************/
+void LensDriverBox::onLensZoomInvertChange( bool en )
+{
+    d_data->m_ui->cbxZoomInvertEnable->blockSignals( true );
+    d_data->m_ui->cbxZoomInvertEnable->setChecked( en);
+    d_data->m_ui->cbxZoomInvertEnable->blockSignals( false );
 }
 
 /******************************************************************************
@@ -990,6 +1217,70 @@ void LensDriverBox::onLensIrisPositionChange( int pos )
 }
 
 /******************************************************************************
+ * LensDriverBox::onLensFocusInvertChange
+ *****************************************************************************/
+void LensDriverBox::onLensIrisInvertChange( bool en )
+{
+    d_data->m_ui->cbxIrisInvertEnable->blockSignals( true );
+    d_data->m_ui->cbxIrisInvertEnable->setChecked( en);
+    d_data->m_ui->cbxIrisInvertEnable->blockSignals( false );
+}
+
+/******************************************************************************
+ * LensDriverBox::onLensSettingsChange
+ *****************************************************************************/
+void LensDriverBox::onLensIrisSetupChange( QVector<int> values )
+{
+    for(int i = 0; i < 9; i++)
+    {
+        d_data->m_LensIrisTable.fStops.append( values.value(i*2));
+        d_data->m_LensIrisTable.fStopsPos.append( values.value( ( i*2 ) +1));
+    }
+
+    d_data->m_ui->cbxLensIrisAperture->setInsertPolicy( d_data->m_ui->cbxLensIrisAperture->InsertAtTop );
+    QString temp;
+    for( int i = 0; i < d_data->m_LensIrisTable.fStops.size() ; i++ )
+    {
+        if( d_data->m_LensIrisTable.fStops.value(i) != 0)
+        {
+            temp = QString("%1").arg( double(d_data->m_LensIrisTable.fStops.value(i)) /10 );
+
+            addLensIrisAperture( temp ,i+1);
+        }
+    }
+
+    d_data->fillTable(d_data->m_LensIrisTable.fStops,d_data->m_LensIrisTable.fStopsPos);
+
+}
+
+/******************************************************************************
+ * LensDriverBox::onLensIrisAperturePosChange
+ *****************************************************************************/
+void LensDriverBox::onLensIrisAperturePosChange( int pos )
+{
+   if(d_data->m_LensIrisTable.fStopsPos.contains( pos ) )
+   {
+       for(int  i = 0; i < d_data->m_LensIrisTable.fStopsPos.size(); i++)
+       {
+           if( ( pos == d_data->m_LensIrisTable.fStopsPos.value( i ) ) && ( d_data->m_LensIrisTable.fStops.value( i ) != 0 ) )
+           {
+               d_data->m_ui->cbxLensIrisAperture->blockSignals(true);
+               d_data->m_ui->cbxLensIrisAperture->setCurrentIndex(i + 1);
+               d_data->m_ui->cbxLensIrisAperture->blockSignals(false);
+           }
+       }
+   }
+   else
+   {
+        d_data->m_ui->cbxLensIrisAperture->blockSignals(true);
+        d_data->m_ui->cbxLensIrisAperture->setCurrentIndex(0);
+        d_data->m_ui->cbxLensIrisAperture->blockSignals(false);
+   }
+
+}
+
+
+/******************************************************************************
  * LensDriverBox::onLensFilterPositionChange
  *****************************************************************************/
 void LensDriverBox::onLensFilterPositionChange( int pos )
@@ -1001,6 +1292,16 @@ void LensDriverBox::onLensFilterPositionChange( int pos )
     d_data->m_ui->sldFilterPosition->blockSignals( true );
     d_data->m_ui->sldFilterPosition->setValue(pos);
     d_data->m_ui->sldFilterPosition->blockSignals( false );
+}
+
+/******************************************************************************
+ * LensDriverBox::onLensFilterInvertChange
+ *****************************************************************************/
+void LensDriverBox::onLensFilterInvertChange( bool en )
+{
+    d_data->m_ui->cbxFilterInvertEnable->blockSignals( true );
+    d_data->m_ui->cbxFilterInvertEnable->setChecked( en);
+    d_data->m_ui->cbxFilterInvertEnable->blockSignals( false );
 }
 
 /******************************************************************************
@@ -1116,7 +1417,7 @@ void LensDriverBox::onCbxLensProfileChange( int index )
 }
 
 /******************************************************************************
- * LensDriverBox::onCbxLensSettingsChange
+ * LensDriverBox::onBtnLensActiveChange
  *****************************************************************************/
 void LensDriverBox::onBtnLensActiveChange( void )
 {
@@ -1163,6 +1464,15 @@ void LensDriverBox::onCbxLensEnableAdvancedSettings(int state)
     d_data->m_ui->sbxFilterSpeed->setVisible(check);
     d_data->m_ui->sbxFilterStepMode->setVisible(check);
     d_data->m_ui->sbxFilterTorque->setVisible(check);
+
+    d_data->m_ui->cbxFocusFineEnable->setVisible(check);
+    d_data->m_ui->cbxFocusInvertEnable->setVisible(check);
+    d_data->m_ui->cbxZoomInvertEnable->setVisible(check);
+    d_data->m_ui->cbxIrisInvertEnable->setVisible(check);
+    d_data->m_ui->cbxFilterInvertEnable->setVisible(check);
+
+    d_data->m_ui->lblIrisFStopTable->setVisible(check);
+    d_data->m_ui->tblIrisAptPosition->setVisible(check);
 }
 
 /******************************************************************************
@@ -1224,6 +1534,52 @@ void LensDriverBox::onSbxLensFocusTorqueChanged( int torque )
         setNormalCursor();
 }
 
+
+/******************************************************************************
+ * LensDriverBox::onCbxLensFocusFineChanged
+ *****************************************************************************/
+void LensDriverBox::onCbxLensFocusFineChanged( int enable)
+{
+    setWaitCursor();
+    if( static_cast<bool>(enable) == true )
+    {
+
+        d_data->m_ui->sbxFocusPosition->setRange(0,1000);
+        d_data->m_ui->sldFocusPosition->setRange(0,1000);
+
+    }
+    else
+    {
+
+        d_data->m_ui->sbxFocusPosition->setValue(d_data->m_ui->sbxFocusPosition->value() /10 );
+        d_data->m_ui->sbxFocusPosition->setRange(0,100);
+        d_data->m_ui->sldFocusPosition->setRange(0,100);
+
+    }
+
+
+    emit LensFocusFineChanged( static_cast<bool>(enable) );
+    setNormalCursor();
+}
+
+/******************************************************************************
+ * LensDriverBox::onCbxLensFocusInvertChanged
+ *****************************************************************************/
+void LensDriverBox::onCbxLensFocusInvertChanged( int enable)
+{
+    QVector<int> values;
+
+    values.append(static_cast<int>( static_cast<bool>( d_data->m_ui->cbxFilterInvertEnable->isChecked() ) ) );
+    values.append(static_cast<int>( static_cast<bool>( d_data->m_ui->cbxIrisInvertEnable->isChecked() ) ) );
+    values.append(static_cast<int>( static_cast<bool>( d_data->m_ui->cbxZoomInvertEnable->isChecked() ) ) );
+    values.append(static_cast<int>( static_cast<bool>( enable ) ) );
+
+    setWaitCursor();
+    emit LensInvertChanged( values );
+    setNormalCursor();
+}
+
+
 /******************************************************************************
  * LensDriverBox::onSbxLensZoomPositionChanged
  *****************************************************************************/
@@ -1284,6 +1640,24 @@ void LensDriverBox::onSbxLensZoomTorqueChanged( int torque )
 }
 
 /******************************************************************************
+ * LensDriverBox::onCbxLensZoomInvertChanged
+ *****************************************************************************/
+void LensDriverBox::onCbxLensZoomInvertChanged( int enable)
+{
+    QVector<int> values;
+
+    values.append(static_cast<int>( static_cast<bool>( d_data->m_ui->cbxFilterInvertEnable->isChecked() ) ) );
+    values.append(static_cast<int>( static_cast<bool>( d_data->m_ui->cbxIrisInvertEnable->isChecked() ) ) );
+    values.append(static_cast<int>( static_cast<bool>( enable ) ) );
+    values.append(static_cast<int>( static_cast<bool>( d_data->m_ui->cbxFocusInvertEnable->isChecked() ) ) );
+
+    setWaitCursor();
+    emit LensInvertChanged( values );
+    setNormalCursor();
+}
+
+
+/******************************************************************************
  * LensDriverBox::onSbxLensIrisPositionChanged
  *****************************************************************************/
 void LensDriverBox::onSbxLensIrisPositionChanged( int pos )
@@ -1291,6 +1665,7 @@ void LensDriverBox::onSbxLensIrisPositionChanged( int pos )
 
         setWaitCursor();
         emit LensIrisPositionChanged( pos );
+        emit LensIrisAperturePosChanged( pos );
         setNormalCursor();
 }
 
@@ -1341,6 +1716,100 @@ void LensDriverBox::onSbxLensIrisTorqueChanged( int torque )
         emit LensIrisSettingsChanged( values );
         setNormalCursor();
 }
+
+/******************************************************************************
+ * LensDriverBox::onCbxLensIrisInvertChanged
+ *****************************************************************************/
+void LensDriverBox::onCbxLensIrisInvertChanged( int enable)
+{
+    QVector<int> values;
+
+    values.append(static_cast<int>( static_cast<bool>( d_data->m_ui->cbxFilterInvertEnable->isChecked() ) ) );
+    values.append(static_cast<int>( static_cast<bool>( enable ) ) );
+    values.append(static_cast<int>( static_cast<bool>( d_data->m_ui->cbxZoomInvertEnable->isChecked() ) ) );
+    values.append(static_cast<int>( static_cast<bool>( d_data->m_ui->cbxFocusInvertEnable->isChecked() ) ) );
+
+    setWaitCursor();
+    emit LensInvertChanged( values );
+    setNormalCursor();
+}
+
+
+/******************************************************************************
+ * LensDriverBox::onCbxLensIrisApertureChanged
+ *****************************************************************************/
+void LensDriverBox::onCbxLensIrisApertureChanged( int index)
+{
+
+    if(index != 0)
+    {
+        setWaitCursor();
+        emit LensIrisApertureChanged( d_data->m_LensIrisTable.fStops.value( ( index - 1 ) ) );
+        emit LensIrisAperturePosChanged( d_data->m_LensIrisTable.fStopsPos.value( ( index - 1 ) ) );
+        setNormalCursor();
+    }
+}
+
+/******************************************************************************
+ * LensDriverBox::onBtnLensIrisAperturePlusChanged
+ *****************************************************************************/
+void LensDriverBox::onBtnLensIrisAperturePlusChanged( void )
+{
+
+    d_data->m_ui->btnIrisAptMinus->clearFocus();
+    int acPos = d_data->m_ui->sbxIrisPosition->value();
+    int i = 0;
+    int index = -1;
+    while( (  i  < d_data->m_LensIrisTable.fStops.size()  ) && ( acPos < d_data->m_LensIrisTable.fStopsPos.value(i)))
+    {
+        index = i;
+        i++;
+    }
+
+
+
+    if( ( index >= 0 ) && ( d_data->m_LensIrisTable.fStops.value(index ) != 0 ) )
+    {
+
+        setWaitCursor();
+        emit LensIrisApertureChanged( d_data->m_LensIrisTable.fStops.value( ( index  ) ) );
+        emit LensIrisAperturePosChanged( d_data->m_LensIrisTable.fStopsPos.value( ( index  ) ) );
+        setNormalCursor();
+    }
+
+}
+
+
+
+/******************************************************************************
+ * LensDriverBox::onBtnLensIrisApertureMinusChanged
+ *****************************************************************************/
+void LensDriverBox::onBtnLensIrisApertureMinusChanged( void )
+{
+
+    d_data->m_ui->btnIrisAptMinus->clearFocus();
+    int acPos = d_data->m_ui->sbxIrisPosition->value();
+    int i = 0;
+    int index = -1;
+    while( (  i  < d_data->m_LensIrisTable.fStops.size()  ) && ( acPos <= d_data->m_LensIrisTable.fStopsPos.value(i)))
+    {
+        index = i;
+        i++;
+    }
+
+
+
+    if( ( index >= -1 ) && ( d_data->m_LensIrisTable.fStops.value(index + 1) != 0 ) )
+    {
+
+        setWaitCursor();
+        emit LensIrisApertureChanged( d_data->m_LensIrisTable.fStops.value( ( index + 1 ) ) );
+        emit LensIrisAperturePosChanged( d_data->m_LensIrisTable.fStopsPos.value( ( index + 1 ) ) );
+        setNormalCursor();
+    }
+
+}
+
 
 /******************************************************************************
  * LensDriverBox::onSbxLensFilterPositionChanged
@@ -1401,5 +1870,20 @@ void LensDriverBox::onSbxLensFilterTorqueChanged( int torque )
         setNormalCursor();
 }
 
+/******************************************************************************
+ * LensDriverBox::onCbxLensFilterInvertChanged
+ *****************************************************************************/
+void LensDriverBox::onCbxLensFilterInvertChanged( int enable)
+{
+    QVector<int> values;
 
+    values.append(static_cast<int>( static_cast<bool>( enable ) ) );
+    values.append(static_cast<int>( static_cast<bool>( d_data->m_ui->cbxIrisInvertEnable->isChecked() ) ) );
+    values.append(static_cast<int>( static_cast<bool>( d_data->m_ui->cbxZoomInvertEnable->isChecked() ) ) );
+    values.append(static_cast<int>( static_cast<bool>( d_data->m_ui->cbxFocusInvertEnable->isChecked() ) ) );
+
+    setWaitCursor();
+    emit LensInvertChanged( values );
+    setNormalCursor();
+}
 

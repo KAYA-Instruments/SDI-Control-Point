@@ -162,8 +162,8 @@
  * lens profile names
  *****************************************************************************/
 #define LENS_PROFILE_NAME_UNKOWN                ( "Unkown Profile, choose from list" )
-#define LENS_PROFILE_NAME_DCT_KIT_M0824_MPW2_I  ( "DCT LDK Computar M0824-MPW2 Iris" )
-#define LENS_PROFILE_NAME_DCT_KIT_V0828_MPY_I   ( "DCT LDK Computar V0828-MPY Iris" )
+#define LENS_PROFILE_NAME_DCT_KIT_IRIS          ( "DCT Lens Driver Single Motor" )
+#define LENS_PROFILE_NAME_DCT_KIT_FOCUS_IRIS    ( "DCT Lens Driver Dual Motor" )
 #define LENS_PROFILE_NAME_DCT_KIT_LM6HC_I       ( "DCT LDK Korwa LM6HC Iris" )
 #define LENS_PROFILE_NAME_DCT_KIT_M0824_MPW2_F  ( "DCT LDK Computar M0824-MPW2 Focus" )
 #define LENS_PROFILE_NAME_DCT_KIT_V0828_MPY_F   ( "DCT LDK Computar V0828-MPY Focus" )
@@ -419,9 +419,9 @@ enum LensProfile
 {
     LensProfileFirst                    = 0,
     LensProfileUnknown                  = 0,
-    LensProfileDctKit_M0824_MPW2_iris   = 1,
-    LensProfileDctKit_V0828_MPY_iris    = 2,
-    LensProfileDctKit_LM6HC_iris        = 3,
+    LensProfileDctKit_iris              = 1,
+    LensProfileDctKit_focus_iris        = 2,
+    LensProfileDctKit_iris_old          = 3,
     LensProfileICS                      = 4,
     LensProfileMax,
 };
