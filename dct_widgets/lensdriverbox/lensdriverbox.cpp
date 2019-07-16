@@ -27,6 +27,8 @@
 #include <QStandardItemModel>
 #include <QLineEdit>
 #include <QItemDelegate>
+#include <QStyledItemDelegate>
+#include <QTextEdit>
 
 #include "lensdriverbox.h"
 #include "ui_lensdriverbox.h"
@@ -122,10 +124,52 @@ const lens_settings_t settingsICS {
     /* .filterMotorFeatures = */ 0
 };
 
-const lens_settings_t settingsDctKit_iris {
+const lens_settings_t settingsDctKit_iris_1 {
     /* .address =             */ 34,
     /* .chipID =              */ 102,
     /* .controllerFeatures =  */ 1,
+    /* .focusMotorNr =        */ 1,
+    /* .zoomMotorNr =         */ 2,
+    /* .irisMotorNr =         */ 0,
+    /* .filterMotorNr =       */ 3,
+    /* .focusMotorFeatures =  */ 11,
+    /* .zoomMotorFeatures =   */ 0,
+    /* .irisMotorFeatures =   */ 11,
+    /* .filterMotorFeatures = */ 0
+};
+
+const lens_settings_t settingsDctKit_iris_2 {
+    /* .address =             */ 34,
+    /* .chipID =              */ 102,
+    /* .controllerFeatures =  */ 2,
+    /* .focusMotorNr =        */ 0,
+    /* .zoomMotorNr =         */ 2,
+    /* .irisMotorNr =         */ 1,
+    /* .filterMotorNr =       */ 3,
+    /* .focusMotorFeatures =  */ 11,
+    /* .zoomMotorFeatures =   */ 0,
+    /* .irisMotorFeatures =   */ 11,
+    /* .filterMotorFeatures = */ 0
+};
+
+const lens_settings_t settingsDctKit_focus_1 {
+    /* .address =             */ 34,
+    /* .chipID =              */ 102,
+    /* .controllerFeatures =  */ 1,
+    /* .focusMotorNr =        */ 0,
+    /* .zoomMotorNr =         */ 2,
+    /* .irisMotorNr =         */ 1,
+    /* .filterMotorNr =       */ 3,
+    /* .focusMotorFeatures =  */ 11,
+    /* .zoomMotorFeatures =   */ 0,
+    /* .irisMotorFeatures =   */ 11,
+    /* .filterMotorFeatures = */ 0
+};
+
+const lens_settings_t settingsDctKit_focus_2 {
+    /* .address =             */ 34,
+    /* .chipID =              */ 102,
+    /* .controllerFeatures =  */ 2,
     /* .focusMotorNr =        */ 1,
     /* .zoomMotorNr =         */ 2,
     /* .irisMotorNr =         */ 0,
@@ -168,17 +212,81 @@ const lens_settings_t settingsDctKit_iris_old  {
 const lens_settings_t lensSettingProfiles[LensProfileMax] =
 {
     settingsUnkown,
-    settingsDctKit_iris,
+    settingsDctKit_iris_1,
+    settingsDctKit_iris_2,
+    settingsDctKit_focus_1,
+    settingsDctKit_focus_2,
     settingsDctKit_focus_iris,
-    settingsDctKit_iris_old,
     settingsICS
 };
+
+
+/******************************************************************************
+ * pairSort
+ * @brief Sorts a List of pairs given by a and b components first by a and then
+ *        by b value. Duplicates are removed and the sorted / cleaned vectors
+ *        are returned. Both vectors must have the same lenght!
+ * @param a Vector of the first component of the pairs
+ * @param b Vector of the second component of the paris
+ * @returns False if an error occured (e.g. length missmatch), true otherwise
+ *****************************************************************************/
+static bool pairSort( QVector<int> &a, QVector<int> &b)
+{
+    if ( a.length() != b.length())
+    {
+        return false;
+    }
+
+    int size  = a.length();
+
+    QList<QPair<int,int>> pointList;
+    for ( int  i= 0; i < a.length(); i++ )
+    {
+        // Do not add duplicates to the List
+        QPair<int,int> newPair(a.at(i), b.at(i));
+        if (!pointList.contains(newPair))
+        {
+            pointList.append(newPair);
+        }
+    }
+
+
+
+    // Sort it (will sort first for x, than for y, see QPair
+    std::sort(pointList.begin(), pointList.end());
+
+    // Write the results back into the table
+    a.clear();
+    b.clear();
+    for ( int i = ( pointList.length() -1 ); i >= 0; i--)
+    {
+        a.append(pointList.at(i).first);
+        b.append(pointList.at(i).second);
+    }
+
+    if(pointList.length() < size )
+    {
+        for(int i = (size - pointList.length() ); i > 0; i--)
+        {
+            a.append(0);
+            b.append(0);
+        }
+    }
+
+
+
+    return true;
+}
 
 /******************************************************************************
  * Delegate
  *****************************************************************************/
-class LensDriverIrisTabDelegate : public QItemDelegate
+class LensDriverIrisTabStyledDelegat : public  QStyledItemDelegate
 {
+
+signals:
+    void modelDataChanged(void) const;
+
 public:
     // create a single editable table-cell
     QWidget* createEditor( QWidget * parent, const QStyleOptionViewItem &, const QModelIndex & index) const Q_DECL_OVERRIDE
@@ -195,7 +303,18 @@ public:
         {
             upperBound = m_secondColBound;
         }
-        QIntValidator *valid = new QIntValidator( 0, upperBound, edit );
+
+
+        QValidator *valid;
+
+        if (index.row() == 1)
+        {
+             valid = new QIntValidator( 0, upperBound, edit );
+        }
+        else
+        {
+            valid = new QDoubleValidator( 0, upperBound,1, edit );
+        }
         edit->setValidator( valid );
 
         return ( edit );
@@ -204,9 +323,18 @@ public:
     // transfer value from data-model into line-edit
     void setEditorData( QWidget * editor, const QModelIndex & idx ) const Q_DECL_OVERRIDE
     {
-        int value = idx.model()->data( idx, Qt::EditRole ).toInt();
-        QLineEdit * edt = static_cast< QLineEdit * >( editor );
-        edt->setText( QString().setNum(value) );
+        if( idx.model()->data( idx, Qt::EditRole ).userType() == QVariant::Int)
+        {
+            int value = idx.model()->data( idx, Qt::EditRole ).toInt();
+            QLineEdit * edt = static_cast< QLineEdit * >( editor );
+            edt->setText( QString().setNum(value) );
+        }
+        else
+        {
+            double value = idx.model()->data( idx, Qt::EditRole ).toDouble();
+            QLineEdit * edt = static_cast< QLineEdit * >( editor );
+            edt->setText( QString().setNum(value) );
+        }
     }
 
     // transfer value from line_edit into data-model
@@ -214,7 +342,16 @@ public:
     {
         QLineEdit * edt = static_cast< QLineEdit * >( editor );
         QString value = edt->text();
-        model->setData( idx, value, Qt::EditRole );
+        if( idx.row() == 1)
+        {
+            model->setData( idx, value.toInt(), Qt::EditRole );
+        }
+        else
+        {
+            model->setData( idx, value.toDouble(), Qt::EditRole );
+        }
+
+
     }
 
     // set geometry of line-edit
@@ -222,6 +359,27 @@ public:
     {
         editor->setGeometry( option.rect );
     }
+
+    QString displayText(const QVariant &value, const QLocale& locale) const Q_DECL_OVERRIDE
+    {
+        QString text;
+        switch (value.userType()) {
+           case QMetaType::Float:
+           case QVariant::Double:
+               text = QString("%1").arg( value.toDouble());
+               break;
+           case QVariant::Int:
+           case QVariant::LongLong:
+               text = locale.toString(value.toLongLong());
+               break;
+        default:
+                text = locale.toString(value.toLongLong());
+                break;
+        }
+
+        return text;
+    }
+
 
     // Set the upper bound for first end second column
     void setBounds(int firstColBound, int secondColBound)
@@ -242,9 +400,14 @@ public:
         return m_secondColBound;
     }
 
+
+
 private:
     int m_firstColBound;
     int m_secondColBound;
+
+
+
 };
 
 /******************************************************************************
@@ -258,7 +421,7 @@ public:
         , m_cntEvents( 0 )
         , m_maxEvents( 5 )
         , m_sbxStyle( new SpinBoxStyle() )
-        , m_delegate( new LensDriverIrisTabDelegate )
+        , m_delegate( new LensDriverIrisTabStyledDelegat() )
         , m_LensSettings{}
         , m_LensIrisTable{}
 
@@ -307,7 +470,7 @@ public:
     }
 
     // set positions in tableview widget
-    void fillTable( QVector<int> &Fstop, QVector<int> &FstopPos )
+    void fillTable( QVector<double> &Fstop, QVector<int> &FstopPos )
     {
         Q_ASSERT( Fstop.count() == FstopPos.count() );
         Q_ASSERT( m_model != NULL );
@@ -342,14 +505,14 @@ public:
         }
     }
 
-    void getDataFromModel( QVector<int> &Fstop, QVector<int> &FstopPos  )
+    void getDataFromModel( QVector<double> &Fstop, QVector<int> &FstopPos  )
     {
         Fstop.clear();
         FstopPos.clear();
 
         for ( int i=0; i<m_model->columnCount(); i ++ )
         {
-            Fstop.append( m_model->data( m_model->index(0, i), Qt::DisplayRole ).toInt() );
+            Fstop.append( m_model->data( m_model->index(0, i), Qt::DisplayRole ).toDouble() );
             FstopPos.append( m_model->data( m_model->index(1, i), Qt::DisplayRole ).toInt() );
         }
     }
@@ -359,7 +522,7 @@ public:
     int                     m_maxEvents;    /**< number of ignored move-events */
     SpinBoxStyle *          m_sbxStyle;     /**< proxy style to overrule not implemented spinbox properties */
 
-    LensDriverIrisTabDelegate * m_delegate;                /**< delegation class */
+    LensDriverIrisTabStyledDelegat * m_delegate;                /**< delegation class */
     QStandardItemModel *    m_model;                        /**< data model */
     lens_settings_t         m_LensSettings;
     lens_iris_position_t    m_LensIrisTable;
@@ -1256,19 +1419,27 @@ void LensDriverBox::onLensIrisSetupChange( QVector<int> values )
     addLensIrisAperture( "Chose Apeture",0);
 
     QString temp;
+    QVector<double> tempFStops;
     for( int i = 0; i < d_data->m_LensIrisTable.fStops.size() ; i++ )
     {
         if( d_data->m_LensIrisTable.fStops.value(i) != 0)
         {
             temp = QString("%1").arg( double(d_data->m_LensIrisTable.fStops.value(i)) /10 );
 
+
             addLensIrisAperture( temp ,i+1);
         }
     }
+    for( int i = 0; i < d_data->m_LensIrisTable.fStops.size(); i++ )
+    {
+        tempFStops.append( double( d_data->m_LensIrisTable.fStops.value(i) ) / 10);
+    }
 
-    d_data->fillTable(d_data->m_LensIrisTable.fStops,d_data->m_LensIrisTable.fStopsPos);
+    d_data->fillTable(tempFStops,d_data->m_LensIrisTable.fStopsPos);
 
 }
+
+
 
 /******************************************************************************
  * LensDriverBox::onLensIrisAperturePosChange
@@ -1838,17 +2009,24 @@ void LensDriverBox::onBtnLensIrisTableTransmitChanged( void )
 
     d_data->m_ui->btnIrisTransmitTable ->clearFocus();
 
-    QVector<int> tempFstop;
+    QVector<double> tempFstop;
+    QVector<int> tempIntFstop;
     QVector<int> tempFstopPos;
     QVector<int> tempIrisSettings;
 
    d_data->getDataFromModel(tempFstop,tempFstopPos);
    // Sort
+   for(int i = 0; i< tempFstop.size(); i++)
+   {
+       tempIntFstop.append( int( tempFstop.value(i) * 10 ) );
+   }
 
+
+   pairSort(tempIntFstop,tempFstopPos);
 
    for(int i = 0; i< tempFstop.size(); i++)
    {
-       tempIrisSettings.append(tempFstop.value(i));
+       tempIrisSettings.append(tempIntFstop.value(i));
        tempIrisSettings.append(tempFstopPos.value(i));
    }
 

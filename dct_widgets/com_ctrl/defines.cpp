@@ -607,12 +607,16 @@ QString GetLensProfileName( LensProfile profile )
     {
         case LensProfileUnknown:
             return ( QString(LENS_PROFILE_NAME_UNKOWN) );
-        case LensProfileDctKit_iris:
-            return ( QString(LENS_PROFILE_NAME_DCT_KIT_IRIS) );
+        case LensProfileDctKit_iris_1:
+            return ( QString(LENS_PROFILE_NAME_DCT_KIT_IRIS_1) );
+        case LensProfileDctKit_iris_2:
+            return ( QString(LENS_PROFILE_NAME_DCT_KIT_IRIS_2) );
+        case LensProfileDctKit_focus_1:
+            return ( QString(LENS_PROFILE_NAME_DCT_KIT_FOCUS_1) );
+        case LensProfileDctKit_focus_2:
+            return ( QString(LENS_PROFILE_NAME_DCT_KIT_FOCUS_2) );
         case LensProfileDctKit_focus_iris:
             return ( QString(LENS_PROFILE_NAME_DCT_KIT_FOCUS_IRIS) );
-        case LensProfileDctKit_iris_old:
-            return ( QString(LENS_PROFILE_NAME_DCT_KIT_LM6HC_I) );
         case LensProfileICS:
             return ( QString(LENS_PROFILE_NAME_I_CS) );
         default:
