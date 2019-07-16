@@ -681,7 +681,7 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
 
         // lens Iris Setup --> FStop Table
         connect( dev->GetLensItf(), SIGNAL(LensIrisSetupChanged(QVector<int>)), m_ui->lensDriverBox, SLOT(onLensIrisSetupChange(QVector<int>)) );
-        //connect( m_ui->lensDriverBox, SIGNAL(LensIrisSettingsChanged(QVector<int>)), dev->GetLensItf(), SLOT(onLensIrisSettingsChange(QVector<int>)) );
+        connect( m_ui->lensDriverBox, SIGNAL(LensIrisSetupChanged(QVector<int>)), dev->GetLensItf(), SLOT(onLensIrisSetupChange(QVector<int>)) );
 
         // lens Iris Aperture
         //connect( dev->GetLensItf(), SIGNAL(LensIrisSetupChanged(QVector<int>)), m_ui->lensDriverBox, SLOT(onLensIrisSetupChange(QVector<int>)) );

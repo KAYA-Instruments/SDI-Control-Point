@@ -112,6 +112,7 @@ signals:
     void LensIrisSettingsChanged(  QVector<int>  );
     void LensIrisApertureChanged( int apt );
     void LensIrisAperturePosChanged( int pos );
+    void LensIrisSetupChanged( QVector<int> );
     void LensFilterSettingsChanged(  QVector<int>  );
 
 public slots:
@@ -160,6 +161,7 @@ private slots:
     void onCbxLensIrisApertureChanged( int index);
     void onBtnLensIrisAperturePlusChanged( void );
     void onBtnLensIrisApertureMinusChanged( void );
+    void onBtnLensIrisTableTransmitChanged( void );
 
     void onSbxLensFilterPositionChanged(int pos);
     void onSbxLensFilterSpeedChanged(int speed);

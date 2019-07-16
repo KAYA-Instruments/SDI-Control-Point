@@ -140,9 +140,9 @@ const lens_settings_t settingsDctKit_focus_iris {
     /* .address =             */ 34,
     /* .chipID =              */ 102,
     /* .controllerFeatures =  */ 3,
-    /* .focusMotorNr =        */ 1,
+    /* .focusMotorNr =        */ 0,
     /* .zoomMotorNr =         */ 2,
-    /* .irisMotorNr =         */ 0,
+    /* .irisMotorNr =         */ 1,
     /* .filterMotorNr =       */ 3,
     /* .focusMotorFeatures =  */ 11,
     /* .zoomMotorFeatures =   */ 0,
@@ -258,9 +258,10 @@ public:
         , m_cntEvents( 0 )
         , m_maxEvents( 5 )
         , m_sbxStyle( new SpinBoxStyle() )
+        , m_delegate( new LensDriverIrisTabDelegate )
         , m_LensSettings{}
         , m_LensIrisTable{}
-        , m_delegate( new LensDriverIrisTabDelegate )
+
 
     {
         // initialize UI
@@ -269,6 +270,7 @@ public:
         m_ui->tblIrisAptPosition->setItemDelegate( m_delegate );
         m_ui->tblIrisAptPosition->horizontalHeader()->setSectionResizeMode( QHeaderView::Stretch );
         m_ui->tblIrisAptPosition->setSelectionBehavior( QAbstractItemView::SelectItems );
+        m_ui->tblIrisAptPosition->clearFocus();
         setDataModel();
 
         m_delegate->setBounds( 500, 500 );
@@ -340,15 +342,15 @@ public:
         }
     }
 
-    void getDataFromModel( QVector<int> &yPos, QVector<int> &xPos  )
+    void getDataFromModel( QVector<int> &Fstop, QVector<int> &FstopPos  )
     {
-        yPos.clear();
-        xPos.clear();
+        Fstop.clear();
+        FstopPos.clear();
 
-        for ( int i=0; i<m_model->rowCount(); i ++ )
+        for ( int i=0; i<m_model->columnCount(); i ++ )
         {
-            yPos.append( m_model->data( m_model->index(i, 0), Qt::DisplayRole ).toInt() );
-            xPos.append( m_model->data( m_model->index(i, 1), Qt::DisplayRole ).toInt() );
+            Fstop.append( m_model->data( m_model->index(0, i), Qt::DisplayRole ).toInt() );
+            FstopPos.append( m_model->data( m_model->index(1, i), Qt::DisplayRole ).toInt() );
         }
     }
 
@@ -462,6 +464,9 @@ LensDriverBox::LensDriverBox( QWidget * parent ) : DctWidgetBox( parent )
 
     d_data->m_ui->lblIrisFStopTable->setVisible(false);
     d_data->m_ui->tblIrisAptPosition->setVisible(false);
+    d_data->m_ui->cbxIrisTableTemplate->setVisible(false);
+    d_data->m_ui->lblIrisTableUseTemplate->setVisible(false);
+    d_data->m_ui->btnIrisTransmitTable->setVisible(false);
 
 
 
@@ -518,6 +523,9 @@ LensDriverBox::LensDriverBox( QWidget * parent ) : DctWidgetBox( parent )
 
     connect( d_data->m_ui->btnIrisAptPlus, SIGNAL(clicked()), this, SLOT(onBtnLensIrisAperturePlusChanged( void ) ));
     connect( d_data->m_ui->btnIrisAptMinus, SIGNAL(clicked()), this, SLOT(onBtnLensIrisApertureMinusChanged( void ) ));
+    connect( d_data->m_ui->btnIrisTransmitTable,SIGNAL(clicked()), this, SLOT( onBtnLensIrisTableTransmitChanged( void) ));
+    connect( this, SIGNAL(LensIrisSetupChanged( QVector<int> )), this, SLOT( onLensIrisSetupChange( QVector<int> ) ));
+
 
     // Filter Elements
     connect( d_data->m_ui->sbxFilterPosition, SIGNAL(valueChanged(int)), this, SLOT(onSbxLensFilterPositionChanged(int)));
@@ -1231,13 +1239,22 @@ void LensDriverBox::onLensIrisInvertChange( bool en )
  *****************************************************************************/
 void LensDriverBox::onLensIrisSetupChange( QVector<int> values )
 {
+    d_data->m_LensIrisTable.fStops.clear();
+    d_data->m_LensIrisTable.fStopsPos.clear();
+
     for(int i = 0; i < 9; i++)
     {
         d_data->m_LensIrisTable.fStops.append( values.value(i*2));
         d_data->m_LensIrisTable.fStopsPos.append( values.value( ( i*2 ) +1));
     }
 
+    d_data->m_ui->cbxLensIrisAperture->blockSignals(true);
     d_data->m_ui->cbxLensIrisAperture->setInsertPolicy( d_data->m_ui->cbxLensIrisAperture->InsertAtTop );
+    d_data->m_ui->cbxLensIrisAperture->clear();
+    d_data->m_ui->cbxLensIrisAperture->blockSignals(false);
+
+    addLensIrisAperture( "Chose Apeture",0);
+
     QString temp;
     for( int i = 0; i < d_data->m_LensIrisTable.fStops.size() ; i++ )
     {
@@ -1473,6 +1490,9 @@ void LensDriverBox::onCbxLensEnableAdvancedSettings(int state)
 
     d_data->m_ui->lblIrisFStopTable->setVisible(check);
     d_data->m_ui->tblIrisAptPosition->setVisible(check);
+    d_data->m_ui->cbxIrisTableTemplate->setVisible(check);
+    d_data->m_ui->lblIrisTableUseTemplate->setVisible(check);
+    d_data->m_ui->btnIrisTransmitTable->setVisible(check);
 }
 
 /******************************************************************************
@@ -1756,7 +1776,7 @@ void LensDriverBox::onCbxLensIrisApertureChanged( int index)
 void LensDriverBox::onBtnLensIrisAperturePlusChanged( void )
 {
 
-    d_data->m_ui->btnIrisAptMinus->clearFocus();
+    d_data->m_ui->btnIrisAptPlus->clearFocus();
     int acPos = d_data->m_ui->sbxIrisPosition->value();
     int i = 0;
     int index = -1;
@@ -1809,6 +1829,32 @@ void LensDriverBox::onBtnLensIrisApertureMinusChanged( void )
     }
 
 }
+
+/******************************************************************************
+ * LensDriverBox::onBtnLensIrisTableTransmitChanged
+ *****************************************************************************/
+void LensDriverBox::onBtnLensIrisTableTransmitChanged( void )
+{
+
+    d_data->m_ui->btnIrisTransmitTable ->clearFocus();
+
+    QVector<int> tempFstop;
+    QVector<int> tempFstopPos;
+    QVector<int> tempIrisSettings;
+
+   d_data->getDataFromModel(tempFstop,tempFstopPos);
+   // Sort
+
+
+   for(int i = 0; i< tempFstop.size(); i++)
+   {
+       tempIrisSettings.append(tempFstop.value(i));
+       tempIrisSettings.append(tempFstopPos.value(i));
+   }
+
+   emit LensIrisSetupChanged(tempIrisSettings);
+}
+
 
 
 /******************************************************************************
