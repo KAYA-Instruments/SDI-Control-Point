@@ -194,19 +194,21 @@ const lens_settings_t settingsDctKit_focus_iris {
     /* .filterMotorFeatures = */ 0
 };
 
-const lens_settings_t settingsDctKit_iris_old  {
-    /* .address =             */ 8,
-    /* .chipID =              */ 18,
-    /* .controllerFeatures =  */ 1,
+const lens_settings_t settingsDctKit_iris_focus {
+    /* .address =             */ 34,
+    /* .chipID =              */ 102,
+    /* .controllerFeatures =  */ 3,
     /* .focusMotorNr =        */ 1,
     /* .zoomMotorNr =         */ 2,
     /* .irisMotorNr =         */ 0,
     /* .filterMotorNr =       */ 3,
-    /* .focusMotorFeatures =  */ 0,
+    /* .focusMotorFeatures =  */ 11,
     /* .zoomMotorFeatures =   */ 0,
     /* .irisMotorFeatures =   */ 11,
     /* .filterMotorFeatures = */ 0
 };
+
+
 
 
 const lens_settings_t lensSettingProfiles[LensProfileMax] =
@@ -217,8 +219,32 @@ const lens_settings_t lensSettingProfiles[LensProfileMax] =
     settingsDctKit_focus_1,
     settingsDctKit_focus_2,
     settingsDctKit_focus_iris,
+    settingsDctKit_iris_focus,
     settingsICS
 };
+
+
+const lens_iris_position_template_t computarM0824MPW2 {
+    /* .fstops =            */ {160, 80, 40, 24, 0, 0, 0, 0, 0},
+    /* .fstopPos =          */ {94, 60, 31, 0, 0, 0, 0, 0, 0},
+    /* .lensName =          */ "Computar M0824-MPW2",
+    /* .compatibleID =      */ {102}
+};
+
+const lens_iris_position_template_t computarV0828MPY {
+    /* .fstops =            */ {160, 110, 80, 56, 40, 28, 0, 0, 0},
+    /* .fstopPos =          */ {94, 78, 63, 45, 28, 0, 0, 0, 0},
+    /* .lensName =          */ "Computar V0828-MPY",
+    /* .compatibleID =      */ {102}
+};
+
+const lens_iris_position_template_t computarEG6Z0915TCSMPWIR {
+    /* .fstops =            */ {160, 110, 80, 56, 40, 28, 20, 14, 0},
+    /* .fstopPos =          */ {90, 84, 79, 72, 62, 49, 29, 0, 0},
+    /* .lensName =          */ "Computar i-CS Lens EG6Z0915TCS-MPWIR",
+    /* .compatibleID =      */ {13}
+};
+
 
 
 /******************************************************************************
@@ -446,7 +472,9 @@ public:
         delete m_model;
     }
 
-
+    /******************************************************************************
+     * initDataModel()
+     *****************************************************************************/
     // initialize data model
     void initDataModel()
     {
@@ -456,7 +484,9 @@ public:
     }
 
 
-
+    /******************************************************************************
+     * setDataModel()
+     *****************************************************************************/
     // replace data model of the table view widget with our custom model
     void setDataModel()
     {
@@ -469,6 +499,9 @@ public:
         delete m;
     }
 
+    /******************************************************************************
+     * fillTable( QVector<double> &Fstop, QVector<int> &FstopPos )
+     *****************************************************************************/
     // set positions in tableview widget
     void fillTable( QVector<double> &Fstop, QVector<int> &FstopPos )
     {
@@ -505,6 +538,9 @@ public:
         }
     }
 
+    /******************************************************************************
+     * getDataFromModel( QVector<double> &Fstop, QVector<int> &FstopPos  )
+     *****************************************************************************/
     void getDataFromModel( QVector<double> &Fstop, QVector<int> &FstopPos  )
     {
         Fstop.clear();
@@ -517,6 +553,76 @@ public:
         }
     }
 
+
+    /******************************************************************************
+     * GetLensProfileName( LensProfile profile )
+     *****************************************************************************/
+    QString GetLensProfileName( enum LensProfile profile )
+    {
+        switch ( profile )
+        {
+            case LensProfileUnknown:
+                return ( QString(LENS_PROFILE_NAME_UNKOWN) );
+            case LensProfileDctKit_iris_1:
+                return ( QString(LENS_PROFILE_NAME_DCT_KIT_IRIS_1) );
+            case LensProfileDctKit_iris_2:
+                return ( QString(LENS_PROFILE_NAME_DCT_KIT_IRIS_2) );
+            case LensProfileDctKit_focus_1:
+                return ( QString(LENS_PROFILE_NAME_DCT_KIT_FOCUS_1) );
+            case LensProfileDctKit_focus_2:
+                return ( QString(LENS_PROFILE_NAME_DCT_KIT_FOCUS_2) );
+            case LensProfileDctKit_focus_iris:
+                return ( QString(LENS_PROFILE_NAME_DCT_KIT_FOCUS_IRIS) );
+            case LensProfileDctKit_iris_focus:
+                return ( QString(LENS_PROFILE_NAME_DCT_KIT_IRIS_FOCUS) );
+            case LensProfileICS:
+                return ( QString(LENS_PROFILE_NAME_I_CS) );
+            default:
+                return ( QString() );
+        }
+    }
+
+    /******************************************************************************
+     * GetLensProfileByName( LensProfile profile )
+     *****************************************************************************/
+    enum LensProfile GetLensProfileByName( QString profile )
+    {
+        if( profile.compare(QString(LENS_PROFILE_NAME_UNKOWN)) == 0  )
+        {
+            return LensProfileUnknown;
+        }
+        if( profile.compare(QString(LENS_PROFILE_NAME_DCT_KIT_IRIS_1)) == 0 )
+        {
+            return LensProfileDctKit_iris_1;
+        }
+        if( profile.compare(QString(LENS_PROFILE_NAME_DCT_KIT_IRIS_2)) == 0  )
+        {
+            return LensProfileDctKit_iris_2;
+        }
+        if( profile.compare(QString(LENS_PROFILE_NAME_DCT_KIT_FOCUS_1)) == 0 )
+        {
+            return LensProfileDctKit_focus_1;
+        }
+        if( profile.compare(QString(LENS_PROFILE_NAME_DCT_KIT_FOCUS_2)) == 0 )
+        {
+            return LensProfileDctKit_focus_2;
+        }
+        if( profile.compare(QString(LENS_PROFILE_NAME_DCT_KIT_FOCUS_IRIS)) == 0 )
+        {
+            return LensProfileDctKit_focus_iris;
+        }
+        if( profile.compare(QString(LENS_PROFILE_NAME_DCT_KIT_IRIS_FOCUS)) == 0 )
+        {
+            return LensProfileDctKit_iris_focus;
+        }
+        if( profile.compare(QString(LENS_PROFILE_NAME_I_CS)) == 0 )
+        {
+            return LensProfileICS;
+        }
+
+        return LensProfileUnknown;
+    }
+
     Ui::UI_LensDriverBox *  m_ui;           /**< ui handle */
     int                     m_cntEvents;    /**< ignore move-events if slider moving */
     int                     m_maxEvents;    /**< number of ignored move-events */
@@ -526,6 +632,7 @@ public:
     QStandardItemModel *    m_model;                        /**< data model */
     lens_settings_t         m_LensSettings;
     lens_iris_position_t    m_LensIrisTable;
+    QVector<lens_iris_position_template_t> m_LensIrisTemplates;
 };
 
 /******************************************************************************
@@ -632,13 +739,14 @@ LensDriverBox::LensDriverBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->btnIrisTransmitTable->setVisible(false);
 
 
-
-
+    d_data->m_LensIrisTemplates.append( computarM0824MPW2 );
+    d_data->m_LensIrisTemplates.append( computarV0828MPY );
+    d_data->m_LensIrisTemplates.append( computarEG6Z0915TCSMPWIR );
 
     // fill settings combo box
     for ( int i = LensProfileFirst; i < LensProfileMax; i++ )
     {
-        addLensProfile( GetLensProfileName( static_cast<enum LensProfile>(i) ), i );
+        addLensProfile( d_data->GetLensProfileName( static_cast<enum LensProfile>(i) ), i );
     }
 
     addLensIrisAperture( "Chose Apeture",0);
@@ -688,6 +796,7 @@ LensDriverBox::LensDriverBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->btnIrisAptMinus, SIGNAL(clicked()), this, SLOT(onBtnLensIrisApertureMinusChanged( void ) ));
     connect( d_data->m_ui->btnIrisTransmitTable,SIGNAL(clicked()), this, SLOT( onBtnLensIrisTableTransmitChanged( void) ));
     connect( this, SIGNAL(LensIrisSetupChanged( QVector<int> )), this, SLOT( onLensIrisSetupChange( QVector<int> ) ));
+    connect( d_data->m_ui->cbxIrisTableTemplate, SIGNAL( currentIndexChanged(int)), this, SLOT( onCbxLensIrisTemplateChanged( int )) );
 
 
     // Filter Elements
@@ -821,6 +930,15 @@ void LensDriverBox::addLensIrisAperture( QString name, int id )
     d_data->m_ui->cbxLensIrisAperture->blockSignals( false );
 }
 
+/******************************************************************************
+ * LensDriverBox::addLensIrisTemplate
+ *****************************************************************************/
+void LensDriverBox::addLensIrisTemplate( QString name, int id )
+{
+    d_data->m_ui->cbxIrisTableTemplate->blockSignals( true );
+    d_data->m_ui->cbxIrisTableTemplate->addItem( name, id );
+    d_data->m_ui->cbxIrisTableTemplate->blockSignals( false );
+}
 /******************************************************************************
  * LensDriverBox::LensProfile
  *****************************************************************************/
@@ -1257,7 +1375,7 @@ void LensDriverBox::onLensSettingsChange( QVector<int> values )
     d_data->m_LensSettings = settings;
 
     d_data->m_ui->cbxLensProfile->blockSignals( true );
-    d_data->m_ui->cbxLensProfile->setCurrentIndex( settingsToProfile(settings) );
+    d_data->m_ui->cbxLensProfile->setCurrentText(d_data->GetLensProfileName(settingsToProfile(settings)) );
     d_data->m_ui->cbxLensProfile->blockSignals( false );
 
 
@@ -1292,13 +1410,55 @@ void LensDriverBox::onLensActiveChange( bool active )
     }
     last_state = active;
 
-    if( active == true && d_data->m_LensSettings.chipID >= 100 )
+    d_data->m_ui->cbxLensProfile->blockSignals(true);
+    d_data->m_ui->cbxLensProfile->clear();
+    d_data->m_ui->cbxLensProfile->blockSignals(true);
+
+    if( active == true && ( d_data->m_LensSettings.chipID >= 100) )
     {
-        d_data->m_ui->cbxLensProfile->setEnabled( false );
+        for ( int i = LensProfileFirst; i < LensProfileMax; i++ )
+        {
+            // Add only Devices with normal register interface --> chip Id < 100
+            lens_settings_t tempSettings = profileToSettings(static_cast< enum LensProfile>( i) );
+            if( ( tempSettings.chipID > 100 ) && ( tempSettings.controllerFeatures == d_data->m_LensSettings.controllerFeatures ) )
+            {
+                addLensProfile( d_data->GetLensProfileName( static_cast<enum LensProfile>(i) ), i );
+            }
+        }
+
     }
     else
     {
-         d_data->m_ui->cbxLensProfile->setEnabled( true );
+        for ( int i = LensProfileFirst; i < LensProfileMax; i++ )
+        {
+            // Add only Devices with normal register interface --> chip Id < 100
+            lens_settings_t tempSettings = profileToSettings(static_cast< enum LensProfile>( i) );
+            if( tempSettings.chipID < 100)
+            {
+                addLensProfile( d_data->GetLensProfileName( static_cast<enum LensProfile>(i) ), i );
+            }
+            if( active == false)
+            {
+                addLensProfile( d_data->GetLensProfileName( settingsToProfile(d_data->m_LensSettings) ), i+1 );
+            }
+        }
+    }
+    d_data->m_ui->cbxLensProfile->blockSignals( true );
+    d_data->m_ui->cbxLensProfile->setCurrentText( d_data->GetLensProfileName(settingsToProfile(d_data->m_LensSettings )) );
+    d_data->m_ui->cbxLensProfile->blockSignals( false );
+
+
+    d_data->m_ui->cbxIrisTableTemplate->blockSignals(true);
+    d_data->m_ui->cbxIrisTableTemplate->clear();
+    d_data->m_ui->cbxIrisTableTemplate->blockSignals(true);
+
+    addLensIrisTemplate("Choose a Template",1);
+    for( int i = 0; i < d_data->m_LensIrisTemplates.length(); i++)
+    {
+        if( d_data->m_LensIrisTemplates.value(i).compatibleID.contains( d_data->m_LensSettings.chipID))
+        {
+            addLensIrisTemplate(d_data->m_LensIrisTemplates.value(i).lensName,i);
+        }
     }
 }
 
@@ -1576,8 +1736,11 @@ void LensDriverBox::onLensFilterSettingsChange(  QVector<int> values  )
  *****************************************************************************/
 void LensDriverBox::onCbxLensProfileChange( int index )
 {
+
+    index  = d_data->GetLensProfileByName(d_data->m_ui->cbxLensProfile->itemText(index) );
     if (index != LensProfileUnknown)
     {
+
         QVector<int> values;
 
         lens_settings_t settings = profileToSettings(static_cast<enum LensProfile>(index));
@@ -2031,6 +2194,35 @@ void LensDriverBox::onBtnLensIrisTableTransmitChanged( void )
    }
 
    emit LensIrisSetupChanged(tempIrisSettings);
+}
+
+/******************************************************************************
+ * LensDriverBox::onCbxLensIrisTemplateChanged
+ *****************************************************************************/
+void LensDriverBox::onCbxLensIrisTemplateChanged( int index )
+{
+    int i = 0;
+    QVector<double> tempFStops;
+    QVector<int> tempFStopPos;
+
+    while( d_data->m_LensIrisTemplates.value(i).lensName.compare( d_data->m_ui->cbxIrisTableTemplate->itemText(index)) != 0 && i < d_data->m_LensIrisTemplates.length() )
+    {
+        i++;
+    }
+
+    if( i < d_data->m_LensIrisTemplates.length() )
+    {
+
+        for( int a = 0; a < d_data->m_LensIrisTemplates.value(i).fStops.length(); a++ )
+        {
+            tempFStops.append( double( d_data->m_LensIrisTemplates.value(i).fStops.value(a) ) / 10);
+            tempFStopPos.append( d_data->m_LensIrisTemplates.value(i).fStopPos.value(a) );
+        }
+
+
+        d_data->fillTable(tempFStops,tempFStopPos);
+    }
+
 }
 
 

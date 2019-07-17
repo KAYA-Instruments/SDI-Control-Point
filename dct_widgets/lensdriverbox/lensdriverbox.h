@@ -46,6 +46,13 @@ typedef struct lens_iris_position_s {
     QVector<int> fStopsPos;
 } lens_iris_position_t;
 
+typedef struct lens_iris_position_template_s {
+    QVector<int> fStops;
+    QVector<int> fStopPos;
+    QString lensName;
+    QVector<int> compatibleID;
+} lens_iris_position_template_t;
+
 /******************************************************************************
  * Lens Driver Box Widget
  *****************************************************************************/
@@ -86,6 +93,7 @@ protected:
 
     void addLensProfile( QString name, int id );
     void addLensIrisAperture( QString name, int id );
+    void addLensIrisTemplate( QString name, int id );
 
 private:
     lens_settings_t profileToSettings( enum LensProfile profile );
@@ -162,6 +170,7 @@ private slots:
     void onBtnLensIrisAperturePlusChanged( void );
     void onBtnLensIrisApertureMinusChanged( void );
     void onBtnLensIrisTableTransmitChanged( void );
+    void onCbxLensIrisTemplateChanged( int index );
 
     void onSbxLensFilterPositionChanged(int pos);
     void onSbxLensFilterSpeedChanged(int speed);

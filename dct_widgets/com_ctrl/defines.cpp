@@ -598,31 +598,7 @@ QString GetSdiModeName( SdiMode mode )
     }
 }
 
-/******************************************************************************
- * GetLensProfile()
- *****************************************************************************/
-QString GetLensProfileName( LensProfile profile )
-{
-    switch ( profile )
-    {
-        case LensProfileUnknown:
-            return ( QString(LENS_PROFILE_NAME_UNKOWN) );
-        case LensProfileDctKit_iris_1:
-            return ( QString(LENS_PROFILE_NAME_DCT_KIT_IRIS_1) );
-        case LensProfileDctKit_iris_2:
-            return ( QString(LENS_PROFILE_NAME_DCT_KIT_IRIS_2) );
-        case LensProfileDctKit_focus_1:
-            return ( QString(LENS_PROFILE_NAME_DCT_KIT_FOCUS_1) );
-        case LensProfileDctKit_focus_2:
-            return ( QString(LENS_PROFILE_NAME_DCT_KIT_FOCUS_2) );
-        case LensProfileDctKit_focus_iris:
-            return ( QString(LENS_PROFILE_NAME_DCT_KIT_FOCUS_IRIS) );
-        case LensProfileICS:
-            return ( QString(LENS_PROFILE_NAME_I_CS) );
-        default:
-            return ( QString() );
-    }
-}
+
 
 /******************************************************************************
  * GetCsModeName()

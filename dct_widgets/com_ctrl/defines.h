@@ -166,8 +166,8 @@
 #define LENS_PROFILE_NAME_DCT_KIT_IRIS_2        ( "DCT Lens Driver Single Motor Right Iris" )
 #define LENS_PROFILE_NAME_DCT_KIT_FOCUS_1       ( "DCT Lens Driver Single Motor Left Focus" )
 #define LENS_PROFILE_NAME_DCT_KIT_FOCUS_2       ( "DCT Lens Driver Single Motor Right Focus" )
-#define LENS_PROFILE_NAME_DCT_KIT_FOCUS_IRIS    ( "DCT Lens Driver Dual Motor" )
-#define LENS_PROFILE_NAME_DCT_KIT_LM6HC_I       ( "DCT LDK Korwa LM6HC Iris" )
+#define LENS_PROFILE_NAME_DCT_KIT_FOCUS_IRIS    ( "DCT Lens Driver Dual Motor Focus Iris" )
+#define LENS_PROFILE_NAME_DCT_KIT_IRIS_FOCUS    ( "DCT Lens Driver Dual Motor Iris Focus" )
 #define LENS_PROFILE_NAME_I_CS                  ( "Computar i-CS Lens EG6Z0915TCS-MPWIR" )
 
 /******************************************************************************
@@ -425,7 +425,8 @@ enum LensProfile
     LensProfileDctKit_focus_1           = 3,
     LensProfileDctKit_focus_2           = 4,
     LensProfileDctKit_focus_iris        = 5,
-    LensProfileICS                      = 6,
+    LensProfileDctKit_iris_focus        = 6,
+    LensProfileICS                      = 7,
     LensProfileMax,
 };
 
