@@ -85,6 +85,7 @@ public:
 #define LENSDRIVER_SETTINGS_SECTION_NAME            ( "LENSDRIVER" )
 
 #define LENSDRIVER_SETTINGS_SETTINGS                ( "settings" )
+#define LENSDRIVER_SETTINGS_INVERT                  ( "invert" )
 
 #define LENSDRIVER_SETTINGS_FOCUS_POSITION          ( "focus_position" )
 #define LENSDRIVER_SETTINGS_ZOOM_POSITION           ( "zoom_position" )
@@ -94,6 +95,7 @@ public:
 #define LENSDRIVER_SETTINGS_FOCUS_SETTINGS          ( "focus_settings" )
 #define LENSDRIVER_SETTINGS_ZOOM_SETTINGS           ( "zoom_settings" )
 #define LENSDRIVER_SETTINGS_IRIS_SETTINGS           ( "iris_settings" )
+#define LENSDRIVER_SETTINGS_IRIS_TABLE              ( "iris_table" )
 #define LENSDRIVER_SETTINGS_FILTER_SETTINGS         ( "filter_settings" )
 
 const lens_settings_t settingsUnkown {
@@ -840,12 +842,14 @@ void LensDriverBox::loadSettings( QSettings & s )
 {
     s.beginGroup( LENSDRIVER_SETTINGS_SECTION_NAME );
     setLensProfile(s.value(LENSDRIVER_SETTINGS_SETTINGS).toString() );
+    setLensInvert(s.value(LENSDRIVER_SETTINGS_INVERT).toString() );
     setLensFocusPosition(s.value(LENSDRIVER_SETTINGS_FOCUS_POSITION).toInt());
     setLensFocusSettings(s.value(LENSDRIVER_SETTINGS_FOCUS_SETTINGS).toString());
     setLensZoomPosition(s.value(LENSDRIVER_SETTINGS_ZOOM_POSITION).toInt());
     setLensZoomSettings(s.value(LENSDRIVER_SETTINGS_ZOOM_SETTINGS).toString());
     setLensIrisPosition(s.value(LENSDRIVER_SETTINGS_IRIS_POSITION).toInt());
     setLensIrisSettings(s.value(LENSDRIVER_SETTINGS_IRIS_SETTINGS).toString());
+    setLensIrisTable(s.value(LENSDRIVER_SETTINGS_IRIS_TABLE).toString());
     setLensFilterPosition(s.value(LENSDRIVER_SETTINGS_FILTER_POSITION).toInt());
     setLensFilterSettings(s.value(LENSDRIVER_SETTINGS_FILTER_SETTINGS).toString());
     s.endGroup();
@@ -858,12 +862,14 @@ void LensDriverBox::saveSettings( QSettings & s )
 {
     s.beginGroup( LENSDRIVER_SETTINGS_SECTION_NAME );
     s.setValue(LENSDRIVER_SETTINGS_SETTINGS, LensProfile());
+    s.setValue(LENSDRIVER_SETTINGS_INVERT, LensInvert());
     s.setValue(LENSDRIVER_SETTINGS_FOCUS_POSITION, LensFocusPosition());
     s.setValue(LENSDRIVER_SETTINGS_FOCUS_SETTINGS, LensFocusSettings());
     s.setValue(LENSDRIVER_SETTINGS_ZOOM_POSITION, LensZoomPosition());
     s.setValue(LENSDRIVER_SETTINGS_ZOOM_SETTINGS, LensZoomSettings());
     s.setValue(LENSDRIVER_SETTINGS_IRIS_POSITION, LensIrisPosition());
     s.setValue(LENSDRIVER_SETTINGS_IRIS_SETTINGS, LensIrisSettings());
+    s.setValue(LENSDRIVER_SETTINGS_IRIS_TABLE, LensIrisTable());
     s.setValue(LENSDRIVER_SETTINGS_FILTER_POSITION, LensFilterPosition());
     s.setValue(LENSDRIVER_SETTINGS_FILTER_SETTINGS, LensFilterSettings());
     s.endGroup();
@@ -948,6 +954,24 @@ QString LensDriverBox::LensProfile() const
 }
 
 /******************************************************************************
+ * LensDriverBox::LensProfile
+ *****************************************************************************/
+QString LensDriverBox::LensInvert() const
+{
+    QString settings;
+
+    settings.append( QString("%1").arg(d_data->m_ui->cbxFocusInvertEnable->isChecked() ));
+    settings.append(" ");
+    settings.append( QString("%1").arg(d_data->m_ui->cbxZoomInvertEnable->isChecked() ));
+    settings.append(" ");
+    settings.append( QString("%1").arg(d_data->m_ui->cbxIrisInvertEnable->isChecked() ));
+    settings.append(" ");
+    settings.append( QString("%1").arg(d_data->m_ui->cbxFilterInvertEnable->isChecked() ));
+
+    return ( settings );
+}
+
+/******************************************************************************
  * LensDriverBox::LensFocusPosition
  *****************************************************************************/
 int LensDriverBox::LensFocusPosition() const
@@ -966,6 +990,10 @@ QString LensDriverBox::LensFocusSettings() const
     settings.append(d_data->m_ui->sbxFocusStepMode->cleanText() );
     settings.append(" ");
     settings.append(d_data->m_ui->sbxFocusTorque->cleanText() );
+    settings.append(" ");
+    settings.append( QString("%1").arg(d_data->m_ui->cbxFocusFineEnable->isChecked() ));
+
+
     return ( settings );
 }
 
@@ -1014,6 +1042,35 @@ QString LensDriverBox::LensIrisSettings() const
 }
 
 /******************************************************************************
+ * LensDriverBox::LensIrisTable
+ *****************************************************************************/
+QString LensDriverBox::LensIrisTable() const
+{
+    QString settings;
+    QVector<double> tempFstop;
+    QVector<int> tempIntFstop;
+    QVector<int> tempFstopPos;
+
+    d_data->getDataFromModel(tempFstop,tempFstopPos);
+    for( int i = 0; i < tempFstop.length(); i++ )
+    {
+        tempIntFstop.append( int(tempFstop.value(i) * 10) );
+    }
+    pairSort(tempIntFstop,tempFstopPos);
+
+    for( int i = 0; i < tempIntFstop.length(); i++)
+    {
+        settings.append(QString("%1").arg(tempIntFstop.value(i)) );
+        settings.append(" ");
+        settings.append(QString("%1").arg(tempFstopPos.value(i)) );
+        settings.append(" ");
+    }
+
+    return ( settings );
+}
+
+
+/******************************************************************************
  * LensDriverBox::LensFilterPosition
  *****************************************************************************/
 int LensDriverBox::LensFilterPosition() const
@@ -1049,7 +1106,7 @@ void LensDriverBox::setLensProfile( const QString mode )
 
         QVector<int> values;
 
-        lens_settings_t settings = profileToSettings(static_cast<enum LensProfile>(index));
+        lens_settings_t settings = profileToSettings(static_cast<enum LensProfile>(d_data->GetLensProfileByName(  mode )));
 
         values.append(settings.address);
         values.append(settings.chipID);
@@ -1066,6 +1123,51 @@ void LensDriverBox::setLensProfile( const QString mode )
         emit LensSettingsChanged( values );
     }
 }
+
+/******************************************************************************
+ * LensDriverBox::setLensInvert
+ *****************************************************************************/
+void LensDriverBox::setLensInvert( const QString settings )
+{
+    QStringList values;
+    values = settings.split(QRegularExpression("\\s+"));
+
+    int focusInvert = values.first().toInt();
+    values.removeFirst();
+    int zoomInvert = values.first().toInt();
+    values.removeFirst();
+    int irisInvert = values.first().toInt();
+    values.removeFirst();
+    int filterInvert = values.first().toInt();
+
+    QVector<int> invert;
+
+    invert.append(filterInvert);
+    invert.append(irisInvert);
+    invert.append(zoomInvert);
+    invert.append(focusInvert);
+
+    d_data->m_ui->cbxFocusInvertEnable->blockSignals(true);
+    d_data->m_ui->cbxFocusInvertEnable->setChecked( bool( focusInvert));
+    d_data->m_ui->cbxFocusInvertEnable->blockSignals(false);
+
+    d_data->m_ui->cbxZoomInvertEnable->blockSignals(true);
+    d_data->m_ui->cbxZoomInvertEnable->setChecked( bool( zoomInvert));
+    d_data->m_ui->cbxZoomInvertEnable->blockSignals(false);
+
+    d_data->m_ui->cbxIrisInvertEnable->blockSignals(true);
+    d_data->m_ui->cbxIrisInvertEnable->setChecked( bool( irisInvert));
+    d_data->m_ui->cbxIrisInvertEnable->blockSignals(false);
+
+    d_data->m_ui->cbxFilterInvertEnable->blockSignals(true);
+    d_data->m_ui->cbxFilterInvertEnable->setChecked( bool( filterInvert));
+    d_data->m_ui->cbxFilterInvertEnable->blockSignals(false);
+
+
+    emit LensInvertChanged( invert );
+
+}
+
 
 /******************************************************************************
  * LensDriverBox::setLensFocusPosition
@@ -1136,6 +1238,8 @@ void LensDriverBox::setLensFocusSettings( const QString settings )
         int stepMode = values.first().toInt();
         values.removeFirst();
         int torque = values.first().toInt();
+        values.removeFirst();
+        int fineFocus = values.first().toInt();
 
         d_data->m_ui->sbxFocusSpeed->blockSignals( true );
         d_data->m_ui->sbxFocusSpeed->setValue(speed);
@@ -1149,6 +1253,8 @@ void LensDriverBox::setLensFocusSettings( const QString settings )
         d_data->m_ui->sbxFocusTorque->setValue(torque);
         d_data->m_ui->sbxFocusTorque->blockSignals( false );
 
+
+
         QVector<int> valueVector;
 
         valueVector.append(speed);
@@ -1156,6 +1262,8 @@ void LensDriverBox::setLensFocusSettings( const QString settings )
         valueVector.append(torque);
 
         emit LensFocusSettingsChanged(valueVector);
+
+        d_data->m_ui->cbxFocusFineEnable->setChecked(bool(fineFocus));
 
 
 }
@@ -1230,6 +1338,37 @@ void LensDriverBox::setLensIrisSettings( const QString settings )
         valueVector.append(torque);
 
         emit LensIrisSettingsChanged(valueVector);
+
+
+}
+
+/******************************************************************************
+ * LensDriverBox::setLensIrisTable
+ *****************************************************************************/
+void LensDriverBox::setLensIrisTable( const QString settings )
+{
+        QStringList values;
+        values = settings.split(QRegularExpression("\\s+"));
+
+        QVector<double> fStops;
+        QVector<int> fStopPos;
+        QVector<int> tableSettings;
+
+        int maxElements = values.length()/2;
+
+        for( int i = 0; i < maxElements; i++)
+        {
+            fStops.append( ( values.first().toDouble() /10) );
+            tableSettings.append( values.first().toInt());
+            values.removeFirst();
+            fStopPos.append( values.first().toInt());
+            tableSettings.append( values.first().toInt());
+            values.removeFirst();
+        }
+
+        d_data->fillTable(fStops,fStopPos);
+
+        emit LensIrisSetupChanged(tableSettings);
 
 
 }
@@ -1895,16 +2034,19 @@ void LensDriverBox::onSbxLensFocusTorqueChanged( int torque )
 void LensDriverBox::onCbxLensFocusFineChanged( int enable)
 {
     setWaitCursor();
+
+    emit LensFocusFineChanged( static_cast<bool>(enable) );
+
     if( static_cast<bool>(enable) == true )
     {
 
         d_data->m_ui->sbxFocusPosition->setRange(0,1000);
         d_data->m_ui->sldFocusPosition->setRange(0,1000);
+        d_data->m_ui->sbxFocusPosition->setValue(d_data->m_ui->sbxFocusPosition->value() *10 );
 
     }
     else
     {
-
         d_data->m_ui->sbxFocusPosition->setValue(d_data->m_ui->sbxFocusPosition->value() /10 );
         d_data->m_ui->sbxFocusPosition->setRange(0,100);
         d_data->m_ui->sldFocusPosition->setRange(0,100);
@@ -1912,7 +2054,7 @@ void LensDriverBox::onCbxLensFocusFineChanged( int enable)
     }
 
 
-    emit LensFocusFineChanged( static_cast<bool>(enable) );
+
     setNormalCursor();
 }
 

@@ -65,22 +65,26 @@ public:
     ~LensDriverBox() Q_DECL_OVERRIDE;
 
     QString LensProfile() const;
+    QString LensInvert() const;
     int LensFocusPosition() const;
     QString LensFocusSettings() const;
     int LensZoomPosition() const;
     QString LensZoomSettings() const;
     int LensIrisPosition() const;
     QString LensIrisSettings() const;
+    QString LensIrisTable() const;
     int LensFilterPosition() const;
     QString LensFilterSettings() const;
 
     void setLensProfile( const QString mode );
+    void setLensInvert( const QString mode );
     void setLensFocusPosition ( int );
     void setLensFocusSettings( const QString settings );
     void setLensZoomPosition ( int );
     void setLensZoomSettings( const QString settings );
     void setLensIrisPosition ( int );
     void setLensIrisSettings( const QString settings );
+    void setLensIrisTable( const QString settings );
     void setLensFilterPosition ( int );
     void setLensFilterSettings( const QString settings );
 
