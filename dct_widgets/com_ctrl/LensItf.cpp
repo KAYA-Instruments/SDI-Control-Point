@@ -677,12 +677,14 @@ void LensItf::onLensFilterSettingsChange( QVector<int> values )
  *****************************************************************************/
 void LensItf::onSmallResyncRequest( void )
 {
+    GetLensInvert();
     GetLensFocusPosition();
     GetLensZoomPosition();
     GetLensIrisPosition();
     GetLensFilterPosition();
 
     GetLensFocusSettings();
+    GetLensFineFocus();
     GetLensZoomSettings();
     GetLensIrisSettings();
     GetLensFilterSettings();

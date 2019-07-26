@@ -128,7 +128,7 @@ const lens_settings_t settingsICS {
 
 const lens_settings_t settingsDctKit_iris_1 {
     /* .address =             */ 34,
-    /* .chipID =              */ 102,
+    /* .chipID =              */ 258,
     /* .controllerFeatures =  */ 1,
     /* .focusMotorNr =        */ 1,
     /* .zoomMotorNr =         */ 2,
@@ -142,7 +142,7 @@ const lens_settings_t settingsDctKit_iris_1 {
 
 const lens_settings_t settingsDctKit_iris_2 {
     /* .address =             */ 34,
-    /* .chipID =              */ 102,
+    /* .chipID =              */ 258,
     /* .controllerFeatures =  */ 2,
     /* .focusMotorNr =        */ 0,
     /* .zoomMotorNr =         */ 2,
@@ -156,7 +156,7 @@ const lens_settings_t settingsDctKit_iris_2 {
 
 const lens_settings_t settingsDctKit_focus_1 {
     /* .address =             */ 34,
-    /* .chipID =              */ 102,
+    /* .chipID =              */ 258,
     /* .controllerFeatures =  */ 1,
     /* .focusMotorNr =        */ 0,
     /* .zoomMotorNr =         */ 2,
@@ -170,7 +170,7 @@ const lens_settings_t settingsDctKit_focus_1 {
 
 const lens_settings_t settingsDctKit_focus_2 {
     /* .address =             */ 34,
-    /* .chipID =              */ 102,
+    /* .chipID =              */ 258,
     /* .controllerFeatures =  */ 2,
     /* .focusMotorNr =        */ 1,
     /* .zoomMotorNr =         */ 2,
@@ -184,7 +184,7 @@ const lens_settings_t settingsDctKit_focus_2 {
 
 const lens_settings_t settingsDctKit_focus_iris {
     /* .address =             */ 34,
-    /* .chipID =              */ 102,
+    /* .chipID =              */ 258,
     /* .controllerFeatures =  */ 3,
     /* .focusMotorNr =        */ 0,
     /* .zoomMotorNr =         */ 2,
@@ -198,7 +198,7 @@ const lens_settings_t settingsDctKit_focus_iris {
 
 const lens_settings_t settingsDctKit_iris_focus {
     /* .address =             */ 34,
-    /* .chipID =              */ 102,
+    /* .chipID =              */ 258,
     /* .controllerFeatures =  */ 3,
     /* .focusMotorNr =        */ 1,
     /* .zoomMotorNr =         */ 2,
@@ -230,14 +230,14 @@ const lens_iris_position_template_t computarM0824MPW2 {
     /* .fstops =            */ {160, 80, 40, 24, 0, 0, 0, 0, 0},
     /* .fstopPos =          */ {94, 60, 31, 0, 0, 0, 0, 0, 0},
     /* .lensName =          */ "Computar M0824-MPW2",
-    /* .compatibleID =      */ {102}
+    /* .compatibleID =      */ {258}
 };
 
 const lens_iris_position_template_t computarV0828MPY {
     /* .fstops =            */ {160, 110, 80, 56, 40, 28, 0, 0, 0},
     /* .fstopPos =          */ {94, 78, 63, 45, 28, 0, 0, 0, 0},
     /* .lensName =          */ "Computar V0828-MPY",
-    /* .compatibleID =      */ {102}
+    /* .compatibleID =      */ {258}
 };
 
 const lens_iris_position_template_t computarEG6Z0915TCSMPWIR {
@@ -246,6 +246,21 @@ const lens_iris_position_template_t computarEG6Z0915TCSMPWIR {
     /* .lensName =          */ "Computar i-CS Lens EG6Z0915TCS-MPWIR",
     /* .compatibleID =      */ {13}
 };
+
+const lens_iris_position_template_t kowaLM6HC {
+    /* .fstops =            */ {110, 80, 56, 40, 24, 18, 0, 0 , 0},
+    /* .fstopPos =          */ {100, 76, 59, 38, 24, 1, 0, 0, 0},
+    /* .lensName =          */ "Kowa LM6HC",
+    /* .compatibleID =      */ {258}
+};
+
+const lens_iris_position_template_t kowaLM16JC10M {
+    /* .fstops =            */ {160, 80, 56, 40, 28, 20, 18, 0 , 0},
+    /* .fstopPos =          */ {100, 88, 77, 63, 42, 21, 0, 0, 0},
+    /* .lensName =          */ "Kowa LM16JC10M",
+    /* .compatibleID =      */ {258}
+};
+
 
 
 
@@ -265,7 +280,7 @@ static bool pairSort( QVector<int> &a, QVector<int> &b)
         return false;
     }
 
-    int size  = a.length();
+    int size  = IRIS_APT_TABLE_MAX_NO_COLUMNS;
 
     QList<QPair<int,int>> pointList;
     for ( int  i= 0; i < a.length(); i++ )
@@ -460,7 +475,7 @@ public:
         initDataModel();
         m_ui->tblIrisAptPosition->setItemDelegate( m_delegate );
         m_ui->tblIrisAptPosition->horizontalHeader()->setSectionResizeMode( QHeaderView::Stretch );
-        m_ui->tblIrisAptPosition->setSelectionBehavior( QAbstractItemView::SelectItems );
+        m_ui->tblIrisAptPosition->setSelectionBehavior( QAbstractItemView::SelectColumns );
         m_ui->tblIrisAptPosition->clearFocus();
         setDataModel();
 
@@ -739,11 +754,14 @@ LensDriverBox::LensDriverBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->cbxIrisTableTemplate->setVisible(false);
     d_data->m_ui->lblIrisTableUseTemplate->setVisible(false);
     d_data->m_ui->btnIrisTransmitTable->setVisible(false);
+    d_data->m_ui->btnDeleteColumn->setVisible(false);
 
 
     d_data->m_LensIrisTemplates.append( computarM0824MPW2 );
     d_data->m_LensIrisTemplates.append( computarV0828MPY );
     d_data->m_LensIrisTemplates.append( computarEG6Z0915TCSMPWIR );
+    d_data->m_LensIrisTemplates.append( kowaLM6HC );
+    d_data->m_LensIrisTemplates.append( kowaLM16JC10M );
 
     // fill settings combo box
     for ( int i = LensProfileFirst; i < LensProfileMax; i++ )
@@ -799,6 +817,7 @@ LensDriverBox::LensDriverBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->btnIrisTransmitTable,SIGNAL(clicked()), this, SLOT( onBtnLensIrisTableTransmitChanged( void) ));
     connect( this, SIGNAL(LensIrisSetupChanged( QVector<int> )), this, SLOT( onLensIrisSetupChange( QVector<int> ) ));
     connect( d_data->m_ui->cbxIrisTableTemplate, SIGNAL( currentIndexChanged(int)), this, SLOT( onCbxLensIrisTemplateChanged( int )) );
+    connect( d_data->m_ui->btnDeleteColumn, SIGNAL( clicked()), this, SLOT ( onBtnLensIrisTableRemoveColumnChanged(void)));
 
 
     // Filter Elements
@@ -1434,13 +1453,7 @@ int LensDriverBox::showLensProfilBoxes(enum LensProfile currentProfile)
     d_data->m_ui->gbxIrisControl->setVisible(irisAvailable);
     d_data->m_ui->gbxFilterControl->setVisible(filterAvailable);
 
-    enableLensMotorSettings(LensFeatuesFocus,lensfeatures.focusMotorFeatures);
-    enableLensMotorSettings(LensFeatuesZoom,lensfeatures.zoomMotorFeatures);
-    enableLensMotorSettings(LensFeatuesIris,lensfeatures.irisMotorFeatures);
-    enableLensMotorSettings(LensFeatuesFilter,lensfeatures.filterMotorFeatures);
-
-
-   return res;
+    return res;
 }
 
 /******************************************************************************
@@ -1461,30 +1474,47 @@ int LensDriverBox::enableLensMotorSettings(enum LensFeatues features,int motorSe
     {
         case static_cast<int>( LensFeatuesFocus):
         {
-            d_data->m_ui->sbxFocusSpeed->setEnabled(speedEnable);
-            d_data->m_ui->sbxFocusStepMode->setEnabled(stepModeEnable);
-            d_data->m_ui->sbxFocusTorque->setEnabled(torqueEnable);
+            d_data->m_ui->sbxFocusSpeed->setVisible(speedEnable);
+            d_data->m_ui->sbxFocusStepMode->setVisible(stepModeEnable);
+            d_data->m_ui->sbxFocusTorque->setVisible(torqueEnable);
+
+            d_data->m_ui->lblFocusSpeed->setVisible(speedEnable);
+            d_data->m_ui->lblFocusStepMode->setVisible(stepModeEnable);
+            d_data->m_ui->lblFocusTorque->setVisible(torqueEnable);
+
             break;
         }
         case static_cast<int>( LensFeatuesZoom ):
         {
-            d_data->m_ui->sbxZoomSpeed->setEnabled(speedEnable);
-            d_data->m_ui->sbxZoomStepMode->setEnabled(stepModeEnable);
-            d_data->m_ui->sbxZoomTorque->setEnabled(torqueEnable);
+            d_data->m_ui->sbxZoomSpeed->setVisible(speedEnable);
+            d_data->m_ui->sbxZoomStepMode->setVisible(stepModeEnable);
+            d_data->m_ui->sbxZoomTorque->setVisible(torqueEnable);
+
+            d_data->m_ui->lblZoomSpeed->setVisible(speedEnable);
+            d_data->m_ui->lblZoomStepMode->setVisible(stepModeEnable);
+            d_data->m_ui->lblZoomTorque->setVisible(torqueEnable);
             break;
         }
         case static_cast<int>( LensFeatuesIris ):
         {
-            d_data->m_ui->sbxIrisSpeed->setEnabled(speedEnable);
-            d_data->m_ui->sbxIrisStepMode->setEnabled(stepModeEnable);
-            d_data->m_ui->sbxIrisTorque->setEnabled(torqueEnable);
+            d_data->m_ui->sbxIrisSpeed->setVisible(speedEnable);
+            d_data->m_ui->sbxIrisStepMode->setVisible(stepModeEnable);
+            d_data->m_ui->sbxIrisTorque->setVisible(torqueEnable);
+
+            d_data->m_ui->lblIrisSpeed->setVisible(speedEnable);
+            d_data->m_ui->lblIrisStepMode->setVisible(stepModeEnable);
+            d_data->m_ui->lblIrisTorque->setVisible(torqueEnable);
             break;
         }
         case static_cast<int>( LensFeatuesFilter ):
         {
-            d_data->m_ui->sbxFilterSpeed->setEnabled(speedEnable);
-            d_data->m_ui->sbxFilterStepMode->setEnabled(stepModeEnable);
-            d_data->m_ui->sbxFilterTorque->setEnabled(torqueEnable);
+            d_data->m_ui->sbxFilterSpeed->setVisible(speedEnable);
+            d_data->m_ui->sbxFilterStepMode->setVisible(stepModeEnable);
+            d_data->m_ui->sbxFilterTorque->setVisible(torqueEnable);
+
+            d_data->m_ui->lblFilterSpeed->setVisible(speedEnable);
+            d_data->m_ui->lblFilterStepMode->setVisible(stepModeEnable);
+            d_data->m_ui->lblFilterTorque->setVisible(torqueEnable);
             break;
         }
     }
@@ -1553,13 +1583,13 @@ void LensDriverBox::onLensActiveChange( bool active )
     d_data->m_ui->cbxLensProfile->clear();
     d_data->m_ui->cbxLensProfile->blockSignals(true);
 
-    if( active == true && ( d_data->m_LensSettings.chipID >= 100) )
+    if( active == true && ( d_data->m_LensSettings.chipID >= 256) )
     {
         for ( int i = LensProfileFirst; i < LensProfileMax; i++ )
         {
-            // Add only Devices with normal register interface --> chip Id < 100
+            // Add only Devices with normal register interface --> chip Id < 256
             lens_settings_t tempSettings = profileToSettings(static_cast< enum LensProfile>( i) );
-            if( ( tempSettings.chipID > 100 ) && ( tempSettings.controllerFeatures == d_data->m_LensSettings.controllerFeatures ) )
+            if( ( tempSettings.chipID > 256 ) && ( tempSettings.controllerFeatures == d_data->m_LensSettings.controllerFeatures ) )
             {
                 addLensProfile( d_data->GetLensProfileName( static_cast<enum LensProfile>(i) ), i );
             }
@@ -1570,16 +1600,16 @@ void LensDriverBox::onLensActiveChange( bool active )
     {
         for ( int i = LensProfileFirst; i < LensProfileMax; i++ )
         {
-            // Add only Devices with normal register interface --> chip Id < 100
+            // Add only Devices with normal register interface --> chip Id < 256
             lens_settings_t tempSettings = profileToSettings(static_cast< enum LensProfile>( i) );
-            if( tempSettings.chipID < 100)
+            if( tempSettings.chipID < 256)
             {
                 addLensProfile( d_data->GetLensProfileName( static_cast<enum LensProfile>(i) ), i );
             }
-            if( active == false)
-            {
-                addLensProfile( d_data->GetLensProfileName( settingsToProfile(d_data->m_LensSettings) ), i+1 );
-            }
+        }
+        if( active == false)
+        {
+            addLensProfile( d_data->GetLensProfileName( settingsToProfile(d_data->m_LensSettings) ), d_data->m_ui->cbxLensProfile->maxCount() +1 );
         }
     }
     d_data->m_ui->cbxLensProfile->blockSignals( true );
@@ -1923,37 +1953,14 @@ void LensDriverBox::onBtnLensActiveChange( void )
 void LensDriverBox::onCbxLensEnableAdvancedSettings(int state)
 {
     bool check = static_cast<bool>(state);
-    d_data->m_ui->lblFocusSpeed->setVisible(check);
-    d_data->m_ui->lblFocusStepMode->setVisible(check);
-    d_data->m_ui->lblFocusTorque->setVisible(check);
 
-    d_data->m_ui->sbxFocusSpeed->setVisible(check);
-    d_data->m_ui->sbxFocusStepMode->setVisible(check);
-    d_data->m_ui->sbxFocusTorque->setVisible(check);
 
-    d_data->m_ui->lblZoomSpeed->setVisible(check);
-    d_data->m_ui->lblZoomStepMode->setVisible(check);
-    d_data->m_ui->lblZoomTorque->setVisible(check);
+    enableLensMotorSettings(LensFeatuesFocus,( state ? d_data->m_LensSettings.focusMotorFeatures : false ) );
+    enableLensMotorSettings(LensFeatuesZoom,( state ? d_data->m_LensSettings.zoomMotorFeatures : false ) );
+    enableLensMotorSettings(LensFeatuesIris,( state ? d_data->m_LensSettings.irisMotorFeatures : false ));
+    enableLensMotorSettings(LensFeatuesFilter,( state ? d_data->m_LensSettings.filterMotorFeatures : false ));
 
-    d_data->m_ui->sbxZoomSpeed->setVisible(check);
-    d_data->m_ui->sbxZoomStepMode->setVisible(check);
-    d_data->m_ui->sbxZoomTorque->setVisible(check);
 
-    d_data->m_ui->lblIrisSpeed->setVisible(check);
-    d_data->m_ui->lblIrisStepMode->setVisible(check);
-    d_data->m_ui->lblIrisTorque->setVisible(check);
-
-    d_data->m_ui->sbxIrisSpeed->setVisible(check);
-    d_data->m_ui->sbxIrisStepMode->setVisible(check);
-    d_data->m_ui->sbxIrisTorque->setVisible(check);
-
-    d_data->m_ui->lblFilterSpeed->setVisible(check);
-    d_data->m_ui->lblFilterStepMode->setVisible(check);
-    d_data->m_ui->lblFilterTorque->setVisible(check);
-
-    d_data->m_ui->sbxFilterSpeed->setVisible(check);
-    d_data->m_ui->sbxFilterStepMode->setVisible(check);
-    d_data->m_ui->sbxFilterTorque->setVisible(check);
 
     d_data->m_ui->cbxFocusFineEnable->setVisible(check);
     d_data->m_ui->cbxFocusInvertEnable->setVisible(check);
@@ -1966,6 +1973,7 @@ void LensDriverBox::onCbxLensEnableAdvancedSettings(int state)
     d_data->m_ui->cbxIrisTableTemplate->setVisible(check);
     d_data->m_ui->lblIrisTableUseTemplate->setVisible(check);
     d_data->m_ui->btnIrisTransmitTable->setVisible(check);
+    d_data->m_ui->btnDeleteColumn->setVisible(check);
 }
 
 /******************************************************************************
@@ -2336,6 +2344,55 @@ void LensDriverBox::onBtnLensIrisTableTransmitChanged( void )
    }
 
    emit LensIrisSetupChanged(tempIrisSettings);
+}
+
+/******************************************************************************
+ * LensDriverBox::onBtnLensIrisTableTransmitChanged
+ *****************************************************************************/
+void LensDriverBox::onBtnLensIrisTableRemoveColumnChanged( void )
+{
+    QItemSelectionModel * select = d_data->m_ui->tblIrisAptPosition->selectionModel();
+
+    QVector<int> tempFstopPos,tempIntFstop;
+    QVector<double> tempFstop;
+
+    d_data->m_ui->btnDeleteColumn->clearFocus();
+
+    if ( select->hasSelection() )
+    {
+        // Get list of selected rows
+        QModelIndexList list = select->selectedColumns();
+        QModelIndexList::ConstIterator listIterator = list.constEnd();
+
+        // Remove all rows in the list starting with the last row
+        while ( listIterator != list.constBegin() )
+        {
+            --listIterator;     // Decrement first because constEnd() points to the element behind the last list entry
+            d_data->m_ui->tblIrisAptPosition->model()->removeColumn( (*listIterator).column() );
+        }
+
+
+        //Sort and refill table
+        d_data->getDataFromModel(tempFstop,tempFstopPos);
+
+        for(int i = 0; i< tempFstop.size(); i++)
+        {
+            tempIntFstop.append( int( tempFstop.value(i) * 10 ) );
+        }
+
+        tempFstop.clear();
+        pairSort(tempIntFstop,tempFstopPos);
+
+        for( int i = 0; i < tempIntFstop.size(); i++ )
+        {
+            tempFstop.append( double( tempIntFstop.value(i) ) / 10);
+        }
+
+        d_data->fillTable(tempFstop,d_data->m_LensIrisTable.fStopsPos);
+
+
+
+    }
 }
 
 /******************************************************************************

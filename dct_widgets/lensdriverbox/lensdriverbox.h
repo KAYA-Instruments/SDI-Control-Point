@@ -174,6 +174,7 @@ private slots:
     void onBtnLensIrisAperturePlusChanged( void );
     void onBtnLensIrisApertureMinusChanged( void );
     void onBtnLensIrisTableTransmitChanged( void );
+    void onBtnLensIrisTableRemoveColumnChanged( void );
     void onCbxLensIrisTemplateChanged( int index );
 
     void onSbxLensFilterPositionChanged(int pos);
