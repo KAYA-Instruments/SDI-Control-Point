@@ -29,6 +29,8 @@
 #include <QItemDelegate>
 #include <QStyledItemDelegate>
 #include <QTextEdit>
+#include <QFileInfo>
+#include <QDir>
 
 #include "lensdriverbox.h"
 #include "ui_lensdriverbox.h"
@@ -97,6 +99,15 @@ public:
 #define LENSDRIVER_SETTINGS_IRIS_SETTINGS           ( "iris_settings" )
 #define LENSDRIVER_SETTINGS_IRIS_TABLE              ( "iris_table" )
 #define LENSDRIVER_SETTINGS_FILTER_SETTINGS         ( "filter_settings" )
+
+// Defines for the Lens Drive Iris Table Templates
+#define LENSDRIVER_LENS_TEMPLATES_SECTION_NAME      ( "LENS_DRIVER_IRIS_TEMPLATES")
+#define LENSDRIVER_LENS_TEMPLATES_NR_OF_TEMPLATES   ( "number_of_templates")
+#define LENSDRIVER_LENS_TEMPLATE                    ( "lens_template_")
+#define LENSDRIVER_LENS_FSTOP                       ( "fStops")
+#define LENSDRIVER_LENS_FSTOP_POS                   ( "fStop_pos")
+#define LENSDRIVER_LENS_COMPATIBLE                  ( "compatible_drive_device")
+#define LENSDRIVER_LENS_NAME                        ( "lens_name")
 
 const lens_settings_t settingsUnkown {
     /* .address =             */ 0,
@@ -315,11 +326,26 @@ static bool pairSort( QVector<int> &a, QVector<int> &b)
             b.append(0);
         }
     }
+    else
+    {
+        if( pointList.length() > size )
+        {
+            for(int i = ( pointList.length() - size  ); i > 0; i--)
+            {
+                a.removeLast();
+                b.removeLast();
+            }
+        }
+    }
 
 
 
     return true;
 }
+
+
+
+
 
 /******************************************************************************
  * Delegate
@@ -640,6 +666,116 @@ public:
         return LensProfileUnknown;
     }
 
+    /******************************************************************************
+     * getLensesFromFile( lens_iris_position_template_t )
+     *****************************************************************************/
+    static bool getLensesFromFile( QVector<lens_iris_position_template_t>* table )
+    {
+        QString m_filename = QDir::fromNativeSeparators(  QDir::currentPath() + QDir::separator() + "tools" + QDir::separator() + "supported_lenses" + QDir::separator() + "Supported_Lenses.txt");
+
+        QFileInfo check_file( m_filename );
+
+        lens_iris_position_template_t temp_template;
+        QString temp_fstops;
+        QString temp_fstop_pos;
+
+        if ( check_file.exists() && check_file.isFile() )
+        {
+
+            // Open settings
+            QSettings settings( m_filename, QSettings::IniFormat );
+
+            // Load the device name and platform from the settings file
+            settings.beginGroup( LENSDRIVER_LENS_TEMPLATES_SECTION_NAME );
+            QString templates_nr = settings.value( LENSDRIVER_LENS_TEMPLATES_NR_OF_TEMPLATES ).toString();
+            settings.endGroup();
+
+            for(int i = 0; i < templates_nr.toInt(); i++)
+            {
+                settings.beginGroup( QString("%1%2").arg(LENSDRIVER_LENS_TEMPLATE).arg(i+1) );
+
+                temp_template.lensName = settings.value( LENSDRIVER_LENS_NAME ).toString();
+                temp_template.compatibleID.append( settings.value( LENSDRIVER_LENS_COMPATIBLE ).toInt() );
+
+                temp_fstops = settings.value( LENSDRIVER_LENS_FSTOP ).toString();
+                temp_fstop_pos = settings.value( LENSDRIVER_LENS_FSTOP_POS ).toString();
+
+
+               QStringList temp_fstop_list = temp_fstops.split(QRegularExpression("\\s+"));
+               QStringList temp_fstop_pos_list = temp_fstop_pos.split(QRegularExpression("\\s+"));
+
+               for( int a = 0; a < temp_fstop_list.length(); a++ )
+               {
+                   temp_template.fStops.append(temp_fstop_list.value(a).toInt());
+                   temp_template.fStopPos.append(temp_fstop_pos_list.value(a).toInt());
+               }
+
+               pairSort(temp_template.fStops,temp_template.fStopPos);
+
+               settings.endGroup();
+               table->append(temp_template);
+
+               temp_template.fStops.clear();
+               temp_template.fStopPos.clear();
+               temp_template.compatibleID.clear();
+               temp_template.lensName.clear();
+            }
+
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+    }
+
+    /******************************************************************************
+     * setLensesToFile( lens_iris_position_template_t )
+     *****************************************************************************/
+    static bool setLensesToFile( QVector<lens_iris_position_template_t> table )
+    {
+         QString m_filename = "SupportedLenses.txt";
+
+         QString temp_fstops;
+         QString temp_fstopPos;
+
+         // Open settings file and make sure it is clean
+         QSettings settings( m_filename, QSettings::IniFormat );
+         settings.clear();
+
+         // Write the device name and platform into the settings file
+         settings.beginGroup( LENSDRIVER_LENS_TEMPLATES_SECTION_NAME );
+         settings.setValue( LENSDRIVER_LENS_TEMPLATES_NR_OF_TEMPLATES, table.length() );
+         settings.endGroup();
+
+         for(int i = 0; i < table.length(); i++)
+         {
+             settings.beginGroup( QString("%1%2").arg(LENSDRIVER_LENS_TEMPLATE).arg(i+1) );
+
+             settings.setValue( LENSDRIVER_LENS_NAME, table.value(i).lensName );
+             settings.setValue( LENSDRIVER_LENS_COMPATIBLE, table.value(i).compatibleID.first() );
+
+             for( int a = 0; a < table.value(i).fStops.length(); a++ )
+             {
+                 temp_fstops.append(QString("%1 ").arg(table.value(i).fStops.value(a)) );
+                 temp_fstopPos.append(QString("%1 ").arg(table.value(i).fStopPos.value(a)) );
+             }
+
+            settings.setValue( LENSDRIVER_LENS_FSTOP, temp_fstops );
+            settings.setValue( LENSDRIVER_LENS_FSTOP_POS, temp_fstopPos );
+
+            temp_fstops.clear();
+            temp_fstopPos.clear();
+
+            settings.endGroup();
+
+         }
+
+         return true;
+
+    }
+
     Ui::UI_LensDriverBox *  m_ui;           /**< ui handle */
     int                     m_cntEvents;    /**< ignore move-events if slider moving */
     int                     m_maxEvents;    /**< number of ignored move-events */
@@ -757,11 +893,16 @@ LensDriverBox::LensDriverBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->btnDeleteColumn->setVisible(false);
 
 
-    d_data->m_LensIrisTemplates.append( computarM0824MPW2 );
-    d_data->m_LensIrisTemplates.append( computarV0828MPY );
-    d_data->m_LensIrisTemplates.append( computarEG6Z0915TCSMPWIR );
-    d_data->m_LensIrisTemplates.append( kowaLM6HC );
-    d_data->m_LensIrisTemplates.append( kowaLM16JC10M );
+    if( ! d_data->getLensesFromFile(&d_data->m_LensIrisTemplates) )
+    {
+        d_data->m_LensIrisTemplates.append( computarM0824MPW2 );
+        d_data->m_LensIrisTemplates.append( computarV0828MPY );
+        d_data->m_LensIrisTemplates.append( computarEG6Z0915TCSMPWIR );
+        d_data->m_LensIrisTemplates.append( kowaLM6HC );
+        d_data->m_LensIrisTemplates.append( kowaLM16JC10M );
+
+
+    }
 
     // fill settings combo box
     for ( int i = LensProfileFirst; i < LensProfileMax; i++ )

@@ -4,14 +4,21 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
+Version **1.1.15** - 02.08.2019
+
+* Added new tab for the lens drive. The new features ar available for the Atom One and the Atom 4k mini cameras.
+* Added lens drive Inteface and UI elements, to configure a lens drive.
+* 
+* Updated Handbook
+
+## Older Releases:
+
 Version **1.1.14** - 08.07.2019
 
 * Added new UI elements to setup the audio gain from the inout tab.
 * Disable genlock controls when genlock is in master mode.
 * Replaced functions which are deprecated in Qt 5.13 to compile without warnings.
 * Fixed a bug where the genlock offset would be changed by two lines instead of one when the increase or decrease button was pressed. This was due to the auto repeat threshold of the spin box being to short.
-
-## Older Releases:
 
 Version **1.1.13** - 17.06.2019
 

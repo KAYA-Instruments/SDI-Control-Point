@@ -1557,14 +1557,14 @@ void MainWindow::onLoadSettingsClicked()
 }
 
 /******************************************************************************
- * MainWindow::onSaveSettingsClicked
+ * MainWindow::onClicked
  *****************************************************************************/
 void MainWindow::onSaveSettingsClicked()
 {
     if ( m_dev )
     {
         QApplication::setOverrideCursor( Qt::WaitCursor );
-        emit SaveSettings();
+        emit (SaveSettings());
         QApplication::setOverrideCursor( Qt::ArrowCursor );
     }
 }
