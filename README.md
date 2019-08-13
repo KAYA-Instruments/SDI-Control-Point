@@ -65,7 +65,7 @@ To make the plugins available in the integrated designer, the files need to be c
 >**Working directory:** %{buildDir}
 
 ## Open the Project
-Open the application project file "application.pro" in the "application" folder using the "Open Project" dialog from the Qt Designers welcome tab. After configuring the project with the kit needed by your operating system (MinGW 5.3 for Windows, GCC for Linux) open the "Project" tab for the "application" project and open the "Build" settings. Click "Add Build Step", select "Make" and enter "install" as the "Make arguments". This will ensure that additional files placed in the "application/tools" folder which are needed to run the software are copied to the build folder during the build process. Keep in mind that you will have to add this additional build step for every build target separately (e.g. release and debug).
+Open the application project file "application.pro" in the "application" folder using the "Open Project" dialog from the Qt Designers welcome tab. After configuring the project with the kit needed by your operating system (MinGW 5.3 for Windows, GCC for Linux) open the "Project" tab for the "application" project and open the "Build" settings. Click "Add Build Step", select "Make" and enter "install" as the "Make arguments". This will ensure that additional files placed in the "application/tools_and_condigs" folder which are needed to run the software are copied to the build folder during the build process. Keep in mind that you will have to add this additional build step for every build target separately (e.g. release and debug).
 
 To test whether the import of the custom widgets to the designer has worked, open "mainwindow.ui" in the "Forms" folder. If you see the groups "DCT Basic Widgets" and "DCT Dialog Widgets" in the widget list on the left side of the designer window, the import was successful. You can now start making changes to the software. Please not that you directly edit the widgets from the "application" project, you do not need to use the "dct_widgets" project. As noted above, recompiling the "dct_widgets" project is only needed to add new widgets to the designer.
 
@@ -100,7 +100,7 @@ How to crosscompile a QT5 project using MXE:
    ```# <mxe root>/usr/i686-w64-mingw32.static/qt5/bin/qmake```
 6. Build the application:  
    ```# make```
-7. The resulting executable will be placed in ```<project folder>/application/release/ProVideo.exe```. If you want to deploy the executable, do not forget to place the file ```<project folder>/application/tools/flashloader.exe``` in a folder named ```tools``` in the same folder as the executable, otherwise firmware updates will not be possible.
+7. The resulting executable will be placed in ```<project folder>/application/release/ProVideo.exe```. If you want to deploy the executable, do not forget to place the files from the folder ```<project folder>/application/tools_and_configs/``` in a folder named ```tools_and_configs``` in the same folder as the executable, otherwise firmware updates will not be possible and some configs will be missing.
 
 The above steps will build a Win32 static executable. To use dynamic libraries or generate a 64 bit executable you have to use a different MXE_TARGET in step 2:
 
