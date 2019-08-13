@@ -49,6 +49,14 @@
 #define CMD_SET_LENS_ACTIVE_TMO                 ( 15000 )
 
 /******************************************************************************
+ * @brief command "lens_driver_invert"
+ *****************************************************************************/
+#define CMD_GET_LENS_INVERT                     ( "lens_driver_invert\n" )
+#define CMD_SET_LENS_INVERT                     ( "lens_driver_invert %i %i %i %i\n" )
+#define CMD_SYNC_LENS_INVERT                    ( "lens_driver_invert " )
+#define CMD_GET_LENS_INVERT_NO_PARAMS           ( 4 )
+
+/******************************************************************************
  * @brief command "lens_driver_focus_position"
  *****************************************************************************/
 #define CMD_GET_LENS_FOCUS_POSITION             ( "lens_driver_focus_position\n" )
@@ -62,6 +70,13 @@
 #define CMD_SET_LENS_FOCUS_SETTINGS             ( "lens_driver_focus_motor_settings %i %i %i \n" )
 #define CMD_SYNC_LENS_FOCUS_SETTINGS            ( "lens_driver_focus_motor_settings " )
 #define CMD_GET_LENS_FOCUS_SETTINGS_NO_PARAMS   ( 3 )
+
+/******************************************************************************
+ * @brief command "lens_driver_focus_position"
+ *****************************************************************************/
+#define CMD_GET_LENS_FINE_FOCUS                 ( "lens_driver_fine_focus\n" )
+#define CMD_SET_LENS_FINE_FOCUS                 ( "lens_driver_fine_focus %i\n" )
+#define CMD_SYNC_LENS_FINE_FOCUS                ( "lens_driver_fine_focus " )
 
 /******************************************************************************
  * @brief command "lens_driver_zoom_position"
@@ -92,6 +107,21 @@
 #define CMD_SET_LENS_IRIS_SETTINGS             ( "lens_driver_iris_motor_settings %i %i %i \n" )
 #define CMD_SYNC_LENS_IRIS_SETTINGS            ( "lens_driver_iris_motor_settings " )
 #define CMD_GET_LENS_IRIS_SETTINGS_NO_PARAMS   ( 3 )
+
+/******************************************************************************
+ * @brief command "lens_driver_iris_aperture"
+ *****************************************************************************/
+#define CMD_GET_LENS_IRIS_APERTURE              ( "lens_driver_iris_apt\n" )
+#define CMD_SET_LENS_IRIS_APERTURE              ( "lens_driver_iris_apt %i\n" )
+#define CMD_SYNC_LENS_IRIS_APERTURE             ( "lens_driver_iris_apt " )
+
+/******************************************************************************
+ * @brief command "lens_driver_iris_setup"
+ *****************************************************************************/
+#define CMD_GET_LENS_IRIS_SETUP                  ( "lens_driver_iris_setup\n" )
+#define CMD_SET_LENS_IRIS_SETUP                  ( "lens_driver_iris_setup %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i\n" )
+#define CMD_SYNC_LENS_IRIS_SETUP                 ( "lens_driver_iris_setup " )
+#define CMD_GET_LENS_IRIS_SETUP_NO_PARAMS        ( 18 )
 
 /******************************************************************************
  * @brief command "lens_driver_filter_position"
@@ -236,6 +266,71 @@ static int set_lens_active
     return ( set_param_int_X_with_tmo( channel, CMD_SET_LENS_ACTIVE, CMD_SET_LENS_ACTIVE_TMO, INT( value ) ) );
 }
 
+/******************************************************************************
+ * get_lens_invert
+ *****************************************************************************/
+static int get_lens_invert
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    int const                   no,
+    int32_t * const             values
+)
+{
+    (void) ctx;
+
+    int res;
+
+    // parameter check
+    if ( !values )
+    {
+        return ( -EINVAL );
+    }
+
+    // return -EFAULT if number of parameter not matching
+    else if ( no != CMD_GET_LENS_INVERT_NO_PARAMS )
+    {
+        return ( -EFAULT );
+    }
+
+    // command call to get 4 parameters from provideo system
+    res = get_param_int_X( channel, 2,
+            CMD_GET_LENS_INVERT, CMD_SYNC_LENS_INVERT, CMD_SET_LENS_INVERT,
+            &values[0], &values[1], &values[2], &values[3]);
+
+    // return error code
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
+    return ( 0 );
+}
+
+/******************************************************************************
+ * set_lens_settings
+ *****************************************************************************/
+static int set_lens_invert
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    int const                   no,
+    int32_t * const             values
+)
+{
+    (void) ctx;
+
+    if ( no != CMD_GET_LENS_INVERT_NO_PARAMS )
+    {
+        // return -EFAULT if number of parameter not matching
+        return ( -EFAULT );
+    }
+
+    return ( set_param_int_X( channel, CMD_SET_LENS_INVERT,
+                INT( values[0] ), INT( values[1] ), INT( values[2] ),
+                INT( values[3] ) ) );
+}
+
 
 /******************************************************************************
  * get_lens_focus_position
@@ -285,7 +380,7 @@ static int set_lens_focus_position
     (void) ctx;
 
     // parameter check
-    if ( value < 0 || value > 100)
+    if ( value < 0 || value > 1000)
     {
         return -EINVAL;
     }
@@ -358,7 +453,62 @@ static int set_lens_focus_settings
                 INT( values[0] ), INT( values[1] ), INT( values[2] ) ) );
 }
 
+/******************************************************************************
+ * get_lens_fine_focus
+ *****************************************************************************/
+static int get_lens_fine_focus
+(
+        void * const                ctx,
+        ctrl_channel_handle_t const channel,
+        int32_t * const             value
+)
+{
+    (void) ctx;
 
+    int res;
+
+    // parameter check
+    if ( value == NULL )
+    {
+        return ( -EINVAL );
+    }
+
+    // command call to get 3 parameters from provideo system
+    res = get_param_int_X( channel, 2,
+            CMD_GET_LENS_FINE_FOCUS, CMD_SYNC_LENS_FINE_FOCUS, CMD_SET_LENS_FINE_FOCUS,
+            value );
+
+    // return error code
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
+    return ( 0 );
+}
+
+
+/******************************************************************************
+ * set_lens_fine_focus
+ *****************************************************************************/
+static int set_lens_fine_focus
+(
+        void * const                ctx,
+        ctrl_channel_handle_t const channel,
+        int32_t  const             value
+)
+{
+    (void) ctx;
+
+    // parameter check
+    if ( value < 0 || value > 1)
+    {
+        return -EINVAL;
+    }
+
+    return ( set_param_int_X( channel, CMD_SET_LENS_FINE_FOCUS,
+              INT( value ) ) );
+}
 /******************************************************************************
  * get_lens_zoom_position
  *****************************************************************************/
@@ -601,6 +751,130 @@ static int set_lens_iris_settings
                 INT( values[0] ), INT( values[1] ), INT( values[2] ) ) );
 }
 
+/******************************************************************************
+ * get_lens_iris_aperture
+ *****************************************************************************/
+static int get_lens_iris_aperture
+(
+        void * const                ctx,
+        ctrl_channel_handle_t const channel,
+        int32_t * const             value
+)
+{
+    (void) ctx;
+
+    int res;
+
+    // parameter check
+    if ( value == NULL )
+    {
+        return ( -EINVAL );
+    }
+
+    // command call to get 1 parameters from provideo system
+    res = get_param_int_X( channel, 2,
+            CMD_GET_LENS_IRIS_APERTURE, CMD_SYNC_LENS_IRIS_APERTURE, CMD_SET_LENS_IRIS_APERTURE,
+            value );
+
+    // return error code
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
+    return ( 0 );
+}
+
+
+/******************************************************************************
+ * set_lens_iris_aperture
+ *****************************************************************************/
+static int set_lens_iris_aperture
+(
+        void * const                ctx,
+        ctrl_channel_handle_t const channel,
+        int32_t  const             value
+)
+{
+    (void) ctx;
+
+    // parameter check
+    if ( value < 0 || value > 1000)
+    {
+        return -EINVAL;
+    }
+    return ( set_param_int_X( channel, CMD_SET_LENS_IRIS_APERTURE,
+                INT( value ) ) );
+}
+
+/******************************************************************************
+ * get_lens_iris_setup
+ *****************************************************************************/
+static int get_lens_iris_setup
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    int const                   no,
+    int32_t * const             values
+)
+{
+    (void) ctx;
+
+    int res;
+
+    // parameter check
+    if ( !values )
+    {
+        return ( -EINVAL );
+    }
+
+    // return -EFAULT if number of parameter not matching
+    else if ( no != CMD_GET_LENS_IRIS_SETUP_NO_PARAMS )
+    {
+        return ( -EFAULT );
+    }
+
+    // command call to get 11 parameters from provideo system
+    res = get_param_int_X( channel, 2,
+            CMD_GET_LENS_IRIS_SETUP, CMD_SYNC_LENS_IRIS_SETUP, CMD_SET_LENS_IRIS_SETUP,
+            &values[0], &values[1], &values[2], &values[3], &values[4], &values[5], &values[6], &values[7],
+            &values[8], &values[9], &values[10], &values[11], &values[12], &values[13], &values[14], &values[15],
+            &values[16], &values[17] );
+
+    // return error code
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
+    return ( 0 );
+}
+
+/******************************************************************************
+ * set_lens_iris_setup
+ *****************************************************************************/
+static int set_lens_iris_setup
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    int const                   no,
+    int32_t * const             values
+)
+{
+    (void) ctx;
+
+    if ( no != CMD_GET_LENS_IRIS_SETUP_NO_PARAMS )
+    {
+        // return -EFAULT if number of parameter not matching
+        return ( -EFAULT );
+    }
+
+    return ( set_param_int_X( channel, CMD_SET_LENS_IRIS_SETUP,
+                INT( values[0] ), INT( values[1] ), INT( values[2] ), INT( values[3]), INT( values[4]), INT( values[5]), INT( values[6]), INT( values[7]),
+                INT( values[8] ), INT( values[9] ), INT( values[10]), INT( values[11]), INT( values[12]), INT( values[13]), INT( values[14]), INT( values[15]),
+                INT( values[16]), INT( values[17] ) ) );
+}
+
 
 /******************************************************************************
  * get_lens_filter_position
@@ -783,23 +1057,32 @@ static ctrl_protocol_lens_drv_t provideo_lens_drv =
 {
     .get_lens_settings            = get_lens_settings,
     .set_lens_settings            = set_lens_settings,
+
     .get_lens_active              = get_lens_active,
     .set_lens_active              = set_lens_active,
+    .get_lens_invert              = get_lens_invert,
+    .set_lens_invert              = set_lens_invert,
 
     .get_lens_focus_position      = get_lens_focus_position,
     .set_lens_focus_position      = set_lens_focus_position,
     .get_lens_focus_settings      = get_lens_focus_settings,
     .set_lens_focus_settings      = set_lens_focus_settings,
+    .get_lens_fine_focus          = get_lens_fine_focus,
+    .set_lens_fine_focus          = set_lens_fine_focus,
 
-    .get_lens_zoom_position      = get_lens_zoom_position,
-    .set_lens_zoom_position      = set_lens_zoom_position,
-    .get_lens_zoom_settings      = get_lens_zoom_settings,
-    .set_lens_zoom_settings      = set_lens_zoom_settings,
+    .get_lens_zoom_position       = get_lens_zoom_position,
+    .set_lens_zoom_position       = set_lens_zoom_position,
+    .get_lens_zoom_settings       = get_lens_zoom_settings,
+    .set_lens_zoom_settings       = set_lens_zoom_settings,
 
-    .get_lens_iris_position      = get_lens_iris_position,
-    .set_lens_iris_position      = set_lens_iris_position,
-    .get_lens_iris_settings      = get_lens_iris_settings,
-    .set_lens_iris_settings      = set_lens_iris_settings,
+    .get_lens_iris_position       = get_lens_iris_position,
+    .set_lens_iris_position       = set_lens_iris_position,
+    .get_lens_iris_settings       = get_lens_iris_settings,
+    .set_lens_iris_settings       = set_lens_iris_settings,
+    .get_lens_iris_aperture       = get_lens_iris_aperture,
+    .set_lens_iris_aperture       = set_lens_iris_aperture,
+    .get_lens_iris_setup          = get_lens_iris_setup,
+    .set_lens_iris_setup          = set_lens_iris_setup,
 
     .get_lens_filter_position      = get_lens_filter_position,
     .set_lens_filter_position      = set_lens_filter_position,

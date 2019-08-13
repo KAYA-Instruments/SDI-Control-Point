@@ -647,9 +647,17 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         connect( m_ui->lensDriverBox, SIGNAL(LensActiveChanged(bool)), dev->GetLensItf(), SLOT(onLensActiveChange(bool)) );
         connect(m_ui->lensDriverBox,SIGNAL(SmallResyncRequest(void)),dev->GetLensItf(),SLOT(onSmallResyncRequest(void)) );
 
+        // lens  Invert
+        connect( dev->GetLensItf(), SIGNAL(LensInvertChanged( QVector<int> ) ), m_ui->lensDriverBox, SLOT( onLensInvertChange( QVector<int> )) );
+        connect( m_ui->lensDriverBox, SIGNAL( LensInvertChanged( QVector<int> ) ), dev->GetLensItf(), SLOT( onLensInvertChange( QVector<int> )) );
+
         // lens Focus position
         connect( dev->GetLensItf(), SIGNAL(LensFocusPositionChanged( int ) ), m_ui->lensDriverBox, SLOT( onLensFocusPositionChange( int )) );
         connect( m_ui->lensDriverBox, SIGNAL(LensFocusPositionChanged( int ) ), dev->GetLensItf(), SLOT( onLensFocusPositionChange( int )) );
+
+        // lens Focus Fine resolution
+        connect( dev->GetLensItf(), SIGNAL(LensFocusFineChanged( bool ) ), m_ui->lensDriverBox, SLOT( onLensFocusFineChange( bool )) );
+        connect( m_ui->lensDriverBox, SIGNAL(LensFocusFineChanged( bool ) ), dev->GetLensItf(), SLOT( onLensFocusFineChange( bool )) );
 
         // lens Focus Settings
         connect( dev->GetLensItf(), SIGNAL(LensFocusSettingsChanged(QVector<int>)), m_ui->lensDriverBox, SLOT(onLensFocusSettingsChange(QVector<int>)) );
@@ -670,6 +678,15 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         // lens Iris Settings
         connect( dev->GetLensItf(), SIGNAL(LensIrisSettingsChanged(QVector<int>)), m_ui->lensDriverBox, SLOT(onLensIrisSettingsChange(QVector<int>)) );
         connect( m_ui->lensDriverBox, SIGNAL(LensIrisSettingsChanged(QVector<int>)), dev->GetLensItf(), SLOT(onLensIrisSettingsChange(QVector<int>)) );
+
+        // lens Iris Setup --> FStop Table
+        connect( dev->GetLensItf(), SIGNAL(LensIrisSetupChanged(QVector<int>)), m_ui->lensDriverBox, SLOT(onLensIrisSetupChange(QVector<int>)) );
+        connect( m_ui->lensDriverBox, SIGNAL(LensIrisSetupChanged(QVector<int>)), dev->GetLensItf(), SLOT(onLensIrisSetupChange(QVector<int>)) );
+
+        // lens Iris Aperture
+        //connect( dev->GetLensItf(), SIGNAL(LensIrisSetupChanged(QVector<int>)), m_ui->lensDriverBox, SLOT(onLensIrisSetupChange(QVector<int>)) );
+        connect( m_ui->lensDriverBox, SIGNAL(LensIrisApertureChanged( int )), dev->GetLensItf(), SLOT(onLensIrisApertureChange( int ) ) );
+
 
         // lens Filter position
         connect( dev->GetLensItf(), SIGNAL(LensFilterPositionChanged( int ) ), m_ui->lensDriverBox, SLOT( onLensFilterPositionChange( int )) );
@@ -1540,14 +1557,14 @@ void MainWindow::onLoadSettingsClicked()
 }
 
 /******************************************************************************
- * MainWindow::onSaveSettingsClicked
+ * MainWindow::onClicked
  *****************************************************************************/
 void MainWindow::onSaveSettingsClicked()
 {
     if ( m_dev )
     {
         QApplication::setOverrideCursor( Qt::WaitCursor );
-        emit SaveSettings();
+        emit (SaveSettings());
         QApplication::setOverrideCursor( Qt::ArrowCursor );
     }
 }

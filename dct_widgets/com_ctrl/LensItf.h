@@ -43,43 +43,57 @@ public:
 
     void GetLensSettings();
     void GetLensActive();
+    void GetLensInvert();
 
     void GetLensFocusPosition();
+    void GetLensFineFocus();
     void GetLensZoomPosition();
     void GetLensIrisPosition();
+    void GetLensIrisAperture();
     void GetLensFilterPosition();
+
 
     void GetLensFocusSettings();
     void GetLensZoomSettings();
     void GetLensIrisSettings();
+    void GetLensIrisSetup();
     void GetLensFilterSettings();
 
 signals:
     void LensSettingsChanged( QVector<int> values );
     void LensActiveChanged( bool active );
+    void LensInvertChanged( QVector<int> values );
+
 
     void LensFocusPositionChanged( int pos );
+    void LensFocusFineChanged( bool en );
     void LensZoomPositionChanged( int pos );
     void LensIrisPositionChanged( int pos );
+    void LensIrisApertureChanged( int apt );
     void LensFilterPositionChanged( int pos );
 
     void LensFocusSettingsChanged( QVector<int> values );
     void LensZoomSettingsChanged( QVector<int> values );
     void LensIrisSettingsChanged( QVector<int> values );
+    void LensIrisSetupChanged( QVector<int> values );
     void LensFilterSettingsChanged( QVector<int> values );
 
 public slots:
     void onLensSettingsChange( QVector<int> values );
     void onLensActiveChange( bool active );
+    void onLensInvertChange( QVector<int> values );
 
     void onLensFocusPositionChange( int pos );
+    void onLensFocusFineChange( bool en );
     void onLensZoomPositionChange( int pos );
     void onLensIrisPositionChange( int pos );
+    void onLensIrisApertureChange( int apt );
     void onLensFilterPositionChange( int pos );
 
     void onLensFocusSettingsChange( QVector<int> values );
     void onLensZoomSettingsChange( QVector<int> values );
     void onLensIrisSettingsChange( QVector<int> values );
+    void onLensIrisSetupChange( QVector<int> values );
     void onLensFilterSettingsChange( QVector<int> values );
 
     void onSmallResyncRequest(void);

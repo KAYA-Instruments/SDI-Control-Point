@@ -1,0 +1,32 @@
+[LENS_DRIVER_IRIS_TEMPLATES]
+number_of_templates=5
+
+[lens_template_1]
+compatible_drive_device=258
+fStop_pos="94 60 31 0 0 0 0 0 0 "
+fStops="160 80 40 24 0 0 0 0 0 "
+lens_name=Computar M0824-MPW2
+
+[lens_template_2]
+compatible_drive_device=258
+fStop_pos="94 78 63 45 28 0 0 0 0 "
+fStops="160 110 80 56 40 28 0 0 0 "
+lens_name=Computar V0828-MPY
+
+[lens_template_3]
+compatible_drive_device=13
+fStop_pos="90 84 79 72 62 49 29 0 0 "
+fStops="160 110 80 56 40 28 20 14 0 "
+lens_name=Computar i-CS Lens EG6Z0915TCS-MPWIR
+
+[lens_template_4]
+compatible_drive_device=258
+fStop_pos="100 76 59 38 24 1 0 0 0 "
+fStops="110 80 56 40 24 18 0 0 0 "
+lens_name=Kowa LM6HC
+
+[lens_template_5]
+compatible_drive_device=258
+fStop_pos="100 88 77 63 42 21 0 0 0 "
+fStops="160 80 56 40 28 20 18 0 0 "
+lens_name=Kowa LM16JC10M
