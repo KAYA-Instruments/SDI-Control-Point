@@ -59,9 +59,12 @@
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::MinimumExpanding</enum>
+        </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>40</width>
+          <width>0</width>
           <height>20</height>
          </size>
         </property>
@@ -76,55 +79,10 @@
       <string>Focus Control</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="1" column="1">
-       <widget class="QSpinBox" name="sbxFocusPosition">
-        <property name="minimumSize">
-         <size>
-          <width>120</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>120</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="maximum">
-         <number>100</number>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="lblFocusTorque">
+      <item row="2" column="2">
+       <widget class="QCheckBox" name="cbxFocusInvertEnable">
         <property name="text">
-         <string>Torque [%]</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="lblFocusPosition">
-        <property name="minimumSize">
-         <size>
-          <width>140</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>140</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Position</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QSpinBox" name="sbxFocusStepMode">
-        <property name="maximum">
-         <number>100</number>
+         <string>Invert Focus Movement</string>
         </property>
        </widget>
       </item>
@@ -149,36 +107,39 @@
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="lblFocusSpeed">
+        <property name="minimumSize">
+         <size>
+          <width>140</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>140</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="text">
          <string>Speed [%]</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
-       <widget class="QSpinBox" name="sbxFocusTorque">
-        <property name="maximum">
-         <number>100</number>
+      <item row="1" column="0">
+       <widget class="QLabel" name="lblFocusPosition">
+        <property name="minimumSize">
+         <size>
+          <width>140</width>
+          <height>0</height>
+         </size>
         </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="lblFocusStepMode">
-        <property name="text">
-         <string>Step Mode [%]</string>
+        <property name="maximumSize">
+         <size>
+          <width>140</width>
+          <height>16777215</height>
+         </size>
         </property>
-       </widget>
-      </item>
-      <item row="3" column="2">
-       <widget class="QCheckBox" name="cbxFocusFineEnable">
         <property name="text">
-         <string>Fine Focus</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2">
-       <widget class="QCheckBox" name="cbxFocusInvertEnable">
-        <property name="text">
-         <string>Invert Focus Movement</string>
+         <string>Position</string>
         </property>
        </widget>
       </item>
@@ -195,6 +156,108 @@
         </property>
        </widget>
       </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="lblFocusTorque">
+        <property name="minimumSize">
+         <size>
+          <width>140</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>140</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Torque [%]</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QCheckBox" name="cbxFocusFineEnable">
+        <property name="text">
+         <string>Fine Focus</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QSpinBox" name="sbxFocusTorque">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>120</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="maximum">
+         <number>100</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QSpinBox" name="sbxFocusPosition">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>120</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="maximum">
+         <number>100</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QSpinBox" name="sbxFocusStepMode">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>120</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="maximum">
+         <number>100</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="lblFocusStepMode">
+        <property name="minimumSize">
+         <size>
+          <width>140</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>140</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Step Mode [%]</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -206,6 +269,18 @@
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="2" column="1">
        <widget class="QSpinBox" name="sbxZoomStepMode">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>120</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="maximum">
          <number>100</number>
         </property>
@@ -213,6 +288,18 @@
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="lblZoomSpeed">
+        <property name="minimumSize">
+         <size>
+          <width>140</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>140</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="text">
          <string>Speed [%]</string>
         </property>
@@ -239,6 +326,18 @@
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="lblZoomStepMode">
+        <property name="minimumSize">
+         <size>
+          <width>140</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>140</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="text">
          <string>Step Mode [%]</string>
         </property>
@@ -246,6 +345,18 @@
       </item>
       <item row="3" column="1">
        <widget class="QSpinBox" name="sbxZoomTorque">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>120</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="maximum">
          <number>100</number>
         </property>
@@ -314,6 +425,18 @@
       </item>
       <item row="3" column="0">
        <widget class="QLabel" name="lblZoomTorque">
+        <property name="minimumSize">
+         <size>
+          <width>140</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>140</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="text">
          <string>Torque [%]</string>
         </property>
@@ -330,6 +453,18 @@
      <layout class="QGridLayout" name="gridLayout_5">
       <item row="2" column="0">
        <widget class="QLabel" name="lblIrisSpeed">
+        <property name="minimumSize">
+         <size>
+          <width>140</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>140</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="text">
          <string>Speed [%]</string>
         </property>
@@ -337,6 +472,18 @@
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="lblIrisAperture">
+        <property name="minimumSize">
+         <size>
+          <width>140</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>140</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="text">
          <string>Aperture</string>
         </property>
@@ -395,16 +542,6 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="lblIrisFStopTable">
-        <property name="text">
-         <string>F-Stop / Position Table:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="1">
        <widget class="QSpinBox" name="sbxIrisSpeed">
         <property name="minimumSize">
@@ -426,6 +563,18 @@
       </item>
       <item row="3" column="0">
        <widget class="QLabel" name="lblIrisStepMode">
+        <property name="minimumSize">
+         <size>
+          <width>140</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>140</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="text">
          <string>Step Mode [%]</string>
         </property>
@@ -452,13 +601,38 @@
       </item>
       <item row="4" column="0">
        <widget class="QLabel" name="lblIrisTorque">
+        <property name="minimumSize">
+         <size>
+          <width>140</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>140</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="text">
          <string>Torque [%]</string>
         </property>
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QComboBox" name="cbxLensIrisAperture"/>
+       <widget class="QComboBox" name="cbxLensIrisAperture">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>120</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
       </item>
       <item row="2" column="2">
        <widget class="QCheckBox" name="cbxIrisInvertEnable">
@@ -469,6 +643,18 @@
       </item>
       <item row="4" column="1">
        <widget class="QSpinBox" name="sbxIrisTorque">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>120</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="maximum">
          <number>100</number>
         </property>
@@ -476,6 +662,18 @@
       </item>
       <item row="3" column="1">
        <widget class="QSpinBox" name="sbxIrisStepMode">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>120</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="maximum">
          <number>100</number>
         </property>
@@ -515,9 +713,12 @@
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::MinimumExpanding</enum>
+          </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>40</width>
+            <width>0</width>
             <height>20</height>
            </size>
           </property>
@@ -532,9 +733,12 @@
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::MinimumExpanding</enum>
+          </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>40</width>
+            <width>0</width>
             <height>20</height>
            </size>
           </property>
@@ -563,9 +767,12 @@
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::MinimumExpanding</enum>
+          </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>40</width>
+            <width>0</width>
             <height>20</height>
            </size>
           </property>
@@ -582,6 +789,16 @@
          <widget class="QComboBox" name="cbxIrisTableTemplate"/>
         </item>
        </layout>
+      </item>
+      <item row="5" column="0" colspan="2">
+       <widget class="QLabel" name="lblIrisFStopTable">
+        <property name="text">
+         <string>F-Stop / Position Table:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -613,6 +830,18 @@
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="lblFilterSpeed">
+        <property name="minimumSize">
+         <size>
+          <width>140</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>140</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="text">
          <string>Speed [%]</string>
         </property>
@@ -639,6 +868,18 @@
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="lblFilterStepMode">
+        <property name="minimumSize">
+         <size>
+          <width>140</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>140</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="text">
          <string>Step Mode [%]</string>
         </property>
@@ -678,6 +919,18 @@
       </item>
       <item row="2" column="1">
        <widget class="QSpinBox" name="sbxFilterStepMode">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>120</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="maximum">
          <number>100</number>
         </property>
@@ -685,6 +938,18 @@
       </item>
       <item row="3" column="0">
        <widget class="QLabel" name="lblFilterTorque">
+        <property name="minimumSize">
+         <size>
+          <width>140</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>140</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="text">
          <string>Torque [%]</string>
         </property>
@@ -692,6 +957,18 @@
       </item>
       <item row="3" column="1">
        <widget class="QSpinBox" name="sbxFilterTorque">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>120</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="maximum">
          <number>100</number>
         </property>

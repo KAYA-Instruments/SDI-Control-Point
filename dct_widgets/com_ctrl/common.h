@@ -32,6 +32,13 @@ void showError( int const res, const char * fn, const char * func, int const lin
         return;                                             \
     }
 
+#define HANDLE_ERROR_RETURN( res )                          \
+    if ( res )                                              \
+    {                                                       \
+        showError( res, __FILE__, __FUNCTION__, __LINE__ ); \
+        return false;                                       \
+    }
+
 
 #endif // _COMMON_H_
 

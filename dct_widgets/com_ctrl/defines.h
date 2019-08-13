@@ -162,12 +162,12 @@
  * lens profile names
  *****************************************************************************/
 #define LENS_PROFILE_NAME_UNKOWN                ( "Unkown Profile, choose from list" )
-#define LENS_PROFILE_NAME_DCT_KIT_IRIS_1        ( "DCT Lens Driver Single Motor Left Iris" )
-#define LENS_PROFILE_NAME_DCT_KIT_IRIS_2        ( "DCT Lens Driver Single Motor Right Iris" )
-#define LENS_PROFILE_NAME_DCT_KIT_FOCUS_1       ( "DCT Lens Driver Single Motor Left Focus" )
-#define LENS_PROFILE_NAME_DCT_KIT_FOCUS_2       ( "DCT Lens Driver Single Motor Right Focus" )
-#define LENS_PROFILE_NAME_DCT_KIT_FOCUS_IRIS    ( "DCT Lens Driver Dual Motor Focus Iris" )
-#define LENS_PROFILE_NAME_DCT_KIT_IRIS_FOCUS    ( "DCT Lens Driver Dual Motor Iris Focus" )
+#define LENS_PROFILE_NAME_DCT_KIT_IRIS_1        ( "DCT Lens Driver Single Motor Iris (L)" )
+#define LENS_PROFILE_NAME_DCT_KIT_IRIS_2        ( "DCT Lens Driver Single Motor Iris (R)" )
+#define LENS_PROFILE_NAME_DCT_KIT_FOCUS_1       ( "DCT Lens Driver Single Motor Focus (L)" )
+#define LENS_PROFILE_NAME_DCT_KIT_FOCUS_2       ( "DCT Lens Driver Single Motor Focus (R)" )
+#define LENS_PROFILE_NAME_DCT_KIT_FOCUS_IRIS    ( "DCT Lens Driver Dual Motor Focus (L) Iris (R)" )
+#define LENS_PROFILE_NAME_DCT_KIT_IRIS_FOCUS    ( "DCT Lens Driver Dual Motor Iris (L) Focus (R)" )
 #define LENS_PROFILE_NAME_I_CS                  ( "Computar i-CS Lens EG6Z0915TCS-MPWIR" )
 
 /******************************************************************************

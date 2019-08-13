@@ -1307,7 +1307,7 @@ void UpdateBox::onFsmTimer( )
         QMessageBox::warning( this,
                               "Flashloader Tool not found",
                               "The Flashloader Tool could not be found. Please make sure that the file 'flashloader.exe' is "
-                              "placed in a folder named 'tools' which is placed in the same folder that 'ProVideo.exe' is placed.\n\n"
+                              "placed in a folder named 'tools_and_configs' which is placed in the same folder that 'ProVideo.exe' is placed.\n\n"
                               "Please restart the Update after copying the Flashloader." );
         setSystemState( ErrorState );
 

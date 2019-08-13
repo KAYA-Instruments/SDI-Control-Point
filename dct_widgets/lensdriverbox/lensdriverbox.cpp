@@ -31,6 +31,7 @@
 #include <QTextEdit>
 #include <QFileInfo>
 #include <QDir>
+#include <QMessageBox>
 
 #include "lensdriverbox.h"
 #include "ui_lensdriverbox.h"
@@ -221,9 +222,6 @@ const lens_settings_t settingsDctKit_iris_focus {
     /* .filterMotorFeatures = */ 0
 };
 
-
-
-
 const lens_settings_t lensSettingProfiles[LensProfileMax] =
 {
     settingsUnkown,
@@ -235,45 +233,6 @@ const lens_settings_t lensSettingProfiles[LensProfileMax] =
     settingsDctKit_iris_focus,
     settingsICS
 };
-
-
-const lens_iris_position_template_t computarM0824MPW2 {
-    /* .fstops =            */ {160, 80, 40, 24, 0, 0, 0, 0, 0},
-    /* .fstopPos =          */ {94, 60, 31, 0, 0, 0, 0, 0, 0},
-    /* .lensName =          */ "Computar M0824-MPW2",
-    /* .compatibleID =      */ {258}
-};
-
-const lens_iris_position_template_t computarV0828MPY {
-    /* .fstops =            */ {160, 110, 80, 56, 40, 28, 0, 0, 0},
-    /* .fstopPos =          */ {94, 78, 63, 45, 28, 0, 0, 0, 0},
-    /* .lensName =          */ "Computar V0828-MPY",
-    /* .compatibleID =      */ {258}
-};
-
-const lens_iris_position_template_t computarEG6Z0915TCSMPWIR {
-    /* .fstops =            */ {160, 110, 80, 56, 40, 28, 20, 14, 0},
-    /* .fstopPos =          */ {90, 84, 79, 72, 62, 49, 29, 0, 0},
-    /* .lensName =          */ "Computar i-CS Lens EG6Z0915TCS-MPWIR",
-    /* .compatibleID =      */ {13}
-};
-
-const lens_iris_position_template_t kowaLM6HC {
-    /* .fstops =            */ {110, 80, 56, 40, 24, 18, 0, 0 , 0},
-    /* .fstopPos =          */ {100, 76, 59, 38, 24, 1, 0, 0, 0},
-    /* .lensName =          */ "Kowa LM6HC",
-    /* .compatibleID =      */ {258}
-};
-
-const lens_iris_position_template_t kowaLM16JC10M {
-    /* .fstops =            */ {160, 80, 56, 40, 28, 20, 18, 0 , 0},
-    /* .fstopPos =          */ {100, 88, 77, 63, 42, 21, 0, 0, 0},
-    /* .lensName =          */ "Kowa LM16JC10M",
-    /* .compatibleID =      */ {258}
-};
-
-
-
 
 /******************************************************************************
  * pairSort
@@ -303,8 +262,6 @@ static bool pairSort( QVector<int> &a, QVector<int> &b)
             pointList.append(newPair);
         }
     }
-
-
 
     // Sort it (will sort first for x, than for y, see QPair
     std::sort(pointList.begin(), pointList.end());
@@ -338,14 +295,8 @@ static bool pairSort( QVector<int> &a, QVector<int> &b)
         }
     }
 
-
-
     return true;
 }
-
-
-
-
 
 /******************************************************************************
  * Delegate
@@ -419,8 +370,6 @@ public:
         {
             model->setData( idx, value.toDouble(), Qt::EditRole );
         }
-
-
     }
 
     // set geometry of line-edit
@@ -469,14 +418,9 @@ public:
         return m_secondColBound;
     }
 
-
-
 private:
     int m_firstColBound;
     int m_secondColBound;
-
-
-
 };
 
 /******************************************************************************
@@ -493,8 +437,6 @@ public:
         , m_delegate( new LensDriverIrisTabStyledDelegat() )
         , m_LensSettings{}
         , m_LensIrisTable{}
-
-
     {
         // initialize UI
         m_ui->setupUi( parent );
@@ -671,7 +613,9 @@ public:
      *****************************************************************************/
     static bool getLensesFromFile( QVector<lens_iris_position_template_t>* table )
     {
-        QString m_filename = QDir::fromNativeSeparators(  QDir::currentPath() + QDir::separator() + "tools" + QDir::separator() + "supported_lenses" + QDir::separator() + "Supported_Lenses.txt");
+        QString m_filename = QDir::fromNativeSeparators(  QDir::currentPath() +
+                                                          QDir::separator() + "tools_and_configs" +
+                                                          QDir::separator() + "SupportedLenses.txt");
 
         QFileInfo check_file( m_filename );
 
@@ -892,16 +836,16 @@ LensDriverBox::LensDriverBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->btnIrisTransmitTable->setVisible(false);
     d_data->m_ui->btnDeleteColumn->setVisible(false);
 
-
     if( ! d_data->getLensesFromFile(&d_data->m_LensIrisTemplates) )
     {
-        d_data->m_LensIrisTemplates.append( computarM0824MPW2 );
-        d_data->m_LensIrisTemplates.append( computarV0828MPY );
-        d_data->m_LensIrisTemplates.append( computarEG6Z0915TCSMPWIR );
-        d_data->m_LensIrisTemplates.append( kowaLM6HC );
-        d_data->m_LensIrisTemplates.append( kowaLM16JC10M );
-
-
+        QMessageBox::warning( this,
+                              "Lens driver template file not found",
+                              "The template file for the supported lenses was not found. "
+                              "Please make sure that the file 'SupportedLenses.txt' is "
+                              "placed in a folder named 'tools_and_configs' which is placed "
+                              "in the same folder that 'ProVideo.exe' is placed.\n\n"
+                              "Please restart the GUI after the file was restored to use"
+                              "the available templates." );
     }
 
     // fill settings combo box
@@ -910,16 +854,14 @@ LensDriverBox::LensDriverBox( QWidget * parent ) : DctWidgetBox( parent )
         addLensProfile( d_data->GetLensProfileName( static_cast<enum LensProfile>(i) ), i );
     }
 
-    addLensIrisAperture( "Chose Apeture",0);
+    addLensIrisAperture( "Select", 0);
 
     // connect internal signals
-
     connect( d_data->m_ui->cbxLensProfile, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxLensProfileChange(int)) );
     connect( d_data->m_ui->btnActivateLens , SIGNAL(clicked()), this, SLOT(onBtnLensActiveChange()) );
     connect( d_data->m_ui->cbxEnableAdvancedSettings , SIGNAL(stateChanged(int)), this, SLOT(onCbxLensEnableAdvancedSettings(int)) );
 
     connect( this , SIGNAL(LensSettingsChanged(bool)), this, SLOT(onLensActiveChange(bool)) );
-
 
     // Focus Elements
     connect( d_data->m_ui->sbxFocusPosition, SIGNAL(valueChanged(int)), this, SLOT(onSbxLensFocusPositionChanged(int)));
@@ -1687,11 +1629,7 @@ void LensDriverBox::onLensSettingsChange( QVector<int> values )
     d_data->m_ui->cbxLensProfile->blockSignals( true );
     d_data->m_ui->cbxLensProfile->setCurrentText(d_data->GetLensProfileName(settingsToProfile(settings)) );
     d_data->m_ui->cbxLensProfile->blockSignals( false );
-
-
 }
-
-
 
 /******************************************************************************
  * LensDriverBox::onLensActiveChange
@@ -1886,7 +1824,7 @@ void LensDriverBox::onLensIrisSetupChange( QVector<int> values )
     d_data->m_ui->cbxLensIrisAperture->clear();
     d_data->m_ui->cbxLensIrisAperture->blockSignals(false);
 
-    addLensIrisAperture( "Chose Apeture",0);
+    addLensIrisAperture( "Select", 0);
 
     QString temp;
     QVector<double> tempFStops;
@@ -2192,17 +2130,13 @@ void LensDriverBox::onCbxLensFocusFineChanged( int enable)
         d_data->m_ui->sbxFocusPosition->setRange(0,1000);
         d_data->m_ui->sldFocusPosition->setRange(0,1000);
         d_data->m_ui->sbxFocusPosition->setValue(d_data->m_ui->sbxFocusPosition->value() *10 );
-
     }
     else
     {
         d_data->m_ui->sbxFocusPosition->setValue(d_data->m_ui->sbxFocusPosition->value() /10 );
         d_data->m_ui->sbxFocusPosition->setRange(0,100);
         d_data->m_ui->sldFocusPosition->setRange(0,100);
-
     }
-
-
 
     setNormalCursor();
 }
@@ -2230,7 +2164,6 @@ void LensDriverBox::onCbxLensFocusInvertChanged( int enable)
  *****************************************************************************/
 void LensDriverBox::onSbxLensZoomPositionChanged( int pos )
 {
-
         setWaitCursor();
         emit LensZoomPositionChanged( pos );
         setNormalCursor();
@@ -2307,7 +2240,6 @@ void LensDriverBox::onCbxLensZoomInvertChanged( int enable)
  *****************************************************************************/
 void LensDriverBox::onSbxLensIrisPositionChanged( int pos )
 {
-
         setWaitCursor();
         emit LensIrisPositionChanged( pos );
         emit LensIrisAperturePosChanged( pos );
@@ -2385,7 +2317,6 @@ void LensDriverBox::onCbxLensIrisInvertChanged( int enable)
  *****************************************************************************/
 void LensDriverBox::onCbxLensIrisApertureChanged( int index)
 {
-
     if(index != 0)
     {
         setWaitCursor();
@@ -2411,8 +2342,6 @@ void LensDriverBox::onBtnLensIrisAperturePlusChanged( void )
         i++;
     }
 
-
-
     if( ( index >= 0 ) && ( d_data->m_LensIrisTable.fStops.value(index ) != 0 ) )
     {
 
@@ -2421,17 +2350,13 @@ void LensDriverBox::onBtnLensIrisAperturePlusChanged( void )
         emit LensIrisAperturePosChanged( d_data->m_LensIrisTable.fStopsPos.value( ( index  ) ) );
         setNormalCursor();
     }
-
 }
-
-
 
 /******************************************************************************
  * LensDriverBox::onBtnLensIrisApertureMinusChanged
  *****************************************************************************/
 void LensDriverBox::onBtnLensIrisApertureMinusChanged( void )
 {
-
     d_data->m_ui->btnIrisAptMinus->clearFocus();
     int acPos = d_data->m_ui->sbxIrisPosition->value();
     int i = 0;
@@ -2442,8 +2367,6 @@ void LensDriverBox::onBtnLensIrisApertureMinusChanged( void )
         i++;
     }
 
-
-
     if( ( index >= -1 ) && ( d_data->m_LensIrisTable.fStops.value(index + 1) != 0 ) )
     {
 
@@ -2452,7 +2375,6 @@ void LensDriverBox::onBtnLensIrisApertureMinusChanged( void )
         emit LensIrisAperturePosChanged( d_data->m_LensIrisTable.fStopsPos.value( ( index + 1 ) ) );
         setNormalCursor();
     }
-
 }
 
 /******************************************************************************
@@ -2460,7 +2382,6 @@ void LensDriverBox::onBtnLensIrisApertureMinusChanged( void )
  *****************************************************************************/
 void LensDriverBox::onBtnLensIrisTableTransmitChanged( void )
 {
-
     d_data->m_ui->btnIrisTransmitTable ->clearFocus();
 
     QVector<double> tempFstop;
@@ -2474,7 +2395,6 @@ void LensDriverBox::onBtnLensIrisTableTransmitChanged( void )
    {
        tempIntFstop.append( int( tempFstop.value(i) * 10 ) );
    }
-
 
    pairSort(tempIntFstop,tempFstopPos);
 
@@ -2512,7 +2432,6 @@ void LensDriverBox::onBtnLensIrisTableRemoveColumnChanged( void )
             d_data->m_ui->tblIrisAptPosition->model()->removeColumn( (*listIterator).column() );
         }
 
-
         //Sort and refill table
         d_data->getDataFromModel(tempFstop,tempFstopPos);
 
@@ -2530,9 +2449,6 @@ void LensDriverBox::onBtnLensIrisTableRemoveColumnChanged( void )
         }
 
         d_data->fillTable(tempFstop,d_data->m_LensIrisTable.fStopsPos);
-
-
-
     }
 }
 
@@ -2558,7 +2474,6 @@ void LensDriverBox::onCbxLensIrisTemplateChanged( int index )
             tempFStops.append( double( d_data->m_LensIrisTemplates.value(i).fStops.value(a) ) / 10);
             tempFStopPos.append( d_data->m_LensIrisTemplates.value(i).fStopPos.value(a) );
         }
-
 
         d_data->fillTable(tempFStops,tempFStopPos);
     }

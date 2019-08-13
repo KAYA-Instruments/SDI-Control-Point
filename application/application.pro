@@ -25,15 +25,17 @@ TARGET = ProVideo
 TEMPLATE = app
 
 # Platform specific tweaks
-install_binaries.path = $$OUT_PWD/tools
+install_binaries.path = $$OUT_PWD/tools_and_configs
 install_binaries.files = ""
 unix {
     FLASH_LOADER_APPLICATION="flashloader"
-    install_binaries.files += ./tools/flashloader
+    install_binaries.files += ./tools_and_configs/flashloader
+    install_binaries.files += ./tools_and_configs/SupportedLenses.txt
 }
 win32 {
     FLASH_LOADER_APPLICATION="flashloader.exe"
-    install_binaries.files += ./tools/flashloader.exe
+    install_binaries.files += ./tools_and_configs/flashloader.exe
+    install_binaries.files += ./tools_and_configs/SupportedLenses.txt
 }
 osx {
     QMAKE_INFO_PLIST = osx/Info.plist
@@ -130,6 +132,7 @@ SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
            ../dct_widgets/com_ctrl/KneeItf.cpp                              \
            ../dct_widgets/com_ctrl/DpccItf.cpp                              \
            ../dct_widgets/com_ctrl/OsdItf.cpp                               \
+           ../dct_widgets/com_ctrl/LensItf.cpp                              \
            ../dct_widgets/com_ctrl/devices/ProVideoDevice.cpp               \
            ../dct_widgets/com_ctrl/devices/XbowDevice.cpp                   \
            ../dct_widgets/com_ctrl/devices/Condor4kDevice.cpp               \
@@ -154,6 +157,7 @@ SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
            ../libraries/ctrl_protocol/ctrl_protocol_iris.c                  \
            ../libraries/ctrl_protocol/ctrl_protocol_knee.c                  \
            ../libraries/ctrl_protocol/ctrl_protocol_dpcc.c                  \
+           ../libraries/ctrl_protocol/ctrl_protocol_lens.c                  \
            ../libraries/provideo_protocol/provideo_protocol.c               \
            ../libraries/provideo_protocol/provideo_protocol_common.c        \
            ../libraries/provideo_protocol/provideo_protocol_system.c        \
@@ -171,6 +175,7 @@ SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
            ../libraries/provideo_protocol/provideo_protocol_iris.c          \
            ../libraries/provideo_protocol/provideo_protocol_knee.c          \
            ../libraries/provideo_protocol/provideo_protocol_dpcc.c          \
+           ../libraries/provideo_protocol/provideo_protocol_lens.c          \
            ../libraries/simple_math/rgb2ycbcr.c                             \
            ../libraries/simple_math/xyz2ct.c                                \
            ../libraries/simple_math/cubic.c                                 \
@@ -181,10 +186,7 @@ SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
            ../libraries/csv/csvwriter.c                                     \
            ../libraries/qcustomplot/qcustomplot.cpp                         \
            mainwindow.cpp                                                   \
-           main.cpp \
-    ../dct_widgets/com_ctrl/LensItf.cpp \
-    ../libraries/ctrl_protocol/ctrl_protocol_lens.c \
-    ../libraries/provideo_protocol/provideo_protocol_lens.c
+           main.cpp
 
 
 HEADERS  += ../libraries/include                                                \
@@ -237,6 +239,7 @@ HEADERS  += ../libraries/include                                                
             ../dct_widgets/com_ctrl/KneeItf.h                                   \
             ../dct_widgets/com_ctrl/DpccItf.h                                   \
             ../dct_widgets/com_ctrl/OsdItf.h                                    \
+            ../dct_widgets/com_ctrl/LensItf.h                                   \
             ../dct_widgets/com_ctrl/ComChannel.h                                \
             ../dct_widgets/com_ctrl/ComChannelRSxxx.h                           \
             ../dct_widgets/com_ctrl/ComProtocol.h                               \
@@ -269,6 +272,7 @@ HEADERS  += ../libraries/include                                                
             ../libraries/include/ctrl_protocol/ctrl_protocol_playback.h         \
             ../libraries/include/ctrl_protocol/ctrl_protocol_system.h           \
             ../libraries/include/ctrl_protocol/ctrl_protocol_tflt.h             \
+            ../libraries/include/ctrl_protocol/ctrl_protocol_lens.h             \
             ../libraries/include/provideo_protocol/provideo_protocol.h          \
             ../libraries/include/simple_math/cubic.h                            \
             ../libraries/include/simple_math/knee.h                             \
@@ -292,10 +296,8 @@ HEADERS  += ../libraries/include                                                
             ../libraries/include/provideo_protocol/provideo_protocol_playback.h \
             ../libraries/include/provideo_protocol/provideo_protocol_system.h   \
             ../libraries/include/provideo_protocol/provideo_protocol_tflt.h     \
-            mainwindow.h \
-    ../dct_widgets/com_ctrl/LensItf.h \
-    ../libraries/include/ctrl_protocol/ctrl_protocol_lens.h \
-    ../libraries/include/provideo_protocol/provideo_protocol_lens.h
+            ../libraries/include/provideo_protocol/provideo_protocol_lens.h     \
+            mainwindow.h
 
 FORMS    += ../dct_widgets/mcceqbox/mcceqbox.ui                             \
             ../dct_widgets/wbbox/wbbox.ui                                   \
