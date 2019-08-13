@@ -4,12 +4,12 @@ All releases are tagged in Git with their version number.
 
 ## Newest Release:
 
-Version **1.1.15** - 02.08.2019
+Version **1.1.15** - 13.08.2019
 
 * Added new tab for the lens drive. The new features ar available for the Atom One and the Atom 4k mini cameras.
 * Added lens drive Inteface and UI elements, to configure a lens drive.
-* 
-* Updated Handbook
+* Moved flashloader exe to "tools_and_configs" folder, added "SupportedLenses.txt" to that folder. This file is read by the lens driver to get aparture profiles for supported lenses.
+* Updated Handbook.
 
 ## Older Releases:
 
