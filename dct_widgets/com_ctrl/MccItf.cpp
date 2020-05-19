@@ -117,7 +117,9 @@ void MccItf::GetMccPhase( int id )
     if ( receivers(SIGNAL(MccPhaseChanged(int,int,int))) > 0 )
     {
         ctrl_protocol_mcc_phase_t phase 
-            = { .id = (uint8_t)id, .saturation = 0u, .hue = 0 };
+            // designators in struct initialization are not supported by MSVC
+            //= { .id = (uint8_t)id, .saturation = 0u, .hue = 0 }; struct designators fix:
+            = { (uint8_t)id, 0u, 0 };
 
         int res = ctrl_protocol_get_mcc_phase( GET_PROTOCOL_INSTANCE(this),
             GET_CHANNEL_INSTANCE(this), sizeof(phase), (uint8_t *)&phase );
@@ -144,7 +146,8 @@ void MccItf::GetMccPhases( int mode )
         for ( unsigned id = 0u; id<phases; id++ )
         {
             ctrl_protocol_mcc_phase_t phase
-                = { .id = (uint8_t)id, .saturation = 0u, .hue = 0 };
+                //= { .id = (uint8_t)id, .saturation = 0u, .hue = 0 };struct designators fix:
+                = { (uint8_t)id, 0u, 0 };
 
             res = ctrl_protocol_get_mcc_phase( GET_PROTOCOL_INSTANCE(this),
                     GET_CHANNEL_INSTANCE(this), sizeof(phase), (uint8_t *)&phase );
@@ -205,7 +208,8 @@ void MccItf::onMccPhaseSelectionChange( int id )
 void MccItf::onMccPhaseChange( int id, int saturation, int hue )
 {
     ctrl_protocol_mcc_phase_t phase 
-        = { .id = (uint8_t)id, .saturation = (uint16_t)saturation, .hue = (int16_t)hue };
+        //= { .id = (uint8_t)id, .saturation = (uint16_t)saturation, .hue = (int16_t)hue };struct designators fix:
+        = { (uint8_t)id, (uint16_t)saturation, (int16_t)hue };
 
     // set mcc phase configuration on device
     int res = ctrl_protocol_set_mcc_phase( GET_PROTOCOL_INSTANCE(this),

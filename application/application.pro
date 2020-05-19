@@ -159,7 +159,7 @@ SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
            ../libraries/ctrl_protocol/ctrl_protocol_dpcc.c                  \
            ../libraries/ctrl_protocol/ctrl_protocol_lens.c                  \
            ../libraries/provideo_protocol/provideo_protocol.c               \
-           ../libraries/provideo_protocol/provideo_protocol_common.c        \
+           ../libraries/provideo_protocol/provideo_protocol_common.cpp      \
            ../libraries/provideo_protocol/provideo_protocol_system.c        \
            ../libraries/provideo_protocol/provideo_protocol_isp.c           \
            ../libraries/provideo_protocol/provideo_protocol_cproc.c         \

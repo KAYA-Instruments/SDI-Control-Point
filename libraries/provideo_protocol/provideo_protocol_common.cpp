@@ -26,6 +26,7 @@
 #include <string.h>
 #include <errno.h>
 #include <time.h>
+#include <vector> //  VLA Fix:
 
 #include <ctrl_channel/ctrl_channel.h>
 
@@ -389,7 +390,8 @@ int get_param_string
     char *                       param
 )
 {
-    char data[(lines*CMD_SINGLE_LINE_RESPONSE_SIZE)];
+    //char data[(lines*CMD_SINGLE_LINE_RESPONSE_SIZE)]; VLA Fix:
+    std::vector<char> data(lines*CMD_SINGLE_LINE_RESPONSE_SIZE);
 
     int res;
 
@@ -397,11 +399,13 @@ int get_param_string
     ctrl_channel_send_request( channel, (uint8_t *)cmd_get, strlen(cmd_get) );
 
     // read response from provideo device
-    res = evaluate_get_response( channel, data, sizeof(data) );
+    //res = evaluate_get_response( channel, data, sizeof(data) ); VLA Fix:
+    res = evaluate_get_response( channel, data.data(), data.size() );
     if ( !res )
     {
         // get start position of command
-        char * s = strstr( data, cmd_sync );
+        //char * s = strstr( data, cmd_sync ); VLA Fix:
+        char * s = strstr( data.data(), cmd_sync );
         if ( s )
         {
             // parse command
@@ -416,7 +420,8 @@ int get_param_string
     }
     else
     {
-        res = evaluate_error_response( data, res );
+        //res = evaluate_error_response( data, res ); VLA Fix:
+        res = evaluate_error_response( data.data(), res );
     }
 
     return ( res );
@@ -468,7 +473,8 @@ int get_param_int_X
     ...
 )
 {
-    char data[(lines*CMD_SINGLE_LINE_RESPONSE_SIZE)];
+    //char data[(lines*CMD_SINGLE_LINE_RESPONSE_SIZE)]; VLA Fix:
+    std::vector<char> data(lines*CMD_SINGLE_LINE_RESPONSE_SIZE);
 
     va_list args;
 
@@ -478,11 +484,13 @@ int get_param_int_X
     ctrl_channel_send_request( channel, (uint8_t *)cmd_get, strlen(cmd_get) );
 
     // read response from provideo device
-    res = evaluate_get_response( channel, data, sizeof(data) );
+    //res = evaluate_get_response( channel, data, sizeof(data) ); VLA Fix:
+    res = evaluate_get_response( channel, data.data(), data.size() );
     if ( !res )
     {
         // get start position of command
-        char * s = strstr( data, cmd_sync );
+        //char * s = strstr( data, cmd_sync ); VLA Fix:
+        char * s = strstr( data.data(), cmd_sync );
         if ( s )
         {
             // parse command
@@ -500,7 +508,8 @@ int get_param_int_X
     }
     else
     {
-        res = evaluate_error_response( data, res );
+        //res = evaluate_error_response( data, res ); VLA Fix:
+        res = evaluate_error_response( data.data(), res );
     }
 
     return ( res );
@@ -522,7 +531,8 @@ int get_param_int_X_with_tmo
     ...
 )
 {
-    char data[(lines*CMD_SINGLE_LINE_RESPONSE_SIZE)];
+    //char data[(lines*CMD_SINGLE_LINE_RESPONSE_SIZE)]; VLA Fix:
+    std::vector<char> data(lines*CMD_SINGLE_LINE_RESPONSE_SIZE);
 
     va_list args;
 
@@ -532,11 +542,13 @@ int get_param_int_X_with_tmo
     ctrl_channel_send_request( channel, (uint8_t *)cmd_get, strlen(cmd_get) );
 
     // read response from provideo device
-    res = evaluate_get_response_with_tmo( channel, data, sizeof(data), cmd_timeout_ms );
+    //res = evaluate_get_response_with_tmo( channel, data, sizeof(data), cmd_timeout_ms ); VLA Fix:
+    res = evaluate_get_response_with_tmo( channel, data.data(), data.size(), cmd_timeout_ms );
     if ( !res )
     {
         // get start position of command
-        char * s = strstr( data, cmd_sync );
+        //char * s = strstr( data, cmd_sync ); VLA Fix:
+        char * s = strstr( data.data(), cmd_sync );
         if ( s )
         {
             // parse command
@@ -554,7 +566,8 @@ int get_param_int_X_with_tmo
     }
     else
     {
-        res = evaluate_error_response( data, res );
+        //res = evaluate_error_response( data, res ); VLA Fix:
+        res = evaluate_error_response( data.data(), res );
     }
 
     return ( res );
