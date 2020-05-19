@@ -188,15 +188,20 @@ void AutoItf::GetWbPresets( int const no )
     // Is there a signal listener
     if ( receivers(SIGNAL(WbPresetsChanged(int,QString,int))) > 0 )
     {
-        ctrl_protocol_wb_preset_t presets[no];
+        // g++ supports of Variable Length Arrays (VLA) as extension, standard C++ does not support it, so to compile with MSVC we use vector:
+        //ctrl_protocol_wb_preset_t presets[no]; VLA Fix:
+        std::vector<ctrl_protocol_wb_preset_t> presets(no);
+        
         int i;
 
         // clear memory
-        memset( presets, 0, sizeof( presets ) );
+        //memset( presets, 0, sizeof( presets ) ); VLA Fix:
+        memset( presets.data(), 0, sizeof( ctrl_protocol_wb_preset_t ) * no );
 
         // get auto processing white-blance presets from device
         int res = ctrl_protocol_get_wbpresets( GET_PROTOCOL_INSTANCE(this),
-                    GET_CHANNEL_INSTANCE(this), sizeof(presets), (uint8_t *)presets );
+                    //GET_CHANNEL_INSTANCE(this), sizeof(presets), (uint8_t *)presets ); VLA Fix:
+                    GET_CHANNEL_INSTANCE(this), sizeof(ctrl_protocol_wb_preset_t) * no, (uint8_t *)presets.data() );
         HANDLE_ERROR( res );
 
         // emit WbPresetsChanged signals
