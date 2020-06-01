@@ -9,10 +9,10 @@
 VERSION = 1.1.15
 DEFINES += VERSION_STRING=\\\"1.1.15\\\"
 
-QMAKE_TARGET_COMPANY = "Dream Chip Technologies GmbH"
-QMAKE_TARGET_PRODUCT = "ProVideo GUI"
-QMAKE_TARGET_DESCRIPTION = "GUI to control ProVideo cameras and image processors"
-QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2019, Dream Chip Technologies GmbH"
+QMAKE_TARGET_COMPANY = "KAYA Instruments"
+QMAKE_TARGET_PRODUCT = "SDI Control Point"
+QMAKE_TARGET_DESCRIPTION = "GUI to control KAYA SDI cameras"
+QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2020, KAYA Instruments"
 
 RC_ICONS = ../resource/icons/dct_icon.ico
 
@@ -21,7 +21,7 @@ QT      += core serialport network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = ProVideo
+TARGET = SDIControlPoint
 TEMPLATE = app
 
 # Platform specific tweaks

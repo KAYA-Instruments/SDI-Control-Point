@@ -32,7 +32,7 @@
    <enum>Qt::NoContextMenu</enum>
   </property>
   <property name="windowTitle">
-   <string>Connect to ProVideo Device</string>
+   <string>Connect to KAYA Device</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../../resource/resource.qrc">
