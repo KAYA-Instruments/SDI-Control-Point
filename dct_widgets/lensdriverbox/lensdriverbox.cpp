@@ -843,7 +843,7 @@ LensDriverBox::LensDriverBox( QWidget * parent ) : DctWidgetBox( parent )
                               "The template file for the supported lenses was not found. "
                               "Please make sure that the file 'SupportedLenses.txt' is "
                               "placed in a folder named 'tools_and_configs' which is placed "
-                              "in the same folder that 'ProVideo.exe' is placed.\n\n"
+                              "in the same folder that 'SDIControlPoint.exe' is placed.\n\n"
                               "Please restart the GUI after the file was restored to use"
                               "the available templates." );
     }
