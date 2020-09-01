@@ -36,6 +36,7 @@
 #include <XbowDevice.h>
 #include <Condor4kDevice.h>
 #include <CooperDevice.h>
+#include <IronSDI_Device.h>
 #include <infodialog.h>
 
 #include "connectdialog.h"
@@ -380,6 +381,10 @@ bool ConnectDialog::connectWithDevice()
         else if ( systemPlatform == KNOWN_DEVICE_COOPER )
         {
             connectedDevice = new CooperDevice( getActiveChannel(), new ProVideoProtocol() );
+        }
+        else if ( systemPlatform == KNOWN_DEVICE_IRON_SDI )
+        {
+            connectedDevice = new IronSDI_Device( getActiveChannel(), new ProVideoProtocol() );
         }
         qDebug() << "connected with:" << systemPlatform;
 

@@ -84,6 +84,7 @@ INCLUDEPATH += ../libraries/include ..              \
                ../dct_widgets/debugterminal
 
 SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
+           ../dct_widgets/com_ctrl/devices/IronSDI_Device.cpp \
            ../dct_widgets/wbbox/wbbox.cpp                                   \
            ../dct_widgets/infobox/infobox.cpp                               \
            ../dct_widgets/blacklevelbox/blacklevelbox.cpp                   \
@@ -190,6 +191,7 @@ SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
 
 
 HEADERS  += ../libraries/include                                                \
+            ../dct_widgets/com_ctrl/devices/IronSDI_Device.h \
             ../dct_widgets/mcceqbox/mcceqbox.h                                  \
             ../dct_widgets/wbbox/wbbox.h                                        \
             ../dct_widgets/infobox/infobox.h                                    \

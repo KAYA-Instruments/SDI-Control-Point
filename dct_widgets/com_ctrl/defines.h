@@ -243,6 +243,7 @@
 #define KNOWN_DEVICE_CONDOR4K           ( "condor4k" )
 #define KNOWN_DEVICE_CONDOR4K_MINI      ( "condor4k_mini" )
 #define KNOWN_DEVICE_COOPER             ( "cooper" )
+#define KNOWN_DEVICE_IRON_SDI           ( "IronSDI" )
 
 enum KnownDevice
 {
@@ -251,6 +252,7 @@ enum KnownDevice
     KnownDeviceCondor4k,
     KnownDeviceCondor4kMini,
     KnownDeviceCooper,
+    KnownDeviceIronSDI,
     KnownDeviceMax,
 };
 
@@ -259,7 +261,8 @@ static QString gKnownDevices[KnownDeviceMax] =
     KNOWN_DEVICE_XBOW,
     KNOWN_DEVICE_CONDOR4K,
     KNOWN_DEVICE_CONDOR4K_MINI,
-    KNOWN_DEVICE_COOPER
+    KNOWN_DEVICE_COOPER,
+    KNOWN_DEVICE_IRON_SDI
 };
 
 /******************************************************************************
