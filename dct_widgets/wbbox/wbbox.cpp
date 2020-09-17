@@ -243,6 +243,15 @@ WbBox::WbBox( QWidget * parent ) : DctWidgetBox( parent )
     ////////////////////
     connect( d_data->m_wb_timer, SIGNAL(timeout()), this, SLOT(onWbUpdate()) );
 
+    /*
+     * Manulal hiding the following features.
+     * This features are currently not available the IronSDI
+     */
+    d_data->m_ui->lblAwbSpeed->hide();
+    d_data->m_ui->sldAwbSpeed->hide();
+    d_data->m_ui->letAwbSpeed->hide();
+    //*******************************************
+
     ////////////////////
     // operation mode
     ////////////////////
@@ -533,6 +542,8 @@ void WbBox::setWhiteBalanceSettingsVisible(const bool awbVisible, const bool gai
 {
     // Enable WB Button Box (contains WB Presets), if awb settings shall be visible
     d_data->m_ui->WbButtonBox->setVisible(awbVisible);
+    // Override visibility
+    d_data->m_ui->WbButtonBox->setVisible(false);
 
     // Enable WB Settings Group box, if either awb or gain shall be visible
     d_data->m_ui->WbSettings->setVisible(awbVisible || gainVisible);

@@ -515,7 +515,7 @@ enum DownscaleMode
     DownscaleModeOff            = 0,  /**< Do not downscale (original resoltion) */
     DownscaleModeOn             = 1,  /**< Downscale 4k to 2k content, if possible  */
     DownscaleModeOnAndInterlace = 2,  /**< Downscale 4k to 2k content and interlace, if possible */
-    DownscaleModeMax
+    DownscaleModeMax            = 2   // Only mode 0 and mode 1 are available
 };
 
 /******************************************************************************

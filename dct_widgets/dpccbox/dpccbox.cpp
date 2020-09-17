@@ -506,6 +506,20 @@ void DpccBox::setFullDpccFeatureSetVisible( bool visible )
 
     // Show / hide information label
     d_data->m_ui->lblInformation->setVisible( visible );
+
+    /*
+     * Manulal hiding the following features.
+     * This features are currently not available the IronSDI
+     */
+    d_data->m_ui->lineTop->hide();
+    d_data->m_ui->lblCorrectionMode->hide();
+    d_data->m_ui->cbxCorrectionMode->hide();
+    d_data->m_ui->lblLevel->hide();
+    d_data->m_ui->sbxLevel->hide();
+    d_data->m_ui->lblTestMode->hide();
+    d_data->m_ui->cbxTestMode->hide();
+    d_data->m_ui->btnAutoLoadTable->hide();
+    //*******************************************
 }
 
 /******************************************************************************

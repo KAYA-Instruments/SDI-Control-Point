@@ -380,6 +380,30 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->sldSlope, SIGNAL(valueChanged(int)), this, SLOT(onSldSlopeChange(int)) );
     connect( d_data->m_ui->sldSlope, SIGNAL(sliderReleased()), this, SLOT(onSldSlopeReleased()) );
 
+    /*
+     * Manulal hiding the following features.
+     * This features are currently not available the IronSDI
+     */
+    d_data->m_ui->lblAecWeights->hide();
+    d_data->m_ui->cbxAecWeight->hide();
+    d_data->m_ui->btnAecWeight->hide();
+
+    d_data->m_ui->lblMaxIso->hide();
+    d_data->m_ui->sbxMaxIso->hide();
+    d_data->m_ui->sldMaxIso->hide();
+
+    d_data->m_ui->lblControlSpeed->hide();
+    d_data->m_ui->sbxControlSpeed->hide();
+    d_data->m_ui->sldControlSpeed->hide();
+
+    d_data->m_ui->lblTaf->hide();
+    d_data->m_ui->rdbTaf50Hz->hide();
+    d_data->m_ui->rdbTaf60Hz->hide();
+
+    d_data->m_ui->lblColorSpace->hide();
+    d_data->m_ui->cbxColorSpace->hide();
+    //*******************************************
+
     ////////////////////
     // operation mode
     ////////////////////
@@ -1126,6 +1150,7 @@ void InOutBox::setGenLockTermination( const bool value )
 void InOutBox::prepareMode( const Mode mode )
 {
     bool v = (DctWidgetBox::Normal == mode) ? false : true;
+    v = false; // Not available in IronSDI
     d_data->m_ui->lblBayerPattern->setVisible( v );
     d_data->m_ui->cbxBayerPattern->setVisible( v );
 }
@@ -1462,8 +1487,11 @@ void InOutBox::setDownscaleModeVisible(const bool value)
     d_data->m_ui->lblSdi1Downscaler->setVisible(value);
     d_data->m_ui->cbxSdi1Downscaler->setVisible(value);
 
-    d_data->m_ui->lblSdi2Downscaler->setVisible(value);
-    d_data->m_ui->cbxSdi2Downscaler->setVisible(value);
+    //d_data->m_ui->lblSdi2Downscaler->setVisible(value);
+    //d_data->m_ui->cbxSdi2Downscaler->setVisible(value);
+    // There is only one SDI out
+    d_data->m_ui->lblSdi2Downscaler->setVisible(false);
+    d_data->m_ui->cbxSdi2Downscaler->setVisible(false);
 }
 
 /******************************************************************************

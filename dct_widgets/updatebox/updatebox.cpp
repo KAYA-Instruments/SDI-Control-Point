@@ -368,6 +368,21 @@ UpdateBox::UpdateBox( QWidget * parent ) : DctWidgetBox( parent )
 
     // set initial state
     setSystemState( CommandState );
+
+    // Hiding features are not available in IronSDI
+    d_data->m_ui->lblSystemName->hide();
+    d_data->m_ui->letSystemName->hide();
+    d_data->m_ui->lblSystemVersion->hide();
+    d_data->m_ui->letSystemVersion->hide();
+    d_data->m_ui->lblFlashLoaderVersion->hide();
+    d_data->m_ui->letFlashLoaderVersion->hide();
+
+    d_data->m_ui->gpbOnlineUpdate->hide();
+
+    d_data->m_ui->lblFiletype->hide();
+    d_data->m_ui->letFiletype->hide();
+    d_data->m_ui->lblVerify->hide();
+    d_data->m_ui->cbxVerify->hide();
 }
 
 /******************************************************************************

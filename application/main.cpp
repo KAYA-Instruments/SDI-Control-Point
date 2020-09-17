@@ -57,9 +57,14 @@ int main(int argc, char *argv[])
     // Create the main application window
     MainWindow w( &dlg );
 
+    /*
+     * Autoconnection uses RS485. Currently this feature is not avaolable in IronSDI.
+     * Override variable connected to false
+     */
+    bool connected = false;
     // Try to automatically scan an connect
-    bool connected = dlg.detectAndConnect();
-    app.processEvents( QEventLoop::WaitForMoreEvents );
+    // bool connected = dlg.detectAndConnect();
+    // app.processEvents( QEventLoop::WaitForMoreEvents );
 
     // If the connection can be established automatically directly show the main window
     if ( connected )
