@@ -161,6 +161,7 @@ private:
     ComChannelRS4xx *            m_rs485;                   // control channel instance
     ProVideoDevice *             m_connectedDevice;         // Holds the connected device.
     ComChannelSerial *           m_active;                  // activated/opened com channel
+    int                          m_active_index;            // Index of the serial interface
     QVector<detectedRS485Device> m_detectedRS485Devices;    // list of the RS485 devices which were detected during scan
     int                          m_currentRS485DeviceIndex; // Index of the connected device from the m_detectedRS485Devices list that is currently connected
     QPushButton *                m_rescan;                  // rescan button
