@@ -836,6 +836,8 @@ LensDriverBox::LensDriverBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->btnIrisTransmitTable->setVisible(false);
     d_data->m_ui->btnDeleteColumn->setVisible(false);
 
+    // Lens control is not supported for IronSDI, no need to check this file
+    /*
     if( ! d_data->getLensesFromFile(&d_data->m_LensIrisTemplates) )
     {
         QMessageBox::warning( this,
@@ -847,6 +849,7 @@ LensDriverBox::LensDriverBox( QWidget * parent ) : DctWidgetBox( parent )
                               "Please restart the GUI after the file was restored to use"
                               "the available templates." );
     }
+    */
 
     // fill settings combo box
     for ( int i = LensProfileFirst; i < LensProfileMax; i++ )
