@@ -48,6 +48,9 @@
       <number>0</number>
      </property>
      <widget class="QWidget" name="tabRS485">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <attribute name="title">
        <string>RS485</string>
       </attribute>

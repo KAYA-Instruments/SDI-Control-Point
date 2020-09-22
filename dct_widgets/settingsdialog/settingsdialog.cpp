@@ -72,6 +72,23 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     // Set device ID ranges
     m_ui->sbxRS485Address->setRange( 0, MAX_DEVICE_ID );
     m_ui->sbxRS485BroadcastAddress->setRange( 0, MAX_DEVICE_ID );
+
+    // Hiding serial port features and serial connection control
+    m_ui->lblNote->hide();
+    m_ui->lblSerialInterface->hide();
+    m_ui->lblRS232Baudrate->hide();
+    m_ui->cbxRS232Baudrate->hide();
+    m_ui->lblRS485Baudrate->hide();
+    m_ui->cbxRS485Baudrate->hide();
+    m_ui->lblRS485Address->hide();
+    m_ui->sbxRS485Address->hide();
+    m_ui->lblRS485BroadcastAddress->hide();
+    m_ui->sbxRS485BroadcastAddress->hide();
+    m_ui->lblRS485Termination->hide();
+    m_ui->cbxRS485Termination->hide();
+    m_ui->label_2->hide();
+    m_ui->btnApplySerialPortSettings->hide();
+    m_ui->lblNote2->hide();
 }
 
 /******************************************************************************
@@ -132,9 +149,14 @@ void SettingsDialog::onDeviceNameChange( QString name )
  *****************************************************************************/
 void SettingsDialog::setBroadcastSettingsVisible( const bool value )
 {
-    m_ui->lblNote->setVisible( value );
-    m_ui->lblRS485BroadcastAddress->setVisible( value );
-    m_ui->sbxRS485BroadcastAddress->setVisible( value );
+   //m_ui->lblNote->setVisible( value );
+   //m_ui->lblRS485BroadcastAddress->setVisible( value );
+    //m_ui->sbxRS485BroadcastAddress->setVisible( value );
+    // Need to override here, it depends on rs232 flag in the feature set
+    Q_UNUSED (value);
+    m_ui->lblNote->setVisible( false );
+    m_ui->lblRS485BroadcastAddress->setVisible( false );
+    m_ui->sbxRS485BroadcastAddress->setVisible( false );
 }
 
 /******************************************************************************
@@ -142,8 +164,12 @@ void SettingsDialog::setBroadcastSettingsVisible( const bool value )
  *****************************************************************************/
 void SettingsDialog::setRS232SettingsVisible( const bool value )
 {
-    m_ui->lblRS232Baudrate->setVisible( value );
-    m_ui->cbxRS232Baudrate->setVisible( value );
+    //m_ui->lblRS232Baudrate->setVisible( value );
+    //m_ui->cbxRS232Baudrate->setVisible( value );
+    // Need to override here because in the connect dialog this features should be visible
+    Q_UNUSED (value);
+    m_ui->lblRS232Baudrate->setVisible( false );
+    m_ui->cbxRS232Baudrate->setVisible( false );
 }
 
 /******************************************************************************

@@ -64,6 +64,7 @@ ConnectDialog::ConnectDialog( QWidget * parent )
     , m_rs485( new ComChannelRS4xx() )
     , m_connectedDevice ( nullptr )
     , m_active( nullptr )
+    , m_active_index( Invalid )
     , m_detectedRS485Devices()
     , m_currentRS485DeviceIndex( -1 )
     , m_firstStart( true )
@@ -193,6 +194,9 @@ ConnectDialog::ConnectDialog( QWidget * parent )
             qDebug() << "failed loading connection settings from file";
         }
     }
+
+    int currentIndexRS485 = m_ui->tabController->indexOf(m_ui->tabRS485);
+    m_ui->tabController->removeTab(currentIndexRS485);
 }
 
 /******************************************************************************
@@ -631,7 +635,8 @@ ConnectDialog::Interface ConnectDialog::getActiveInterface() const
 {
     Interface iface;
 
-    switch ( m_ui->tabController->currentIndex() )
+    //switch ( m_ui->tabController->currentIndex() )
+    switch(m_active_index)
     {
         case 0:
             iface = Rs485;
@@ -659,6 +664,8 @@ int ConnectDialog::setActiveInterface( ConnectDialog::Interface iface )
     if ( (iface > Invalid) && (iface < MaxInterface) )
     {
         m_ui->tabController->setCurrentIndex( static_cast<int>(iface) );
+
+        m_active_index = iface;
 
         switch ( iface )
         {

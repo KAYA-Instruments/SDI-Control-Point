@@ -311,7 +311,8 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
     m_ui->tabWidget->addTab(m_ui->tabInfo, QIcon(":/images/tab/info.png"), "");
 
     // Only enable the update tab, if the device is connected over RS485 (Bootloader does not support RS232)
-    if (deviceFeatures.hasSystemUpdate && m_ConnectDlg->getActiveInterface() == ConnectDialog::Rs485 )
+    //if (deviceFeatures.hasSystemUpdate && m_ConnectDlg->getActiveInterface() == ConnectDialog::Rs485 )
+    if (deviceFeatures.hasSystemUpdate )
     {
         m_activeWidgets.append(m_ui->updBox);
         m_ui->tabWidget->addTab(m_ui->tabUpdate, QIcon(":/images/tab/update.png"), "");
@@ -335,7 +336,9 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
     m_ui->inoutBox->setGenLockVisible(deviceFeatures.hasChainGenLock);
     m_ui->inoutBox->setTimeCodeVisible(deviceFeatures.hasChainTimeCode, deviceFeatures.hasChainTimeCodeHold);
     m_ui->inoutBox->setFlipModeVisible(deviceFeatures.hasChainFlipVertical, deviceFeatures.hasChainFlipHorizontal);
-    m_ui->inoutBox->setLogModeVisible(deviceFeatures.hasLutItf);
+    //    m_ui->inoutBox->setLogModeVisible(deviceFeatures.hasLutItf);
+    //    Override visibility because of hasLutItf flag controls LUT box
+    m_ui->inoutBox->setLogModeVisible(false);
     m_ui->inoutBox->setTestPatternVisible(deviceFeatures.hasOsdTestPattern);
     m_ui->inoutBox->setAudioVisible(deviceFeatures.hasChainAudio);
 

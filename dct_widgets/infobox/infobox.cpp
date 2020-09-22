@@ -107,6 +107,42 @@ InfoBox::InfoBox( QWidget * parent ) : DctWidgetBox( parent )
     // connect software license dialogs
     connect( d_data->m_ui->btnShowLicense, SIGNAL(clicked(bool)), this, SLOT(onShowLicenseClicked()) );
     connect( d_data->m_ui->btnShowThirdPartyLicenses, SIGNAL(clicked(bool)), this, SLOT(onShowThirdPartyLicensesClicked()) );
+
+    /*
+     * Manulal hiding the following features.
+     * This features are currently not available the IronSDI
+     */
+    d_data->m_ui->lblMaxTempLogged->hide();
+    d_data->m_ui->letMaxTempLoggedPersistent->hide();
+    d_data->m_ui->letMaxTempLoggedUser->hide();
+    d_data->m_ui->btnResetMaxTemp->hide();
+
+    d_data->m_ui->lblMaxTempAllowed->hide();
+    d_data->m_ui->letMaxTempAllowed->hide();
+    d_data->m_ui->lblOverTemp->hide();
+
+    d_data->m_ui->letOverTemp->hide();
+    d_data->m_ui->label_2->hide();
+    /*
+     * This features are not used
+     */
+    d_data->m_ui->lblSystemId->hide();
+    d_data->m_ui->letSystemId->hide();
+
+    d_data->m_ui->lblSystemValidity->hide();
+    d_data->m_ui->letSystemValidity->hide();
+
+    d_data->m_ui->lblBitstreamId->hide();
+    d_data->m_ui->letBitstreamId->hide();
+
+    d_data->m_ui->lblLoaderId->hide();
+    d_data->m_ui->letLoaderId->hide();
+
+    d_data->m_ui->lblSoftwareBuildDate->hide();
+    d_data->m_ui->letSoftwareBuildDate->hide();
+
+
+
 }
 
 /******************************************************************************
