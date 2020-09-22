@@ -1149,10 +1149,11 @@ void InOutBox::setGenLockTermination( const bool value )
  *****************************************************************************/
 void InOutBox::prepareMode( const Mode mode )
 {
-    bool v = (DctWidgetBox::Normal == mode) ? false : true;
-    v = false; // Not available in IronSDI
-    d_data->m_ui->lblBayerPattern->setVisible( v );
-    d_data->m_ui->cbxBayerPattern->setVisible( v );
+    //bool v = (DctWidgetBox::Normal == mode) ? false : true;
+    Q_UNUSED(mode);
+    // Not available in IronSDI
+    d_data->m_ui->lblBayerPattern->setVisible( false );
+    d_data->m_ui->cbxBayerPattern->setVisible( false );
 }
 
 /******************************************************************************
