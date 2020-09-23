@@ -58,12 +58,13 @@
 #define CMD_SET_LUT_FIXED_MODE_TMO              ( 5000 )
 
 /******************************************************************************
- * @brief command "lut_enable" 
+ * @brief command "lut_preset"
  *****************************************************************************/
 #define CMD_GET_LUT_PRESET                      ( "lut_preset\n" )
 #define CMD_SET_LUT_PRESET                      ( "lut_preset %i\n" )
 #define CMD_SYNC_LUT_PRESET                     ( "lut_preset " )
 #define CMD_GET_LUT_PRESET_NO_PARMS             ( 1 )
+#define CMD_SET_LUT_PRESET_TMO                  ( 3000 )
 
 /******************************************************************************
  * @brief command "lut_write_addr" 
@@ -130,21 +131,25 @@
  * @brief command "lut_reset_red" 
  *****************************************************************************/
 #define CMD_SET_LUT_RESET_RED                   ( "lut_reset_red\n" )
+#define CMD_SET_LUT_RESET_RED_TMO               ( 3000 )
 
 /******************************************************************************
  * @brief command "lut_reset_green" 
  *****************************************************************************/
 #define CMD_SET_LUT_RESET_GREEN                 ( "lut_reset_green\n" )
+#define CMD_SET_LUT_RESET_GREEN_TMO             ( 3000 )
 
 /******************************************************************************
  * @brief command "lut_reset_blue" 
  *****************************************************************************/
 #define CMD_SET_LUT_RESET_BLUE                  ( "lut_reset_blue\n" )
+#define CMD_SET_LUT_RESET_BLUE_TMO              ( 3000 )
 
 /******************************************************************************
  * @brief command "lut_reset_master" 
  *****************************************************************************/
 #define CMD_SET_LUT_RESET_MASTER                ( "lut_reset_master\n" )
+#define CMD_SET_LUT_RESET_MASTER_TMO            ( 3000 )
 
 /******************************************************************************
  * @brief command "lut_sample" 
@@ -198,6 +203,7 @@
  * @brief command "lut_rec709" 
  *****************************************************************************/
 #define CMD_SET_LUT_REC709                      ( "lut_fun_rec709 %i %i %i %i %i %i\n" )
+#define CMD_SET_LUT_REC709_TMO                  ( 3000 )
 
 /******************************************************************************
  * @brief command "lut_interpolate" 
@@ -248,6 +254,11 @@
 #define CMD_SET_PQ_MAX_BRIGHTNESS               ( "pq_max_brightness %i\n" )
 #define CMD_SYNC_PQ_MAX_BRIGHTNESS              ( "pq_max_brightness " )
 #define CMD_GET_PQ_MAX_BRIGHTNESS_NO_PARMS      ( 1 )
+
+/******************************************************************************
+ * @brief timeout for commands that require writing to flash memory
+ *****************************************************************************/
+#define CMD_EVALUATE_SET_RESPONSE_TMO           ( 3000 )
 
 /******************************************************************************
  * protocol helper function
@@ -578,7 +589,7 @@ static int set_lut_sample_internal
         ctrl_channel_send_request( channel, (uint8_t *)command, strlen(command) );
 
         // wait for response and evaluate
-        res = evaluate_set_response( channel );
+        res = evaluate_set_response_with_tmo( channel, CMD_EVALUATE_SET_RESPONSE_TMO );
         if ( res )
         {
             return ( res );
@@ -602,7 +613,7 @@ static int set_lut_sample_internal
         ctrl_channel_send_request( channel, (uint8_t *)command, strlen(command) );
 
         // wait for response and evaluate
-        res = evaluate_set_response( channel );
+        res = evaluate_set_response_with_tmo( channel, CMD_EVALUATE_SET_RESPONSE_TMO );
         if ( res )
         {
             return ( res );
@@ -626,7 +637,7 @@ static int set_lut_sample_internal
         ctrl_channel_send_request( channel, (uint8_t *)command, strlen(command) );
 
         // wait for response and evaluate
-        res = evaluate_set_response( channel );
+        res = evaluate_set_response_with_tmo( channel, CMD_EVALUATE_SET_RESPONSE_TMO );
         if ( res )
         {
             return ( res );
@@ -649,7 +660,7 @@ static int set_lut_sample_internal
         ctrl_channel_send_request( channel, (uint8_t *)command, strlen(command) );
 
         // wait for response and evaluate
-        res = evaluate_set_response( channel );
+        res = evaluate_set_response_with_tmo( channel, CMD_EVALUATE_SET_RESPONSE_TMO );
         if ( res )
         {
             return ( res );
@@ -1062,7 +1073,7 @@ static int set_lut_preset
 {
     (void) ctx;
 
-    return ( set_param_int_X( channel, CMD_SET_LUT_PRESET, INT( value ) ) );
+    return ( set_param_int_X_with_tmo( channel, CMD_SET_LUT_PRESET, CMD_SET_LUT_PRESET_TMO, INT( value ) ) );
 }
 
 /******************************************************************************
@@ -1332,7 +1343,7 @@ static int set_lut_reset_red
 {
     (void) ctx;
 
-    return ( set_param_0( channel, CMD_SET_LUT_RESET_RED ) );
+    return ( set_param_0_with_tmo( channel, CMD_SET_LUT_RESET_RED, CMD_SET_LUT_RESET_RED_TMO ) );
 }
 
 /******************************************************************************
@@ -1347,7 +1358,7 @@ static int set_lut_reset_green
 {
     (void) ctx;
 
-    return ( set_param_0( channel, CMD_SET_LUT_RESET_GREEN ) );
+    return ( set_param_0_with_tmo( channel, CMD_SET_LUT_RESET_GREEN, CMD_SET_LUT_RESET_GREEN_TMO ) );
 }
 
 /******************************************************************************
@@ -1362,7 +1373,7 @@ static int set_lut_reset_blue
 {
     (void) ctx;
 
-    return ( set_param_0( channel, CMD_SET_LUT_RESET_BLUE ) );
+    return ( set_param_0_with_tmo( channel, CMD_SET_LUT_RESET_BLUE, CMD_SET_LUT_RESET_BLUE_TMO ) );
 }
 
 /******************************************************************************
@@ -1376,7 +1387,7 @@ static int set_lut_reset_master
 {
     (void) ctx;
 
-    return ( set_param_0( channel, CMD_SET_LUT_RESET_MASTER ) );
+    return ( set_param_0_with_tmo( channel, CMD_SET_LUT_RESET_MASTER, CMD_SET_LUT_RESET_MASTER_TMO ) );
 }
 
 /******************************************************************************
@@ -1626,8 +1637,8 @@ static int set_lut_rec709
 
     rec709 = (ctrl_protocol_rec709_t *)values;
     
-    return ( set_param_int_X( channel,
-                CMD_SET_LUT_REC709,
+    return ( set_param_int_X_with_tmo( channel,
+                CMD_SET_LUT_REC709, CMD_SET_LUT_REC709_TMO,
                 INT( rec709->threshold ), INT( rec709->lcontrast ),
                 INT( rec709->lbrightness), INT( rec709->contrast),
                 INT( rec709->gamma), INT( rec709->brightness) ) );
