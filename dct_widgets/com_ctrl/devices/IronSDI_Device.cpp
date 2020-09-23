@@ -306,7 +306,7 @@ IronSDI_Device::features IronSDI_Device::getSupportedFeatures()
     deviceFeatures.hasSystemBroadcast       = true;
     deviceFeatures.hasRS232Interface        = true;
 
-    deviceFeatures.lutBitWidth              = 16;
+    deviceFeatures.lutBitWidth              = 10;
     deviceFeatures.numTempSensors           = 2;
 
     return deviceFeatures;
