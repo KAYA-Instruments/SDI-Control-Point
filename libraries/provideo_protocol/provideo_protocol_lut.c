@@ -42,7 +42,7 @@
 /******************************************************************************
  * @brief command "lut_mode"
  *****************************************************************************/
-#define CMD_GET_LUT_MODE                        ( "lut_mode \n" )
+#define CMD_GET_LUT_MODE                        ( "lut_mode\n" )
 #define CMD_SET_LUT_MODE                        ( "lut_mode %i\n" )
 #define CMD_SYNC_LUT_MODE                       ( "lut_mode " )
 #define CMD_GET_LUT_MODE_NO_PARMS               ( 1 )
@@ -51,7 +51,7 @@
 /******************************************************************************
  * @brief command "lut_fixed_mode"
  *****************************************************************************/
-#define CMD_GET_LUT_FIXED_MODE                  ( "lut_fixed_mode \n" )
+#define CMD_GET_LUT_FIXED_MODE                  ( "lut_fixed_mode\n" )
 #define CMD_SET_LUT_FIXED_MODE                  ( "lut_fixed_mode %i\n" )
 #define CMD_SYNC_LUT_FIXED_MODE                 ( "lut_fixed_mode " )
 #define CMD_GET_LUT_FIXED_MODE_NO_PARMS         ( 1 )
@@ -60,7 +60,7 @@
 /******************************************************************************
  * @brief command "lut_enable" 
  *****************************************************************************/
-#define CMD_GET_LUT_PRESET                      ( "lut_preset \n" )
+#define CMD_GET_LUT_PRESET                      ( "lut_preset\n" )
 #define CMD_SET_LUT_PRESET                      ( "lut_preset %i\n" )
 #define CMD_SYNC_LUT_PRESET                     ( "lut_preset " )
 #define CMD_GET_LUT_PRESET_NO_PARMS             ( 1 )
@@ -152,7 +152,7 @@
 #define CMD_SET_LUT_SAMPLE_8                    ( "lut_sample %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i\n" )
 #define CMD_SET_LUT_SAMPLE_4                    ( "lut_sample %i %i %i %i %i %i %i %i\n" )
 #define CMD_SET_LUT_SAMPLE_2                    ( "lut_sample %i %i %i %i\n" )
-#define CMD_SET_LUT_SAMPLE_1                    ( "lut_sample  %i %i\n" )
+#define CMD_SET_LUT_SAMPLE_1                    ( "lut_sample %i %i\n" )
 
 /******************************************************************************
  * @brief command "lut_sample_red" 
@@ -226,7 +226,7 @@
 /******************************************************************************
  * @brief command "lut_fast_gamma"
  *****************************************************************************/
-#define CMD_GET_LUT_FAST_GAMMA                  ( "lut_fast_gamma \n" )
+#define CMD_GET_LUT_FAST_GAMMA                  ( "lut_fast_gamma\n" )
 #define CMD_SET_LUT_FAST_GAMMA                  ( "lut_fast_gamma %i\n" )
 #define CMD_SYNC_LUT_FAST_GAMMA                 ( "lut_fast_gamma " )
 #define CMD_GET_LUT_FAST_GAMMA_NO_PARMS         ( 1 )
@@ -235,7 +235,7 @@
 /******************************************************************************
  * @brief command "lut_mode"
  *****************************************************************************/
-#define CMD_GET_LOG_MODE                        ( "log_mode \n" )
+#define CMD_GET_LOG_MODE                        ( "log_mode\n" )
 #define CMD_SET_LOG_MODE                        ( "log_mode %i\n" )
 #define CMD_SYNC_LOG_MODE                       ( "log_mode " )
 #define CMD_GET_LOG_MODE_NO_PARMS               ( 1 )
@@ -244,7 +244,7 @@
 /******************************************************************************
  * @brief command "pq_max_brightness"
  *****************************************************************************/
-#define CMD_GET_PQ_MAX_BRIGHTNESS               ( "pq_max_brightness \n" )
+#define CMD_GET_PQ_MAX_BRIGHTNESS               ( "pq_max_brightness\n" )
 #define CMD_SET_PQ_MAX_BRIGHTNESS               ( "pq_max_brightness %i\n" )
 #define CMD_SYNC_PQ_MAX_BRIGHTNESS              ( "pq_max_brightness " )
 #define CMD_GET_PQ_MAX_BRIGHTNESS_NO_PARMS      ( 1 )
