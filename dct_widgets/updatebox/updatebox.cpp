@@ -47,6 +47,7 @@
 #include "flashloader.h"
 #include "updatebox.h"
 #include "ui_updatebox.h"
+#include "libraries/include/xmodem/transfer.h"
 
 /******************************************************************************
  * namespaces

@@ -186,6 +186,8 @@ SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
            ../libraries/csv/csvparser.c                                     \
            ../libraries/csv/csvwriter.c                                     \
            ../libraries/qcustomplot/qcustomplot.cpp                         \
+           ../libraries/xmodem/crc16-xmodem.c \
+           ../libraries/xmodem/transfer.cpp \
            mainwindow.cpp                                                   \
            main.cpp
 
@@ -254,6 +256,8 @@ HEADERS  += ../libraries/include                                                
             ../dct_widgets/dct_widgets_base.h                                   \
             ../libraries/include/csv/csvparser.h                                \
             ../libraries/include/csv/csvwriter.h                                \
+            ../libraries/include/xmodem/crc16-xmodem.h \
+            ../libraries/include/xmodem/transfer.h \
             ../libraries/qcustomplot/qcustomplot.h                              \
             ../libraries/include/ctrl_channel/ctrl_channel.h                    \
             ../libraries/include/ctrl_channel/ctrl_channel_generic.h            \
