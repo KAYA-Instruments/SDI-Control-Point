@@ -141,7 +141,15 @@ InfoBox::InfoBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->lblSoftwareBuildDate->hide();
     d_data->m_ui->letSoftwareBuildDate->hide();
 
+    /*
+     * Remove the Copyright line and change link to source code
+     */
+    d_data->m_ui->lblCopyright->setText("This program comes with ABSOLUTELY NO WARRANTY. "
+                                        "This is free software, and you are welcome to redistribute it under certain conditions. "
+                                        "See above license for more details.\n\n"
+                                        "You can download the source code of this software from GitHub:");
 
+    d_data->m_ui->lblLink->setText("<a href=\"https://github.com/KAYA-Instruments/SDI-Camera-GUI/\">https://github.com/KAYA-Instruments/SDI-Camera-GUI</a>");
 
 }
 
