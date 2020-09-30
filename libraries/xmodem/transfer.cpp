@@ -21,83 +21,101 @@
 
 #define XMODEM_CAN  ((char)0x18)
 
-static char xmodem_sum(const QByteArray &ba){
+static char xmodem_sum(const QByteArray &ba)
+{
     char rv = 0;
-    for(char b : ba){
+    for(char b : ba)
+    {
         rv = rv + b;
     }
     return rv;
 }
 
-Transfer::Transfer(
-        QString serialPortName,
-        qint32 baudrate,
-        QString filePath,
-        QObject *parent
-        )  : QThread(parent)
+Transfer::Transfer(QObject *parent) : QThread(parent)
 {
     qDebug() << __FILE__ << __LINE__ << "--" << __func__;
     this->cancelRequested = false;
-    this->filePath = filePath;
+    this->filePath = nullptr;
     this->serialPort = nullptr;
     this->usePkcsPadding = false;
+
+}
+
+void Transfer::config(QString serialPortName, qint32 baudrate, QString filePath)
+{
+    this->filePath = filePath;
     //Find the serial port by name
+    /*
     for(QSerialPortInfo &port_info : QSerialPortInfo::availablePorts()){
         if(port_info.portName() == serialPortName){
             this->serialPort = new QSerialPort(port_info, this);
         }
     }
+    */
+
+    this->serialPort = new QSerialPort(serialPortName, this);
+
     //If port found, configure it
-    if(this->serialPort){
+    if(this->serialPort)
+    {
         this->serialPort->setBaudRate(baudrate);
         this->serialPort->setDataBits(QSerialPort::DataBits::Data8); //<-- Always 8
 
         //ToDo: These serial parameters should come from ui instead of hardcoded values
         this->serialPort->setParity(QSerialPort::Parity::NoParity);
         this->serialPort->setStopBits(QSerialPort::StopBits::OneStop);
-        this->serialPort->setFlowControl(QSerialPort::FlowControl::NoFlowControl); //<-- Either NONE or HARWARE
+        this->serialPort->setFlowControl(QSerialPort::FlowControl::NoFlowControl); //<-- Either NONE or HARDWARE
     }
 }
 
-void Transfer::setParity(QSerialPort::Parity parirty){
+void Transfer::setParity(QSerialPort::Parity parirty)
+{
     this->serialPort->setParity(parirty);
 }
 
-void Transfer::setStopBits(QSerialPort::StopBits stopBits){
+void Transfer::setStopBits(QSerialPort::StopBits stopBits)
+{
     this->serialPort->setStopBits(stopBits);
 }
 
-void Transfer::SetFlowControl(QSerialPort::FlowControl flowControl){
+void Transfer::SetFlowControl(QSerialPort::FlowControl flowControl)
+{
     this->serialPort->setFlowControl(flowControl);
 }
 
-void Transfer::setPkcsPadding(bool enabled){
+void Transfer::setPkcsPadding(bool enabled)
+{
     this->usePkcsPadding = enabled;
 }
 
-Transfer::~Transfer(){
+Transfer::~Transfer()
+{
     qDebug() << __FILE__ << __LINE__ << "--" << __func__;
 }
 
-void Transfer::launch(){
+void Transfer::launch()
+{
     qDebug() << __FILE__ << __LINE__ << "--" << __func__;
 
     //Launch worker thread
     this->start();
 }
 
-void Transfer::cancel(){
+void Transfer::cancel()
+{
     qDebug() << __FILE__ << __LINE__ << "--" << __func__;
     emit transferFailed(tr("Transfer cancelled"));
 }
 
 
-bool  Transfer::waitReadable(int timeout){
+bool  Transfer::waitReadable(int timeout)
+{
 
     const int timeoutStep = 10;
     int currTimeout = timeoutStep;
 
-    do{
+    do
+    {
         if((this->serialPort->waitForReadyRead(currTimeout))
            ||
            (this->serialPort->bytesAvailable() > 0))
@@ -112,79 +130,119 @@ bool  Transfer::waitReadable(int timeout){
 }
 
 //The bulk of the work goes here
-void Transfer::run(){
+void Transfer::run()
+{
     qDebug() << __FILE__ << __LINE__ << "--" << __func__;
 
     //Reset progress
-    emit updateProgress(0.0f);
+    emit updateProgress(0u);
 
     //Open serial port
     this->serialPort->open(QIODevice::ReadWrite);
-    if(!this->serialPort->isOpen()){
+    if(!this->serialPort->isOpen())
+    {
         emit transferFailed(tr("Unable to open port: ") + this->serialPort->portName());
         this->cancelRequested = true;
-    }
+    }    
 
     //Open input file
     QFile *in_file = new QFile(this->filePath);
-    if(in_file){
+    if(in_file)
+    {
         in_file->open(QIODevice::ReadOnly);
-        if(!in_file->isOpen()){
+        if(!in_file->isOpen())
+        {
             emit transferFailed(tr("Unable to open file: ") + this->filePath);
             this->cancelRequested = true;
         }
     }
-    else{
+    else
+    {
         emit transferFailed(tr("Unable to open QFile: ") + this->filePath);
         this->cancelRequested = true;
     }
 
     //If cancel requested at this stage, just cleanup early and return
-    if(cancelRequested){
-        if(in_file){ delete in_file; }
+    if(cancelRequested)
+    {
+        if(in_file)
+        {
+            delete in_file;
+        }
         this->serialPort->close();
+        emit transferFailed(tr("Cancel update process"));
         return;
     }
-
     const qint64 sPacketSize = 128; // 128/1024 remark: 1024 not working
 
     // enable FIRMWARE update
-    char byteBuf[] = "firmware\r";
-    this->serialPort->write(byteBuf, (qint64)strlen(byteBuf));
-    this->serialPort->waitForBytesWritten();
-
+    //char byteBuf[] = "firmware\r";
+    //this->serialPort->write(byteBuf, (qint64)strlen(byteBuf));
+    //this->serialPort->waitForBytesWritten();
     // this->serialPort->waitForReadyRead(this->timeoutRead);
-    waitReadable(this->timeoutRead);
+    //waitReadable(this->timeoutRead);
     this->serialPort->readAll(); // reset read buffer
-
     //Initialize transfer status
     quint32 current_packet = 1;
     bool use_crc = true;
+
+    // TESTING
+    /*
+     if(in_file)
+     {
+         delete in_file;
+     }
+     for(quint32 i = 0; i < 100; i++)
+     {
+         emit updateProgress(i);
+         msleep(50);
+     }
+     emit updateProgress(100u);
+     // reboot device
+     char byteBuf[] = "reboot\n";
+     this->serialPort->write(byteBuf, (qint64)strlen(byteBuf));
+     this->serialPort->waitForBytesWritten();
+
+     // this->serialPort->waitForReadyRead(this->timeoutRead);
+     waitReadable(this->timeoutRead);
+     this->serialPort->readAll(); // reset read buffer
+     this->serialPort->close();
+     msleep(500);
+     emit transferCompleted();
+     return;
+    */
 
     //Transfer loop
     bool transferComplete = false;
     bool sendPkcsPacket = ((in_file->size() % sPacketSize) == 0) && this->usePkcsPadding;
     bool pkcsPacketSent = false;
-    do{
+    do
+    {
         //Wait for the first character from recipient
         char status_char = '\0';
-        if(waitReadable(this->timeoutFirstRead)){// this->serialPort->waitForReadyRead(this->timeoutFirstRead)){
+        if(waitReadable(this->timeoutFirstRead))
+        {
+            // this->serialPort->waitForReadyRead(this->timeoutFirstRead))
             this->serialPort->read(&status_char, 1);
             //Received a byte
-            if(status_char == XMODEM_CRC){
+            if(status_char == XMODEM_CRC)
+            {
                 use_crc = true;
                 status_char = XMODEM_NACK;
             }
-            else if(status_char == XMODEM_NACK){
+            else if(status_char == XMODEM_NACK)
+            {
                 use_crc = false;
             }
-            else{
+            else
+            {
                 emit transferFailed(tr("Incorrect start of XMODEM transmission (0x") + QString::number(status_char,16) + ")");
                 this->cancelRequested = true;
                 continue; //<-- Will cleanup and return
             }
         }
-        else{
+        else
+        {
             //Timeout
             emit transferFailed(tr("Timeout"));
             this->cancelRequested = true;
@@ -192,7 +250,8 @@ void Transfer::run(){
         }
 
         //The proper, real, main XMODEM loop
-        while(!cancelRequested && !transferComplete){
+        while(!cancelRequested && !transferComplete)
+        {
             QByteArray packet;
 
             if(!in_file->atEnd())
@@ -211,7 +270,8 @@ void Transfer::run(){
 
                 //Payload
                 QByteArray payload = in_file->read(sPacketSize);
-                if (payload.length() < sPacketSize){
+                if (payload.length() < sPacketSize)
+                {
                     int padding = sPacketSize - payload.length();
                     char pad_byte = padding & 0xFF;
 
@@ -221,7 +281,8 @@ void Transfer::run(){
                     //PKCS#7 flag is enabled (this->usePkcsPadding) an aditional sPacketSize byte packet
                     //of the number sPacketSize repeated all over it *must* be sent as to guarantee
                     //padding is always present.
-                    while(padding){
+                    while(padding)
+                    {
                         payload.append((char)pad_byte);
                         padding--;
                     }
@@ -229,7 +290,8 @@ void Transfer::run(){
                 packet.append(payload);
 
                 //Checksum
-                if(use_crc){
+                if(use_crc)
+                {
                     uint16_t packet_crc = crc_init();
                     packet_crc = crc_update(packet_crc, payload.data(), payload.size());
                     packet_crc = crc_finalize(packet_crc);
@@ -238,11 +300,13 @@ void Transfer::run(){
                     packet.append((packet_crc >> 8) & 0xFF);
                     packet.append(packet_crc & 0xFF);
                 }
-                else{
+                else
+                {
                     packet.append(xmodem_sum(packet));
                 }
             }
-            else if (sendPkcsPacket){
+            else if (sendPkcsPacket)
+            {
                 //Packet header
                 if(1024 == sPacketSize)
                 {
@@ -261,26 +325,31 @@ void Transfer::run(){
                 for(int i = 0; i < sPacketSize; i++)
                 {
                     packet.append(pad_byte);
-                    if(use_crc){
+                    if(use_crc)
+                    {
                         cksum = crc_update(cksum, &pad_byte, 1);
                     }
-                    else{
+                    else
+                    {
                         cksum += pad_byte;
                     }
                 }
                 //Checksum
-                if(use_crc){
+                if(use_crc)
+                {
                     packet.append((cksum >> 8) & 0xFF);
                     packet.append(cksum & 0xFF);
                 }
-                else{
+                else
+                {
                     packet.append(cksum & 0xFF);
                 }
 
                 //Signal we sent the packet
                 pkcsPacketSent = true;
             }
-            else{
+            else
+            {
                 //Transfer complete!
                 packet.append(XMODEM_EOT);
                 packet.append(XMODEM_EOT);
@@ -308,56 +377,73 @@ void Transfer::run(){
 
             // bool isDataReady = this->serialPort->waitForReadyRead(200);
             // if(isDataReady || (this->serialPort->bytesAvailable() > 0)){
-            if(waitReadable(1000)){
+            if(waitReadable(1000))
+            {
                 this->serialPort->read(&status_char, 1);
                 switch(status_char)
                 {
-                case XMODEM_ACK:
-                {
-                    current_packet++;
+                    case XMODEM_ACK:
+                    {
+                        current_packet++;
 
-                    //If we just sent the PKCS packet, set the sendPkcsPacket
-                    //flag to false so next "packet" is the end of transfer.
-                    if(pkcsPacketSent){
-                        sendPkcsPacket = false;
+                        //If we just sent the PKCS packet, set the sendPkcsPacket
+                        //flag to false so next "packet" is the end of transfer.
+                        if(pkcsPacketSent)
+                        {
+                            sendPkcsPacket = false;
+                        }
+                        break;
                     }
-                    break;
-                }
-                case XMODEM_CAN:
-                {
-                    emit transferFailed(tr("Status terminated by device"));
-                    cancelRequested = true;
-                    break;
-                }
-                default:
-                {
-                    //Seek only needed within file packets. PKCS padding needs
-                    //no call to seek()
-                    if(!pkcsPacketSent){
-                        in_file->seek((current_packet - 1) * sPacketSize);
+                    case XMODEM_CAN:
+                    {
+                        emit transferFailed(tr("Status terminated by device"));
+                        cancelRequested = true;
+                        break;
                     }
-                    break;
-                }
+                    default:
+                    {
+                        //Seek only needed within file packets. PKCS padding needs
+                        //no call to seek()
+                        if(!pkcsPacketSent)
+                        {
+                            in_file->seek((current_packet - 1) * sPacketSize);
+                        }
+                        break;
+                    }
                 };
             }
-            else{
+            else
+            {
                 emit transferFailed(tr("Status timeout"));
                 cancelRequested = true;
             }
 
             //Update with transfer progress
-            emit updateProgress( ((current_packet - 1) * (float)sPacketSize) / ((float) in_file->size()) );
+            emit updateProgress( static_cast<quint32>(((current_packet - 1) * (float)sPacketSize) / ((float) in_file->size()) * 100) );
 
         }
     }while(0); //Shameless goto bait
 
     //Transfer completed, do cleanup
-    if(in_file){
+    if(in_file)
+    {
         delete in_file;
     }
-    this->serialPort->close();
-    emit updateProgress(1.0f);
-    if(transferComplete && !cancelRequested){
+    emit updateProgress(100u);
+    if(transferComplete && !cancelRequested)
+    {
+        // reboot device
+        char byteBuf[] = "reboot\n";
+        this->serialPort->write(byteBuf, (qint64)strlen(byteBuf));
+        this->serialPort->waitForBytesWritten();
+
+        waitReadable(this->timeoutRead);
+        this->serialPort->readAll(); // reset read buffer
         emit transferCompleted();
     }
+    else
+    {
+        emit transferFailed(tr("Common error"));
+    }
+    this->serialPort->close();
 }

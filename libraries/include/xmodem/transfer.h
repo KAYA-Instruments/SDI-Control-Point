@@ -15,11 +15,12 @@ class Transfer : public QThread
 {
     Q_OBJECT
 public:
-    explicit Transfer(
+    explicit Transfer(QObject *parent = nullptr);
+
+    void config(
             QString serialPortName,
             qint32 baudrate,
-            QString filePath,
-            QObject *parent = nullptr
+            QString filePath
             );
 
     void setParity(QSerialPort::Parity parirty);
@@ -30,6 +31,11 @@ public:
     virtual ~Transfer();
     void launch();
     void cancel();
+
+signals:
+    void updateProgress(quint32);
+    void transferCompleted();
+    void transferFailed(QString);
 
 protected:
     //QThread method
@@ -44,11 +50,6 @@ private:
     QString filePath;
     bool usePkcsPadding;
     bool cancelRequested;
-
-signals:
-    void updateProgress(float);
-    void transferCompleted();
-    void transferFailed(QString);
 };
 
 #endif // TRANSFER_H
