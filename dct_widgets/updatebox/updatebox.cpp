@@ -47,6 +47,7 @@
 #include "flashloader.h"
 #include "updatebox.h"
 #include "ui_updatebox.h"
+#include "libraries/include/xmodem/transfer.h"
 
 /******************************************************************************
  * namespaces
@@ -244,6 +245,8 @@ public:
         , m_FsmTimer( new QTimer( parent ) )
         , m_application ( new FlashLoader() )
         , m_state( InvalidState )
+        , m_transferInstance ( new Transfer(parent) )
+        , m_transferState( InitState )
         , m_state_sema(1)
         , m_current_fw_version({0, 0, 0})
         , m_server_fw_version({0, 0, 0})
@@ -293,9 +296,10 @@ public:
         QObject::connect( m_application, SIGNAL(FlashLoaderError(int)), parent, SLOT(onFlashLoaderError(int)) );
         QObject::connect( m_application, SIGNAL(ReadbackProgress(quint32)), parent, SLOT(onReadbackProgress(quint32)) );
         QObject::connect( m_application, SIGNAL(EraseProgress(quint32)), parent, SLOT(onEraseProgress(quint32)) );
-        QObject::connect( m_application, SIGNAL(ProgramProgress(quint32)), parent, SLOT(onProgramProgress(quint32)) );
+        QObject::connect( m_transferInstance, SIGNAL(updateProgress(quint32)), parent, SLOT(onProgramProgress(quint32)) );
         QObject::connect( m_application, SIGNAL(VerifyProgress(quint32)), parent, SLOT(onVerifyProgress(quint32)) );
-        QObject::connect( m_application, SIGNAL(UpdateFinished()), parent, SLOT(onUpdateFinished()) );
+        QObject::connect( m_transferInstance, SIGNAL(transferCompleted()), parent, SLOT(onUpdateFinished()) );
+        QObject::connect( m_transferInstance, SIGNAL(transferFailed(QString)), parent, SLOT(onUpdateFailed(QString)) );
 
         // connect buttons and checkboxes
         QObject::connect( m_ui->btnCheckFirmwareUpdate, SIGNAL(clicked()), parent, SLOT(onCheckFirmwareUpdateClicked()) );
@@ -324,6 +328,8 @@ public:
     QTimer *                    m_FsmTimer;             /**< FSM timer */
     FlashLoader *               m_application;          /**< flashloader application process */
     UpdateBox::SystemStates     m_state;                /**< current system state */
+    Transfer *                  m_transferInstance;     /**< xmodem instance */
+    qint32                      m_transferState;        /**< xmodem transfer state */
 
     qint32                      m_id;                   /**< detected system identifier */
     quint32                     m_no_sec;               /**< number of flash sectors */
@@ -1252,6 +1258,7 @@ void UpdateBox::onCheckGuiUpdateClicked()
  *****************************************************************************/
 void UpdateBox::onFsmTimer( )
 {
+    /*
     int res = 0;
     int updateIndex = d_data->m_upd_idx;
 
@@ -1328,6 +1335,44 @@ void UpdateBox::onFsmTimer( )
 
         // set normal cursor
         setNormalCursor();
+    }
+    */
+
+    if(d_data->m_transferState == FWCommandState)
+    {
+        d_data->m_ui->letSystemMode->setText("Updating... Do not interrupt the process.");
+
+        d_data->m_transferState = UpdatingState;
+
+        emit CloseSerialConnection();
+        QApplication::processEvents();
+        d_data->m_transferInstance->config(
+                    d_data->m_application->Portname(),
+                    d_data->m_application->Baudrate(),
+                    d_data->m_ui->letFilename->text()
+                    );
+        // Run xmodem
+        d_data->m_transferInstance->launch();
+    }
+
+    if(d_data->m_transferState == SuccessState)
+    {
+        d_data->m_ui->letSystemMode->setText(SYSTEM_STATE_COMMAND);
+
+        d_data->m_transferState = InitState;
+
+        emit LockCurrentTabPage( false );
+
+        setNormalCursor();
+
+        QApplication::processEvents();
+
+        d_data->m_ui->progressBar->setFormat( "%p%" );
+        d_data->m_ui->progressBar->setValue( 0 );
+
+        d_data->m_ui->btnFilename->setEnabled( true );
+
+        emit ReopenSerialConnection();
     }
 }
 
@@ -1468,6 +1513,7 @@ void UpdateBox::checkUpdateDirectory( QString updateDirectory  )
  *****************************************************************************/
 void UpdateBox::onFileNameClicked()
 {
+    /*
     if ( !d_data->m_upd_config.empty() )
     {
         QString updateDirectory = d_data->m_upd_dir;
@@ -1492,6 +1538,21 @@ void UpdateBox::onFileNameClicked()
 
         checkUpdateDirectory( updateDirectory );
     }
+    */
+    QString filename = QFileDialog::getOpenFileName(this, tr("Choose File"), "", "*.bin");
+    if(fileExists(filename))
+    {
+        d_data->m_ui->letFilename->setText(filename);
+        d_data->m_ui->btnRun->setEnabled( true );
+    }
+    else
+    {
+        d_data->m_ui->letFilename->clear();
+        d_data->m_ui->btnRun->setEnabled( false );
+        QMessageBox::information( this,
+                                  "No file found",
+                                  "Choose an another file." );
+    }
 }
 
 /******************************************************************************
@@ -1499,6 +1560,7 @@ void UpdateBox::onFileNameClicked()
  *****************************************************************************/
 void UpdateBox::onRunClicked()
 {
+    /*
     // Check if updates available
     if ( getTotalNumUpdates() > 0 )
     {
@@ -1559,8 +1621,8 @@ void UpdateBox::onRunClicked()
             // User choose yes
             if ( reply == QMessageBox::Yes)
             {
-                /* Check if still in flash state, otherwise update was completed
-                 * while user was reading the message and we do not need to cancel */
+                // Check if still in flash state, otherwise update was completed
+                // while user was reading the message and we do not need to cancel
                 if ( getSystemState() == FlashState )
                 {
                     // I. send stop command
@@ -1586,6 +1648,22 @@ void UpdateBox::onRunClicked()
             }
         }
     }
+    */
+
+    d_data->m_ui->letSystemMode->setText("Starting Firmware Update.");
+
+    d_data->m_ui->progressBar->setFormat( "%p%" );
+    d_data->m_ui->progressBar->setValue( 0 );
+
+    setWaitCursor();
+    emit LockCurrentTabPage( true );
+    emit BootIntoUpdateMode();
+    QApplication::processEvents();
+
+    d_data->m_ui->btnRun->setEnabled( false );
+    d_data->m_ui->btnFilename->setEnabled( false );
+    d_data->m_transferState = FWCommandState;
+    d_data->m_FsmTimer->start( 1000 );
 }
 
 /******************************************************************************
@@ -1834,7 +1912,7 @@ void UpdateBox::onProgramProgress( quint32 progress )
     d_data->m_ui->progressBar->setFormat( "Program %p%" );
     d_data->m_ui->progressBar->setValue( static_cast<int>(progress) );
     d_data->m_program_cnt = progress;
-    setSystemState( FlashState );
+    //setSystemState( FlashState );
 }
 
 /******************************************************************************
@@ -1853,6 +1931,15 @@ void UpdateBox::onVerifyProgress( quint32 progress )
  *****************************************************************************/
 void UpdateBox::onUpdateFinished()
 {
+    d_data->m_transferState = SuccessState;
+
+    d_data->m_ui->letSystemMode->setText("Firmware Update Success. Wait for 30 seconds, the device is rebooting.");
+
+    //emit BootIntoUpdateMode();
+
+    d_data->m_FsmTimer->start( 1000 );
+
+    /*
     if ( FlashState == getSystemState() )
     {
         if ( ( d_data->m_erase_cnt   == 100 ) &&
@@ -1883,8 +1970,8 @@ void UpdateBox::onUpdateFinished()
                 // unlock GUI
                 emit LockCurrentTabPage( false );
 
-                /* reconnect with camera, the connect dialog will either reconnect, or
-                 * show the dialog if no automatic reconnect is possible */
+                // reconnect with camera, the connect dialog will either reconnect, or
+                // show the dialog if no automatic reconnect is possible
                 emit ReopenSerialConnection();
             }
             // if more updates are pending, continue with the next update
@@ -1902,4 +1989,35 @@ void UpdateBox::onUpdateFinished()
             }
         }
     }
+    */
+}
+
+/******************************************************************************
+ * UpdateBox::onUpdateFailed
+ *****************************************************************************/
+void UpdateBox::onUpdateFailed(QString errorMessage)
+{
+    d_data->m_ui->letSystemMode->setText(SYSTEM_STATE_COMMAND);
+
+    d_data->m_transferState = InitState;
+
+    emit LockCurrentTabPage( false );
+
+    setNormalCursor();
+
+    QApplication::processEvents();
+
+    // Build error message
+    QMessageBox errorMessageBox( this );
+    errorMessageBox.setIcon( QMessageBox::Warning );
+    errorMessageBox.setWindowTitle( "An Error Occured");
+    errorMessageBox.setText(errorMessage);
+
+    d_data->m_ui->progressBar->setFormat( "%p%" );
+    d_data->m_ui->progressBar->setValue( 0 );
+
+    d_data->m_ui->btnFilename->setEnabled( true );
+
+    // Show error message
+    errorMessageBox.exec();
 }

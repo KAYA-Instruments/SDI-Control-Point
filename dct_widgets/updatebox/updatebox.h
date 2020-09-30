@@ -46,6 +46,15 @@ public:
         ErrorState   =  4,
     };
 
+    enum XModemStates
+    {
+        InitState       = -1,
+        FWCommandState  =  0,
+        UpdatingState   =  1,
+        SuccessState    =  2,
+        FailState       =  3
+    };
+
     explicit UpdateBox( QWidget * parent = 0 );
     ~UpdateBox() Q_DECL_OVERRIDE;
 
@@ -134,6 +143,7 @@ private slots:
     void onProgramProgress( quint32 progress );
     void onVerifyProgress( quint32 progress );
     void onUpdateFinished();
+    void onUpdateFailed(QString);
 
 private:
     class PrivateData;
