@@ -243,7 +243,7 @@ void DebugTerminal::onShowHelpClicked()
     // Show help text in a message box
     QMessageBox::information( this,
                               "How to Use the Debug Terminal",
-                              "The Debug Terminal will show all commands which were sent by the ProVideo GUI. It stores "
+                              "The Debug Terminal will show all commands which were sent by the KAYA GUI. It stores "
                               "up to 10000 lines, if more lines are added the oldest lines will be removed.\n\n"
                               "You can enter your own commands in the 'Command' field or copy and paste a list of "
                               "commands from the clip board to that field.\n\n"

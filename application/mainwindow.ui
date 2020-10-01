@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>ProVideo Color Control</string>
+   <string>KAYA Color Control</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../resource/resource.qrc">
