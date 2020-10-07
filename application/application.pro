@@ -1,17 +1,12 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2016-01-26T17:25:55
-#
-#-------------------------------------------------
 
 # This version number is shown in the Application, it should be
 # updated before each release!
-VERSION = 1.1.15
-DEFINES += VERSION_STRING=\\\"1.1.15\\\"
+VERSION = 0.0.1
+DEFINES += VERSION_STRING=\\\"0.0.1\\\"
 
 QMAKE_TARGET_COMPANY = "KAYA Instruments"
 QMAKE_TARGET_PRODUCT = "SDI Control Point"
-QMAKE_TARGET_DESCRIPTION = "GUI to control KAYA SDI cameras"
+QMAKE_TARGET_DESCRIPTION = "GUI for controlling KAYA SDI cameras"
 QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2020, KAYA Instruments"
 
 RC_ICONS = ../resource/icons/dct_icon.ico
