@@ -20,7 +20,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>ProVideo Debug Terminal</string>
+   <string>KAYA Debug Terminal</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../../resource/resource.qrc">
