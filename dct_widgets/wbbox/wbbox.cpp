@@ -542,8 +542,6 @@ void WbBox::setWhiteBalanceSettingsVisible(const bool awbVisible, const bool gai
 {
     // Enable WB Button Box (contains WB Presets), if awb settings shall be visible
     d_data->m_ui->WbButtonBox->setVisible(awbVisible);
-    // Override visibility
-    d_data->m_ui->WbButtonBox->setVisible(false);
 
     // Enable WB Settings Group box, if either awb or gain shall be visible
     d_data->m_ui->WbSettings->setVisible(awbVisible || gainVisible);
@@ -627,7 +625,7 @@ void WbBox::onWbPresetsChange( int id, QString name, int ct )
             break;
 
         default:
-            d_data->m_ui->WbButtonBox->addButton( s );
+            d_data->m_ui->WbButtonBox->addButton( s, QPixmap(":/images/wb/wb.png") );
             break;
     }
 }
