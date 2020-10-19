@@ -138,14 +138,16 @@ ConnectDialog::ConnectDialog( QWidget * parent )
     m_ui->sbxDevAddrRS485->setRange( 0, MAX_DEVICE_ID );
     m_ui->sbxDevAddrRS485->setValue( 1 );
 
-    // hide combo boxes for data-bit, parity and stop-bit selection (user shall not change those values)
+    // hide combo boxes for baudrate, data-bit, parity and stop-bit selection (user shall not change those values)
     // RS232
-    //m_ui->lblDatabitsRS232->setVisible( false );
-    //m_ui->cbxDatabitsRS232->setVisible( false );
-    //m_ui->lblParityRS232->setVisible( false );
-    //m_ui->cbxParityRS232->setVisible( false );
-    //m_ui->lblStopbitsRS232->setVisible( false );
-    //m_ui->cbxStopbitsRS232->setVisible( false );
+    m_ui->lblBaudrateRS232->setVisible( false );
+    m_ui->cbxBaudrateRS232->setVisible( false );
+    m_ui->lblDatabitsRS232->setVisible( false );
+    m_ui->cbxDatabitsRS232->setVisible( false );
+    m_ui->lblParityRS232->setVisible( false );
+    m_ui->cbxParityRS232->setVisible( false );
+    m_ui->lblStopbitsRS232->setVisible( false );
+    m_ui->cbxStopbitsRS232->setVisible( false );
 
     // RS485
     m_ui->lblDatabitsRS485->setVisible( false );
