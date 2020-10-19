@@ -138,8 +138,10 @@ ConnectDialog::ConnectDialog( QWidget * parent )
     m_ui->sbxDevAddrRS485->setRange( 0, MAX_DEVICE_ID );
     m_ui->sbxDevAddrRS485->setValue( 1 );
 
-    // hide combo boxes for data-bit, parity and stop-bit selection (user shall not change those values)
+    // hide combo boxes for baudrate, data-bit, parity and stop-bit selection (user shall not change those values)
     // RS232
+    m_ui->lblBaudrateRS232->setVisible( false );
+    m_ui->cbxBaudrateRS232->setVisible( false );
     m_ui->lblDatabitsRS232->setVisible( false );
     m_ui->cbxDatabitsRS232->setVisible( false );
     m_ui->lblParityRS232->setVisible( false );
@@ -182,17 +184,25 @@ ConnectDialog::ConnectDialog( QWidget * parent )
     // Try to load connection settings from file
     QString m_SettingsFile = QDir::homePath() + "/" + QString(SETTINGS_FILE_NAME);
 
-    if ( fileExists( m_SettingsFile ))
+    const char* pszLoaded = "loaded";
+    const char* pszLoading = "loading";
+    const char* pszFromFile = "from file";
+    if ( !fileExists( m_SettingsFile ))
     {
-        QSettings settings( m_SettingsFile, QSettings::IniFormat );
-        if ( loadConSettings( settings ) )
-        {
-            qDebug() << "loaded connection settings from file";
-        }
-        else
-        {
-            qDebug() << "failed loading connection settings from file";
-        }
+        pszLoaded = "intialized";      
+        pszLoading = "initializing";    
+        pszFromFile = "with defaults"; 
+    }
+    // loadConSettings() should still be called because it does necesarily initialization
+    
+    QSettings settings( m_SettingsFile, QSettings::IniFormat );
+    if ( loadConSettings( settings ) )
+    {
+        qDebug() << pszLoaded << "connection settings" << pszFromFile;
+    }
+    else
+    {
+        qDebug() << "failed" << pszLoading << "connection settings" << pszFromFile;
     }
 
     int currentIndexRS485 = m_ui->tabController->indexOf(m_ui->tabRS485);
@@ -340,11 +350,18 @@ bool ConnectDialog::connectWithDevice()
 
     // I. Try to open the interface with the current settings
     // Close the active connection first (in case we try to reconnect)
-    getActiveChannel()->Close();
+    auto* pActiveChannel = getActiveChannel();
+    if(!pActiveChannel)
+    {
+        qCritical() << "No active channel, aborting connectWithDevice()";
+        return false;
+    }
+    
+    pActiveChannel->Close();
     bOpen = ( openInterface() == 0 ) ? true : false;
 
     // II. Create a generic device and try to connect with it
-    ProVideoDevice genericDevice ( getActiveChannel(), new ProVideoProtocol() );
+    ProVideoDevice genericDevice ( pActiveChannel, new ProVideoProtocol() );
     if ( bOpen )
     {
         int retryCount = 0;
@@ -363,10 +380,10 @@ bool ConnectDialog::connectWithDevice()
         bIsKnown = DeviceIsKnown(genericDevice.getSystemPlatform());
     }
     // if not connected, close the active channel
-    else if ( bOpen && getActiveChannel() )
+    else if ( bOpen && pActiveChannel )
     {
         // Close the connection
-        getActiveChannel()->Close();
+        pActiveChannel->Close();
     }
 
     // IV. Create and initialize a specialized device which matches the HW
@@ -376,19 +393,19 @@ bool ConnectDialog::connectWithDevice()
         ProVideoDevice * connectedDevice = nullptr;
         if ( systemPlatform == KNOWN_DEVICE_XBOW )
         {
-            connectedDevice = new XbowDevice( getActiveChannel(), new ProVideoProtocol() );
+            connectedDevice = new XbowDevice( pActiveChannel, new ProVideoProtocol() );
         }
         else if ( systemPlatform == KNOWN_DEVICE_CONDOR4K || systemPlatform.contains(QString(KNOWN_DEVICE_CONDOR4K_MINI)) )
         {
-            connectedDevice = new Condor4kDevice( getActiveChannel(), new ProVideoProtocol() );
+            connectedDevice = new Condor4kDevice( pActiveChannel, new ProVideoProtocol() );
         }
         else if ( systemPlatform == KNOWN_DEVICE_COOPER )
         {
-            connectedDevice = new CooperDevice( getActiveChannel(), new ProVideoProtocol() );
+            connectedDevice = new CooperDevice( pActiveChannel, new ProVideoProtocol() );
         }
         else if ( systemPlatform == KNOWN_DEVICE_IRON_SDI )
         {
-            connectedDevice = new IronSDI_Device( getActiveChannel(), new ProVideoProtocol() );
+            connectedDevice = new IronSDI_Device( pActiveChannel, new ProVideoProtocol() );
         }
         qDebug() << "connected with:" << systemPlatform;
 
@@ -562,8 +579,17 @@ bool ConnectDialog::loadConSettings( QSettings &s )
 
     s.beginGroup( CON_SETTINGS_SECTION_NAME );
 
-    Interface iface = static_cast<Interface>(s.value(CON_SETTINGS_DIALOG_INTERFACE, "").toInt());
+    Interface iface = static_cast<Interface>(s.value(CON_SETTINGS_DIALOG_INTERFACE, int(Rs232)).toInt());
+    if(iface < 0) // do not proceed to setActiveXXX calls below if CON_SETTINGS_DIALOG_INTERFACE is not configured
+    {
+        return false;
+    }
+    
     result += setActiveInterface( iface );
+    if(result < 0) // do not proceed to setActiveXXX calls below if we couldn't set active interface to 'iface'
+    {
+        return false;
+    }
 
     if ( (Rs232 == iface) || (Rs485 == iface) )
     {
@@ -571,22 +597,27 @@ bool ConnectDialog::loadConSettings( QSettings &s )
 
         // serial port
         string = s.value(CON_SETTINGS_DIALOG_PORT, "").toString();
-        result += setActiveChannelName( iface, string );
+        int resultSetPort = setActiveChannelName( iface, string );
+        //this will fail with default port name "", but we don't want whole function to fail because of this (the combo will stay on the first correct value)
+        if(string != "")
+        {
+            result += resultSetPort;
+        }
 
         // baudrate
-        value = s.value(CON_SETTINGS_DIALOG_SPEED, "").toInt();
+        value = s.value(CON_SETTINGS_DIALOG_SPEED, int(CTRL_CHANNEL_BAUDRATE_DEFAULT)).toInt();
         result += setActiveBaudRate( iface, value );
 
         // number of data-bits
-        value = s.value(CON_SETTINGS_DIALOG_DATABITS, "").toInt();
+        value = s.value(CON_SETTINGS_DIALOG_DATABITS, int(CTRL_CHANNEL_DATA_BITS_DEFAULT)).toInt();
         result += setActiveDataBits( iface, value );
 
         // parity
-        string = s.value(CON_SETTINGS_DIALOG_PARITY, "").toString();
+        string = s.value(CON_SETTINGS_DIALOG_PARITY, "none").toString();
         result += setActiveParity( iface, string );
 
         // number of stop-bits
-        value = s.value(CON_SETTINGS_DIALOG_STOPBITS, "").toInt();
+        value = s.value(CON_SETTINGS_DIALOG_STOPBITS, int(CTRL_CHANNEL_STOP_BITS_DEFAULT)).toInt();
         result += setActiveStopBits( iface, value );
 
         if ( Rs485 == iface )
