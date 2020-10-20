@@ -1,11 +1,13 @@
 {
 	"verbose ": "3",
-	"targetDir": "../../CQtDeployer_Output",
+	"targetDir": "../../../__DIST/CQtDeployer/SDIControlPoint",
 	
-    "deploySystem": true,
+    "deploySystem": false,
     "force-clear": true,
     "noTranslations": true,
     "qif": true,
+    "noCheckRPATH": true,
+    "noCheckPATH": true,
 	
 	"bin": "SDIControlPoint.exe",
 	"qmake": "C:/Qt/5.12.9/msvc2017_64/bin/qmake.exe",
