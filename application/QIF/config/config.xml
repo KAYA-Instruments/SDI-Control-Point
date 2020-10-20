@@ -5,7 +5,7 @@
     <Title>SDIControlPoint</Title>
     <Publisher>KAYA Instruments</Publisher>
     <StartMenuDir>SDIControlPoint</StartMenuDir>
-    <TargetDir>@ApplicationsDir@/SDIControlPoint</TargetDir>
+    <TargetDir>@ApplicationsDir@/KAYA Instruments/SDIControlPoint</TargetDir>
     <InstallActionColumnVisible>true</InstallActionColumnVisible>
     <RemoveTargetDir>true</RemoveTargetDir>
     <ControlScript>controlScript.qs</ControlScript>

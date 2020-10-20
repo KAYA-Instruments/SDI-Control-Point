@@ -28,20 +28,20 @@ function generateShortCutCmd(cmd) {
 	*/
 	
 	// Following example from https://doc.qt.io/qtinstallerframework/scripting.html#adding-operations-to-components
-	QMessageBox.information("Installer", "generateShortCutCmd", "generateShortCutCmd(cmd)", QMessageBox.Ok);
 	if (installer.value("os") === "win") {
-		component.addOperation("Mkdir", "@StartMenuDir@");
+		component.addOperation("Mkdir", "@StartMenuDir@"); // https://stackoverflow.com/a/52126984/1468415
 		if (component.addOperation("CreateShortcut", "@TargetDir@/SDIControlPoint.exe", "@StartMenuDir@/SDIControlPoint.lnk"))
 		{
-			QMessageBox.information("Installer", "generateShortCutCmd", "CreateShortcut ok", QMessageBox.Ok);
+			//QMessageBox.information("Installer", "generateShortCutCmd", "CreateShortcut ok", QMessageBox.Ok);
 		}
 		else
 		{
-			QMessageBox.information("Installer", "generateShortCutCmd", "CreateShortcut failed", QMessageBox.Ok);
+			//QMessageBox.information("Installer", "generateShortCutCmd", "CreateShortcut failed", QMessageBox.Ok);
 		}
 	}
-	else {
-		QMessageBox.information("Installer", "generateShortCutCmd", "osnotwin", QMessageBox.Ok);
+	else 
+	{
+		//QMessageBox.information("Installer", "generateShortCutCmd", "osnotwin", QMessageBox.Ok);
 	}
 
 
