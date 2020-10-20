@@ -5,7 +5,7 @@
     <Version>3.0.0-aplha1</Version>
     <Default>true</Default>
     <ForcedInstallation>false</ForcedInstallation>
-    <!--<Script>installscript.qs</Script>-->
+    <Script>installscript.qs</Script>
     <ReleaseDate>2020-10-21</ReleaseDate>
     <SortingPriority>201</SortingPriority>
 </Package>
