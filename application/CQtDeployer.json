@@ -1,6 +1,6 @@
 {
 	"verbose ": "3",
-	"targetDir": "../../../__DIST/CQtDeployer/SDIControlPoint",
+	"targetDir": "../../../__DIST/SDIControlPoint/CQtDeployer",
 	
     "deploySystem": false,
     "force-clear": true,
