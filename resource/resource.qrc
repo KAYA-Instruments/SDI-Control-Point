@@ -158,5 +158,19 @@
         <file>icons/cog-16.png</file>
         <file>icons/terminal.png</file>
         <file>images/tab/lens.png</file>
+        <file>icons/flaticon.com-camera/001-cctv.png</file>
+        <file>icons/flaticon.com-camera/002-camera.png</file>
+        <file>icons/flaticon.com-camera/003-camera-1.png</file>
+        <file>icons/flaticon.com-camera/004-camera-2.png</file>
+        <file>icons/flaticon.com-camera/005-photo-camera.png</file>
+        <file>icons/flaticon.com-camera/006-camera-3.png</file>
+        <file>icons/flaticon.com-camera/007-photo-camera-1.png</file>
+        <file>icons/flaticon.com-camera/008-video-camera.png</file>
+        <file>icons/flaticon.com-camera/009-video-camera-1.png</file>
+        <file>icons/flaticon.com-camera/010-cctv-1.png</file>
+        <file>icons/flaticon.com-camera/011-cctv-2.png</file>
+        <file>icons/flaticon.com-camera/012-video-camera-2.png</file>
+        <file>icons/flaticon.com-camera/004-camera-2_256.ico</file>
+        <file>icons/flaticon.com-camera/004-camera-2_128.ico</file>
     </qresource>
 </RCC>

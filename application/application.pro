@@ -1,15 +1,15 @@
 
 # This version number is shown in the Application, it should be
 # updated before each release!
-VERSION = 0.0.1
-DEFINES += VERSION_STRING=\\\"0.0.1\\\"
+VERSION = 3.0.0.0
+DEFINES += VERSION_STRING=\\\"3.0.0_alpha1\\\"
 
 QMAKE_TARGET_COMPANY = "KAYA Instruments"
 QMAKE_TARGET_PRODUCT = "SDI Control Point"
 QMAKE_TARGET_DESCRIPTION = "GUI for controlling KAYA SDI cameras"
 QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2020, KAYA Instruments"
 
-RC_ICONS = ../resource/icons/dct_icon.ico
+RC_ICONS = ../resource/icons/flaticon.com-camera/004-camera-2_128.ico
 
 CONFIG  += c++11
 QT      += core serialport network

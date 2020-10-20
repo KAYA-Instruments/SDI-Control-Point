@@ -1,7 +1,7 @@
 PATH=%PATH%;C:\Qt\5.12.9\msvc2017\bin
 SET TARGETDIR=..\..\..\__DIST\SDIControlPoint\QIF
 
-goto fill_qif
+::goto fill_qif
 ::goto call_binarycreator
 
 windeployqt --verbose 2 --dir %TARGETDIR%\packages\Application\data SDIControlPoint.exe
