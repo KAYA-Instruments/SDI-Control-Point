@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<Package>
+    <DisplayName>Visual C++ Runtime</DisplayName>
+    <Description>Microsoft Visual C++ Redistributable</Description>
+    <Version>14.24.28127</Version>
+    <Default>true</Default>
+    <ForcedInstallation>false</ForcedInstallation>
+    <Script>installscript.qs</Script>
+    <ReleaseDate>2020-10-21</ReleaseDate>
+    <SortingPriority>200</SortingPriority>
+</Package>
