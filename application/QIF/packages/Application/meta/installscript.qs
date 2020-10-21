@@ -39,10 +39,6 @@ function generateShortCutCmd(cmd) {
 			//QMessageBox.information("Installer", "generateShortCutCmd", "CreateShortcut failed", QMessageBox.Ok);
 		}
 	}
-	else 
-	{
-		//QMessageBox.information("Installer", "generateShortCutCmd", "osnotwin", QMessageBox.Ok);
-	}
 
 
     if (systemInfo.kernelType === "linux") {
