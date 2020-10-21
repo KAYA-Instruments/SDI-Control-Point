@@ -8,4 +8,7 @@
     <Script>installscript.qs</Script>
     <ReleaseDate>2020-10-21</ReleaseDate>
     <SortingPriority>201</SortingPriority>
+    <UserInterfaces>
+        <UserInterface>targetwidget.ui</UserInterface>
+    </UserInterfaces>
 </Package>
