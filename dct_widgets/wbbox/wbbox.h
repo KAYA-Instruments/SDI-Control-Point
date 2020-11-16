@@ -74,6 +74,7 @@
 #define WB_HUE_BASE                             (        2 )
 #define WB_HUE_DISPLAY_MULTIPLIER               (       90 )
 #define WB_HUE_DISPLAY_MASK                     (  "%2.2f" )
+#define WB_HUE_DEFAULT                          (        0 )
 
 /******************************************************************************
  * Saturation Definitions
@@ -84,6 +85,7 @@
 #define WB_SATURATION_BASE                      (        2 )
 #define WB_SATURATION_DISPLAY_MULTIPLIER        (        1 )
 #define WB_SATURATION_DISPLAY_MASK              (  "%1.3f" )
+#define WB_SATURATION_DEFAULT                   (      128 )
 
 /******************************************************************************
  * Brightness Definitions
@@ -94,6 +96,7 @@
 #define WB_BRIGHTNESS_BASE                      (        2 )
 #define WB_BRIGHTNESS_DISPLAY_MULTIPLIER        (        1 )
 #define WB_BRIGHTNESS_DISPLAY_MASK              (  "%1.2f" )
+#define WB_BRIGHTNESS_DEFAULT                   (        0 )
 
 /******************************************************************************
  * Contrast Definitions
@@ -104,6 +107,7 @@
 #define WB_CONTRAST_BASE                        (        2 )
 #define WB_CONTRAST_DISPLAY_MULTIPLIER          (        1 )
 #define WB_CONTRAST_DISPLAY_MASK                (  "%1.3f" )
+#define WB_CONTRAST_DEFAULT                     (      128 )
 
 /******************************************************************************
  * White Balance Box Widget
@@ -202,6 +206,12 @@ private slots:
     void onWbUpdate();
     void onAwbEnableClick( int value );
     void onAwbSpeedSliderChange( int value );
+
+    void on_hueResetButton_clicked();
+    void on_saturationResetButton_clicked();
+    void on_brightnessResetButton_clicked();
+    void on_contrastResetButton_clicked();
+    void on_whiteBalanceResetButton_clicked();
 
 private:
     class PrivateData;

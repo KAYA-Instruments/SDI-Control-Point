@@ -181,6 +181,7 @@ BlackLevelBox::BlackLevelBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->SensorBlack, SIGNAL(Value1Changed(int)), this, SLOT(onSensorBlackGreenChange(int)) );
     connect( d_data->m_ui->SensorBlack, SIGNAL(Value2Changed(int)), this, SLOT(onSensorBlackBlueChange(int)) );
     connect( d_data->m_ui->SensorBlackMaster, SIGNAL(ValueChanged(int)), this, SLOT(onSensorBlackMasterChange(int)) );
+    connect ( d_data->m_ui->btnSensorBlackReset, SIGNAL(clicked()), this, SLOT(onSensorBlackResetClicked()) );
 
     // connect flare compensation signals
     connect( d_data->m_ui->FlareCompensation, SIGNAL(ValuesChanged(int,int,int)), this, SLOT(onFlareCompensationChange(int,int,int)) );
@@ -287,6 +288,23 @@ void BlackLevelBox::setBlueBlackLevel( const int blue )
     d_data->m_ui->SensorBlack->setValue1( green - min );
     d_data->m_ui->SensorBlack->setValue2( blue  - min );
     
+    emit BlueBlackLevelChanged( blue );
+}
+
+/******************************************************************************
+ * BlackLevelBox::setBlackLevel
+ *****************************************************************************/
+void BlackLevelBox::setBlackLevel( const int red, const int green, const int blue )
+{
+    int min = Minimum( red, green, blue );
+    d_data->m_ui->SensorBlackMaster->setValue( min );
+    d_data->m_ui->SensorBlack->setRange( (BL_SENSOR_BLACK_MIN - min), (BL_SENSOR_BLACK_MAX - min) );
+    d_data->m_ui->SensorBlack->onValue0Change( red   - min );
+    d_data->m_ui->SensorBlack->onValue1Change( green - min );
+    d_data->m_ui->SensorBlack->onValue2Change( blue  - min );
+
+    emit RedBlackLevelChanged( red );
+    emit GreenBlackLevelChanged( green );
     emit BlueBlackLevelChanged( blue );
 }
 
@@ -587,6 +605,17 @@ void BlackLevelBox::onSensorBlackMasterChange( int value )
     emit GreenBlackLevelChanged( value + d_data->m_ui->SensorBlack->value1() );
     emit BlueBlackLevelChanged( value + d_data->m_ui->SensorBlack->value2() );
 }
+
+/******************************************************************************
+ * BlackLevelBox::onSensorBlackResetClicked
+ *****************************************************************************/
+void BlackLevelBox::onSensorBlackResetClicked()
+{
+    // Reset flare level widgets to default
+    setBlackLevel( BL_SENSOR_BLACK_DEFAULT, BL_SENSOR_BLACK_DEFAULT, BL_SENSOR_BLACK_DEFAULT );
+}
+
+
 
 /******************************************************************************
  * BlackLevelBox::onMasterBlackChange
