@@ -291,6 +291,7 @@ IronSDI_Device::features IronSDI_Device::getSupportedFeatures()
     deviceFeatures.hasIspFilter             = false;
     deviceFeatures.hasIspAutoWhiteBalance   = true;
     deviceFeatures.hasIspGain               = true;
+    deviceFeatures.hasIspGreenGain          = true;
     deviceFeatures.hasIspConversion         = true;
     deviceFeatures.hasCprocItf              = true;
     deviceFeatures.hasCprocItfHue           = true;
