@@ -56,6 +56,7 @@ DebugTerminal::DebugTerminal( QWidget *parent ) :
     connect( ui->btnShowHelp, SIGNAL(clicked()), this, SLOT(onShowHelpClicked()) );
     connect( ui->btnSaveLog, SIGNAL(clicked()), this, SLOT(onSaveLogClicked()) );
     connect( ui->btnClearTerminal, SIGNAL(clicked()), this, SLOT(onClearTerminalClicked()) );
+    connect( ui->btnShowCommands, SIGNAL(clicked()), this, SLOT(onShowCommandsClicked()) );
 }
 
 /******************************************************************************
@@ -313,4 +314,15 @@ void DebugTerminal::onClearTerminalClicked()
 {
     // Clear content of terminal
     ui->tbTerminal->clear();
+}
+
+/******************************************************************************
+ * DebugTerminal::onShowCommandsClicked
+ *****************************************************************************/
+void DebugTerminal::onShowCommandsClicked()
+{
+    // Display all available commands in terminal
+    QString command = "help";
+    emit sendData( command.append('\n'), ui->sbxWaitTime->value() );
+
 }
