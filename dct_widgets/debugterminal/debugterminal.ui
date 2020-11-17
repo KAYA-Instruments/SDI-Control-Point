@@ -90,7 +90,7 @@
      <item>
       <widget class="QPushButton" name="btnShowCommands">
        <property name="text">
-        <string>Commands</string>
+        <string>Command List</string>
        </property>
       </widget>
      </item>

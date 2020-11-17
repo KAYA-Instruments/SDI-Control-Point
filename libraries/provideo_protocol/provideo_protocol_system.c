@@ -243,13 +243,13 @@
  * @brief command "save_settings" 
  *****************************************************************************/
 #define CMD_SAVE_SETTINGS                       ( "save_settings\n" )
-#define CMD_SAVE_SETTINGS_TMO                   ( 3000 )
+#define CMD_SAVE_SETTINGS_TMO                   ( 30000 )
 
 /******************************************************************************
  * @brief command "load_settings" 
  *****************************************************************************/
 #define CMD_LOAD_SETTINGS                       ( "load_settings\n" )
-#define CMD_LOAD_SETTINGS_TMO                   ( 30000 )
+#define CMD_LOAD_SETTINGS_TMO                   ( 50000 )
 
 /******************************************************************************
  * @brief command "reset_settings" 
