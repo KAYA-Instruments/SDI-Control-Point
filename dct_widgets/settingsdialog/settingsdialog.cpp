@@ -89,6 +89,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     m_ui->label_2->hide();
     m_ui->btnApplySerialPortSettings->hide();
     m_ui->lblNote2->hide();
+    m_ui->btnApplyDeviceName->hide();
 }
 
 /******************************************************************************
