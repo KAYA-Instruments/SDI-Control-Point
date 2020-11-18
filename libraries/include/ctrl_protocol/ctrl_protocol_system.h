@@ -851,13 +851,15 @@ int ctrl_protocol_update
  *
  * @param[in]  channel  control channel instance
  * @param[in]  protocol control protocol instance
+ * @param[in]  user setting index
  *
  * @return     0 on success, error-code otherwise
  *****************************************************************************/
 int ctrl_protocol_save_settings
 (
     ctrl_protocol_handle_t const protocol,
-    ctrl_channel_handle_t const  channel
+    ctrl_channel_handle_t const  channel,
+    int userSetting
 );
 
 /**************************************************************************//**
@@ -865,13 +867,15 @@ int ctrl_protocol_save_settings
  *
  * @param[in]  channel  control channel instance
  * @param[in]  protocol control protocol instance
+ * @param[in]  user setting index
  *
  * @return     0 on success, error-code otherwise
  *****************************************************************************/
 int ctrl_protocol_load_settings
 (
     ctrl_protocol_handle_t const protocol,
-    ctrl_channel_handle_t const  channel
+    ctrl_channel_handle_t const  channel,
+    int userSetting
 );
 
 /**************************************************************************//**

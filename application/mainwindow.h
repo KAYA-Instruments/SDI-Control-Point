@@ -54,8 +54,8 @@ protected:
 
 signals:
     // chain selection status
-    void SaveSettings();
-    void LoadSettings();
+    void SaveSettings(int userSetting);
+    void LoadSettings(int userSetting);
     void SdiOutChanged( int value );
 
     // copy settings
@@ -127,6 +127,7 @@ private:
     DctWidgetBox::Mode      m_WidgetMode;
     bool                    m_ShowDebugTerminal;
     bool                    m_EnableConnectionCheck;
+    QComboBox *             m_userSetComboBox;
 
     void setConnectDlg( ConnectDialog * );
     void setSettingsDlg( SettingsDialog * );

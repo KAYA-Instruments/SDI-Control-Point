@@ -198,8 +198,8 @@ public slots:
     void onGetFanSpeedRequest();
     void onFanTargetChange( uint8_t target );
     void onBootIntoUpdateMode();
-    void onSaveSettings();
-    void onLoadSettings();
+    void onSaveSettings(int userSetting);
+    void onLoadSettings(int userSetting);
     void onResetSettings();
     void onCopySettings(int src , int dest);
 
