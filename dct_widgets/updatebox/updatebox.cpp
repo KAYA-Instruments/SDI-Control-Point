@@ -49,6 +49,8 @@
 #include "ui_updatebox.h"
 #include "libraries/include/xmodem/transfer.h"
 
+#include "../version.h"
+
 /******************************************************************************
  * namespaces
  *****************************************************************************/
@@ -261,14 +263,13 @@ public:
         // set version labels to default
         m_ui->letCurrentFirmwareVersion->setText( "Not checked yet" );
         m_ui->letServerFirmwareVersion->setText( "Not checked yet" );
-        m_ui->letCurrentGuiVersion->setText( "v" + QString(VERSION_STRING) );
+        m_ui->letCurrentGuiVersion->setText( "v" + QString(KAYA_VERSION_STR) );
         m_ui->letServerGuiVersion->setText( "Not checked yet" );
 
         // get current gui version
-        sscanf( VERSION_STRING, "%d.%d.%d",
-                      &m_current_gui_version.major_release,
-                      &m_current_gui_version.minor_release,
-                      &m_current_gui_version.patch_level );
+        m_current_gui_version.major_release = KAYA_MAJOR_VERSION;
+        m_current_gui_version.minor_release = KAYA_MINOR_VERSION;
+        m_current_gui_version.patch_level = KAYA_PATCH_VERSION;
 
         // set progress bar to 0%
         m_ui->progressBar->setValue( 0u );

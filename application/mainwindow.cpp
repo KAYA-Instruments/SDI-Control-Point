@@ -38,6 +38,8 @@
 
 #include <defines.h>
 
+#include "../version.h"
+
 /******************************************************************************
  * Settings
  *****************************************************************************/
@@ -123,6 +125,10 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
         this->loadUiSettings( settings );
         qDebug() << "loaded ui settings from file";
     }
+
+    // Set window title with current version
+    QString title = this->windowTitle() + ' ' + KAYA_VERSION_STR;
+    this->setWindowTitle(title);
 }
 
 /******************************************************************************
