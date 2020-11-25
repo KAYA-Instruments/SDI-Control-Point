@@ -28,7 +28,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QCustomPlot" name="KneePlot">
+    <widget class="QCustomPlot" name="KneePlot" native="true">
      <property name="minimumSize">
       <size>
        <width>0</width>
@@ -47,7 +47,7 @@
      <property name="whatsThis">
       <string/>
      </property>
-     <property name="viewport">
+     <property name="viewport" stdset="0">
       <rect>
        <x>0</x>
        <y>0</y>
@@ -100,7 +100,7 @@
          <property name="title">
           <string>Knee Point</string>
          </property>
-         <property name="maxRounds">
+         <property name="maxRounds" stdset="0">
           <number>1</number>
          </property>
          <property name="minimum" stdset="0">
@@ -109,23 +109,23 @@
          <property name="maximum" stdset="0">
           <number>100</number>
          </property>
-         <property name="base">
+         <property name="base" stdset="0">
           <number>10</number>
          </property>
          <property name="comma" stdset="0">
           <number>0</number>
          </property>
-         <property name="fmt">
+         <property name="fmt" stdset="0">
           <string>%3.0f</string>
          </property>
-         <property name="maxAngle">
+         <property name="maxAngle" stdset="0">
           <number>180</number>
          </property>
-         <property name="needleImage">
+         <property name="needleImage" stdset="0">
           <pixmap resource="../../resource/resource.qrc">:/images/needle/dial-pointer.png</pixmap>
          </property>
-         <property name="backgroundImage">
-          <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-gray.png</pixmap>
+         <property name="backgroundImage" stdset="0">
+          <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-gray_full.png</pixmap>
          </property>
         </widget>
        </item>
@@ -253,10 +253,10 @@
          <property name="title">
           <string>White Clip</string>
          </property>
-         <property name="maxRounds">
+         <property name="maxRounds" stdset="0">
           <number>1</number>
          </property>
-         <property name="value">
+         <property name="value" stdset="0">
           <number>100</number>
          </property>
          <property name="minimum" stdset="0">
@@ -265,23 +265,23 @@
          <property name="maximum" stdset="0">
           <number>109</number>
          </property>
-         <property name="base">
+         <property name="base" stdset="0">
           <number>10</number>
          </property>
          <property name="comma" stdset="0">
           <number>0</number>
          </property>
-         <property name="fmt">
+         <property name="fmt" stdset="0">
           <string>%3.0f</string>
          </property>
-         <property name="maxAngle">
+         <property name="maxAngle" stdset="0">
           <number>180</number>
          </property>
-         <property name="needleImage">
+         <property name="needleImage" stdset="0">
           <pixmap resource="../../resource/resource.qrc">:/images/needle/dial-pointer.png</pixmap>
          </property>
-         <property name="backgroundImage">
-          <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-gray.png</pixmap>
+         <property name="backgroundImage" stdset="0">
+          <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-gray_full.png</pixmap>
          </property>
         </widget>
        </item>
@@ -328,7 +328,7 @@
          <property name="title">
           <string>Knee Slope</string>
          </property>
-         <property name="maxRounds">
+         <property name="maxRounds" stdset="0">
           <number>1</number>
          </property>
          <property name="minimum" stdset="0">
@@ -337,23 +337,23 @@
          <property name="maximum" stdset="0">
           <number>1000</number>
          </property>
-         <property name="base">
+         <property name="base" stdset="0">
           <number>10</number>
          </property>
          <property name="comma" stdset="0">
           <number>2</number>
          </property>
-         <property name="fmt">
+         <property name="fmt" stdset="0">
           <string>%2.2f</string>
          </property>
-         <property name="maxAngle">
+         <property name="maxAngle" stdset="0">
           <number>180</number>
          </property>
-         <property name="needleImage">
+         <property name="needleImage" stdset="0">
           <pixmap resource="../../resource/resource.qrc">:/images/needle/dial-pointer.png</pixmap>
          </property>
-         <property name="backgroundImage">
-          <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-gray.png</pixmap>
+         <property name="backgroundImage" stdset="0">
+          <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-gray_full.png</pixmap>
          </property>
         </widget>
        </item>

@@ -173,5 +173,9 @@
         <file>icons/flaticon.com-camera/004-camera-2_256.ico</file>
         <file>icons/flaticon.com-camera/004-camera-2_128.ico</file>
         <file>images/tab/update.png</file>
+        <file>images/back/dial-back-blue_full.png</file>
+        <file>images/back/dial-back-gray_full.png</file>
+        <file>images/back/dial-back-green_full.png</file>
+        <file>images/back/dial-back-red_full.png</file>
     </qresource>
 </RCC>

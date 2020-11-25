@@ -66,7 +66,7 @@
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QCustomPlot" name="LutPlot">
+        <widget class="QCustomPlot" name="LutPlot" native="true">
          <property name="minimumSize">
           <size>
            <width>600</width>
@@ -79,7 +79,7 @@
          <property name="whatsThis">
           <string/>
          </property>
-         <property name="viewport">
+         <property name="viewport" stdset="0">
           <rect>
            <x>0</x>
            <y>0</y>
@@ -101,7 +101,7 @@
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
-        <widget class="QCustomPlot" name="LutPlotRed">
+        <widget class="QCustomPlot" name="LutPlotRed" native="true">
          <property name="minimumSize">
           <size>
            <width>600</width>
@@ -128,7 +128,7 @@
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
-        <widget class="QCustomPlot" name="LutPlotGreen">
+        <widget class="QCustomPlot" name="LutPlotGreen" native="true">
          <property name="minimumSize">
           <size>
            <width>600</width>
@@ -155,7 +155,7 @@
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout_5">
        <item>
-        <widget class="QCustomPlot" name="LutPlotBlue">
+        <widget class="QCustomPlot" name="LutPlotBlue" native="true">
          <property name="minimumSize">
           <size>
            <width>600</width>
@@ -927,10 +927,10 @@
             <property name="title">
              <string>Gamma</string>
             </property>
-            <property name="maxRounds">
+            <property name="maxRounds" stdset="0">
              <number>3</number>
             </property>
-            <property name="value">
+            <property name="value" stdset="0">
              <number>1000</number>
             </property>
             <property name="minimum" stdset="0">
@@ -939,23 +939,23 @@
             <property name="maximum" stdset="0">
              <number>3000</number>
             </property>
-            <property name="base">
+            <property name="base" stdset="0">
              <number>10</number>
             </property>
             <property name="comma" stdset="0">
              <number>3</number>
             </property>
-            <property name="fmt">
+            <property name="fmt" stdset="0">
              <string>%-1.3f</string>
             </property>
-            <property name="maxAngle">
+            <property name="maxAngle" stdset="0">
              <number>150</number>
             </property>
-            <property name="needleImage">
+            <property name="needleImage" stdset="0">
              <pixmap resource="../../resource/resource.qrc">:/images/needle/dial-pointer.png</pixmap>
             </property>
-            <property name="backgroundImage">
-             <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-gray.png</pixmap>
+            <property name="backgroundImage" stdset="0">
+             <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-gray_full.png</pixmap>
             </property>
            </widget>
           </item>

@@ -107,7 +107,7 @@
          <pixmap resource="../../resource/resource.qrc">:/images/needle/dial-pointer.png</pixmap>
         </property>
         <property name="backgroundImage" stdset="0">
-         <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-gray.png</pixmap>
+         <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-gray_full.png</pixmap>
         </property>
        </widget>
       </item>
@@ -165,13 +165,13 @@
          <pixmap resource="../../resource/resource.qrc">:/images/needle/dial-pointer.png</pixmap>
         </property>
         <property name="backgroundImage0" stdset="0">
-         <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-red.png</pixmap>
+         <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-red_full.png</pixmap>
         </property>
         <property name="backgroundImage1" stdset="0">
-         <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-green.png</pixmap>
+         <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-green_full.png</pixmap>
         </property>
         <property name="backgroundImage2" stdset="0">
-         <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-blue.png</pixmap>
+         <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-blue_full.png</pixmap>
         </property>
        </widget>
       </item>
@@ -242,13 +242,13 @@
          <pixmap resource="../../resource/resource.qrc">:/images/needle/dial-pointer.png</pixmap>
         </property>
         <property name="backgroundImage0" stdset="0">
-         <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-red.png</pixmap>
+         <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-red_full.png</pixmap>
         </property>
         <property name="backgroundImage1" stdset="0">
-         <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-green.png</pixmap>
+         <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-green_full.png</pixmap>
         </property>
         <property name="backgroundImage2" stdset="0">
-         <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-blue.png</pixmap>
+         <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-blue_full.png</pixmap>
         </property>
        </widget>
       </item>
@@ -333,7 +333,7 @@
          <pixmap resource="../../resource/resource.qrc">:/images/needle/dial-pointer.png</pixmap>
         </property>
         <property name="backgroundImage" stdset="0">
-         <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-gray.png</pixmap>
+         <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-gray_full.png</pixmap>
         </property>
        </widget>
       </item>
@@ -437,7 +437,7 @@
          <pixmap resource="../../resource/resource.qrc">:/images/needle/dial-pointer.png</pixmap>
         </property>
         <property name="backgroundImage" stdset="0">
-         <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-gray.png</pixmap>
+         <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-gray_full.png</pixmap>
         </property>
        </widget>
       </item>
@@ -483,13 +483,13 @@
          <pixmap resource="../../resource/resource.qrc">:/images/needle/dial-pointer.png</pixmap>
         </property>
         <property name="backgroundImage0" stdset="0">
-         <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-red.png</pixmap>
+         <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-red_full.png</pixmap>
         </property>
         <property name="backgroundImage1" stdset="0">
-         <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-green.png</pixmap>
+         <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-red_full.png</pixmap>
         </property>
         <property name="backgroundImage2" stdset="0">
-         <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-blue.png</pixmap>
+         <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-blue_full.png</pixmap>
         </property>
        </widget>
       </item>

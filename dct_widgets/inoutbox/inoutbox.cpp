@@ -196,8 +196,8 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->sbxExposure->setRange( 100, 20000 );
     d_data->m_ui->sldExposure->setRange( 100, 20000 );
 
-    d_data->m_ui->sbxSetPoint->setRange( 50, 3000 );
-    d_data->m_ui->sldSetPoint->setRange( 50, 3000 );
+    d_data->m_ui->sbxSetPoint->setRange( 0, 1023 );
+    d_data->m_ui->sldSetPoint->setRange( 0, 1023 );
 
     d_data->m_ui->sbxMaxIso->setRange( 80, 400 );
     d_data->m_ui->sldMaxIso->setRange( 80, 400 );
