@@ -2,7 +2,7 @@ PATH=%PATH%;%QTHOME%\5.12.9\msvc2017\bin
 SET TARGETDIR=..\..\..\__DIST\SDIControlPoint\QIF
 
 :fill_qif
-xcopy ..\..\application\QIF %TARGETDIR%\ /e /y
+xcopy ..\..\application\QIF\*.* %TARGETDIR% /e /y /i
 
 :call_windeployqt
 windeployqt --verbose 2 --dir %TARGETDIR%\packages\Application\data SDIControlPoint.exe
