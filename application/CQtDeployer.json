@@ -10,7 +10,7 @@
     "noCheckPATH": true,
 	
 	"bin": "SDIControlPoint.exe",
-	"qmake": "C:/Qt/5.12.9/msvc2017_64/bin/qmake.exe",
+	"qmake": "C:/Qt/5.12.9/msvc2017/bin/qmake.exe",
 	
     "binDir": "./",
     "clear": true,
