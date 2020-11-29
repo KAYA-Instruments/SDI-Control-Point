@@ -4,10 +4,11 @@
     <Version>3.0.0</Version>
     <Title>SDIControlPoint</Title>
     <Publisher>KAYA Instruments</Publisher>
-    <StartMenuDir>SDIControlPoint</StartMenuDir>
+    <!--<StartMenuDir>SDIControlPoint</StartMenuDir>--><StartMenuDir>KAYA Instruments</StartMenuDir>
     <TargetDir>@ApplicationsDir@/KAYA Instruments/SDIControlPoint</TargetDir>
     <InstallActionColumnVisible>true</InstallActionColumnVisible>
     <RemoveTargetDir>true</RemoveTargetDir>
     <ControlScript>controlScript.qs</ControlScript>
     <MaintenanceToolName>SDIControlPointTool</MaintenanceToolName>
+	<SupportsModify>false</SupportsModify>
 </Installer>
