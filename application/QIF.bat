@@ -1,4 +1,4 @@
-PATH=%PATH%;C:\Qt\5.12.9\msvc2017\bin
+PATH=%PATH%;%QTHOME%\5.12.9\msvc2017\bin
 SET TARGETDIR=..\..\..\__DIST\SDIControlPoint\QIF
 
 :fill_qif
@@ -12,5 +12,5 @@ copy /b %KAYA_3RD_PARTY_SW_ROOT%\VS2019\vcredist_msvc2019_x86.exe %TARGETDIR%\pa
 
 :call_binarycreator
 pushd %TARGETDIR%
-C:\Qt\Tools\QtInstallerFramework\3.2\bin\binarycreator.exe -c config\config.xml -p packages SDIControlPoint_Setup.exe
+%QTHOME%\Tools\QtInstallerFramework\4.0\bin\binarycreator.exe --offline-only -c config\config.xml -p packages SDIControlPoint_Setup.exe
 popd

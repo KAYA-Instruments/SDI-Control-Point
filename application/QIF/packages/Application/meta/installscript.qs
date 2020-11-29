@@ -1,5 +1,6 @@
 function Component() {
-	//QMessageBox.information("Installer", "Component.information", "function Component()", QMessageBox.Yes | QMessageBox.No);
+    installer.gainAdminRights();
+    component.loaded.connect(this, this.installerLoaded);
 }
 
 function extractFileName(path) {
@@ -68,4 +69,70 @@ Component.prototype.createOperations = function() {
         generateShortCutCmd(item);
     });
 
+}
+
+Component.prototype.installerLoaded = function()
+{
+	// https://stackoverflow.com/questions/46455360/workaround-for-qt-installer-framework-not-overwriting-existing-installation
+    installer.setDefaultPageVisible(QInstaller.TargetDirectory, false);
+    installer.addWizardPage(component, "TargetWidget", QInstaller.TargetDirectory);
+
+    targetDirectoryPage = gui.pageWidgetByObjectName("DynamicTargetWidget");
+    targetDirectoryPage.windowTitle = "Choose Installation Directory";
+    targetDirectoryPage.description.setText("Please select where the " + installer.value("Name") + " will be installed:");
+    targetDirectoryPage.targetDirectory.textChanged.connect(this, this.targetDirectoryChanged);
+    targetDirectoryPage.targetDirectory.setText(installer.value("TargetDir"));
+    targetDirectoryPage.targetChooser.released.connect(this, this.targetChooserClicked);
+
+    gui.pageById(QInstaller.ComponentSelection).entered.connect(this, this.componentSelectionPageEntered);
+}
+
+Component.prototype.targetChooserClicked = function()
+{
+    var dir = QFileDialog.getExistingDirectory("", targetDirectoryPage.targetDirectory.text);
+    targetDirectoryPage.targetDirectory.setText(dir);
+}
+
+Component.prototype.targetDirectoryChanged = function()
+{
+    var dir = targetDirectoryPage.targetDirectory.text;
+	var mtn = installer.value("MaintenanceToolName");
+    if (installer.fileExists(dir) && installer.fileExists(dir + "\\" + mtn + ".exe")) 
+	{
+        targetDirectoryPage.warning.setText("<p style=\"color: red\">Existing installation detected and must be uninstalled before proceeding.<br>The content of selected directory will be wiped if you continue.</p>");
+    }
+    else if (installer.fileExists(dir)) 
+	{
+        targetDirectoryPage.warning.setText("<p style=\"color: red\">Installing in existing directory. It will be wiped.</p>");
+    }
+    else 
+	{
+        targetDirectoryPage.warning.setText("");
+    }
+    installer.setValue("TargetDir", dir);
+}
+
+Component.prototype.componentSelectionPageEntered = function()
+{
+	//var wia = installer.value("InstallerDirPath");
+	//QMessageBox.information("Installer", "InstallerDirPath", wia, QMessageBox.Ok);
+    var dir = installer.value("TargetDir");
+    var mtn = installer.value("MaintenanceToolName");
+    if (installer.fileExists(dir) && installer.fileExists(dir + "\\" + mtn + ".exe")) 
+	{
+		var auto_uninstall_filepath = dir + "\\scripts\\auto_uninstall.qs";
+		var mt_arg = "--script=" + auto_uninstall_filepath;
+		if (!installer.fileExists(auto_uninstall_filepath))
+		{
+			mt_arg = "";
+		}
+		console.log("mt_arg: " + "'" + mt_arg + "'");
+        var res = installer.execute(dir + "\\" + mtn + ".exe", mt_arg);
+		console.log(dir + "\\" + mtn + ".exe " + mt_arg + " | result: " + res);
+		//QMessageBox.information("Installer", "componentSelectionPageEntered", dir + "\\" + mtn + ".exe --script=" + auto_uninstall_filepath + " | result: " + res, QMessageBox.Ok);
+    }
+	else
+	{
+		//QMessageBox.information("Installer", "componentSelectionPageEntered", dir + "\\" + mtn + ".exe not found", QMessageBox.Ok);
+	}
 }

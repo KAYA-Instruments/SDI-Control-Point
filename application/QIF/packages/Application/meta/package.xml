@@ -4,8 +4,11 @@
     <Description>The SDIControlPoint application</Description>
     <Version>3.0.0-aplha1</Version>
     <Default>true</Default>
-    <ForcedInstallation>false</ForcedInstallation>
+    <ForcedInstallation>true</ForcedInstallation>
     <Script>installscript.qs</Script>
     <ReleaseDate>2020-10-21</ReleaseDate>
     <SortingPriority>201</SortingPriority>
+    <UserInterfaces>
+        <UserInterface>targetwidget.ui</UserInterface>
+    </UserInterfaces>
 </Package>
