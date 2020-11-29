@@ -12,5 +12,5 @@ copy /b %KAYA_3RD_PARTY_SW_ROOT%\VS2019\vcredist_msvc2019_x86.exe %TARGETDIR%\pa
 
 :call_binarycreator
 pushd %TARGETDIR%
-%QTHOME%\Tools\QtInstallerFramework\3.2\bin\binarycreator.exe --offline-only -c config\config.xml -p packages SDIControlPoint_Setup.exe
+%QTHOME%\Tools\QtInstallerFramework\4.0\bin\binarycreator.exe --offline-only -c config\config.xml -p packages SDIControlPoint_Setup.exe
 popd
