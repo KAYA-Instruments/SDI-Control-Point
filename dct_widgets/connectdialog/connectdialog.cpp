@@ -458,7 +458,9 @@ bool ConnectDialog::connectWithDevice()
 
         if ( !bConnected )      // Device did not respond
         {
-            msgBox.setText("Could not connect to device, the device did not respond. Try another Protocol or Port.");
+            msgBox.setText("Could not connect to device, the device did not respond.\n\n"
+                           "Make sure the device is not running in another application instance.\n"
+                           "If no other instances were found, try another Protocol or Port.");
             msgBox.exec();
         }
         else if ( !bIsKnown )   // Device is unsupported

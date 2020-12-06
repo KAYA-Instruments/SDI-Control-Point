@@ -38,6 +38,8 @@
 
 #include <defines.h>
 
+#include "../version.h"
+
 /******************************************************************************
  * Settings
  *****************************************************************************/
@@ -69,6 +71,7 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
     , m_WidgetMode( DctWidgetBox::Normal )
     , m_ShowDebugTerminal( false )
     , m_EnableConnectionCheck( false )
+    , m_userSetComboBox( nullptr )
 {
     // Create ui
     m_ui->setupUi( this );
@@ -122,6 +125,10 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
         this->loadUiSettings( settings );
         qDebug() << "loaded ui settings from file";
     }
+
+    // Set window title with current version
+    QString title = this->windowTitle() + ' ' + KAYA_VERSION_STR;
+    this->setWindowTitle(title);
 }
 
 /******************************************************************************
@@ -172,6 +179,13 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
     if (deviceFeatures.hasSystemSaveLoad)
     {
         m_ui->toolBar->addSeparator();
+
+        // Add user set combo box
+        m_userSetComboBox = new QComboBox( m_ui->toolBar );
+        QStringList userSets = {"Setting 0","Setting 1","Setting 2","Setting 3","Setting 4","Setting 5","Setting 6","Setting 7"};
+        m_userSetComboBox->addItems(userSets);
+        m_ui->toolBar->addWidget(m_userSetComboBox);
+
         m_ui->toolBar->addAction(m_ui->actionSaveSettings);
         m_ui->toolBar->addAction(m_ui->actionLoadSettings);
     }
@@ -1088,8 +1102,8 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
     }
     if (deviceFeatures.hasSystemSaveLoad)
     {
-        connect( this, SIGNAL(SaveSettings()), dev->GetProVideoSystemItf(), SLOT(onSaveSettings()) );
-        connect( this, SIGNAL(LoadSettings()), dev->GetProVideoSystemItf(), SLOT(onLoadSettings()) );
+        connect( this, SIGNAL(SaveSettings(int )), dev->GetProVideoSystemItf(), SLOT(onSaveSettings(int )) );
+        connect( this, SIGNAL(LoadSettings(int )), dev->GetProVideoSystemItf(), SLOT(onLoadSettings(int )) );
     }
     if (deviceFeatures.hasSystemBroadcast)
     {
@@ -1554,7 +1568,7 @@ void MainWindow::onLoadSettingsClicked()
     if ( m_dev )
     {
         QApplication::setOverrideCursor( Qt::WaitCursor );
-        emit LoadSettings(); m_dev->resync();
+        emit LoadSettings(m_userSetComboBox->currentIndex()); m_dev->resync();
         QApplication::setOverrideCursor( Qt::ArrowCursor );
     }
 }
@@ -1567,7 +1581,7 @@ void MainWindow::onSaveSettingsClicked()
     if ( m_dev )
     {
         QApplication::setOverrideCursor( Qt::WaitCursor );
-        emit (SaveSettings());
+        emit (SaveSettings(m_userSetComboBox->currentIndex()));
         QApplication::setOverrideCursor( Qt::ArrowCursor );
     }
 }

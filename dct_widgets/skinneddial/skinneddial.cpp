@@ -272,7 +272,9 @@ void SkinnedDial::mouseReleaseEvent( QMouseEvent * evt )
     double mouseRad = radiusAt( mapFromGlobal( evt->globalPos() ) );
     if ( mouseRad < d_data->m_outerRadius )
     {
-        QDial::mouseReleaseEvent( evt );
+        // Removed mouse release event handling due to bug #31 Github
+        //QDial::mouseReleaseEvent( evt );
+        evt->ignore();
     }
     else
     {

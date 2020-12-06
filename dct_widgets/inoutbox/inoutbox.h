@@ -153,6 +153,7 @@ protected:
     void updateLscWidgets( void );
     void enableAecWidgets( bool enable );
     void enableCamConfWidgets( bool enable );
+    void enableIsoConfWidgets( bool enable );
 
     void updateEnableOfGenlockSettings( int genlockMode, int crosslockMode );
 

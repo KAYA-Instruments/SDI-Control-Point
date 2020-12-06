@@ -1007,22 +1007,22 @@ void ProVideoSystemItf::onDebugLevelChange( uint8_t level )
 /******************************************************************************
  * ProVideoSystemItf::onSaveSettings
  *****************************************************************************/
-void ProVideoSystemItf::onSaveSettings()
+void ProVideoSystemItf::onSaveSettings(int userSetting)
 {
     // save setting 
     int res = ctrl_protocol_save_settings( GET_PROTOCOL_INSTANCE(this),
-                    GET_CHANNEL_INSTANCE(this) ); 
+                    GET_CHANNEL_INSTANCE(this), userSetting );
     HANDLE_ERROR( res );
 }
 
 /******************************************************************************
  * ProVideoSystemItf::onLoadSettings
  *****************************************************************************/
-void ProVideoSystemItf::onLoadSettings()
+void ProVideoSystemItf::onLoadSettings(int userSetting)
 {
     // load settings
     int res = ctrl_protocol_load_settings( GET_PROTOCOL_INSTANCE(this),
-                    GET_CHANNEL_INSTANCE(this) ); 
+                    GET_CHANNEL_INSTANCE(this), userSetting );
     HANDLE_ERROR( res );
 }
 

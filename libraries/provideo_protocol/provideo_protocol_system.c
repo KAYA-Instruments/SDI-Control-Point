@@ -242,14 +242,14 @@
 /******************************************************************************
  * @brief command "save_settings" 
  *****************************************************************************/
-#define CMD_SAVE_SETTINGS                       ( "save_settings\n" )
-#define CMD_SAVE_SETTINGS_TMO                   ( 3000 )
+#define CMD_SAVE_SETTINGS                       ( "save_settings %i\n" )
+#define CMD_SAVE_SETTINGS_TMO                   ( 30000 )
 
 /******************************************************************************
  * @brief command "load_settings" 
  *****************************************************************************/
-#define CMD_LOAD_SETTINGS                       ( "load_settings\n" )
-#define CMD_LOAD_SETTINGS_TMO                   ( 30000 )
+#define CMD_LOAD_SETTINGS                       ( "load_settings %i\n" )
+#define CMD_LOAD_SETTINGS_TMO                   ( 50000 )
 
 /******************************************************************************
  * @brief command "reset_settings" 
@@ -1995,12 +1995,13 @@ static int update
 static int save_settings
 (
     void * const                ctx,
-    ctrl_channel_handle_t const channel
+    ctrl_channel_handle_t const channel,
+    int userSetting
 )
 {
     (void) ctx;
 
-    return ( set_param_0_with_tmo( channel, CMD_SAVE_SETTINGS, CMD_SAVE_SETTINGS_TMO ) );
+    return ( set_param_int_X_with_tmo( channel, CMD_SAVE_SETTINGS, CMD_SAVE_SETTINGS_TMO, INT( userSetting ) ) );
 }
 
 /******************************************************************************
@@ -2009,12 +2010,13 @@ static int save_settings
 static int load_settings
 (
     void * const                ctx,
-    ctrl_channel_handle_t const channel
+    ctrl_channel_handle_t const channel,
+    int userSetting
 )
 {
     (void) ctx;
 
-    return ( set_param_0_with_tmo( channel, CMD_LOAD_SETTINGS, CMD_LOAD_SETTINGS_TMO ) );
+    return ( set_param_int_X_with_tmo( channel, CMD_LOAD_SETTINGS, CMD_LOAD_SETTINGS_TMO, INT( userSetting ) ) );
 }
 
 /******************************************************************************

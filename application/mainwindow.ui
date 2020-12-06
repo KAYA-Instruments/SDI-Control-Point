@@ -14,11 +14,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>KAYA Color Control</string>
+   <string>SDI Control Point</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../resource/resource.qrc">
-    <normaloff>:/images/tab/piesegmentselect.png</normaloff>:/images/tab/piesegmentselect.png</iconset>
+    <normaloff>:/icons/flaticon.com-camera/004-camera-2_128.ico</normaloff>:/icons/flaticon.com-camera/004-camera-2_128.ico</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">

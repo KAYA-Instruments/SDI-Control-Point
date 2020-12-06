@@ -76,6 +76,7 @@ private slots:
     void onShowHelpClicked();
     void onSaveLogClicked();
     void onClearTerminalClicked();
+    void onShowCommandsClicked();
 };
 
 #endif // DEBUGTERMINAL_H

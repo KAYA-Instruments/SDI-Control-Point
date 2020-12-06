@@ -39,7 +39,7 @@
         <file>images/tab/play.png</file>
         <file>images/tab/red.png</file>
         <file>images/tab/thermometer.png</file>
-        <file>images/tab/update.png</file>
+        <file>images/tab/update_.png</file>
         <file>images/tab/wb.png</file>
         <file>images/tab/dpcc.png</file>
         <file>images/tool/connect.png</file>
@@ -172,5 +172,10 @@
         <file>icons/flaticon.com-camera/012-video-camera-2.png</file>
         <file>icons/flaticon.com-camera/004-camera-2_256.ico</file>
         <file>icons/flaticon.com-camera/004-camera-2_128.ico</file>
+        <file>images/tab/update.png</file>
+        <file>images/back/dial-back-blue_full.png</file>
+        <file>images/back/dial-back-gray_full.png</file>
+        <file>images/back/dial-back-green_full.png</file>
+        <file>images/back/dial-back-red_full.png</file>
     </qresource>
 </RCC>

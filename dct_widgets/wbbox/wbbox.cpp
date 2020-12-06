@@ -870,6 +870,46 @@ void WbBox::enterEvent( QEvent * )
 void WbBox::leaveEvent( QEvent * )
 {
     d_data->m_wb_timer->stop();
-} 
+}
 
+/******************************************************************************
+ * WbBox::on_hueResetButton_clicked
+ *****************************************************************************/
+void WbBox::on_hueResetButton_clicked()
+{
+    setHue(WB_HUE_DEFAULT);
+}
 
+/******************************************************************************
+ * WbBox::on_saturationResetButton_clicked
+ *****************************************************************************/
+void WbBox::on_saturationResetButton_clicked()
+{
+    setSaturation(WB_SATURATION_DEFAULT);
+}
+
+/******************************************************************************
+ * WbBox::on_brightnessResetButton_clicked
+ *****************************************************************************/
+void WbBox::on_brightnessResetButton_clicked()
+{
+    setBrightness(WB_BRIGHTNESS_DEFAULT);
+}
+
+/******************************************************************************
+ * WbBox::on_contrastResetButton_clicked
+ *****************************************************************************/
+void WbBox::on_contrastResetButton_clicked()
+{
+    setContrast(WB_CONTRAST_DEFAULT);
+}
+
+/******************************************************************************
+ * WbBox::on_whiteBalanceResetButton_clicked
+ *****************************************************************************/
+void WbBox::on_whiteBalanceResetButton_clicked()
+{
+    setRedGain(WB_RED_GAIN_MIN);
+    setGreenGain(WB_GREEN_GAIN_MIN);
+    setBlueGain(WB_BLUE_GAIN_MIN);
+}

@@ -717,12 +717,13 @@ int ctrl_protocol_update
 int ctrl_protocol_save_settings
 (
     ctrl_protocol_handle_t const protocol,
-    ctrl_channel_handle_t const  channel
+    ctrl_channel_handle_t const  channel,
+    int userSetting
 )
 {
     CHECK_HANDLE( protocol );
     CHECK_DRV_FUNC( SYS_DRV(protocol->drv), save_settings );
-    return ( SYS_DRV(protocol->drv)->save_settings( protocol->ctx, channel ) );
+    return ( SYS_DRV(protocol->drv)->save_settings( protocol->ctx, channel, userSetting ) );
 }
 
 /******************************************************************************
@@ -731,12 +732,13 @@ int ctrl_protocol_save_settings
 int ctrl_protocol_load_settings
 (
     ctrl_protocol_handle_t const protocol,
-    ctrl_channel_handle_t const  channel
+    ctrl_channel_handle_t const  channel,
+    int userSetting
 )
 {
     CHECK_HANDLE( protocol );
     CHECK_DRV_FUNC( SYS_DRV(protocol->drv), load_settings );
-    return ( SYS_DRV(protocol->drv)->load_settings( protocol->ctx, channel ) );
+    return ( SYS_DRV(protocol->drv)->load_settings( protocol->ctx, channel, userSetting ) );
 }
 
 /******************************************************************************

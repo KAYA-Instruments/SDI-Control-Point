@@ -34,6 +34,7 @@
 #define BL_SENSOR_BLACK_BASE                (       10 )
 #define BL_SENSOR_BLACK_DISPLAY_MULTIPLIER  (        1 )
 #define BL_SENSOR_BLACK_DISPLAY_MASK        ( "%-4.0f" )
+#define BL_SENSOR_BLACK_DEFAULT             (        0 )
 
 /******************************************************************************
  * Flare Compensation Definitions
@@ -74,6 +75,7 @@ public:
     void setGreenBlackLevel( const int green );
     int BlueBlackLevel() const;
     void setBlueBlackLevel( const int blue );
+    void setBlackLevel( const int red, const int green, const int blue );
     
     int RedFlareLevel() const;
     int GreenFlareLevel() const;
@@ -126,6 +128,7 @@ private slots:
     void onSensorBlackGreenChange( int value );
     void onSensorBlackBlueChange( int value );
     void onSensorBlackMasterChange( int value );
+    void onSensorBlackResetClicked();
 
     // master black 
     void onMasterBlackChange( int red, int green, int blue );

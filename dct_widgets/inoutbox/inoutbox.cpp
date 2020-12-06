@@ -196,8 +196,8 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->sbxExposure->setRange( 100, 20000 );
     d_data->m_ui->sldExposure->setRange( 100, 20000 );
 
-    d_data->m_ui->sbxSetPoint->setRange( 50, 3000 );
-    d_data->m_ui->sldSetPoint->setRange( 50, 3000 );
+    d_data->m_ui->sbxSetPoint->setRange( 0, 1023 );
+    d_data->m_ui->sldSetPoint->setRange( 0, 1023 );
 
     d_data->m_ui->sbxMaxIso->setRange( 80, 400 );
     d_data->m_ui->sldMaxIso->setRange( 80, 400 );
@@ -3053,11 +3053,6 @@ void InOutBox::enableAecWidgets( bool enable )
  *****************************************************************************/
 void InOutBox::enableCamConfWidgets( bool enable )
 {
-    d_data->m_ui->sbxIso->setEnabled( enable );
-    d_data->m_ui->sldIso->setEnabled( enable );
-    d_data->m_ui->cbxIso->setEnabled( enable );
-    UpdateIsoPlusMinusButtons();
-    
     d_data->m_ui->sbxExposure->setEnabled( enable );
     d_data->m_ui->sldExposure->setEnabled( enable );
     d_data->m_ui->cbxExposure->setEnabled( enable );
@@ -3065,6 +3060,17 @@ void InOutBox::enableCamConfWidgets( bool enable )
 
     d_data->m_ui->sbxAperture->setEnabled( enable && d_data->m_AptEnable );
     d_data->m_ui->sldAperture->setEnabled( enable && d_data->m_AptEnable );
+}
+
+/******************************************************************************
+ * InOutBox::enableIsoConfWidgets
+ *****************************************************************************/
+void InOutBox::enableIsoConfWidgets( bool enable )
+{
+    d_data->m_ui->sbxIso->setEnabled( enable );
+    d_data->m_ui->sldIso->setEnabled( enable );
+    d_data->m_ui->cbxIso->setEnabled( enable );
+    UpdateIsoPlusMinusButtons();
 }
 
 /******************************************************************************
