@@ -19,6 +19,14 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = SDIControlPoint
 TEMPLATE = app
 
+# Installation setup defines
+TARGET_EXT = .exe
+QIF_DESTDIR = ../__DIST/SDIControlPoint/QIF
+QIF_DIR = $${PWD}/QIF
+KAYA_VS2019_PATH = $$(KAYA_3RD_PARTY_SW_ROOT)\VS2019\vcredist_msvc2019_x86.exe
+WIN_DEPLOY_QT_PATH = $$(QTHOME)\5.12.9\msvc2017\bin
+BINARY_CREATOR_PATH = $$(QTHOME)\Tools\QtInstallerFramework\4.0\bin
+
 # Platform specific tweaks
 install_binaries.path = $$OUT_PWD/tools_and_configs
 install_binaries.files = ""
@@ -26,18 +34,46 @@ unix {
     FLASH_LOADER_APPLICATION="flashloader"
     install_binaries.files += ./tools_and_configs/flashloader
     install_binaries.files += ./tools_and_configs/SupportedLenses.txt
+#    XCOPY_COMMAND = cp -r -a -n
+#    DEPLOY_COMMAND = macdeployqt
 }
 win32 {
     FLASH_LOADER_APPLICATION="flashloader.exe"
     install_binaries.files += ./tools_and_configs/flashloader.exe
     install_binaries.files += ./tools_and_configs/SupportedLenses.txt
+    XCOPY_COMMAND = xcopy /i /e /y /j /d
+    DEPLOY_COMMAND = $${WIN_DEPLOY_QT_PATH}\windeployqt
 }
 osx {
     QMAKE_INFO_PLIST = osx/Info.plist
 }
 
+CONFIG( debug, debug|release ) {
+    # debug
+    TARGET_FULL_PATH = $$shell_quote($$shell_path($${OUT_PWD}/debug/$${TARGET}$${TARGET_EXT}))
+} else {
+    # release
+    TARGET_FULL_PATH = $$shell_quote($$shell_path($${OUT_PWD}/release/$${TARGET}$${TARGET_EXT}))
+}
+
 # Copy needed binary files during make install step
 INSTALLS += install_binaries
+
+# Copy files to __DIST folder for installation
+for(FILE,QIF_DIR){
+            win32: FILE ~= s,/,\\,g
+            QMAKE_POST_LINK += '$${XCOPY_COMMAND} "$${FILE}" "$${QIF_DESTDIR}" $$escape_expand(\n\t)'
+}
+
+# Call windeployqt
+APP_DESTDIR = $${QIF_DESTDIR}/packages/Application/data
+QMAKE_POST_LINK += 'copy /b "$${TARGET_FULL_PATH}" "$${QIF_DESTDIR}/packages/Application/data" $$escape_expand(\n\t)'
+QMAKE_POST_LINK += '$${DEPLOY_COMMAND} --verbose 2 $${APP_DESTDIR}/$${TARGET}$${TARGET_EXT} $$escape_expand(\n\t)'
+
+# Call binary creator
+QMAKE_POST_LINK += 'copy /b "$${KAYA_VS2019_PATH}" "$${QIF_DESTDIR}/packages/vcredist/data" $$escape_expand(\n\t)'
+QMAKE_POST_LINK += '$${BINARY_CREATOR_PATH}/binarycreator -f -c $${QIF_DESTDIR}/config/config.xml -p $${QIF_DESTDIR}/packages SDIControlPoint_Setup.exe'
+
 
 DEFINES += FLASH_LOADER_APPLICATION=\\\"$$FLASH_LOADER_APPLICATION\\\"
 DEFINES += "QT_NO_PRINTER"
