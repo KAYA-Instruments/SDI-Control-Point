@@ -72,6 +72,7 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
     , m_ShowDebugTerminal( false )
     , m_EnableConnectionCheck( false )
     , m_userSetComboBox( nullptr )
+    , m_bUserSetComboBox(false)
 {
     // Create ui
     m_ui->setupUi( this );
@@ -181,10 +182,13 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
         m_ui->toolBar->addSeparator();
 
         // Add user set combo box
-        m_userSetComboBox = new QComboBox( m_ui->toolBar );
-        QStringList userSets = {"Setting 0","Setting 1","Setting 2","Setting 3","Setting 4","Setting 5","Setting 6","Setting 7"};
-        m_userSetComboBox->addItems(userSets);
-        m_ui->toolBar->addWidget(m_userSetComboBox);
+        if(m_bUserSetComboBox)
+        {
+            m_userSetComboBox = new QComboBox( m_ui->toolBar );
+            QStringList userSets = {"Setting 0","Setting 1","Setting 2","Setting 3","Setting 4","Setting 5","Setting 6","Setting 7"};
+            m_userSetComboBox->addItems(userSets);
+            m_ui->toolBar->addWidget(m_userSetComboBox);
+        }
 
         m_ui->toolBar->addAction(m_ui->actionSaveSettings);
         m_ui->toolBar->addAction(m_ui->actionLoadSettings);
@@ -1568,7 +1572,8 @@ void MainWindow::onLoadSettingsClicked()
     if ( m_dev )
     {
         QApplication::setOverrideCursor( Qt::WaitCursor );
-        emit LoadSettings(m_userSetComboBox->currentIndex()); m_dev->resync();
+        emit LoadSettings(m_bUserSetComboBox ? m_userSetComboBox->currentIndex() : 0);
+        m_dev->resync();
         QApplication::setOverrideCursor( Qt::ArrowCursor );
     }
 }
@@ -1581,7 +1586,7 @@ void MainWindow::onSaveSettingsClicked()
     if ( m_dev )
     {
         QApplication::setOverrideCursor( Qt::WaitCursor );
-        emit (SaveSettings(m_userSetComboBox->currentIndex()));
+        emit (SaveSettings(m_bUserSetComboBox ? m_userSetComboBox->currentIndex() : 0));
         QApplication::setOverrideCursor( Qt::ArrowCursor );
     }
 }
