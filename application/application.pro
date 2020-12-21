@@ -21,7 +21,8 @@ TEMPLATE = app
 
 # Installation setup defines
 TARGET_EXT = .exe
-QIF_DESTDIR = ../__DIST/SDIControlPoint/QIF
+INSTALLER_NAME = SDIControlPoint_Setup
+QIF_DESTDIR = ../__DIST/QIF
 QIF_DIR = $${PWD}/QIF
 KAYA_VS2019_PATH = $$(KAYA_3RD_PARTY_SW_ROOT)\VS2019\vcredist_msvc2019_x86.exe
 WIN_DEPLOY_QT_PATH = $$(QTHOME)\5.12.9\msvc2017\bin
@@ -72,8 +73,7 @@ QMAKE_POST_LINK += '$${DEPLOY_COMMAND} --verbose 2 $${APP_DESTDIR}/$${TARGET}$${
 
 # Call binary creator
 QMAKE_POST_LINK += 'copy /b "$${KAYA_VS2019_PATH}" "$${QIF_DESTDIR}/packages/vcredist/data" $$escape_expand(\n\t)'
-QMAKE_POST_LINK += '$${BINARY_CREATOR_PATH}/binarycreator -f -c $${QIF_DESTDIR}/config/config.xml -p $${QIF_DESTDIR}/packages SDIControlPoint_Setup.exe'
-
+QMAKE_POST_LINK += '$${BINARY_CREATOR_PATH}/binarycreator -f -c $${QIF_DESTDIR}/config/config.xml -p $${QIF_DESTDIR}/packages ../__DIST/$${INSTALLER_NAME}$${TARGET_EXT}'
 
 DEFINES += FLASH_LOADER_APPLICATION=\\\"$$FLASH_LOADER_APPLICATION\\\"
 DEFINES += "QT_NO_PRINTER"
