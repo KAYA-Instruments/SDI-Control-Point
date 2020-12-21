@@ -192,6 +192,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
 
         m_ui->toolBar->addAction(m_ui->actionSaveSettings);
         m_ui->toolBar->addAction(m_ui->actionLoadSettings);
+        //m_ui->toolBar->addAction(m_ui->actionDefaultSettings);
     }
     if (deviceFeatures.hasChainSelection)
     {

@@ -531,6 +531,21 @@
     <string>Open Settings Dialog</string>
    </property>
   </action>
+  <action name="actionDefaultSettings">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resource/resource.qrc">
+     <normaloff>:/icons/default.png</normaloff>:/icons/default.png</iconset>
+   </property>
+   <property name="text">
+    <string>defaultSettings</string>
+   </property>
+   <property name="toolTip">
+    <string>Set camera settings to default</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
