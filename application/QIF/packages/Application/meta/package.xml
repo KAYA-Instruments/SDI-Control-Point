@@ -10,5 +10,6 @@
     <SortingPriority>201</SortingPriority>
     <UserInterfaces>
         <UserInterface>targetwidget.ui</UserInterface>
+        <UserInterface>shortcutwidget.ui</UserInterface>
     </UserInterfaces>
 </Package>
