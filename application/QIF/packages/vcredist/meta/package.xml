@@ -6,6 +6,6 @@
     <Default>true</Default>
     <ForcedInstallation>false</ForcedInstallation>
     <Script>installscript.qs</Script>
-    <ReleaseDate>2020-10-21</ReleaseDate>
+    <ReleaseDate>2021-01-20</ReleaseDate>
     <SortingPriority>200</SortingPriority>
 </Package>

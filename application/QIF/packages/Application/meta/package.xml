@@ -2,7 +2,7 @@
 <Package>
     <DisplayName>SDIControlPoint</DisplayName>
     <Description>The SDIControlPoint application</Description>
-    <Version>3.0.0-aplha1</Version>
+    <Version>3.1.0</Version>
     <Default>true</Default>
     <ForcedInstallation>true</ForcedInstallation>
     <Script>installscript.qs</Script>

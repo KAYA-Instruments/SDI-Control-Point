@@ -76,7 +76,7 @@ InfoBox::InfoBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->setupUi( this );
 
     // fill GUI version line edit
-    d_data->m_ui->letGuiVersion->setText( "v " + QString(KAYA_VERSION_STR) );
+    d_data->m_ui->letGuiVersion->setText( "v" + QString(KAYA_VERSION_STR) );
 
     // hide UI elements for sw and hw mask, they are of no interest for the user
     d_data->m_ui->lblFeatureMaskSw->setVisible( false );

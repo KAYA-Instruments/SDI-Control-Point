@@ -40,7 +40,8 @@ function generateShortCutCmd(cmd)
     if (installer.value("os") === "win")
     {
         component.addOperation("Mkdir", "@StartMenuDir@"); // https://stackoverflow.com/a/52126984/1468415
-        if (component.addOperation("CreateShortcut", "@TargetDir@/SDIControlPoint.exe", "@StartMenuDir@/SDIControlPoint.lnk"))
+        if (component.addOperation("CreateShortcut", "@TargetDir@/SDIControlPoint.exe",
+                                   "@AllUsersStartMenuProgramsPath@/KAYA Instruments/SDIControlPoint.lnk"))
         {
             //QMessageBox.information("Installer", "generateShortCutCmd", "CreateShortcut ok", QMessageBox.Ok);
         }
@@ -48,6 +49,11 @@ function generateShortCutCmd(cmd)
         {
             //QMessageBox.information("Installer", "generateShortCutCmd", "CreateShortcut failed", QMessageBox.Ok);
         }
+
+        component.addOperation("CreateShortcut", "@TargetDir@/doc",
+                               "@AllUsersStartMenuProgramsPath@/KAYA Instruments/SDI Control Point documentation.lnk",
+                               "iconPath=@TargetDir@/icons/PDFicon64x64.ico");
+        
     }
 
 

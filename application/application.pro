@@ -1,8 +1,7 @@
-
 # This version number is shown in the Application, it should be
 # updated before each release!
-VERSION = 3.0.0.0
-DEFINES += VERSION_STRING=\\\"3.0.0_alpha1\\\"
+VERSION = 2021.1
+DEFINES += VERSION
 
 QMAKE_TARGET_COMPANY = "KAYA Instruments"
 QMAKE_TARGET_PRODUCT = "SDI Control Point"
@@ -21,9 +20,11 @@ TEMPLATE = app
 
 # Installation setup defines
 TARGET_EXT = .exe
-INSTALLER_NAME = SDIControlPoint_Setup
+INSTALLER_NAME = SDIControlPoint_Setup_$$VERSION
 QIF_DESTDIR = ../__DIST/QIF
 QIF_DIR = $${PWD}/QIF
+DOCS_DIR = ../doc
+ICONS_DIR = ../resource/icons/dir_icon
 KAYA_VS2019_PATH = $$(KAYA_3RD_PARTY_SW_ROOT)\VS2019\vcredist_msvc2019_x86.exe
 WIN_DEPLOY_QT_PATH = $$(QTHOME)\5.12.9\msvc2017\bin
 BINARY_CREATOR_PATH = $$(QTHOME)\Tools\QtInstallerFramework\4.0\bin
@@ -36,7 +37,6 @@ unix {
     install_binaries.files += ./tools_and_configs/flashloader
     install_binaries.files += ./tools_and_configs/SupportedLenses.txt
 #    XCOPY_COMMAND = cp -r -a -n
-#    DEPLOY_COMMAND = macdeployqt
 }
 win32 {
     FLASH_LOADER_APPLICATION="flashloader.exe"
@@ -65,6 +65,18 @@ for(FILE,QIF_DIR){
             win32: FILE ~= s,/,\\,g
             QMAKE_POST_LINK += '$${XCOPY_COMMAND} "$${FILE}" "$${QIF_DESTDIR}" $$escape_expand(\n\t)'
 }
+
+for(FILE,DOCS_DIR){
+            win32: FILE ~= s,/,\\,g
+            QMAKE_POST_LINK += '$${XCOPY_COMMAND} "$${FILE}\*.pdf" "$${QIF_DESTDIR}/packages/Application/data/doc" $$escape_expand(\n\t)'
+}
+
+for(FILE,ICONS_DIR){
+            win32: FILE ~= s,/,\\,g
+            QMAKE_POST_LINK += '$${XCOPY_COMMAND} "$${FILE}\*.ico" "$${QIF_DESTDIR}/packages/Application/data/icons" $$escape_expand(\n\t)'
+}
+
+QMAKE_POST_LINK += 'copy /b "$${TARGET_FULL_PATH}" "$${QIF_DESTDIR}/packages/Application/data" $$escape_expand(\n\t)'
 
 # Call windeployqt
 APP_DESTDIR = $${QIF_DESTDIR}/packages/Application/data
