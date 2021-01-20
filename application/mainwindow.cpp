@@ -127,7 +127,7 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
     }
 
     // Set window title with current version
-    QString title = this->windowTitle() + ' ' + KAYA_VERSION_STR;
+    QString title = this->windowTitle() + ' ' + QString(VERSION);
     this->setWindowTitle(title);
 }
 

@@ -31,3 +31,7 @@ application/object_script.ProVideo.Release
 application/provideo_plugin_import.cpp
 application/release/
 application/ui_*.h
+
+# Installation package files #
+##############################
+__DIST/*
