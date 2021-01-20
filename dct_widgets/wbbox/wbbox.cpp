@@ -542,6 +542,7 @@ void WbBox::setWhiteBalanceSettingsVisible(const bool awbVisible, const bool gai
 {
     // Enable WB Button Box (contains WB Presets), if awb settings shall be visible
     d_data->m_ui->WbButtonBox->setVisible(awbVisible);
+    d_data->m_ui->WbButtonBox->setMaxColumns(5);
 
     // Enable WB Settings Group box, if either awb or gain shall be visible
     d_data->m_ui->WbSettings->setVisible(awbVisible || gainVisible);

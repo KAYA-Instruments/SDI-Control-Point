@@ -128,6 +128,7 @@ private:
     bool                    m_ShowDebugTerminal;
     bool                    m_EnableConnectionCheck;
     QComboBox *             m_userSetComboBox;
+    bool                    m_bUserSetComboBox;
 
     void setConnectDlg( ConnectDialog * );
     void setSettingsDlg( SettingsDialog * );

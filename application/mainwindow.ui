@@ -9,9 +9,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>950</width>
+    <width>949</width>
     <height>1015</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>SDI Control Point</string>
@@ -41,7 +47,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>932</width>
+         <width>931</width>
          <height>962</height>
         </rect>
        </property>
@@ -523,6 +529,21 @@
    </property>
    <property name="toolTip">
     <string>Open Settings Dialog</string>
+   </property>
+  </action>
+  <action name="actionDefaultSettings">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resource/resource.qrc">
+     <normaloff>:/icons/default.png</normaloff>:/icons/default.png</iconset>
+   </property>
+   <property name="text">
+    <string>defaultSettings</string>
+   </property>
+   <property name="toolTip">
+    <string>Set camera settings to default</string>
    </property>
   </action>
  </widget>
