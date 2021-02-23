@@ -618,6 +618,17 @@ void ChainItf::onChainGenlockTerminationChange( int value )
 }
 
 /******************************************************************************
+ * ChainItf::onChainGenlockLOLChange
+ *****************************************************************************/
+void ChainItf::onChainGenlockLOLChange( int value )
+{
+    // set genlock loss of signal on device
+    int res = ctrl_protocol_set_genlock_loss_of_signal( GET_PROTOCOL_INSTANCE(this),
+            GET_CHANNEL_INSTANCE(this), (uint8_t)value );
+    HANDLE_ERROR( res );
+}
+
+/******************************************************************************
  * ChainItf::onChainTimecodeChange
  *****************************************************************************/
 void ChainItf::onChainTimecodeChange( QVector<int> value )

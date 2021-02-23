@@ -495,6 +495,38 @@ int ctrl_protocol_set_genlock_termination
 );
 
 /**************************************************************************//**
+ * @brief Gets current gen-lock loss of signal
+ *
+ * @param[in]  channel  control channel instance
+ * @param[in]  protocol control protocol instance
+ * @param[in]  flag     current gen-lock loss of signal
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_genlock_loss_of_signal
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t * const              flag
+);
+
+/**************************************************************************//**
+ * @brief Sets gen-lock loss of signal
+ *
+ * @param[in]  channel  control channel instance
+ * @param[in]  protocol control protocol instance
+ * @param[in]  flag gen-lock loss of signal to set
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_set_genlock_loss_of_signal
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t const                flag
+);
+
+/**************************************************************************//**
  * @brief Number of time code values
  *****************************************************************************/
 #define NO_VALUES_TIMECODE             ( 3 ) 
@@ -656,6 +688,8 @@ typedef struct ctrl_protocol_chain_drv_s
     ctrl_protocol_int16_array_t  set_genlock_offset;
     ctrl_protocol_get_uint8_t    get_genlock_termination;
     ctrl_protocol_set_uint8_t    set_genlock_termination;
+    ctrl_protocol_get_uint8_t    get_genlock_loss_of_signal;
+    ctrl_protocol_set_uint8_t    set_genlock_loss_of_signal;
     ctrl_protocol_get_uint8_t    get_sdi_range;
     ctrl_protocol_set_uint8_t    set_sdi_range;
     ctrl_protocol_get_int8_t     get_sdi_black;

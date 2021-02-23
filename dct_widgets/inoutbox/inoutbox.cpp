@@ -331,6 +331,7 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->sbxGenLockOffsetVertical, SIGNAL(valueChanged(int)), this, SLOT(onSbxGenlockOffsetVerticalChange(int)) );
     connect( d_data->m_ui->sbxGenlockOffsetHorizontal, SIGNAL(valueChanged(int)), this, SLOT(onSbxGenlockOffsetHorizontalChange(int)) );
     connect( d_data->m_ui->cbxGenLockTermination, SIGNAL(stateChanged(int)), this, SLOT(onCbxGenlockTerminationChange(int)) );
+    connect( d_data->m_ui->sbxGenLockLOL, SIGNAL(valueChanged(int)), this, SLOT(onSbxGenlockLOLValueChange(int)) );
 
     // auto exposure
     connect( d_data->m_ui->cbxAecEnable, SIGNAL(stateChanged(int)), this, SLOT(onCbxAecEnableChange(int)) );
@@ -408,6 +409,14 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     // operation mode
     ////////////////////
     prepareMode( mode() ); 
+
+    // Temporary remove unimplemented GenLock features
+    d_data->m_ui->cbxGenLockTermination->hide();
+    d_data->m_ui->lblGenLockTermination->hide();
+    d_data->m_ui->lblGenlockCrosslock->hide();
+    d_data->m_ui->cbxGenlockCrosslockEnable->hide();
+    d_data->m_ui->cbxGenlockCrosslockVmode->hide();
+    d_data->m_ui->gbxGenLockSettings->layout()->removeItem(d_data->m_ui->horizontalSpacer);
 }
 
 /******************************************************************************
@@ -1956,6 +1965,16 @@ void InOutBox::onChainGenlockTerminationChange( int value )
 }
 
 /******************************************************************************
+ * InOutBox::onChainGenlockOffsetChange
+ *****************************************************************************/
+void InOutBox::onChainGenlockLOLChange( int value )
+{
+    d_data->m_ui->sbxGenLockLOL->blockSignals( true );
+    d_data->m_ui->sbxGenLockLOL->setValue( value );
+    d_data->m_ui->sbxGenLockLOL->blockSignals( false );
+}
+
+/******************************************************************************
  * InOutBox::onCbxBayerPatternChange
  *****************************************************************************/
 void InOutBox::onCbxBayerPatternChange( int index )
@@ -2544,6 +2563,19 @@ void InOutBox::onCbxGenlockTerminationChange( int value )
 
     setWaitCursor();
     emit ChainGenlockTerminationChanged( (value == Qt::Checked) ? 1 : 0 );
+    setNormalCursor();
+}
+
+void InOutBox::onSbxGenlockLOLValueChange(int value)
+{
+    setWaitCursor();
+    emit ChainGenlockLOLChanged( value );
+
+    // Set the genlock LOL
+    //block all signals from the spinbox then allow application to process all pending events
+    d_data->m_ui->sbxGenLockOffsetVertical->blockSignals( true );
+    QApplication::processEvents();
+    d_data->m_ui->sbxGenLockOffsetVertical->blockSignals( false );
     setNormalCursor();
 }
 

@@ -275,7 +275,7 @@ IronSDI_Device::features IronSDI_Device::getSupportedFeatures()
     deviceFeatures.hasChainSdi2Mode         = false;
     deviceFeatures.hasChainAudio            = false;
     deviceFeatures.hasChainDownscale        = true;
-    deviceFeatures.hasChainGenLock          = false;
+    deviceFeatures.hasChainGenLock          = true;
     deviceFeatures.hasChainTimeCode         = false;
     deviceFeatures.hasChainTimeCodeHold     = false;
     deviceFeatures.hasChainSdiSettings      = true;

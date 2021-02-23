@@ -446,6 +446,37 @@ int ctrl_protocol_set_genlock_termination
 }
 
 /******************************************************************************
+ * ctrl_protocol_get_genlock_loss_of_signal
+ *****************************************************************************/
+int ctrl_protocol_get_genlock_loss_of_signal
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t * const              flag
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( CHAIN_DRV(protocol->drv), get_genlock_termination );
+    CHECK_NOT_NULL( flag );
+    return ( CHAIN_DRV(protocol->drv)->get_genlock_termination( protocol->ctx, channel, flag ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_genlock_termination
+ *****************************************************************************/
+int ctrl_protocol_set_genlock_loss_of_signal
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t const                flag
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( CHAIN_DRV(protocol->drv), set_genlock_loss_of_signal );
+    return ( CHAIN_DRV(protocol->drv)->set_genlock_loss_of_signal( protocol->ctx, channel, flag ) );
+}
+
+/******************************************************************************
  * ctrl_protocol_chain_register
  *****************************************************************************/
 int ctrl_protocol_chain_register

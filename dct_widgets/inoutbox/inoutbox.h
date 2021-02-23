@@ -183,6 +183,7 @@ signals:
     void ChainGenlockCrosslockChanged( int enable, int vmode );
     void ChainGenlockOffsetChanged( int vertical, int horizontal );
     void ChainGenlockTerminationChanged( int value );
+    void ChainGenlockLOLChanged( int value );
 
     void AecEnableChanged( int value );
     void AecSetupChanged( QVector<int> values );
@@ -219,6 +220,7 @@ public slots:
     void onChainGenlockCrosslockChange( int enable, int vmode );
     void onChainGenlockOffsetChange( int vertical , int horizontal );
     void onChainGenlockTerminationChange( int value );
+    void onChainGenlockLOLChange( int value );
 
     void onAecEnableChange( int enable );
     void onAecSetupChange( QVector<int> values );
@@ -270,6 +272,7 @@ private slots:
     void onSbxGenlockOffsetVerticalChange( int value );
     void onSbxGenlockOffsetHorizontalChange( int value );
     void onCbxGenlockTerminationChange( int value );
+    void onSbxGenlockLOLValueChange(int value);
 
     void onCbxAecEnableChange( int value );
     void onCbxAecWeightChange( int value );

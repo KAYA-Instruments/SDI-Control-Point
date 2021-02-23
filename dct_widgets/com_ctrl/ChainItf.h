@@ -136,6 +136,9 @@ signals:
     // genlock termination 
     void ChainGenlockTerminationChanged( int value );
 
+    // genlock loss of signal
+    void ChainGenlockLOLChanged( int value );
+
     // timecode
     void ChainTimecodeChanged( QVector<int> value );
     void ChainTimecodeHoldChanged( bool enable );
@@ -162,6 +165,7 @@ public slots:
     void onChainGenlockCrosslockChange( int enable, int vmode );
     void onChainGenlockOffsetChange( int vertical, int horizontal );
     void onChainGenlockTerminationChange( int value );
+    void onChainGenlockLOLChange( int value );
     void onChainTimecodeChange( QVector<int> value );
     void onChainTimecodeGetRequest();
     void onChainTimecodeHoldChange( bool enable );

@@ -128,7 +128,7 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
     }
 
     // Set window title with current version
-    QString title = this->windowTitle() + ' ' + QString(VERSION);
+    QString title = this->windowTitle() + ' ' + QString(KAYA_COMMERCIAL_VERSION);
     this->setWindowTitle(title);
 }
 
@@ -600,6 +600,9 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
 
             connect( dev->GetChainItf(), SIGNAL(ChainGenlockTerminationChanged(int)), m_ui->inoutBox, SLOT(onChainGenlockTerminationChange(int)) );
             connect( m_ui->inoutBox, SIGNAL(ChainGenlockTerminationChanged(int)), dev->GetChainItf(), SLOT(onChainGenlockTerminationChange(int)) );
+
+            connect( dev->GetChainItf(), SIGNAL(ChainGenlockLOLChanged(int)), m_ui->inoutBox, SLOT(onChainGenlockLOLChange(int)) );
+            connect( m_ui->inoutBox, SIGNAL(ChainGenlockLOLChanged(int)), dev->GetChainItf(), SLOT(onChainGenlockLOLChange(int)) );
         }
         if (deviceFeatures.hasChainTimeCode)
         {

@@ -189,8 +189,8 @@
  * gen-lock mode names
  *****************************************************************************/
 #define GENLOCK_MODE_DISABLE            ( "Disable" )
-#define GENLOCK_MODE_SLAVE              ( "Slave" )
-#define GENLOCK_MODE_MASTER             ( "Master" )
+#define GENLOCK_MODE_SLAVE              ( "Slave - auto" )
+#define GENLOCK_MODE_MASTER             ( "Slave - force" )
 
 /******************************************************************************
  * gen-lock crosslock enable names
@@ -199,6 +199,12 @@
 #define GENLOCK_CROSSLOCK_ENABLE_PAL           ( "PAL B&B" )
 #define GENLOCK_CROSSLOCK_ENABLE_NTSC          ( "NTSC B&B" )
 #define GENLOCK_CROSSLOCK_ENABLE_OTHER_HD_MODE ("Other HD Mode")
+
+/******************************************************************************
+ * gen-lock state names
+ *****************************************************************************/
+#define GENLOCK_DISABLE_OR_LOCKED            ( "Disable or locked" )
+#define GENLOCK_ERROR_NOT_LOCKED             ( "Error not locked" )
 
 /******************************************************************************
  * SDI-2 mode names
