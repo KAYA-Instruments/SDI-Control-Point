@@ -189,8 +189,14 @@
  * gen-lock mode names
  *****************************************************************************/
 #define GENLOCK_MODE_DISABLE            ( "Disable" )
-#define GENLOCK_MODE_SLAVE              ( "Slave - auto" )
-#define GENLOCK_MODE_MASTER             ( "Slave - force" )
+#define GENLOCK_MODE_SLAVE_AUTO         ( "Slave - auto" ) // previously "Slave"
+#define GENLOCK_MODE_SLAVE_FORCE  ( "Slave - force" ) // previously "Master"
+
+/******************************************************************************
+ * gen-lock status names
+ *****************************************************************************/
+#define GENLOCK_STATUS_DISABLE_OR_LOCKED  ( "Disabled or locked" )
+#define GENLOCK_STATUS_ERROR_NOT_LOCKED   ( "Error not locked" )
 
 /******************************************************************************
  * gen-lock crosslock enable names
@@ -487,6 +493,15 @@ enum GenLockMode
 };
 
 /******************************************************************************
+ * camera genlock status
+ *****************************************************************************/
+enum GenLockStatus
+{
+    GenLockStatusDisabledOrLocked   = 0,
+    GenLockStatusErrorNotLocked     = 1,
+};
+
+/******************************************************************************
  * camera genlock crosslock enable
  *****************************************************************************/
 enum GenLockCrosslockEnable
@@ -602,6 +617,9 @@ QString GetCamDepthName( CamDepth depth );
 
 // return corresponding genlock mode name 
 QString GetGenlockModeName( GenLockMode mode );
+
+// return corresponding genlock status name
+QString GetGenlockStatusName( GenLockStatus mode );
 
 // return corresponding genlock crosslock enable name
 QString GetGenlockCrosslockEnableName( GenLockCrosslockEnable enable );

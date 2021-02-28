@@ -390,6 +390,22 @@ int ctrl_protocol_set_genlock_mode
 );
 
 /**************************************************************************//**
+ * @brief Gets current gen-lock status
+ *
+ * @param[in]  channel  control channel instance
+ * @param[in]  protocol control protocol instance
+ * @param[in]  mode     current gen-lock status
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_genlock_status
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t * const              status
+);
+
+/**************************************************************************//**
  * @brief Gets current gen-lock crosslock settings
  *
  * @param[in]  channel  control channel instance
@@ -495,35 +511,35 @@ int ctrl_protocol_set_genlock_termination
 );
 
 /**************************************************************************//**
- * @brief Gets current gen-lock loss of signal
+ * @brief Gets current gen-lock loss of link filter
  *
  * @param[in]  channel  control channel instance
  * @param[in]  protocol control protocol instance
- * @param[in]  flag     current gen-lock loss of signal
+ * @param[in]  value    current gen-lock loss of link filter
  *
  * @return     0 on success, error-code otherwise
  *****************************************************************************/
-int ctrl_protocol_get_genlock_loss_of_signal
+int ctrl_protocol_get_genlock_loss_of_link_filter
 (
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel,
-    uint8_t * const              flag
+    uint16_t * const              value
 );
 
 /**************************************************************************//**
- * @brief Sets gen-lock loss of signal
+ * @brief Sets gen-lock loss of link filter
  *
  * @param[in]  channel  control channel instance
  * @param[in]  protocol control protocol instance
- * @param[in]  flag gen-lock loss of signal to set
+ * @param[in]  value gen-lock loss of link filter
  *
  * @return     0 on success, error-code otherwise
  *****************************************************************************/
-int ctrl_protocol_set_genlock_loss_of_signal
+int ctrl_protocol_set_genlock_loss_of_link_filter
 (
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel,
-    uint8_t const                flag
+    uint16_t const              value
 );
 
 /**************************************************************************//**
@@ -682,14 +698,15 @@ typedef struct ctrl_protocol_chain_drv_s
     ctrl_protocol_set_uint8_t    set_flip_mode;
     ctrl_protocol_get_uint8_t    get_genlock_mode;
     ctrl_protocol_set_uint8_t    set_genlock_mode;
+    ctrl_protocol_get_uint8_t    get_genlock_status;
     ctrl_protocol_uint8_array_t  get_genlock_crosslock;
     ctrl_protocol_uint8_array_t  set_genlock_crosslock;
     ctrl_protocol_int16_array_t  get_genlock_offset;
     ctrl_protocol_int16_array_t  set_genlock_offset;
     ctrl_protocol_get_uint8_t    get_genlock_termination;
     ctrl_protocol_set_uint8_t    set_genlock_termination;
-    ctrl_protocol_get_uint8_t    get_genlock_loss_of_signal;
-    ctrl_protocol_set_uint8_t    set_genlock_loss_of_signal;
+    ctrl_protocol_get_uint16_t   get_genlock_loss_of_link_filter;
+    ctrl_protocol_set_uint16_t   set_genlock_loss_of_link_filter;
     ctrl_protocol_get_uint8_t    get_sdi_range;
     ctrl_protocol_set_uint8_t    set_sdi_range;
     ctrl_protocol_get_int8_t     get_sdi_black;

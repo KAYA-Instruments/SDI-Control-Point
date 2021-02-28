@@ -1246,14 +1246,14 @@
        </spacer>
       </item>
       <item row="5" column="0">
-       <widget class="QLabel" name="lblGenLockLOL">
+       <widget class="QLabel" name="lblGenLockLOLFilter">
         <property name="text">
-         <string>Genlock Loss of Lock Filter (ms)</string>
+         <string>Genlock Loss of Link Filter (ms)</string>
         </property>
        </widget>
       </item>
       <item row="5" column="1">
-       <widget class="QSpinBox" name="sbxGenLockLOL">
+       <widget class="QSpinBox" name="sbxGenLockLOLFilter">
         <property name="maximum">
          <number>10000</number>
         </property>

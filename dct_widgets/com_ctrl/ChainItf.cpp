@@ -77,9 +77,11 @@ void ChainItf::resync()
     GetChainSdiBlackLevel();
     GetChainSdiWhiteLevel();
     GetChainGenlockMode();
+    GetChainGenlockStatus();
     GetChainGenlockCrosslock();
     GetChainGenlockOffset();
     GetChainGenlockTermination();
+    GetChainGenlockLOLFilter();
     GetChainTimecode();
     GetChainTimecodeHold();
     GetChainAudioEnable();
@@ -287,6 +289,26 @@ void ChainItf::GetChainGenlockMode()
 }
 
 /******************************************************************************
+ * ChainItf::GetChainGenlockStatus
+ *****************************************************************************/
+void ChainItf::GetChainGenlockStatus()
+{
+    // Is there a signal listener
+    if ( receivers(SIGNAL(ChainGenlockStatusChanged(int))) > 0 )
+    {
+        uint8_t status;
+
+        // read genlock mode from device
+        int res = ctrl_protocol_get_genlock_status( GET_PROTOCOL_INSTANCE(this),
+            GET_CHANNEL_INSTANCE(this), &status );
+        HANDLE_ERROR( res );
+
+        // emit a ChainGenlockModeChanged signal
+        emit ChainGenlockStatusChanged( (int)status );
+    }
+}
+
+/******************************************************************************
  * ChainItf::GetChainGenlockCrosslock
  *****************************************************************************/
 void ChainItf::GetChainGenlockCrosslock()
@@ -343,6 +365,26 @@ void ChainItf::GetChainGenlockTermination()
         
         // emit a ChainGenlockTerminationChanged signal
         emit ChainGenlockTerminationChanged( (int)value );
+    }
+}
+
+/******************************************************************************
+ * ChainItf::GetChainGenlockLOLFilter
+ *****************************************************************************/
+void ChainItf::GetChainGenlockLOLFilter()
+{
+    // Is there a signal listener
+    if ( receivers(SIGNAL(ChainGenlockLOLFilterChanged(int))) > 0 )
+    {
+        uint16_t value;
+
+        // read genlock loss of link filter from device
+        int res = ctrl_protocol_get_genlock_loss_of_link_filter( GET_PROTOCOL_INSTANCE(this),
+                GET_CHANNEL_INSTANCE(this), &value );
+        HANDLE_ERROR( res );
+
+        // emit a ChainGenlockLOLFilterChanged signal
+        emit ChainGenlockLOLFilterChanged( (int)value );
     }
 }
 
@@ -571,6 +613,15 @@ void ChainItf::onChainGenlockModeChange( int value )
 }
 
 /******************************************************************************
+ * ChainItf::onChainGenlockStatusRefresh
+ *****************************************************************************/
+void ChainItf::onChainGenlockStatusRefresh()
+{
+    // get genlock mode from device
+    GetChainGenlockStatus();
+}
+
+/******************************************************************************
  * ChainItf::onChainGenlockCrosslockChange
  *****************************************************************************/
 void ChainItf::onChainGenlockCrosslockChange( int enable, int vmode )
@@ -618,13 +669,13 @@ void ChainItf::onChainGenlockTerminationChange( int value )
 }
 
 /******************************************************************************
- * ChainItf::onChainGenlockLOLChange
+ * ChainItf::onChainGenlockLOLFilterChange
  *****************************************************************************/
-void ChainItf::onChainGenlockLOLChange( int value )
+void ChainItf::onChainGenlockLOLFilterChange( int value )
 {
-    // set genlock loss of signal on device
-    int res = ctrl_protocol_set_genlock_loss_of_signal( GET_PROTOCOL_INSTANCE(this),
-            GET_CHANNEL_INSTANCE(this), (uint8_t)value );
+    // set genlock loss of link filter on device
+    int res = ctrl_protocol_set_genlock_loss_of_link_filter( GET_PROTOCOL_INSTANCE(this),
+            GET_CHANNEL_INSTANCE(this), (uint16_t)value );
     HANDLE_ERROR( res );
 }
 

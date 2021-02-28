@@ -592,6 +592,9 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
             connect( dev->GetChainItf(), SIGNAL(ChainGenlockModeChanged(int)), m_ui->inoutBox, SLOT(onChainGenlockModeChange(int)) );
             connect( m_ui->inoutBox, SIGNAL(ChainGenlockModeChanged(int)), dev->GetChainItf(), SLOT(onChainGenlockModeChange(int)) );
 
+            connect( dev->GetChainItf(), SIGNAL(ChainGenlockStatusChanged(int)), m_ui->inoutBox, SLOT(onChainGenlockStatusChange(int)) );
+            connect( m_ui->inoutBox, SIGNAL(ChainGenLockStatusRefresh()), dev->GetChainItf(), SLOT(onChainGenlockStatusRefresh()) );
+
             connect( dev->GetChainItf(), SIGNAL(ChainGenlockCrosslockChanged(int, int)), m_ui->inoutBox, SLOT(onChainGenlockCrosslockChange(int, int)) );
             connect( m_ui->inoutBox, SIGNAL(ChainGenlockCrosslockChanged(int, int)), dev->GetChainItf(), SLOT(onChainGenlockCrosslockChange(int, int)) );
 
@@ -601,8 +604,8 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
             connect( dev->GetChainItf(), SIGNAL(ChainGenlockTerminationChanged(int)), m_ui->inoutBox, SLOT(onChainGenlockTerminationChange(int)) );
             connect( m_ui->inoutBox, SIGNAL(ChainGenlockTerminationChanged(int)), dev->GetChainItf(), SLOT(onChainGenlockTerminationChange(int)) );
 
-            connect( dev->GetChainItf(), SIGNAL(ChainGenlockLOLChanged(int)), m_ui->inoutBox, SLOT(onChainGenlockLOLChange(int)) );
-            connect( m_ui->inoutBox, SIGNAL(ChainGenlockLOLChanged(int)), dev->GetChainItf(), SLOT(onChainGenlockLOLChange(int)) );
+            connect( dev->GetChainItf(), SIGNAL(ChainGenlockLOLFilterChanged(int)), m_ui->inoutBox, SLOT(onChainGenlockLOLFilterChange(int)) );
+            connect( m_ui->inoutBox, SIGNAL(ChainGenlockLOLFilterChanged(int)), dev->GetChainItf(), SLOT(onChainGenlockLOLFilterChange(int)) );
         }
         if (deviceFeatures.hasChainTimeCode)
         {

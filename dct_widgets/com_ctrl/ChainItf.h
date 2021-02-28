@@ -79,6 +79,9 @@ public:
     // genlock mode
     void GetChainGenlockMode();
 
+    // genlock status
+    void GetChainGenlockStatus();
+
     // genlock crosslock
     void GetChainGenlockCrosslock();
     
@@ -87,6 +90,9 @@ public:
     
     // genlock termination
     void GetChainGenlockTermination();
+
+    // genlock loss of link filter
+    void GetChainGenlockLOLFilter();
     
     // timecode
     void GetChainTimecode();
@@ -127,6 +133,9 @@ signals:
     // genlock mode
     void ChainGenlockModeChanged( int value );
 
+    // genlock status
+    void ChainGenlockStatusChanged( int value );
+
     // genlock crosslock
     void ChainGenlockCrosslockChanged( int enable, int vmode );
     
@@ -136,8 +145,8 @@ signals:
     // genlock termination 
     void ChainGenlockTerminationChanged( int value );
 
-    // genlock loss of signal
-    void ChainGenlockLOLChanged( int value );
+    // genlock loss of link filter
+    void ChainGenlockLOLFilterChanged( int value );
 
     // timecode
     void ChainTimecodeChanged( QVector<int> value );
@@ -162,10 +171,11 @@ public slots:
     void onChainSdiBlackLevelChange( int value );
     void onChainSdiWhiteLevelChange( int value );
     void onChainGenlockModeChange( int value );
+    void onChainGenlockStatusRefresh();
     void onChainGenlockCrosslockChange( int enable, int vmode );
     void onChainGenlockOffsetChange( int vertical, int horizontal );
     void onChainGenlockTerminationChange( int value );
-    void onChainGenlockLOLChange( int value );
+    void onChainGenlockLOLFilterChange( int value );
     void onChainTimecodeChange( QVector<int> value );
     void onChainTimecodeGetRequest();
     void onChainTimecodeHoldChange( bool enable );

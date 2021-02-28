@@ -116,6 +116,14 @@
 #define CMD_SET_GENLOCK_TMO                 ( 15000 )
 
 /******************************************************************************
+ * @brief command "genlock_status"
+ *****************************************************************************/
+#define CMD_GET_GENLOCK_STATUS              ( "genlock_status\n" )
+#define CMD_SET_GENLOCK_STATUS              ( "genlock_status %i\n" )
+#define CMD_SYNC_GENLOCK_STATUS             ( "genlock_status " )
+#define CMD_GET_GENLOCK_STATUS_NO_PARMS     ( 1 )
+
+/******************************************************************************
  * @brief command "genlock_crosslock"
  *****************************************************************************/
 #define CMD_GET_GENLOCK_CROSSLOCK           ( "genlock_crosslock\n" )
@@ -149,6 +157,14 @@
 #define CMD_SET_TIMECODE                    ( "timecode %i %i %i\n" )
 #define CMD_SYNC_TIMECODE                   ( "timecode " )
 #define CMD_GET_TIMECODE_NO_PARAMS          ( 3 )
+
+/******************************************************************************
+ * @brief command "genlock_lol_filter"
+ *****************************************************************************/
+#define CMD_GET_LOL_FILTER                  ( "genlock_lol_filter\n" )
+#define CMD_SET_LOL_FILTER                  ( "genlock_lol_filter %i\n" )
+#define CMD_SYNC_LOL_FILTER                 ( "genlock_lol_filter " )
+#define CMD_GET_LOL_FILTER_NO_PARAMS        ( 1 )
 
 /******************************************************************************
  * @brief command "timecode_hold"
@@ -625,6 +641,49 @@ static int set_genlock_mode
 }
 
 /******************************************************************************
+ * get_genlock_status - gets the genlock status
+ *****************************************************************************/
+static int get_genlock_status
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    uint8_t * const             status
+)
+{
+    (void) ctx;
+
+    int value;
+    int res;
+
+    // parameter check
+    if ( !status )
+    {
+        return ( -EINVAL );
+    }
+
+    // command call to get 1 parameter from provideo system
+    res = get_param_int_X( channel, 2,
+            CMD_GET_GENLOCK_STATUS, CMD_SYNC_GENLOCK_STATUS, CMD_SET_GENLOCK_STATUS, &value );
+
+    // return error code
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
+    // return -EFAULT if number of parameter not matching
+    else if ( res != CMD_GET_GENLOCK_STATUS_NO_PARMS )
+    {
+        return ( -EFAULT );
+    }
+
+    // type-cast to range
+    *status = UINT8( value );
+
+    return ( 0 );
+}
+
+/******************************************************************************
  * get_genlock_crosslock - gets the genlock crosslock settings
  *****************************************************************************/
 static int get_genlock_crosslock
@@ -830,6 +889,64 @@ static int set_genlock_termination
 
     return ( set_param_int_X_with_tmo( channel, CMD_SET_GENLOCK_TERM, CMD_SET_GENLOCK_TERM_TMO, INT( mode ) ) );
 }
+
+/******************************************************************************
+ * get_genlock_loss_of_link_filter - gets the genlock loss of link filter
+ *****************************************************************************/
+static int get_genlock_loss_of_link_filter
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    uint16_t * const            value
+)
+{
+    (void) ctx;
+
+    int val;
+    int res;
+
+    // parameter check
+    if ( !value )
+    {
+        return ( -EINVAL );
+    }
+
+    // command call to get 1 parameter from provideo system
+    res = get_param_int_X( channel, 2, CMD_GET_LOL_FILTER, CMD_SYNC_LOL_FILTER, CMD_SET_LOL_FILTER, &val );
+
+    // return error code
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
+    // return -EFAULT if number of parameter not matching
+    else if ( res != CMD_GET_LOL_FILTER_NO_PARAMS )
+    {
+        return ( -EFAULT );
+    }
+
+    // type-cast to range
+    *value = UINT16( val );
+
+    return ( 0 );
+}
+
+/******************************************************************************
+ * set_genlock_loss_of_link_filter - set genlock loss of link filter
+ *****************************************************************************/
+static int set_genlock_loss_of_link_filter
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    uint16_t const               value
+)
+{
+    (void) ctx;
+
+    return ( set_param_int_X( channel, CMD_SET_LOL_FILTER, value ) );
+}
+
 
 /******************************************************************************
  * get_sdi_range - Gets the YUV legalizer mode for the SDI output.
@@ -1260,40 +1377,43 @@ static int set_audio_gain
  *****************************************************************************/
 static ctrl_protocol_chain_drv_t provideo_chain_drv = 
 {
-    .get_output_chain        = get_output_chain,
-    .set_output_chain        = set_output_chain,
-    .get_video_mode          = get_video_mode,
-    .set_video_mode          = set_video_mode,
-    .get_raw_mode            = get_raw_mode,
-    .set_raw_mode            = set_raw_mode,
-    .get_sdi2_mode           = get_sdi2_mode,
-    .set_sdi2_mode           = set_sdi2_mode,
-    .get_downscale_mode      = get_downscale_mode,
-    .set_downscale_mode      = set_downscale_mode,
-    .get_flip_mode           = get_flip_mode,
-    .set_flip_mode           = set_flip_mode,
-    .get_sdi_range           = get_sdi_range,
-    .set_sdi_range           = set_sdi_range,
-    .get_sdi_black           = get_sdi_black,
-    .set_sdi_black           = set_sdi_black,
-    .get_sdi_white           = get_sdi_white,
-    .set_sdi_white           = set_sdi_white,
-    .get_genlock_mode        = get_genlock_mode,
-    .set_genlock_mode        = set_genlock_mode,
-    .get_genlock_crosslock   = get_genlock_crosslock,
-    .set_genlock_crosslock   = set_genlock_crosslock,
-    .get_genlock_offset      = get_genlock_offset,
-    .set_genlock_offset      = set_genlock_offset,
-    .get_genlock_termination = get_genlock_termination,
-    .set_genlock_termination = set_genlock_termination,
-    .get_timecode            = get_timecode,
-    .set_timecode            = set_timecode,
-    .get_timecode_hold       = get_timecode_hold,
-    .set_timecode_hold       = set_timecode_hold,
-    .get_audio_enable        = get_audio_enable,
-    .set_audio_enable        = set_audio_enable,
-    .get_audio_gain          = get_audio_gain,
-    .set_audio_gain          = set_audio_gain
+    .get_output_chain                = get_output_chain,
+    .set_output_chain                = set_output_chain,
+    .get_video_mode                  = get_video_mode,
+    .set_video_mode                  = set_video_mode,
+    .get_raw_mode                    = get_raw_mode,
+    .set_raw_mode                    = set_raw_mode,
+    .get_sdi2_mode                   = get_sdi2_mode,
+    .set_sdi2_mode                   = set_sdi2_mode,
+    .get_downscale_mode              = get_downscale_mode,
+    .set_downscale_mode              = set_downscale_mode,
+    .get_flip_mode                   = get_flip_mode,
+    .set_flip_mode                   = set_flip_mode,
+    .get_sdi_range                   = get_sdi_range,
+    .set_sdi_range                   = set_sdi_range,
+    .get_sdi_black                   = get_sdi_black,
+    .set_sdi_black                   = set_sdi_black,
+    .get_sdi_white                   = get_sdi_white,
+    .set_sdi_white                   = set_sdi_white,
+    .get_genlock_mode                = get_genlock_mode,
+    .set_genlock_mode                = set_genlock_mode,
+    .get_genlock_status              = get_genlock_status,
+    .get_genlock_crosslock           = get_genlock_crosslock,
+    .set_genlock_crosslock           = set_genlock_crosslock,
+    .get_genlock_offset              = get_genlock_offset,
+    .set_genlock_offset              = set_genlock_offset,
+    .get_genlock_termination         = get_genlock_termination,
+    .set_genlock_termination         = set_genlock_termination,
+    .get_genlock_loss_of_link_filter = get_genlock_loss_of_link_filter,
+    .set_genlock_loss_of_link_filter = set_genlock_loss_of_link_filter,
+    .get_timecode                    = get_timecode,
+    .set_timecode                    = set_timecode,
+    .get_timecode_hold               = get_timecode_hold,
+    .set_timecode_hold               = set_timecode_hold,
+    .get_audio_enable                = get_audio_enable,
+    .set_audio_enable                = set_audio_enable,
+    .get_audio_gain                  = get_audio_gain,
+    .set_audio_gain                  = set_audio_gain
 };
 
 /******************************************************************************
