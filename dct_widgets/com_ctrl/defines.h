@@ -190,13 +190,13 @@
  *****************************************************************************/
 #define GENLOCK_MODE_DISABLE            ( "Disable" )
 #define GENLOCK_MODE_SLAVE_AUTO         ( "Slave - auto" ) // previously "Slave"
-#define GENLOCK_MODE_SLAVE_FORCE  ( "Slave - force" ) // previously "Master"
+#define GENLOCK_MODE_SLAVE_FORCE        ( "Slave - force" ) // previously "Master"
 
 /******************************************************************************
  * gen-lock status names
  *****************************************************************************/
-#define GENLOCK_STATUS_DISABLE_OR_LOCKED  ( "Disabled or locked" )
-#define GENLOCK_STATUS_ERROR_NOT_LOCKED   ( "Error not locked" )
+#define GENLOCK_STATUS_LOCKED           ( "Locked" )
+#define GENLOCK_STATUS_NOT_LOCKED       ( "Not locked" )
 
 /******************************************************************************
  * gen-lock crosslock enable names

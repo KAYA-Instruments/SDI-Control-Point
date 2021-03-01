@@ -412,13 +412,15 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     ////////////////////
     prepareMode( mode() ); 
 
-    // Temporary remove unimplemented GenLock features
+    // Temporary hide unimplemented GenLock features
     d_data->m_ui->cbxGenLockTermination->hide();
     d_data->m_ui->lblGenLockTermination->hide();
     d_data->m_ui->lblGenlockCrosslock->hide();
     d_data->m_ui->cbxGenlockCrosslockEnable->hide();
     d_data->m_ui->cbxGenlockCrosslockVmode->hide();
     d_data->m_ui->gbxGenLockSettings->layout()->removeItem(d_data->m_ui->horizontalSpacer);
+    d_data->m_ui->sbxGenlockOffsetHorizontal->hide();
+    d_data->m_ui->lblGenLockOffsetHorizontal->hide();
 }
 
 /******************************************************************************

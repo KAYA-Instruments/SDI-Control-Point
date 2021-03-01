@@ -1225,7 +1225,7 @@
          </size>
         </property>
         <property name="text">
-         <string>Genlock Offset Vertical (Lines)</string>
+         <string>Genlock Offset Vertical</string>
         </property>
        </widget>
       </item>
@@ -1366,7 +1366,7 @@
          </size>
         </property>
         <property name="text">
-         <string>Genlock Offset Horizontal (Pixels)</string>
+         <string>Genlock Offset Horizontal</string>
         </property>
        </widget>
       </item>

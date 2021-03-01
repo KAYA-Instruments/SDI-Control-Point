@@ -34,6 +34,7 @@
 #define WB_RED_GAIN_BASE                        (        2 )
 #define WB_RED_GAIN_DISPLAY_MULTIPLIER          (        1 )
 #define WB_RED_GAIN_DISPLAY_MASK                (  "%2.3f" )
+#define WB_GAIN_DEFAULT                         (      256 )
 
 /******************************************************************************
  * Green Gain Definitions

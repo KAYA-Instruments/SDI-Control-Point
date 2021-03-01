@@ -910,7 +910,7 @@ void WbBox::on_contrastResetButton_clicked()
  *****************************************************************************/
 void WbBox::on_whiteBalanceResetButton_clicked()
 {
-    setRedGain(WB_RED_GAIN_MIN);
-    setGreenGain(WB_GREEN_GAIN_MIN);
-    setBlueGain(WB_BLUE_GAIN_MIN);
+    setRedGain(WB_GAIN_DEFAULT);
+    setGreenGain(WB_GAIN_DEFAULT);
+    setBlueGain(WB_GAIN_DEFAULT);
 }

@@ -662,9 +662,9 @@ QString GetGenlockStatusName( GenLockStatus mode )
     switch ( mode )
     {
         case GenLockStatusDisabledOrLocked:
-            return ( QString(GENLOCK_STATUS_DISABLE_OR_LOCKED) );
+            return ( QString(GENLOCK_STATUS_LOCKED) );
         case GenLockStatusErrorNotLocked:
-            return ( QString(GENLOCK_STATUS_ERROR_NOT_LOCKED) );
+            return ( QString(GENLOCK_STATUS_NOT_LOCKED) );
         default:
             return ( QString() );
     }
