@@ -222,6 +222,7 @@ public slots:
     void onChainGenlockStatusChange( int value );
     void onChainGenlockCrosslockChange( int enable, int vmode );
     void onChainGenlockOffsetChange( int vertical , int horizontal );
+    void onChainGenlockOffsetMaxChange( int verticalMax, int horizontalMax );
     void onChainGenlockTerminationChange( int value );
     void onChainGenlockLOLFilterChange( int value );
 

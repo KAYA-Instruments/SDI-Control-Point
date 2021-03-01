@@ -142,6 +142,9 @@ signals:
     // genlock offset
     void ChainGenlockOffsetChanged( int vertical, int horzontal );
     
+    // genlock offset max
+    void ChainGenlockOffsetMaxChanged(int verticalMax, int horzontalMax);
+
     // genlock termination 
     void ChainGenlockTerminationChanged( int value );
 

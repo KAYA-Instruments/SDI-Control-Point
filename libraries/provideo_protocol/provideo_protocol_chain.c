@@ -133,12 +133,14 @@
 #define CMD_SET_GENLOCK_CROSSLOCK_TMO       ( 15000 )
 
 /******************************************************************************
- * @brief command "genlock_offset" 
+ * @brief command "genlock_offset"
  *****************************************************************************/
 #define CMD_GET_GENLOCK_OFFSET              ( "genlock_offset\n" )
 #define CMD_SET_GENLOCK_OFFSET              ( "genlock_offset %i %i\n" )
+#define CMD_SET_GENLOCK_OFFSET_MAX          ( "genlock_offset %i %i %i %i\n" )
 #define CMD_SYNC_GENLOCK_OFFSET             ( "genlock_offset " )
 #define CMD_GET_GENLOCK_OFFSET_NO_PARMS     ( 2 )
+#define CMD_GET_GENLOCK_OFFSET_NO_PARMS_MAX ( 4 )
 #define CMD_SET_GENLOCK_OFFSET_TMO          ( 15000 )
 
 /******************************************************************************
@@ -770,7 +772,7 @@ static int get_genlock_offset
 {
     (void) ctx;
 
-    int vertical, horizontal;
+    int vertical, horizontal, verticalMax, horizontalMax;
     int res;
 
     // parameter check
@@ -779,16 +781,16 @@ static int get_genlock_offset
         return ( -EINVAL );
     }
 
-    if ( no != CMD_GET_GENLOCK_OFFSET_NO_PARMS )
+    if ( no != CMD_GET_GENLOCK_OFFSET_NO_PARMS_MAX )
     {
         // return -EFAULT if number of parameter not matching
         return ( -EFAULT );
     }
 
-    // command call to get 2 parameters from provideo system
+    // command call to get 4 parameters from provideo system
     res = get_param_int_X( channel, 2,
-            CMD_GET_GENLOCK_OFFSET, CMD_SYNC_GENLOCK_OFFSET, CMD_SET_GENLOCK_OFFSET,
-            &vertical, &horizontal );
+            CMD_GET_GENLOCK_OFFSET, CMD_SYNC_GENLOCK_OFFSET, CMD_SET_GENLOCK_OFFSET_MAX,
+            &vertical, &horizontal, &verticalMax, &horizontalMax);
 
     // return error code
     if ( res < 0 )
@@ -797,7 +799,7 @@ static int get_genlock_offset
     }
 
     // return -EFAULT if number of parameter not matching
-    else if ( res != CMD_GET_GENLOCK_OFFSET_NO_PARMS )
+    else if ( res != CMD_GET_GENLOCK_OFFSET_NO_PARMS_MAX )
     {
         return ( -EFAULT );
     }
@@ -805,6 +807,8 @@ static int get_genlock_offset
     // type-cast to range
     values[0] = INT16( vertical );
     values[1] = INT16( horizontal );
+    values[2] = INT16( verticalMax );
+    values[3] = INT16( horizontalMax );
 
     return ( 0 );
 }

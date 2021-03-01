@@ -336,15 +336,17 @@ void ChainItf::GetChainGenlockOffset()
     // Is there a signal listener
     if ( receivers(SIGNAL(ChainGenlockOffsetChanged(int, int))) > 0 )
     {
-        int16_t values[2];
+        int16_t values[4];
     
         // read genlock offset from device
         int res = ctrl_protocol_get_genlock_offset( GET_PROTOCOL_INSTANCE(this),
-            GET_CHANNEL_INSTANCE(this), 2, values );
+            GET_CHANNEL_INSTANCE(this), 4, values );
         HANDLE_ERROR( res );
         
         // emit a ChainGenlockOffsetChanged signal
         emit ChainGenlockOffsetChanged( (int)values[0], (int)values[1] );
+        // emit a ChainGenlockOffsetMaxChanged signal
+        emit ChainGenlockOffsetMaxChanged( (int)values[2], (int)values[3] );
     }
 }
 

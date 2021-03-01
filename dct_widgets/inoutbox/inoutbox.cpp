@@ -1983,6 +1983,22 @@ void InOutBox::onChainGenlockOffsetChange( int vertical, int horizontal )
 }
 
 /******************************************************************************
+ * InOutBox::onChainGenlockOffsetMaxChange
+ *****************************************************************************/
+void InOutBox::onChainGenlockOffsetMaxChange( int verticalMax, int horizontalMax )
+{
+    d_data->m_ui->sbxGenLockOffsetVertical->blockSignals( true );
+    d_data->m_ui->sbxGenLockOffsetVertical->setMaximum( verticalMax );
+    d_data->m_ui->sbxGenLockOffsetVertical->setMinimum( - verticalMax );
+    d_data->m_ui->sbxGenLockOffsetVertical->blockSignals( false );
+
+    d_data->m_ui->sbxGenlockOffsetHorizontal->blockSignals( true );
+    d_data->m_ui->sbxGenlockOffsetHorizontal->setMaximum( horizontalMax );
+    d_data->m_ui->sbxGenlockOffsetHorizontal->setMinimum( - horizontalMax );
+    d_data->m_ui->sbxGenlockOffsetHorizontal->blockSignals( false );
+}
+
+/******************************************************************************
  * InOutBox::onChainGenlockTerminationChange
  *****************************************************************************/
 void InOutBox::onChainGenlockTerminationChange( int value )

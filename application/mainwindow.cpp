@@ -600,6 +600,7 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
 
             connect( dev->GetChainItf(), SIGNAL(ChainGenlockOffsetChanged(int, int)), m_ui->inoutBox, SLOT(onChainGenlockOffsetChange(int, int)) );
             connect( m_ui->inoutBox, SIGNAL(ChainGenlockOffsetChanged(int, int)), dev->GetChainItf(), SLOT(onChainGenlockOffsetChange(int, int)) );
+            connect( dev->GetChainItf(), SIGNAL(ChainGenlockOffsetMaxChanged(int, int)), m_ui->inoutBox, SLOT(onChainGenlockOffsetMaxChange(int, int)) );
 
             connect( dev->GetChainItf(), SIGNAL(ChainGenlockTerminationChanged(int)), m_ui->inoutBox, SLOT(onChainGenlockTerminationChange(int)) );
             connect( m_ui->inoutBox, SIGNAL(ChainGenlockTerminationChanged(int)), dev->GetChainItf(), SLOT(onChainGenlockTerminationChange(int)) );
