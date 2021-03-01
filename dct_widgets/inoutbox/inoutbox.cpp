@@ -419,6 +419,8 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->cbxGenlockCrosslockEnable->hide();
     d_data->m_ui->cbxGenlockCrosslockVmode->hide();
     d_data->m_ui->gbxGenLockSettings->layout()->removeItem(d_data->m_ui->horizontalSpacer);
+    d_data->m_ui->sbxGenLockOffsetVertical->hide();
+    d_data->m_ui->lblGenLockOffsetVertical->hide();
     d_data->m_ui->sbxGenlockOffsetHorizontal->hide();
     d_data->m_ui->lblGenLockOffsetHorizontal->hide();
 }

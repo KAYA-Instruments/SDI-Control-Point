@@ -78,9 +78,9 @@ void ChainItf::resync()
     GetChainSdiWhiteLevel();
     GetChainGenlockMode();
     GetChainGenlockStatus();
-    GetChainGenlockCrosslock();
-    GetChainGenlockOffset();
-    GetChainGenlockTermination();
+    //GetChainGenlockCrosslock();
+    //GetChainGenlockOffset();
+    //GetChainGenlockTermination();
     GetChainGenlockLOLFilter();
     GetChainTimecode();
     GetChainTimecodeHold();
