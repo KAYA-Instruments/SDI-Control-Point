@@ -646,9 +646,25 @@ QString GetGenlockModeName( GenLockMode mode )
         case GenLockModeDisabled:
             return ( QString(GENLOCK_MODE_DISABLE) );
         case GenLockModeSlave:
-            return ( QString(GENLOCK_MODE_SLAVE) );
+            return ( QString(GENLOCK_MODE_SLAVE_AUTO) );
         case GenLockModeMaster:
-            return ( QString(GENLOCK_MODE_MASTER) );
+            return ( QString(GENLOCK_MODE_SLAVE_FORCE) );
+        default:
+            return ( QString() );
+    }
+}
+
+/******************************************************************************
+ * GetGenlockStatusName()
+ *****************************************************************************/
+QString GetGenlockStatusName( GenLockStatus mode )
+{
+    switch ( mode )
+    {
+        case GenLockStatusDisabledOrLocked:
+            return ( QString(GENLOCK_STATUS_LOCKED) );
+        case GenLockStatusErrorNotLocked:
+            return ( QString(GENLOCK_STATUS_NOT_LOCKED) );
         default:
             return ( QString() );
     }

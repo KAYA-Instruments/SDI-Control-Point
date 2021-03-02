@@ -347,6 +347,22 @@ int ctrl_protocol_set_genlock_mode
 }
 
 /******************************************************************************
+ * ctrl_protocol_get_genlock_status
+ *****************************************************************************/
+int ctrl_protocol_get_genlock_status
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t * const              status
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( CHAIN_DRV(protocol->drv), get_genlock_status );
+    CHECK_NOT_NULL( status );
+    return ( CHAIN_DRV(protocol->drv)->get_genlock_status( protocol->ctx, channel, status ) );
+}
+
+/******************************************************************************
  * ctrl_protocol_get_genlock_crosslock
  *****************************************************************************/
 int ctrl_protocol_get_genlock_crosslock
@@ -443,6 +459,37 @@ int ctrl_protocol_set_genlock_termination
     CHECK_HANDLE( protocol );
     CHECK_DRV_FUNC( CHAIN_DRV(protocol->drv), set_genlock_termination );
     return ( CHAIN_DRV(protocol->drv)->set_genlock_termination( protocol->ctx, channel, flag ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_genlock_loss_of_link_filter
+ *****************************************************************************/
+int ctrl_protocol_get_genlock_loss_of_link_filter
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint16_t * const               value
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( CHAIN_DRV(protocol->drv), get_genlock_loss_of_link_filter );
+    CHECK_NOT_NULL( value );
+    return ( CHAIN_DRV(protocol->drv)->get_genlock_loss_of_link_filter( protocol->ctx, channel, value ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_genlock_loss_of_link_filter
+ *****************************************************************************/
+int ctrl_protocol_set_genlock_loss_of_link_filter
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint16_t const               value
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( CHAIN_DRV(protocol->drv), set_genlock_loss_of_link_filter );
+    return ( CHAIN_DRV(protocol->drv)->set_genlock_loss_of_link_filter( protocol->ctx, channel, value ) );
 }
 
 /******************************************************************************

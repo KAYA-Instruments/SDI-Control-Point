@@ -2,11 +2,11 @@
 <Package>
     <DisplayName>SDIControlPoint</DisplayName>
     <Description>The SDIControlPoint application</Description>
-    <Version>3.1.0</Version>
+    <Version>3.1.1</Version>
     <Default>true</Default>
     <ForcedInstallation>true</ForcedInstallation>
     <Script>installscript.qs</Script>
-    <ReleaseDate>2020-10-21</ReleaseDate>
+    <ReleaseDate>2021-03-01</ReleaseDate>
     <SortingPriority>201</SortingPriority>
     <UserInterfaces>
         <UserInterface>targetwidget.ui</UserInterface>

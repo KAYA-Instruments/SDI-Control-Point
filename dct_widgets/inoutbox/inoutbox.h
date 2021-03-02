@@ -107,6 +107,7 @@ public:
     void setGenLockOffsetHorizontal( const int value );
     bool GenLockTermination() const;
     void setGenLockTermination( const bool value );
+    void setGenLockLOLFilter( const int value );
 
     // Show or hide UI elements
     void setCameraSettingsVisible(const bool value);
@@ -180,9 +181,11 @@ signals:
     void ChainAudioGainChanged( double gain );
     
     void ChainGenlockModeChanged( int value );
+    void ChainGenLockStatusRefresh();
     void ChainGenlockCrosslockChanged( int enable, int vmode );
     void ChainGenlockOffsetChanged( int vertical, int horizontal );
     void ChainGenlockTerminationChanged( int value );
+    void ChainGenlockLOLFilterChanged( int value );
 
     void AecEnableChanged( int value );
     void AecSetupChanged( QVector<int> values );
@@ -216,9 +219,12 @@ public slots:
     void onChainAudioGainChange( double gain );
 
     void onChainGenlockModeChange( int value );
+    void onChainGenlockStatusChange( int value );
     void onChainGenlockCrosslockChange( int enable, int vmode );
     void onChainGenlockOffsetChange( int vertical , int horizontal );
+    void onChainGenlockOffsetMaxChange( int verticalMax, int horizontalMax );
     void onChainGenlockTerminationChange( int value );
+    void onChainGenlockLOLFilterChange( int value );
 
     void onAecEnableChange( int enable );
     void onAecSetupChange( QVector<int> values );
@@ -265,11 +271,13 @@ private slots:
     void onSbxAudioGainChange( double gain );
     
     void onCbxGenlockModeChange( int index );
+    void onBtnGenlockStatusRefresh();
     void onCbxGenlockCrosslockEnableChange( int index );
     void onCbxGenlockCrosslockVmodeChange( int index );
     void onSbxGenlockOffsetVerticalChange( int value );
     void onSbxGenlockOffsetHorizontalChange( int value );
     void onCbxGenlockTerminationChange( int value );
+    void onSbxGenlockLOLFilterValueChange(int value);
 
     void onCbxAecEnableChange( int value );
     void onCbxAecWeightChange( int value );

@@ -128,7 +128,7 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
     }
 
     // Set window title with current version
-    QString title = this->windowTitle() + ' ' + QString(VERSION);
+    QString title = this->windowTitle() + ' ' + QString(KAYA_COMMERCIAL_VERSION);
     this->setWindowTitle(title);
 }
 
@@ -592,14 +592,21 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
             connect( dev->GetChainItf(), SIGNAL(ChainGenlockModeChanged(int)), m_ui->inoutBox, SLOT(onChainGenlockModeChange(int)) );
             connect( m_ui->inoutBox, SIGNAL(ChainGenlockModeChanged(int)), dev->GetChainItf(), SLOT(onChainGenlockModeChange(int)) );
 
+            connect( dev->GetChainItf(), SIGNAL(ChainGenlockStatusChanged(int)), m_ui->inoutBox, SLOT(onChainGenlockStatusChange(int)) );
+            connect( m_ui->inoutBox, SIGNAL(ChainGenLockStatusRefresh()), dev->GetChainItf(), SLOT(onChainGenlockStatusRefresh()) );
+
             connect( dev->GetChainItf(), SIGNAL(ChainGenlockCrosslockChanged(int, int)), m_ui->inoutBox, SLOT(onChainGenlockCrosslockChange(int, int)) );
             connect( m_ui->inoutBox, SIGNAL(ChainGenlockCrosslockChanged(int, int)), dev->GetChainItf(), SLOT(onChainGenlockCrosslockChange(int, int)) );
 
             connect( dev->GetChainItf(), SIGNAL(ChainGenlockOffsetChanged(int, int)), m_ui->inoutBox, SLOT(onChainGenlockOffsetChange(int, int)) );
             connect( m_ui->inoutBox, SIGNAL(ChainGenlockOffsetChanged(int, int)), dev->GetChainItf(), SLOT(onChainGenlockOffsetChange(int, int)) );
+            connect( dev->GetChainItf(), SIGNAL(ChainGenlockOffsetMaxChanged(int, int)), m_ui->inoutBox, SLOT(onChainGenlockOffsetMaxChange(int, int)) );
 
             connect( dev->GetChainItf(), SIGNAL(ChainGenlockTerminationChanged(int)), m_ui->inoutBox, SLOT(onChainGenlockTerminationChange(int)) );
             connect( m_ui->inoutBox, SIGNAL(ChainGenlockTerminationChanged(int)), dev->GetChainItf(), SLOT(onChainGenlockTerminationChange(int)) );
+
+            connect( dev->GetChainItf(), SIGNAL(ChainGenlockLOLFilterChanged(int)), m_ui->inoutBox, SLOT(onChainGenlockLOLFilterChange(int)) );
+            connect( m_ui->inoutBox, SIGNAL(ChainGenlockLOLFilterChanged(int)), dev->GetChainItf(), SLOT(onChainGenlockLOLFilterChange(int)) );
         }
         if (deviceFeatures.hasChainTimeCode)
         {
