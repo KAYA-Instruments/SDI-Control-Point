@@ -24,7 +24,7 @@
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="2" column="3">
-       <widget class="QSlider" name="sldIso">
+       <widget class="QSlider" name="sldAnalogGain">
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
         </property>
@@ -33,8 +33,15 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="lblExposure">
+      <item row="1" column="5">
+       <widget class="QPushButton" name="btnExposureMinus">
+        <property name="text">
+         <string>-</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="lblAnalogGain">
         <property name="minimumSize">
          <size>
           <width>140</width>
@@ -48,11 +55,11 @@
          </size>
         </property>
         <property name="text">
-         <string>Shutter Time (µs)</string>
+         <string>Analog Gain</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
+      <item row="4" column="0">
        <widget class="QLabel" name="lblAperture">
         <property name="minimumSize">
          <size>
@@ -71,130 +78,6 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="5">
-       <widget class="QPushButton" name="btnExposureMinus">
-        <property name="text">
-         <string>-</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QSpinBox" name="sbxAperture">
-        <property name="minimumSize">
-         <size>
-          <width>120</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>120</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="suffix">
-         <string> %</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="lblIso">
-        <property name="minimumSize">
-         <size>
-          <width>140</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>140</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>ISO</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="4">
-       <widget class="QComboBox" name="cbxIso">
-        <item>
-         <property name="text">
-          <string>Select ISO</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="3" column="3">
-       <widget class="QSlider" name="sldAperture">
-        <property name="focusPolicy">
-         <enum>Qt::NoFocus</enum>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QSpinBox" name="sbxIso">
-        <property name="minimumSize">
-         <size>
-          <width>120</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>120</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="lblBayerPattern">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>140</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>140</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Bayer-Pattern</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="cbxBayerPattern">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>120</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>120</width>
-          <height>16777215</height>
-         </size>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="4">
        <widget class="QComboBox" name="cbxExposure">
         <property name="sizePolicy">
@@ -210,13 +93,51 @@
         </item>
        </widget>
       </item>
-      <item row="1" column="3">
-       <widget class="QSlider" name="sldExposure">
+      <item row="4" column="3">
+       <widget class="QSlider" name="sldAperture">
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
         </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="6">
+       <widget class="QPushButton" name="btnIsoPlus">
+        <property name="text">
+         <string>+</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="4">
+       <widget class="QComboBox" name="cbxIso">
+        <property name="currentText">
+         <string>Select ISO</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>Select ISO</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="lblExposure">
+        <property name="minimumSize">
+         <size>
+          <width>140</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>140</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Shutter Time (µs)</string>
         </property>
        </widget>
       </item>
@@ -242,10 +163,80 @@
         </property>
        </widget>
       </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="cbxBayerPattern">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>120</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QSpinBox" name="sbxAperture">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>120</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="suffix">
+         <string> %</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="6">
        <widget class="QPushButton" name="btnExposurePlus">
         <property name="text">
          <string>+</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="lblBayerPattern">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>140</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>140</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Bayer-Pattern</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QSlider" name="sldExposure">
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
@@ -256,10 +247,16 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="6">
-       <widget class="QPushButton" name="btnIsoPlus">
-        <property name="text">
-         <string>+</string>
+      <item row="2" column="1">
+       <widget class="QDoubleSpinBox" name="sbxAnalogGain">
+        <property name="prefix">
+         <string>x </string>
+        </property>
+        <property name="maximum">
+         <double>252.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.100000000000000</double>
         </property>
        </widget>
       </item>
@@ -269,20 +266,10 @@
    <item>
     <widget class="QGroupBox" name="gbxAutoExposureSettings">
      <property name="title">
-      <string>Auto Exposure Configuration</string>
+      <string>Auto Exposure and Auto Gain Configuration</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="2" column="2">
-       <widget class="QSlider" name="sldSetPoint">
-        <property name="focusPolicy">
-         <enum>Qt::NoFocus</enum>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
+      <item row="1" column="0">
        <widget class="QLabel" name="lblSetPoint">
         <property name="minimumSize">
          <size>
@@ -301,22 +288,36 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="lblTaf">
+      <item row="0" column="1">
+       <widget class="QCheckBox" name="cbxAecEnable">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="1">
+       <widget class="QSpinBox" name="sbxControlSpeed">
         <property name="minimumSize">
          <size>
-          <width>140</width>
+          <width>120</width>
           <height>0</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>140</width>
+          <width>120</width>
           <height>16777215</height>
          </size>
         </property>
+        <property name="maximum">
+         <number>1000</number>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="lblMaxExposure">
         <property name="text">
-         <string>Anti Flicker Period</string>
+         <string>Maximum Exposure (µs)</string>
         </property>
        </widget>
       </item>
@@ -339,80 +340,116 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="QSpinBox" name="sbxMaxIso">
-        <property name="minimumSize">
-         <size>
-          <width>120</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>120</width>
-          <height>16777215</height>
-         </size>
+      <item row="8" column="0">
+       <widget class="QLabel" name="lblAecWeights">
+        <property name="text">
+         <string>Use Custom Weights</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
-       <widget class="QSpinBox" name="sbxControlSpeed">
-        <property name="minimumSize">
-         <size>
-          <width>120</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>120</width>
-          <height>16777215</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="2">
+      <item row="13" column="2">
        <widget class="QRadioButton" name="rdbTaf60Hz">
         <property name="text">
          <string>60 Hz</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="1">
+      <item row="6" column="1">
+       <widget class="QCheckBox" name="cbxMaxAnalogGainEnable">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="0">
+       <widget class="QLabel" name="lblTolerance">
+        <property name="text">
+         <string>Tolerance</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="2">
+       <widget class="QSlider" name="sldMaxExposure">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="0">
+       <widget class="QLabel" name="lblControlSpeed">
+        <property name="minimumSize">
+         <size>
+          <width>140</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>140</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Speed</string>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="2">
+       <widget class="QSlider" name="sldTolerance">
+        <property name="maximum">
+         <number>100</number>
+        </property>
+        <property name="pageStep">
+         <number>1</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="13" column="1">
        <widget class="QRadioButton" name="rdbTaf50Hz">
         <property name="text">
          <string>50 Hz</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="2">
-       <widget class="QSlider" name="sldControlSpeed">
-        <property name="focusPolicy">
-         <enum>Qt::NoFocus</enum>
+      <item row="13" column="0">
+       <widget class="QLabel" name="lblTaf">
+        <property name="minimumSize">
+         <size>
+          <width>140</width>
+          <height>0</height>
+         </size>
         </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+        <property name="maximumSize">
+         <size>
+          <width>140</width>
+          <height>16777215</height>
+         </size>
         </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="lblMaxIso">
         <property name="text">
-         <string>Maximum ISO</string>
+         <string>Anti Flicker Period</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="2">
-       <widget class="QSlider" name="sldMaxIso">
-        <property name="focusPolicy">
-         <enum>Qt::NoFocus</enum>
+      <item row="12" column="1">
+       <widget class="QDoubleSpinBox" name="sbxTolerance">
+        <property name="suffix">
+         <string> %</string>
         </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+        <property name="maximum">
+         <double>100.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.100000000000000</double>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
+      <item row="5" column="1">
+       <widget class="QSpinBox" name="sbxMaxExposure"/>
+      </item>
+      <item row="1" column="1">
        <widget class="QSpinBox" name="sbxSetPoint">
         <property name="minimumSize">
          <size>
@@ -428,47 +465,38 @@
         </property>
        </widget>
       </item>
+      <item row="11" column="2">
+       <widget class="QSlider" name="sldControlSpeed">
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QCheckBox" name="cbxMaxExposureEnable">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="lblActiveGain">
+        <property name="text">
+         <string>Enable Auto Gain</string>
+        </property>
+       </widget>
+      </item>
       <item row="4" column="0">
-       <widget class="QLabel" name="lblControlSpeed">
-        <property name="minimumSize">
-         <size>
-          <width>140</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>140</width>
-          <height>16777215</height>
-         </size>
-        </property>
+       <widget class="QLabel" name="lblActiveExposure">
         <property name="text">
-         <string>Control Speed</string>
+         <string>Enable Auto Exposure</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QCheckBox" name="cbxAecEnable">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="lblAecWeights">
-        <property name="text">
-         <string>Use Custom Weights</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QCheckBox" name="cbxAecWeight">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
+      <item row="8" column="2">
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
          <widget class="QPushButton" name="btnAecWeight">
@@ -498,6 +526,53 @@
         </item>
        </layout>
       </item>
+      <item row="1" column="2">
+       <widget class="QSlider" name="sldSetPoint">
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1">
+       <widget class="QCheckBox" name="cbxAecWeight">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="lblMaxAnalogGain">
+        <property name="text">
+         <string>Maximum Analog Gain</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="QDoubleSpinBox" name="sbxMaxAnalogGain">
+        <property name="prefix">
+         <string>x </string>
+        </property>
+        <property name="maximum">
+         <double>252.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.100000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="2">
+       <widget class="QSlider" name="sldMaxAnalogGain">
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -507,6 +582,49 @@
       <string>Lens Shading Correction Configuration</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_6">
+      <item row="1" column="1">
+       <widget class="QDoubleSpinBox" name="sbxK">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>120</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QSlider" name="sldOffset">
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QSlider" name="sldK">
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QCheckBox" name="cbxLscEnable">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="0">
        <widget class="QLabel" name="lblK">
         <property name="minimumSize">
@@ -526,22 +644,6 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QDoubleSpinBox" name="sbxK">
-        <property name="minimumSize">
-         <size>
-          <width>120</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>120</width>
-          <height>16777215</height>
-         </size>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="1">
        <widget class="QDoubleSpinBox" name="sbxOffset">
         <property name="minimumSize">
@@ -558,6 +660,44 @@
         </property>
        </widget>
       </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="lblSlope">
+        <property name="minimumSize">
+         <size>
+          <width>140</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>140</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Slope</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="lblLscEnable">
+        <property name="minimumSize">
+         <size>
+          <width>140</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>140</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Enable</string>
+        </property>
+       </widget>
+      </item>
       <item row="3" column="1">
        <widget class="QDoubleSpinBox" name="sbxSlope">
         <property name="minimumSize">
@@ -571,16 +711,6 @@
           <width>120</width>
           <height>16777215</height>
          </size>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3">
-       <widget class="QSlider" name="sldK">
-        <property name="focusPolicy">
-         <enum>Qt::NoFocus</enum>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
@@ -610,61 +740,6 @@
         </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="3">
-       <widget class="QSlider" name="sldOffset">
-        <property name="focusPolicy">
-         <enum>Qt::NoFocus</enum>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QCheckBox" name="cbxLscEnable">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="lblLscEnable">
-        <property name="minimumSize">
-         <size>
-          <width>140</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>140</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Enable</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="lblSlope">
-        <property name="minimumSize">
-         <size>
-          <width>140</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>140</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Slope</string>
         </property>
        </widget>
       </item>
@@ -1603,14 +1678,11 @@ Note: This will only hold the timecode in the SDI output, the timecode on the de
   <tabstop>cbxExposure</tabstop>
   <tabstop>btnExposureMinus</tabstop>
   <tabstop>btnExposurePlus</tabstop>
-  <tabstop>sbxIso</tabstop>
   <tabstop>cbxIso</tabstop>
   <tabstop>btnIsoMinus</tabstop>
   <tabstop>btnIsoPlus</tabstop>
   <tabstop>sbxAperture</tabstop>
   <tabstop>cbxAecEnable</tabstop>
-  <tabstop>sbxSetPoint</tabstop>
-  <tabstop>sbxMaxIso</tabstop>
   <tabstop>sbxControlSpeed</tabstop>
   <tabstop>rdbTaf50Hz</tabstop>
   <tabstop>rdbTaf60Hz</tabstop>

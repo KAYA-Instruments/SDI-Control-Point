@@ -154,7 +154,9 @@ protected:
     void updateLscWidgets( void );
     void enableAecWidgets( bool enable );
     void enableCamConfWidgets( bool enable );
-    void enableIsoConfWidgets( bool enable );
+    void enableGainConfWidgets( bool enable );
+    void enableMaxExposureWidgets( bool enable );
+    void enableMaxAnalogGainWidgets( bool enable );
 
     void updateEnableOfGenlockSettings( int genlockMode, int crosslockMode );
 
@@ -246,7 +248,7 @@ private slots:
 
     void onSldIsoChange( int value );
     void onSldIsoReleased();
-    void onSbxIsoChange( int value );
+    void onSbxIsoChange( double value );
     void onCbxIsoChange( int index );
     void onBtnIsoMinusClicked( );
     void onBtnIsoPlusClicked( );
@@ -280,19 +282,29 @@ private slots:
     void onSbxGenlockLOLFilterValueChange(int value);
 
     void onCbxAecEnableChange( int value );
+    void onCbxMaxAnalogGainEnableChange( int value );
+    void onCbxMaxExposureEnableChange( int value );
     void onCbxAecWeightChange( int value );
     
     void onSldSetPointChange( int value );
     void onSldSetPointReleased();
     void onSbxSetPointChange( int value );
 
-    void onSldMaxIsoChange( int value );
-    void onSldMaxIsoReleased();
-    void onSbxMaxIsoChange( int value );
-    
+    void onSldMaxAnalogGainChange( int value );
+    void onSldMaxAnalogGainReleased();
+    void onSbxMaxAnalogGainChange( double value );
+
+    void onSldMaxExposureChange( int value );
+    void onSldMaxExposureReleased();
+    void onSbxMaxExposureChange( int value );
+
     void onSldControlSpeedChange( int value );
     void onSldControlSpeedReleased();
     void onSbxControlSpeedChange( int value );
+
+    void onSldToleranceChange( int value );
+    void onSldToleranceReleased();
+    void onSbxToleranceChange( double value );
 
     void onBtnTimecodeSetClicked( );
     void onBtnTimecodeGetClicked( );
@@ -325,6 +337,7 @@ private:
 
     int gainToIso( int gain ) const;
     int isoToGain( int iso ) const;
+    int multiplyBy1000( int value ) const;
     void show4kGenlockNote( int mode );
     void EmitDownscaleChanged( int sdi_out_idx, int combo_box_idx );
 };
