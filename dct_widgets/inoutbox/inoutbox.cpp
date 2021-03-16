@@ -3197,6 +3197,9 @@ void InOutBox::updateAecSetupWidgets( void )
     d_data->m_ui->sldSetPoint->blockSignals( false );
 
     // Max Analog Gain
+    d_data->m_ui->cbxMaxAnalogGainEnable->blockSignals( true );
+    d_data->m_ui->cbxMaxAnalogGainEnable->setChecked(d_data->m_AecSetup.activeGain);
+    d_data->m_ui->cbxMaxAnalogGainEnable->blockSignals( false );
     d_data->m_ui->sbxMaxAnalogGain->blockSignals( true );
     d_data->m_ui->sbxMaxAnalogGain->setValue( gainToIso(d_data->m_AecSetup.maxGain) );
     d_data->m_ui->sbxMaxAnalogGain->blockSignals( false );
@@ -3205,6 +3208,9 @@ void InOutBox::updateAecSetupWidgets( void )
     d_data->m_ui->sldMaxAnalogGain->blockSignals( false );
 
     // Max Exposure
+    d_data->m_ui->cbxMaxExposureEnable->blockSignals( true );
+    d_data->m_ui->cbxMaxExposureEnable->setChecked(d_data->m_AecSetup.activeExposure);
+    d_data->m_ui->cbxMaxExposureEnable->blockSignals( false );
     d_data->m_ui->sbxMaxExposure->blockSignals( true );
     d_data->m_ui->sbxMaxExposure->setValue( gainToIso(d_data->m_AecSetup.maxExposure) );
     d_data->m_ui->sbxMaxExposure->blockSignals( false );
