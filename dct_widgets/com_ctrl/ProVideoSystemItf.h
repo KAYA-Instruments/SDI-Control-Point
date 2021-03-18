@@ -136,6 +136,8 @@ public:
     void GetFanTarget();
     void GetOverTempCount();
 
+    void GetDefaultSettings();
+
     // check for connection to device
     bool isConnected();
 
@@ -179,6 +181,7 @@ signals:
     void OverTempCountChanged( uint32_t count );
     void FanSpeedChanged( uint8_t speed );
     void FanTargetChanged( uint8_t target );
+    void DefaultSettingsChanged( int8_t userSetting );
 
 public slots:
     void onDeviceNameChange( QString name );
@@ -200,6 +203,8 @@ public slots:
     void onBootIntoUpdateMode();
     void onSaveSettings(int userSetting);
     void onLoadSettings(int userSetting);
+    void onSetDefaultSettings(int userSetting);
+    void onGetDefaultSettingsRequest();
     void onResetSettings();
     void onCopySettings(int src , int dest);
 

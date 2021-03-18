@@ -56,6 +56,9 @@ signals:
     // chain selection status
     void SaveSettings(int userSetting);
     void LoadSettings(int userSetting);
+    void DefaultSettings(int userSetting);
+    void DefaultSettingsRequest();
+
     void SdiOutChanged( int value );
 
     // copy settings
@@ -87,6 +90,8 @@ private slots:
     void onSplitScreenClicked();
     void onLoadSettingsClicked();
     void onSaveSettingsClicked();
+    void onDefaultSettingsClicked();
+    void onDefaultSettingsChanged(int8_t userSetting);
     void onLoadFromFileClicked();
     void onSaveToFileClicked();
     void onBroadcastClicked();
@@ -131,6 +136,7 @@ private:
     bool                    m_bUserSetComboBox;
 
     void setConnectDlg( ConnectDialog * );
+    void setUserSettingsDlg();
     void setSettingsDlg( SettingsDialog * );
     void setDebugTerminal( DebugTerminal * );
     void setupUI(ProVideoDevice::features deviceFeatures);

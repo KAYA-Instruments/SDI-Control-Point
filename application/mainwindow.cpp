@@ -72,7 +72,7 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
     , m_ShowDebugTerminal( false )
     , m_EnableConnectionCheck( false )
     , m_userSetComboBox( nullptr )
-    , m_bUserSetComboBox(false)
+    , m_bUserSetComboBox(true)
 {
     // Create ui
     m_ui->setupUi( this );
@@ -94,19 +94,20 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
     connect( m_ui->updBox, SIGNAL(ReopenSerialConnection()), this, SLOT(onReopenSerialConnection()) );
     
     // Connect toolbar actions
-    connect( m_ui->actionConnect        , SIGNAL( triggered() ), this, SLOT( onConnectClicked() ) );
-    connect( m_ui->actionSettings       , SIGNAL( triggered() ), this, SLOT( onSettingsClicked() ) );
-    connect( m_ui->actionLoadSettings   , SIGNAL( triggered() ), this, SLOT( onLoadSettingsClicked() ) );
-    connect( m_ui->actionSaveSettings   , SIGNAL( triggered() ), this, SLOT( onSaveSettingsClicked() ) );
-    connect( m_ui->actionSelectSdi1     , SIGNAL( triggered() ), this, SLOT( onSelectSdi1Clicked() ) );
-    connect( m_ui->actionSelectSdi2     , SIGNAL( triggered() ), this, SLOT( onSelectSdi2Clicked() ) );
-    connect( m_ui->actionCopyChain1To2  , SIGNAL( triggered() ), this, SLOT( onCopyChain1To2Clicked() ) );
-    connect( m_ui->actionCopyChain2To1  , SIGNAL( triggered() ), this, SLOT( onCopyChain2To1Clicked() ) );
-    connect( m_ui->actionSplitScreen    , SIGNAL( triggered() ), this, SLOT( onSplitScreenClicked() ) );
-    connect( m_ui->actionLoadFromFile   , SIGNAL( triggered() ), this, SLOT( onLoadFromFileClicked() ) );
-    connect( m_ui->actionSaveToFile     , SIGNAL( triggered() ), this, SLOT( onSaveToFileClicked() ) );
-    connect( m_ui->actionBroadcast      , SIGNAL( triggered() ), this, SLOT( onBroadcastClicked() ) );
-    connect( m_ui->actionSync           , SIGNAL( triggered() ), this, SLOT( onSyncSettingsClicked()) );
+    connect( m_ui->actionConnect         , SIGNAL( triggered() ), this, SLOT( onConnectClicked() ) );
+    connect( m_ui->actionSettings        , SIGNAL( triggered() ), this, SLOT( onSettingsClicked() ) );
+    connect( m_ui->actionLoadSettings    , SIGNAL( triggered() ), this, SLOT( onLoadSettingsClicked() ) );
+    connect( m_ui->actionSaveSettings    , SIGNAL( triggered() ), this, SLOT( onSaveSettingsClicked() ) );
+    connect( m_ui->actionDefaultSettings , SIGNAL( triggered() ), this, SLOT( onDefaultSettingsClicked() ) );
+    connect( m_ui->actionSelectSdi1      , SIGNAL( triggered() ), this, SLOT( onSelectSdi1Clicked() ) );
+    connect( m_ui->actionSelectSdi2      , SIGNAL( triggered() ), this, SLOT( onSelectSdi2Clicked() ) );
+    connect( m_ui->actionCopyChain1To2   , SIGNAL( triggered() ), this, SLOT( onCopyChain1To2Clicked() ) );
+    connect( m_ui->actionCopyChain2To1   , SIGNAL( triggered() ), this, SLOT( onCopyChain2To1Clicked() ) );
+    connect( m_ui->actionSplitScreen     , SIGNAL( triggered() ), this, SLOT( onSplitScreenClicked() ) );
+    connect( m_ui->actionLoadFromFile    , SIGNAL( triggered() ), this, SLOT( onLoadFromFileClicked() ) );
+    connect( m_ui->actionSaveToFile      , SIGNAL( triggered() ), this, SLOT( onSaveToFileClicked() ) );
+    connect( m_ui->actionBroadcast       , SIGNAL( triggered() ), this, SLOT( onBroadcastClicked() ) );
+    connect( m_ui->actionSync            , SIGNAL( triggered() ), this, SLOT( onSyncSettingsClicked()) );
 
     // Configure the resize timer
     m_resizeTimer.setSingleShot( true );
@@ -185,14 +186,13 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
         if(m_bUserSetComboBox)
         {
             m_userSetComboBox = new QComboBox( m_ui->toolBar );
-            QStringList userSets = {"Setting 0","Setting 1","Setting 2","Setting 3","Setting 4","Setting 5","Setting 6","Setting 7"};
-            m_userSetComboBox->addItems(userSets);
+            setUserSettingsDlg();
             m_ui->toolBar->addWidget(m_userSetComboBox);
         }
 
         m_ui->toolBar->addAction(m_ui->actionSaveSettings);
         m_ui->toolBar->addAction(m_ui->actionLoadSettings);
-        //m_ui->toolBar->addAction(m_ui->actionDefaultSettings);
+        m_ui->toolBar->addAction(m_ui->actionDefaultSettings);
     }
     if (deviceFeatures.hasChainSelection)
     {
@@ -421,6 +421,8 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
 
     // Resize main window
     onResizeMainWindow( true );
+
+    emit DefaultSettingsRequest();
 }
 
 /******************************************************************************
@@ -1119,8 +1121,11 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
     }
     if (deviceFeatures.hasSystemSaveLoad)
     {
-        connect( this, SIGNAL(SaveSettings(int )), dev->GetProVideoSystemItf(), SLOT(onSaveSettings(int )) );
-        connect( this, SIGNAL(LoadSettings(int )), dev->GetProVideoSystemItf(), SLOT(onLoadSettings(int )) );
+        connect( this, SIGNAL(SaveSettings(int)), dev->GetProVideoSystemItf(), SLOT(onSaveSettings(int )) );
+        connect( this, SIGNAL(LoadSettings(int)), dev->GetProVideoSystemItf(), SLOT(onLoadSettings(int )) );
+        connect( this, SIGNAL(DefaultSettings(int)), dev->GetProVideoSystemItf(), SLOT(onSetDefaultSettings(int)) );
+        connect( this, SIGNAL(DefaultSettingsRequest()), dev->GetProVideoSystemItf(), SLOT(onGetDefaultSettingsRequest()) );
+        connect( dev->GetProVideoSystemItf(), SIGNAL(DefaultSettingsChanged(int8_t)), this, SLOT(onDefaultSettingsChanged(int8_t)) );
     }
     if (deviceFeatures.hasSystemBroadcast)
     {
@@ -1319,6 +1324,16 @@ void MainWindow::onCheckConnection()
             }
         }
     }
+}
+
+/******************************************************************************
+ * MainWindow::setUserSettingsDlg
+ *****************************************************************************/
+void MainWindow::setUserSettingsDlg()
+{
+    m_userSetComboBox->clear();
+    QStringList userSets = {"Setting 0","Setting 1","Setting 2","Setting 3","Setting 4","Setting 5","Setting 6","Setting 7"};
+    m_userSetComboBox->addItems(userSets);
 }
 
 /******************************************************************************
@@ -1592,7 +1607,7 @@ void MainWindow::onLoadSettingsClicked()
 }
 
 /******************************************************************************
- * MainWindow::onClicked
+ * MainWindow::onSaveSettingsClicked
  *****************************************************************************/
 void MainWindow::onSaveSettingsClicked()
 {
@@ -1601,6 +1616,42 @@ void MainWindow::onSaveSettingsClicked()
         QApplication::setOverrideCursor( Qt::WaitCursor );
         emit (SaveSettings(m_bUserSetComboBox ? m_userSetComboBox->currentIndex() : 0));
         QApplication::setOverrideCursor( Qt::ArrowCursor );
+    }
+}
+
+/******************************************************************************
+ * MainWindow::onDefaultSettingsClicked
+ *****************************************************************************/
+void MainWindow::onDefaultSettingsClicked()
+{
+    if ( m_dev )
+    {
+        QApplication::setOverrideCursor( Qt::WaitCursor );
+        emit (DefaultSettings(m_bUserSetComboBox ? m_userSetComboBox->currentIndex() : 0));
+        QApplication::setOverrideCursor( Qt::ArrowCursor );
+
+        QApplication::setOverrideCursor( Qt::WaitCursor );
+        emit DefaultSettingsRequest();
+        QApplication::setOverrideCursor( Qt::ArrowCursor );
+    }
+}
+
+/******************************************************************************
+ * MainWindow::onGetDefaultSettingsChanged
+ *****************************************************************************/
+void MainWindow::onDefaultSettingsChanged(int8_t userSetting)
+{
+    if ( m_dev )
+    {
+        if(m_bUserSetComboBox)
+        {
+            if(-1 != userSetting)
+            {
+                setUserSettingsDlg();
+                m_userSetComboBox->setItemText(userSetting, "Setting "+ QString::number(userSetting) + " (default)");
+                m_userSetComboBox->setCurrentIndex(userSetting);
+            }
+        }
     }
 }
 

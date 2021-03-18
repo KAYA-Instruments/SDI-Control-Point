@@ -718,7 +718,7 @@ int ctrl_protocol_save_settings
 (
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel,
-    int userSetting
+    uint8_t userSetting
 )
 {
     CHECK_HANDLE( protocol );
@@ -733,12 +733,43 @@ int ctrl_protocol_load_settings
 (
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel,
-    int userSetting
+    uint8_t userSetting
 )
 {
     CHECK_HANDLE( protocol );
     CHECK_DRV_FUNC( SYS_DRV(protocol->drv), load_settings );
     return ( SYS_DRV(protocol->drv)->load_settings( protocol->ctx, channel, userSetting ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_default_settings
+ *****************************************************************************/
+int ctrl_protocol_set_default_settings
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t userSetting
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), set_default_settings );
+    return ( SYS_DRV(protocol->drv)->set_default_settings( protocol->ctx, channel, userSetting ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_default_settings
+ *****************************************************************************/
+int ctrl_protocol_get_default_settings
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int8_t * const              userSetting
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), get_default_settings );
+    CHECK_NOT_NULL( userSetting );
+    return ( SYS_DRV(protocol->drv)->get_default_settings( protocol->ctx, channel, userSetting ) );
 }
 
 /******************************************************************************
