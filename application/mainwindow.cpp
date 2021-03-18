@@ -552,6 +552,11 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         // connect camera exposure
         connect( dev->GetCamItf(), SIGNAL(CameraExposureChanged(int)), m_ui->inoutBox, SLOT(onCameraExposureChange(int)) );
         connect( m_ui->inoutBox, SIGNAL(CameraExposureChanged(int)), dev->GetCamItf(), SLOT(onCameraExposureChange(int)) );
+
+        // connect camera ROI offset info & ROI offset
+        connect( dev->GetCamItf(), SIGNAL(CameraRoiOffsetInfoChanged(int,int,int,int)), m_ui->inoutBox, SLOT(onCameraRoiOffsetInfoChange(int,int,int,int)) );
+        connect( dev->GetCamItf(), SIGNAL(CameraRoiOffsetChanged(int,int)), m_ui->inoutBox, SLOT(onCameraRoiOffsetChange(int,int)) );
+        connect( m_ui->inoutBox, SIGNAL(CameraRoiOffsetChanged(int,int)), dev->GetCamItf(), SLOT(onCameraRoiOffsetChange(int,int)) );
     }
 
 

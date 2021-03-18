@@ -52,6 +52,59 @@ int ctrl_protocol_get_cam_info
 }
 
 /******************************************************************************
+ * ctrl_protocol_get_cam_roi_offset_info
+ *****************************************************************************/
+int ctrl_protocol_get_cam_roi_offset_info
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint8_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( CAM_DRV(protocol->drv), get_cam_roi_offset_info );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( values );
+    return ( CAM_DRV(protocol->drv)->get_cam_roi_offset_info( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_cam_roi_offset
+ *****************************************************************************/
+int ctrl_protocol_get_cam_roi_offset
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint8_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( CAM_DRV(protocol->drv), get_cam_roi_offset );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( values );
+    return ( CAM_DRV(protocol->drv)->get_cam_roi_offset( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_cam_roi_offset
+ *****************************************************************************/
+int ctrl_protocol_set_cam_roi_offset
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint8_t * const              values
+)
+{
+    CHECK_DRV_FUNC( CAM_DRV(protocol->drv), set_cam_roi_offset );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( values );
+    return ( CAM_DRV(protocol->drv)->set_cam_roi_offset( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
  * ctrl_protocol_get_cam_gain
  *****************************************************************************/
 int ctrl_protocol_get_cam_gain

@@ -45,12 +45,16 @@ public:
     void GetCameraInfo();
     void GetCameraGain();
     void GetCameraExposure();
+    void GetCameraRoiOffsetInfo();
+    void GetCameraRoiOffset();
 
 signals:
     // cam configuration
     void CameraInfoChanged( int, int, int, int, int );
     void CameraGainChanged( int value );
     void CameraExposureChanged( int value );
+    void CameraRoiOffsetInfoChanged(int, int, int, int);
+    void CameraRoiOffsetChanged(int, int);
 
     // new camera analogue gain set
     // This is used to synchronize other interface components.
@@ -66,6 +70,9 @@ public slots:
 
     // notifier slot for LOG mode change
     void onNotifyLogModeChange();
+
+    // notifier slot for Roi Offset change
+    void onCameraRoiOffsetChange( int offset_x, int offset_y );
 };
 
 #endif // _CAM_INTERFACE_H_

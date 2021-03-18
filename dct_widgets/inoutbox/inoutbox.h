@@ -171,6 +171,8 @@ signals:
     void CameraGainChanged( int value );
     void CameraExposureChanged( int value );
 
+    void CameraRoiOffsetChanged(int offset_x, int offset_y);
+
     void ChainVideoModeChanged( int value );
     void ChainSdi2ModeChanged( int value );
     void ChainDownscaleModeChanged( int sdi_out_idx, bool downscale, bool interlace );
@@ -208,6 +210,8 @@ public slots:
     void onCameraInfoChange( int min_gain, int max_gain, int min_exposure, int max_exposure , int min_iso );
     void onCameraGainChange( int value );
     void onCameraExposureChange( int value );
+    void onCameraRoiOffsetInfoChange( int offset_x_max, int offset_y_max, int offset_x_step, int offset_y_step );
+    void onCameraRoiOffsetChange( int offset_x, int offset_y );
 
     void onChainVideoModeChange( int value );
     void onChainSdi2ModeChange( int value );
@@ -259,7 +263,12 @@ private slots:
     void onCbxExposureChange( int index );
     void onBtnExposureMinusClicked( );
     void onBtnExposurePlusClicked( );
-    
+
+    void onSbxRoiOffsetXChange( int index );
+    void onSbxRoiOffsetYChange( int index );
+    void onSldRoiOffsetXChange( int index );
+    void onSldRoiOffsetYChange( int index );
+
     void onCbxVideoModeChange( int index );
     void onCbxSdi2ModeChange( int index );
     void onCbxSdi1DownscalerChange( int index );

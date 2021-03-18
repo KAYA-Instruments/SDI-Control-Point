@@ -149,6 +149,10 @@ public:
         , m_AptEnable( true )
         , m_minIso( 1 )
         , m_weightDialog( new AecWeightsDialog() )
+        , offset_x_step ( 1 )
+        , offset_y_step ( 1 )
+        , roi_offset_x ( 0 )
+        , roi_offset_y ( 0 )
     {
         // do nothing
     }
@@ -176,6 +180,11 @@ public:
     int                 m_minIso;       /**< iso value of the device at gain 1 (1000) */
 
     AecWeightsDialog *  m_weightDialog;
+
+    int                 offset_x_step;
+    int                 offset_y_step;
+    int                 roi_offset_x;
+    int                 roi_offset_y;
 };
 
 /******************************************************************************
@@ -239,6 +248,11 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->sbxGenLockOffsetVertical->setKeyboardTracking( false );
     d_data->m_ui->sbxGenlockOffsetHorizontal->setRange( -4095, 4095 );
     d_data->m_ui->sbxGenlockOffsetHorizontal->setKeyboardTracking( false );
+
+    d_data->m_ui->sbxRoiOffsetX->setRange( 0, 100 );
+    d_data->m_ui->sldRoiOffsetX->setRange( 0, 100 );
+    d_data->m_ui->sbxRoiOffsetY->setRange( 0, 100 );
+    d_data->m_ui->sldRoiOffsetY->setRange( 0, 100 );
 
     // fill bayer pattern combo box
     for ( int i=BayerPatternFirst; i<BayerPatternMax; i++ )
@@ -314,33 +328,6 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->btnExposureMinus, SIGNAL(clicked()), this, SLOT(onBtnExposureMinusClicked()) );
     connect( d_data->m_ui->btnExposurePlus, SIGNAL(clicked()), this, SLOT(onBtnExposurePlusClicked()) );
 
-    // video
-    connect( d_data->m_ui->cbxVideoMode, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxVideoModeChange(int)) );
-    connect( d_data->m_ui->cbxSdi2Mode, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxSdi2ModeChange(int)) );
-    connect( d_data->m_ui->cbxSdi1Downscaler, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxSdi1DownscalerChange(int)) );
-    connect( d_data->m_ui->cbxSdi2Downscaler, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxSdi2DownscalerChange(int)) );
-    connect( d_data->m_ui->cbxFlipMode, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxFlipModeChange(int)) );
-    connect( d_data->m_ui->cbxLogMode, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxLogModeChange(int)) );
-    connect( d_data->m_ui->sbxPQMaxBrightness, SIGNAL(valueChanged(int)), this, SLOT(onSbxPQMaxBrightnessChange(int)) );
-    connect( d_data->m_ui->cbxColorSpace, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxColorSpaceChange(int)) );
-    connect( d_data->m_ui->cbxTestPattern, SIGNAL(stateChanged(int)), this, SLOT(onCbxTestPatternChange(int)) );
-    connect( d_data->m_ui->btnIsoMinus, SIGNAL(clicked()), this, SLOT(onBtnIsoMinusClicked()) );
-    connect( d_data->m_ui->btnIsoPlus, SIGNAL(clicked()), this, SLOT(onBtnIsoPlusClicked()) );
-
-    // audio
-    connect( d_data->m_ui->cbxAudioEnable , SIGNAL(stateChanged(int)), this, SLOT(onCbxAudioEnableChange(int)) );
-    connect( d_data->m_ui->sbxAudioGain, SIGNAL(valueChanged(double)), this, SLOT(onSbxAudioGainChange(double)) );
-    
-    // genlock
-    connect( d_data->m_ui->cbxGenLockMode , SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxGenlockModeChange(int)) );
-    connect( d_data->m_ui->btnGenLockRefreshState , SIGNAL(clicked()), this, SLOT(onBtnGenlockStatusRefresh()) );
-    connect( d_data->m_ui->cbxGenlockCrosslockEnable , SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxGenlockCrosslockEnableChange(int)) );
-    connect( d_data->m_ui->cbxGenlockCrosslockVmode , SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxGenlockCrosslockVmodeChange(int)) );
-    connect( d_data->m_ui->sbxGenLockOffsetVertical, SIGNAL(valueChanged(int)), this, SLOT(onSbxGenlockOffsetVerticalChange(int)) );
-    connect( d_data->m_ui->sbxGenlockOffsetHorizontal, SIGNAL(valueChanged(int)), this, SLOT(onSbxGenlockOffsetHorizontalChange(int)) );
-    connect( d_data->m_ui->cbxGenLockTermination, SIGNAL(stateChanged(int)), this, SLOT(onCbxGenlockTerminationChange(int)) );
-    connect( d_data->m_ui->sbxGenLockLOLFilter, SIGNAL(valueChanged(int)), this, SLOT(onSbxGenlockLOLFilterValueChange(int)) );
-
     // auto exposure & gain
     connect( d_data->m_ui->cbxAecEnable, SIGNAL(stateChanged(int)), this, SLOT(onCbxAecEnableChange(int)) );
     connect( d_data->m_ui->cbxAecWeight, SIGNAL(stateChanged(int)), this, SLOT(onCbxAecWeightChange(int)) );
@@ -378,6 +365,39 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->sldTolerance, SIGNAL(valueChanged(int)), this, SLOT(onSldToleranceChange(int)) );
     connect( d_data->m_ui->sldTolerance, SIGNAL(sliderReleased()), this, SLOT(onSldToleranceReleased()) );
     connect( d_data->m_ui->sbxTolerance, SIGNAL(valueChanged(double)), this, SLOT(onSbxToleranceChange(double)) );
+
+    // video
+    connect( d_data->m_ui->cbxVideoMode, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxVideoModeChange(int)) );
+    connect( d_data->m_ui->cbxSdi2Mode, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxSdi2ModeChange(int)) );
+    connect( d_data->m_ui->cbxSdi1Downscaler, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxSdi1DownscalerChange(int)) );
+    connect( d_data->m_ui->cbxSdi2Downscaler, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxSdi2DownscalerChange(int)) );
+    connect( d_data->m_ui->cbxFlipMode, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxFlipModeChange(int)) );
+    connect( d_data->m_ui->cbxLogMode, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxLogModeChange(int)) );
+    connect( d_data->m_ui->sbxPQMaxBrightness, SIGNAL(valueChanged(int)), this, SLOT(onSbxPQMaxBrightnessChange(int)) );
+    connect( d_data->m_ui->cbxColorSpace, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxColorSpaceChange(int)) );
+    connect( d_data->m_ui->cbxTestPattern, SIGNAL(stateChanged(int)), this, SLOT(onCbxTestPatternChange(int)) );
+    connect( d_data->m_ui->btnIsoMinus, SIGNAL(clicked()), this, SLOT(onBtnIsoMinusClicked()) );
+    connect( d_data->m_ui->btnIsoPlus, SIGNAL(clicked()), this, SLOT(onBtnIsoPlusClicked()) );
+
+    // audio
+    connect( d_data->m_ui->cbxAudioEnable , SIGNAL(stateChanged(int)), this, SLOT(onCbxAudioEnableChange(int)) );
+    connect( d_data->m_ui->sbxAudioGain, SIGNAL(valueChanged(double)), this, SLOT(onSbxAudioGainChange(double)) );
+    
+    // genlock
+    connect( d_data->m_ui->cbxGenLockMode , SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxGenlockModeChange(int)) );
+    connect( d_data->m_ui->btnGenLockRefreshState , SIGNAL(clicked()), this, SLOT(onBtnGenlockStatusRefresh()) );
+    connect( d_data->m_ui->cbxGenlockCrosslockEnable , SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxGenlockCrosslockEnableChange(int)) );
+    connect( d_data->m_ui->cbxGenlockCrosslockVmode , SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxGenlockCrosslockVmodeChange(int)) );
+    connect( d_data->m_ui->sbxGenLockOffsetVertical, SIGNAL(valueChanged(int)), this, SLOT(onSbxGenlockOffsetVerticalChange(int)) );
+    connect( d_data->m_ui->sbxGenlockOffsetHorizontal, SIGNAL(valueChanged(int)), this, SLOT(onSbxGenlockOffsetHorizontalChange(int)) );
+    connect( d_data->m_ui->cbxGenLockTermination, SIGNAL(stateChanged(int)), this, SLOT(onCbxGenlockTerminationChange(int)) );
+    connect( d_data->m_ui->sbxGenLockLOLFilter, SIGNAL(valueChanged(int)), this, SLOT(onSbxGenlockLOLFilterValueChange(int)) );
+
+    // ROI
+    connect( d_data->m_ui->sbxRoiOffsetX, SIGNAL(valueChanged(int)), this, SLOT(onSbxRoiOffsetXChange(int)) );
+    connect( d_data->m_ui->sbxRoiOffsetY, SIGNAL(valueChanged(int)), this, SLOT(onSbxRoiOffsetYChange(int)) );
+    connect( d_data->m_ui->sldRoiOffsetX, SIGNAL(valueChanged(int)), this, SLOT(onSldRoiOffsetXChange(int)) );
+    connect( d_data->m_ui->sldRoiOffsetY, SIGNAL(valueChanged(int)), this, SLOT(onSldRoiOffsetYChange(int)) );
 
     // timecode
     connect( d_data->m_ui->btnSetTimecode, SIGNAL(clicked()), this, SLOT(onBtnTimecodeSetClicked()) );
@@ -1783,6 +1803,55 @@ void InOutBox::onCameraExposureChange( int value )
 }
 
 /******************************************************************************
+ * InOutBox::onCameraRoiOffsetInfoChange
+ *****************************************************************************/
+void InOutBox::onCameraRoiOffsetInfoChange( int offset_x_max, int offset_y_max, int offset_x_step, int offset_y_step )
+{
+    d_data->offset_x_step = offset_x_step;
+    d_data->offset_y_step = offset_y_step;
+
+    d_data->m_ui->sbxRoiOffsetX->blockSignals( true );
+    d_data->m_ui->sbxRoiOffsetX->setMaximum( offset_x_max);
+    d_data->m_ui->sbxRoiOffsetX->setSingleStep( offset_x_step);
+    d_data->m_ui->sbxRoiOffsetX->blockSignals( false );
+
+    d_data->m_ui->sldRoiOffsetX->blockSignals( true );
+    d_data->m_ui->sldRoiOffsetX->setMaximum( offset_x_max );
+    d_data->m_ui->sldRoiOffsetX->blockSignals( false );
+
+    d_data->m_ui->sbxRoiOffsetY->blockSignals( true );
+    d_data->m_ui->sbxRoiOffsetY->setMaximum( offset_y_max );
+    d_data->m_ui->sbxRoiOffsetY->setSingleStep( offset_y_step );
+    d_data->m_ui->sbxRoiOffsetY->blockSignals( false );
+
+    d_data->m_ui->sldRoiOffsetY->blockSignals( true );
+    d_data->m_ui->sldRoiOffsetY->setMaximum( offset_y_max );
+    d_data->m_ui->sldRoiOffsetY->blockSignals( false );
+}
+
+/******************************************************************************
+ * InOutBox::onCameraRoiOffsetChange
+ *****************************************************************************/
+void InOutBox::onCameraRoiOffsetChange( int offset_x, int offset_y )
+{
+    d_data->roi_offset_x = offset_x;
+    d_data->m_ui->sbxRoiOffsetX->blockSignals( true );
+    d_data->m_ui->sbxRoiOffsetX->setValue( offset_x );
+    d_data->m_ui->sbxRoiOffsetX->blockSignals( false );
+    d_data->m_ui->sldRoiOffsetX->blockSignals( true );
+    d_data->m_ui->sldRoiOffsetX->setValue( offset_x );
+    d_data->m_ui->sldRoiOffsetX->blockSignals( false );
+
+    d_data->roi_offset_y = offset_y;
+    d_data->m_ui->sbxRoiOffsetY->blockSignals( true );
+    d_data->m_ui->sbxRoiOffsetY->setValue( offset_y );
+    d_data->m_ui->sbxRoiOffsetY->blockSignals( false );
+    d_data->m_ui->sldRoiOffsetY->blockSignals( true );
+    d_data->m_ui->sldRoiOffsetY->setValue( offset_y );
+    d_data->m_ui->sldRoiOffsetY->blockSignals( false );
+}
+
+/******************************************************************************
  * InOutBox::onChainVideoModeChange
  *****************************************************************************/
 void InOutBox::onChainVideoModeChange( int value )
@@ -2405,6 +2474,88 @@ void InOutBox::onBtnExposurePlusClicked( )
     {
          d_data->m_ui->btnExposureMinus->setFocus();
     }
+}
+
+/******************************************************************************
+ * InOutBox::onSbxRoiOffsetXChange
+ *****************************************************************************/
+void InOutBox::onSbxRoiOffsetXChange( int index )
+{
+    d_data->roi_offset_x = index;
+
+    // Set slider to new ROI value
+    d_data->m_ui->sldRoiOffsetX->blockSignals( true );
+    d_data->m_ui->sldRoiOffsetX->setValue( index );
+    d_data->m_ui->sldRoiOffsetX->blockSignals( false );
+
+    // Emit ROI changed event
+    setWaitCursor();
+    emit CameraRoiOffsetChanged( d_data->roi_offset_x , d_data->roi_offset_y);
+    setNormalCursor();
+}
+
+/******************************************************************************
+ * InOutBox::onSbxRoiOffsetYChange
+ *****************************************************************************/
+void InOutBox::onSbxRoiOffsetYChange( int index )
+{
+    d_data->roi_offset_y = index;
+
+    // Set slider to new ROI value
+    d_data->m_ui->sldRoiOffsetY->blockSignals( true );
+    d_data->m_ui->sldRoiOffsetY->setValue( index );
+    d_data->m_ui->sldRoiOffsetY->blockSignals( false );
+
+    // Emit ROI changed event
+    setWaitCursor();
+    emit CameraRoiOffsetChanged( d_data->roi_offset_x, d_data->roi_offset_y);
+    setNormalCursor();
+}
+
+/******************************************************************************
+ * InOutBox::onSldRoiOffsetXChange
+ *****************************************************************************/
+void InOutBox::onSldRoiOffsetXChange( int index )
+{
+    d_data->roi_offset_x = index / d_data->offset_x_step * d_data->offset_x_step;
+
+    // Set slider to new ROI value (reimplement slider value change)
+    d_data->m_ui->sldRoiOffsetX->blockSignals( true );
+    d_data->m_ui->sldRoiOffsetX->setValue( d_data->roi_offset_x );
+    d_data->m_ui->sldRoiOffsetX->blockSignals( false );
+
+    // Set spin box to new ROI value
+    d_data->m_ui->sbxRoiOffsetX->blockSignals( true );
+    d_data->m_ui->sbxRoiOffsetX->setValue( d_data->roi_offset_x );
+    d_data->m_ui->sbxRoiOffsetX->blockSignals( false );
+
+    // Emit ROI changed event
+    setWaitCursor();
+    emit CameraRoiOffsetChanged(d_data->roi_offset_x , d_data->roi_offset_y);
+    setNormalCursor();
+}
+
+/******************************************************************************
+ * InOutBox::onSldRoiOffsetYChange
+ *****************************************************************************/
+void InOutBox::onSldRoiOffsetYChange( int index )
+{
+    d_data->roi_offset_y = index / d_data->offset_y_step * d_data->offset_y_step;
+
+    // Set slider to new ROI value (reimplement value change)
+    d_data->m_ui->sldRoiOffsetY->blockSignals( true );
+    d_data->m_ui->sldRoiOffsetY->setValue( d_data->roi_offset_y );
+    d_data->m_ui->sldRoiOffsetY->blockSignals( false );
+
+    // Set spin box to new ROI value
+    d_data->m_ui->sbxRoiOffsetY->blockSignals( true );
+    d_data->m_ui->sbxRoiOffsetY->setValue(d_data->roi_offset_y);
+    d_data->m_ui->sbxRoiOffsetY->blockSignals( false );
+
+    // Emit ROI changed event
+    setWaitCursor();
+    emit CameraRoiOffsetChanged( d_data->roi_offset_x, d_data->roi_offset_y);
+    setNormalCursor();
 }
 
 /******************************************************************************

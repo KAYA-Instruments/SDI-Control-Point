@@ -89,6 +89,80 @@ int ctrl_protocol_get_cam_info
 );
 
 /**************************************************************************//**
+ * @brief Camera ROI offset information type
+ *****************************************************************************/
+typedef struct ctrl_protocol_cam_roi_offset_info_s
+{
+    uint32_t    offset_x_max;     /**< maximum offset x of the camera */
+    uint32_t    offset_y_max;     /**< maximum offset y of the camera */
+    uint32_t    offset_x_step;    /**< offset x step of the camera */
+    uint32_t    offset_y_step;    /**< offset y step of the camera */
+} ctrl_protocol_cam_roi_offset_info_t;
+
+/**************************************************************************//**
+ * @brief Get camera-device ROI offset information
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[out]  no       number of bytes, shall be equal to sizeof(ctrl_protocol_cam_roi_offset_info_t)
+ * @param[out]  values   array pointer
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_cam_roi_offset_info
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint8_t * const              values
+);
+
+/**************************************************************************//**
+ * @brief Camera ROI offset type
+ *****************************************************************************/
+typedef struct ctrl_protocol_cam_roi_offset_s
+{
+    uint32_t    offset_x;     /**< actuel offset x of the camera */
+    uint32_t    offset_y;     /**< actuel offset y of the camera */
+} ctrl_protocol_cam_roi_offset_t;
+
+/**************************************************************************//**
+ * @brief Get camera ROI offset
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[out]  no       number of bytes, shall be equal to sizeof(ctrl_protocol_cam_roi_offset_t)
+ * @param[out]  values   array pointer
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_cam_roi_offset
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint8_t * const              values
+);
+
+/**************************************************************************//**
+ * @brief Set camera ROI offset
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[out]  no       number of bytes, shall be equal to sizeof(ctrl_protocol_cam_roi_offset_t)
+ * @param[out]  gain     analogue gain to set
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_set_cam_roi_offset
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint8_t * const              values
+);
+
+/**************************************************************************//**
  * @brief Get camera analogue gain.
  *
  * @param[in]   channel  control channel instance
@@ -321,6 +395,9 @@ typedef struct ctrl_protocol_cam_drv_s
     ctrl_protocol_set_uint32_t      set_cam_gain;
     ctrl_protocol_get_uint32_t      get_cam_exposure;
     ctrl_protocol_set_uint32_t      set_cam_exposure;
+    ctrl_protocol_uint8_array_t     get_cam_roi_offset_info;
+    ctrl_protocol_uint8_array_t     get_cam_roi_offset;
+    ctrl_protocol_uint8_array_t     set_cam_roi_offset;
 } ctrl_protocol_cam_drv_t;
 
 /**************************************************************************//**
