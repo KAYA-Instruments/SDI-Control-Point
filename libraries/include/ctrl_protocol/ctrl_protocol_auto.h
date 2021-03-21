@@ -209,6 +209,38 @@ int ctrl_protocol_set_awb_enable
 );
 
 /**************************************************************************//**
+ * @brief Gets the auto-white balance threshold
+ *
+ * @param[in]   channel     control channel instance
+ * @param[in]   protocol    control protocol instance
+ * @param[out]  threshold   current threshold value
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_awb_threshold
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint16_t * const             threshold
+);
+
+/**************************************************************************//**
+ * @brief Sets the auto-white balance threshold
+ *
+ * @param[in]   channel     control channel instance
+ * @param[in]   protocol    control protocol instance
+ * @param[in]   threshold   threshold value to set
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_set_awb_threshold
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint16_t const               threshold
+);
+
+/**************************************************************************//**
  * @brief Gets the auto-white balance speed (damping)
  *
  * @param[in]   channel  control channel instance
@@ -487,6 +519,8 @@ typedef struct ctrl_protocol_auto_drv_s
     // auto white-balance commands
     ctrl_protocol_get_uint8_t       get_awb_enable;
     ctrl_protocol_set_uint8_t       set_awb_enable;
+    ctrl_protocol_set_uint16_t      set_awb_threshold;
+    ctrl_protocol_get_uint16_t      get_awb_threshold;
     ctrl_protocol_get_uint8_t       get_awb_speed;
     ctrl_protocol_set_uint8_t       set_awb_speed;
     ctrl_protocol_run_t             run_wb;

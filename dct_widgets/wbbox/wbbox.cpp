@@ -44,6 +44,7 @@ namespace Ui {
 #define WB_SETTINGS_SECTION_NAME        ( "WB" )
 
 #define WB_SETTINGS_AWB_ENABLE          ( "awb" )
+#define WB_SETTINGS_AWB_THRESHOLD       ( "wb_threshold" )
 #define WB_SETTINGS_AWB_SPEED           ( "awb_speed" )
 
 #define WB_SETTINGS_RED_GAIN            ( "red" )
@@ -143,11 +144,16 @@ WbBox::WbBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->BlueGain->setFmt( WB_BLUE_GAIN_DISPLAY_MASK );
 
     ////////////////////
-    // awb speed
+    // awb speed & threshold
     ////////////////////
 
     d_data->m_ui->sldAwbSpeed->setRange( 0, 2 );
     d_data->m_ui->sldAwbSpeed->setPageStep( 1 );
+    d_data->m_ui->sbxAwbThreshold->setRange( 0, 4095 );
+    d_data->m_ui->sbxAwbThreshold->setSingleStep( 1 );
+    d_data->m_ui->sldAwbThreshold->setRange( 0, 4095 );
+    d_data->m_ui->sldAwbThreshold->setPageStep( 1 );
+    setAwbWidgetsEnabled(AwbEnable());
 
     /* NOTE: Color Temperature is not implemented yet */
     ////////////////////
@@ -225,6 +231,8 @@ WbBox::WbBox( QWidget * parent ) : DctWidgetBox( parent )
 
     // connect cintinnouse white balance
     connect( d_data->m_ui->cbxAwbEnable, SIGNAL(stateChanged(int)), this, SLOT(onAwbEnableClick(int)) );
+    connect( d_data->m_ui->sbxAwbThreshold, SIGNAL(valueChanged(int)), this, SLOT(onAwbThresholdSpinboxChange(int)));
+    connect( d_data->m_ui->sldAwbThreshold, SIGNAL(valueChanged(int)), this, SLOT(onAwbThresholdSliderChange(int)));
     connect( d_data->m_ui->sldAwbSpeed, SIGNAL(valueChanged(int)), this, SLOT(onAwbSpeedSliderChange(int)));
 
     // connect gain signals
@@ -359,8 +367,46 @@ void WbBox::setAwbEnable( const bool enable )
     d_data->m_ui->cbxAwbEnable->setCheckState( enable ? Qt::Checked : Qt::Unchecked );
     d_data->m_ui->cbxAwbEnable->blockSignals( false );
 
+    setAwbWidgetsEnabled(AwbEnable());
+
     // raise the change event
     emit AwbEnableChanged( enable );
+}
+
+/******************************************************************************
+ * WbBox::setAwbWidgetsEnabled
+ *****************************************************************************/
+void WbBox::setAwbWidgetsEnabled( const bool enable )
+{
+    d_data->m_ui->sbxAwbThreshold->setEnabled( enable );
+    d_data->m_ui->sldAwbThreshold->setEnabled( enable );
+    d_data->m_ui->letAwbSpeed->setEnabled( enable );
+    d_data->m_ui->sldAwbSpeed->setEnabled( enable );
+}
+
+/******************************************************************************
+ * WbBox::AwbThreshold
+ *****************************************************************************/
+int WbBox::AwbThreshold() const
+{
+    return ( d_data->m_ui->sldAwbSpeed->value() );
+}
+
+/******************************************************************************
+ * WbBox::setAwbThreshold
+ *****************************************************************************/
+void WbBox::setAwbThreshold( const int value )
+{
+    d_data->m_ui->sbxAwbThreshold->blockSignals( true );
+    d_data->m_ui->sbxAwbThreshold->setValue( value );
+    d_data->m_ui->sbxAwbThreshold->blockSignals( false );
+
+    d_data->m_ui->sldAwbThreshold->blockSignals( true );
+    d_data->m_ui->sldAwbThreshold->setValue( value );
+    d_data->m_ui->sldAwbThreshold->blockSignals( false );
+
+    // raise the change event
+    emit AwbThresholdChanged( value );
 }
 
 /******************************************************************************
@@ -482,6 +528,7 @@ void WbBox::loadSettings( QSettings & s )
 
     // continnouse white-balancing enable
     setAwbEnable( s.value( WB_SETTINGS_AWB_ENABLE ).toBool() );
+    setAwbThreshold( s.value( WB_SETTINGS_AWB_THRESHOLD ).toInt() );
     setAwbSpeed( s.value( WB_SETTINGS_AWB_SPEED ).toInt() );
 
     setRedGain( s.value( WB_SETTINGS_RED_GAIN ).toInt() );
@@ -504,6 +551,7 @@ void WbBox::saveSettings( QSettings & s )
     s.beginGroup( WB_SETTINGS_SECTION_NAME );
 
     s.setValue( WB_SETTINGS_AWB_ENABLE       , AwbEnable() );
+    s.setValue( WB_SETTINGS_AWB_THRESHOLD    , AwbThreshold() );
     s.setValue( WB_SETTINGS_AWB_SPEED        , AwbSpeed() );
     s.setValue( WB_SETTINGS_RED_GAIN         , RedGain() );
     s.setValue( WB_SETTINGS_GREEN_GAIN       , GreenGain() );
@@ -523,6 +571,7 @@ void WbBox::saveSettings( QSettings & s )
 void WbBox::applySettings( void )
 {
     emit AwbEnableChanged( AwbEnable() );
+    emit AwbThresholdChanged( AwbThreshold() );
     emit AwbSpeedChanged( AwbSpeed() );
 
     emit RedGainChanged( RedGain() );
@@ -643,6 +692,22 @@ void WbBox::onAwbEnableChange( const int value )
     d_data->m_ui->cbxAwbEnable->blockSignals( true );
     d_data->m_ui->cbxAwbEnable->setCheckState( value ? Qt::Checked : Qt::Unchecked );
     d_data->m_ui->cbxAwbEnable->blockSignals( false );
+
+    setAwbWidgetsEnabled(AwbEnable());
+}
+
+/******************************************************************************
+ * WbBox::onAwbThresholdChange
+ *****************************************************************************/
+void WbBox::onAwbThresholdChange( int value )
+{
+    d_data->m_ui->sbxAwbThreshold->blockSignals( true );
+    d_data->m_ui->sbxAwbThreshold->setValue( value );
+    d_data->m_ui->sbxAwbThreshold->blockSignals( false );
+
+    d_data->m_ui->sldAwbThreshold->blockSignals( true );
+    d_data->m_ui->sldAwbThreshold->setValue( value );
+    d_data->m_ui->sldAwbThreshold->blockSignals( false );
 }
 
 /******************************************************************************
@@ -814,7 +879,7 @@ void WbBox::onWbButtonClick( int value )
 }
 
 /******************************************************************************
- * WbBox::onAwbSpeedSliderChange
+ * WbBox::onAwbEnableClick
  *****************************************************************************/
 void WbBox::onAwbEnableClick( int value )
 {
@@ -828,6 +893,8 @@ void WbBox::onAwbEnableClick( int value )
         d_data->m_awb_enable = false;
         d_data->m_wb_timer->stop();
     }
+
+    setAwbWidgetsEnabled(AwbEnable());
 
     emit AwbEnableChanged( value );
 }
@@ -844,6 +911,30 @@ void WbBox::onAwbSpeedSliderChange( int value )
     d_data->m_awb_speed = value;
 
     emit AwbSpeedChanged( value );
+}
+
+/******************************************************************************
+ * WbBox::onAwbThresholdSpinboxChange
+ *****************************************************************************/
+void WbBox::onAwbThresholdSpinboxChange(int value)
+{
+    d_data->m_ui->sldAwbThreshold->blockSignals( true );
+    d_data->m_ui->sldAwbThreshold->setValue( value );
+    d_data->m_ui->sldAwbThreshold->blockSignals( false );
+
+    emit AwbThresholdChanged( value );
+}
+
+/******************************************************************************
+ * WbBox::onAwbThresholdSliderChange
+ *****************************************************************************/
+void WbBox::onAwbThresholdSliderChange( int value )
+{
+    d_data->m_ui->sbxAwbThreshold->blockSignals( true );
+    d_data->m_ui->sbxAwbThreshold->setValue( value );
+    d_data->m_ui->sbxAwbThreshold->blockSignals( false );
+
+    emit AwbThresholdChanged( value );
 }
 
 /******************************************************************************
@@ -906,11 +997,25 @@ void WbBox::on_contrastResetButton_clicked()
 }
 
 /******************************************************************************
- * WbBox::on_whiteBalanceResetButton_clicked
+ * WbBox::on_whiteBalanceRedResetButton_clicked
  *****************************************************************************/
-void WbBox::on_whiteBalanceResetButton_clicked()
+void WbBox::on_whiteBalanceRedResetButton_clicked()
 {
     setRedGain(WB_GAIN_DEFAULT);
+}
+
+/******************************************************************************
+ * WbBox::on_whiteBalanceGreenResetButton_clicked
+ *****************************************************************************/
+void WbBox::on_whiteBalanceGreenResetButton_clicked()
+{
     setGreenGain(WB_GAIN_DEFAULT);
+}
+
+/******************************************************************************
+ * WbBox::on_whiteBalanceBlueResetButton_clicked
+ *****************************************************************************/
+void WbBox::on_whiteBalanceBlueResetButton_clicked()
+{
     setBlueGain(WB_GAIN_DEFAULT);
 }

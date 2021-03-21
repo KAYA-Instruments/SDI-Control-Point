@@ -123,6 +123,9 @@ public:
 
     bool AwbEnable() const;
     void setAwbEnable( const bool enable );
+    int AwbThreshold() const;
+    void setAwbThreshold( const int value );
+    void setAwbWidgetsEnabled( const bool enable );
     int AwbSpeed() const;
     void setAwbSpeed( const int speed );
 
@@ -161,6 +164,7 @@ signals:
     void WbPresetChanged( int value );
 
     void AwbEnableChanged( int value );
+    void AwbThresholdChanged( int value );
     void AwbSpeedChanged( int value );
 
     void StatisticChanged();
@@ -180,6 +184,7 @@ public slots:
     void onWbPresetsChange( int id, QString name, int ct );
 
     void onAwbEnableChange( int value );
+    void onAwbThresholdChange( int value );
     void onAwbSpeedChange( int value );
 
     void onRedGainChange( int value );
@@ -206,13 +211,17 @@ private slots:
     void onWbButtonClick( int value );
     void onWbUpdate();
     void onAwbEnableClick( int value );
+    void onAwbThresholdSliderChange( int value );
+    void onAwbThresholdSpinboxChange(int value);
     void onAwbSpeedSliderChange( int value );
 
     void on_hueResetButton_clicked();
     void on_saturationResetButton_clicked();
     void on_brightnessResetButton_clicked();
     void on_contrastResetButton_clicked();
-    void on_whiteBalanceResetButton_clicked();
+    void on_whiteBalanceRedResetButton_clicked();
+    void on_whiteBalanceGreenResetButton_clicked();
+    void on_whiteBalanceBlueResetButton_clicked();
 
 private:
     class PrivateData;

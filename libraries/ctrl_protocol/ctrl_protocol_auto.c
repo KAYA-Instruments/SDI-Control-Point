@@ -163,6 +163,38 @@ int ctrl_protocol_set_awb_enable
     return ( AUTO_DRV(protocol->drv)->set_awb_enable( protocol->ctx, channel, enable ) );
 }
 
+
+/******************************************************************************
+ * ctrl_protocol_get_awb_threshold
+ *****************************************************************************/
+int ctrl_protocol_get_awb_threshold
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint16_t * const              threshold
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( AUTO_DRV(protocol->drv), get_awb_threshold );
+    CHECK_NOT_NULL( threshold );
+    return ( AUTO_DRV(protocol->drv)->get_awb_threshold( protocol->ctx, channel, threshold ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_awb_threshold
+ *****************************************************************************/
+int ctrl_protocol_set_awb_threshold
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint16_t const                threshold
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( AUTO_DRV(protocol->drv), set_awb_threshold );
+    return ( AUTO_DRV(protocol->drv)->set_awb_threshold( protocol->ctx, channel, threshold ) );
+}
+
 /******************************************************************************
  * ctrl_protocol_get_awb_speed
  *****************************************************************************/

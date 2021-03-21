@@ -799,6 +799,9 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         connect( m_ui->wbBox, SIGNAL(AwbEnableChanged(int)), dev->GetAutoItf(), SLOT(onAwbEnableChange(int)) );
         connect( dev->GetAutoItf(), SIGNAL(AwbEnableChanged(int)), m_ui->wbBox, SLOT(onAwbEnableChange(int)) );
 
+        connect( m_ui->wbBox, SIGNAL(AwbThresholdChanged(int)), dev->GetAutoItf(), SLOT(onAwbThresholdChange(int)) );
+        connect( dev->GetAutoItf(), SIGNAL(AwbThresholdChanged(int)), m_ui->wbBox, SLOT(onAwbThresholdChange(int)) );
+
         connect( m_ui->wbBox, SIGNAL(AwbSpeedChanged(int)), dev->GetAutoItf(), SLOT(onAwbSpeedChange(int)) );
         connect( dev->GetAutoItf(), SIGNAL(AwbSpeedChanged(int)), m_ui->wbBox, SLOT(onAwbSpeedChange(int)) );
 
