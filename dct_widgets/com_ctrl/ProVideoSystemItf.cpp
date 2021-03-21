@@ -62,6 +62,8 @@ void ProVideoSystemItf::resync()
     GetRunTime();
     // sync target system temperature
     GetFanTarget();
+    // sync default settings
+    GetDefaultSettings();
 }
 
 /******************************************************************************

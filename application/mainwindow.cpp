@@ -421,8 +421,6 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
 
     // Resize main window
     onResizeMainWindow( true );
-
-    emit DefaultSettingsRequest();
 }
 
 /******************************************************************************
