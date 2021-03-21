@@ -2517,22 +2517,26 @@ void InOutBox::onSbxRoiOffsetYChange( int index )
  *****************************************************************************/
 void InOutBox::onSldRoiOffsetXChange( int index )
 {
-    d_data->roi_offset_x = index / d_data->offset_x_step * d_data->offset_x_step;
+    int temp_index = index / d_data->offset_x_step * d_data->offset_x_step;
 
-    // Set slider to new ROI value (reimplement slider value change)
-    d_data->m_ui->sldRoiOffsetX->blockSignals( true );
-    d_data->m_ui->sldRoiOffsetX->setValue( d_data->roi_offset_x );
-    d_data->m_ui->sldRoiOffsetX->blockSignals( false );
+    if(d_data->roi_offset_x != temp_index)
+    {
+        d_data->roi_offset_x = temp_index;
+        // Set slider to new ROI value (reimplement slider value change)
+        d_data->m_ui->sldRoiOffsetX->blockSignals( true );
+        d_data->m_ui->sldRoiOffsetX->setValue( d_data->roi_offset_x );
+        d_data->m_ui->sldRoiOffsetX->blockSignals( false );
 
-    // Set spin box to new ROI value
-    d_data->m_ui->sbxRoiOffsetX->blockSignals( true );
-    d_data->m_ui->sbxRoiOffsetX->setValue( d_data->roi_offset_x );
-    d_data->m_ui->sbxRoiOffsetX->blockSignals( false );
+        // Set spin box to new ROI value
+        d_data->m_ui->sbxRoiOffsetX->blockSignals( true );
+        d_data->m_ui->sbxRoiOffsetX->setValue( d_data->roi_offset_x );
+        d_data->m_ui->sbxRoiOffsetX->blockSignals( false );
 
-    // Emit ROI changed event
-    setWaitCursor();
-    emit CameraRoiOffsetChanged(d_data->roi_offset_x , d_data->roi_offset_y);
-    setNormalCursor();
+        // Emit ROI changed event
+        setWaitCursor();
+        emit CameraRoiOffsetChanged(d_data->roi_offset_x , d_data->roi_offset_y);
+        setNormalCursor();
+    }
 }
 
 /******************************************************************************
@@ -2540,22 +2544,26 @@ void InOutBox::onSldRoiOffsetXChange( int index )
  *****************************************************************************/
 void InOutBox::onSldRoiOffsetYChange( int index )
 {
-    d_data->roi_offset_y = index / d_data->offset_y_step * d_data->offset_y_step;
+    int temp_index = index / d_data->offset_y_step * d_data->offset_y_step;
 
-    // Set slider to new ROI value (reimplement value change)
-    d_data->m_ui->sldRoiOffsetY->blockSignals( true );
-    d_data->m_ui->sldRoiOffsetY->setValue( d_data->roi_offset_y );
-    d_data->m_ui->sldRoiOffsetY->blockSignals( false );
+    if(d_data->roi_offset_y != temp_index)
+    {
+        d_data->roi_offset_y = temp_index;
+        // Set slider to new ROI value (reimplement value change)
+        d_data->m_ui->sldRoiOffsetY->blockSignals( true );
+        d_data->m_ui->sldRoiOffsetY->setValue( d_data->roi_offset_y );
+        d_data->m_ui->sldRoiOffsetY->blockSignals( false );
 
-    // Set spin box to new ROI value
-    d_data->m_ui->sbxRoiOffsetY->blockSignals( true );
-    d_data->m_ui->sbxRoiOffsetY->setValue(d_data->roi_offset_y);
-    d_data->m_ui->sbxRoiOffsetY->blockSignals( false );
+        // Set spin box to new ROI value
+        d_data->m_ui->sbxRoiOffsetY->blockSignals( true );
+        d_data->m_ui->sbxRoiOffsetY->setValue(d_data->roi_offset_y);
+        d_data->m_ui->sbxRoiOffsetY->blockSignals( false );
 
-    // Emit ROI changed event
-    setWaitCursor();
-    emit CameraRoiOffsetChanged( d_data->roi_offset_x, d_data->roi_offset_y);
-    setNormalCursor();
+        // Emit ROI changed event
+        setWaitCursor();
+        emit CameraRoiOffsetChanged( d_data->roi_offset_x, d_data->roi_offset_y);
+        setNormalCursor();
+    }
 }
 
 /******************************************************************************
