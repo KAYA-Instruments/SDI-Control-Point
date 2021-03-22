@@ -1460,7 +1460,7 @@ static int get_device_list
                 /* Note: the check for offset != 0 is needed, because on Windows it
                  * seems to be possible that sscanf() has a result != 0 (meaning it has
                  * found parameters and parsed them) but still report an offset of 0. */
-                if ( (res == CMD_GET_DEVICE_LIST_NO_PARAMS) && (offset != 0) && (s[offset-1] == '\n') )
+                if ( (res == CMD_GET_DEVICE_LIST_NO_PARAMS) )// && (offset != 0) && (s[offset-1] == '\n') ) // TODO:check why condition "(offset != 0) && (s[offset-1] == '\n')" not working
                 {
                     if ( cnt >= CMD_DEVICE_LIST_MAX_DEVICES )
                     {

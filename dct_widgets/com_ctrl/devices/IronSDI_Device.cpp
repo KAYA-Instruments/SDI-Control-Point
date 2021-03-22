@@ -276,8 +276,8 @@ IronSDI_Device::features IronSDI_Device::getSupportedFeatures()
     deviceFeatures.hasChainAudio            = false;
     deviceFeatures.hasChainDownscale        = true;
     deviceFeatures.hasChainGenLock          = true;
-    deviceFeatures.hasChainTimeCode         = false;
-    deviceFeatures.hasChainTimeCodeHold     = false;
+    deviceFeatures.hasChainTimeCode         = true;
+    deviceFeatures.hasChainTimeCodeHold     = true;
     deviceFeatures.hasChainSdiSettings      = true;
     deviceFeatures.hasChainSelection        = false;
     deviceFeatures.hasChainFlipVertical     = true;
@@ -304,7 +304,7 @@ IronSDI_Device::features IronSDI_Device::getSupportedFeatures()
     deviceFeatures.hasSystemUpdate          = true;
     deviceFeatures.hasSystemRuntime         = false;
     deviceFeatures.hasSystemFan             = false;
-    deviceFeatures.hasSystemBroadcast       = false;
+    deviceFeatures.hasSystemBroadcast       = true; // TODO: only if RS485 is enabled
     deviceFeatures.hasRS232Interface        = true;
 
     deviceFeatures.lutBitWidth              = 10;

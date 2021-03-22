@@ -76,7 +76,7 @@ ConnectDialog::ConnectDialog( QWidget * parent )
     // Add Baudrate selection to comboboxes
     // RS232
     /* Note: Slow baudrates below 57600 baud are not supported by the GUI because
-     * the delays / wait times get to long for a fluid user experience */
+     * the delays / wait times get too long for a fluid user experience */
 //        m_ui->cbxBaudrateRS232->addItem( QString::number(CTRL_CHANNEL_BAUDRATE_9600)  , CTRL_CHANNEL_BAUDRATE_9600 );
 //        m_ui->cbxBaudrateRS232->addItem( QString::number(CTRL_CHANNEL_BAUDRATE_19200) , CTRL_CHANNEL_BAUDRATE_19200 );
 //        m_ui->cbxBaudrateRS232->addItem( QString::number(CTRL_CHANNEL_BAUDRATE_38400) , CTRL_CHANNEL_BAUDRATE_38400 );
@@ -86,7 +86,7 @@ ConnectDialog::ConnectDialog( QWidget * parent )
 
     // RS485
     /* Note: Slow baudrates below 57600 baud are not supported by the GUI because
-     * the delays / wait times get to long for a fluid user experience */
+     * the delays / wait times get too long for a fluid user experience */
 //        m_ui->cbxBaudrateRS485->addItem( QString::number(CTRL_CHANNEL_BAUDRATE_9600)  , CTRL_CHANNEL_BAUDRATE_9600 );
 //        m_ui->cbxBaudrateRS485->addItem( QString::number(CTRL_CHANNEL_BAUDRATE_19200) , CTRL_CHANNEL_BAUDRATE_19200 );
 //        m_ui->cbxBaudrateRS485->addItem( QString::number(CTRL_CHANNEL_BAUDRATE_38400) , CTRL_CHANNEL_BAUDRATE_38400 );
@@ -205,8 +205,8 @@ ConnectDialog::ConnectDialog( QWidget * parent )
         qDebug() << "failed" << pszLoading << "connection settings" << pszFromFile;
     }
 
-    int currentIndexRS485 = m_ui->tabController->indexOf(m_ui->tabRS485);
-    m_ui->tabController->removeTab(currentIndexRS485);
+    //int currentIndexRS485 = m_ui->tabController->indexOf(m_ui->tabRS485);
+    //m_ui->tabController->removeTab(currentIndexRS485);
 }
 
 /******************************************************************************
