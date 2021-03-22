@@ -31,6 +31,7 @@
  *****************************************************************************/
 #define KNEE_POINT_MIN                              (        1 )
 #define KNEE_POINT_MAX                              (      100 )
+#define KNEE_POINT_DEFAULT                          (       85 )
 #define KNEE_POINT_COMMA_POSITION                   (        0 )
 #define KNEE_POINT_BASE                             (       10 )
 #define KNEE_POINT_DISPLAY_MULTIPLIER               (        1 )
@@ -41,6 +42,7 @@
  *****************************************************************************/
 #define KNEE_SLOPE_MIN                              (      101 )
 #define KNEE_SLOPE_MAX                              (     1600 )
+#define KNEE_SLOPE_DEFAULT                          (      140 )
 #define KNEE_SLOPE_COMMA_POSITION                   (        2 )
 #define KNEE_SLOPE_BASE                             (       10 )
 #define KNEE_SLOPE_DISPLAY_MULTIPLIER               (        1 )
@@ -51,6 +53,7 @@
  *****************************************************************************/
 #define WHITE_CLIP_MIN                              (      100 )
 #define WHITE_CLIP_MAX                              (      109 )
+#define WHITE_CLIP_DEFAULT                          (      109 )
 #define WHITE_CLIP_COMMA_POSITION                   (        0 )
 #define WHITE_CLIP_BASE                             (       10 )
 #define WHITE_CLIP_DISPLAY_MULTIPLIER               (        1 )
@@ -92,12 +95,14 @@ public slots:
 private:
     void SetXRangeChanged( const QCPRange &, QCustomPlot * );
     void SetYRangeChanged( const QCPRange &, QCustomPlot * );
+    void EnableKneeWidgets(bool enable);
 
 private slots:
     void onKneeEnableChange( int );
     void onKneePointChange( int );
     void onKneeSlopeChange( int );
     void onWhiteClipChange( int );
+    void onBtnResetClicked();
 
 private:
     class PrivateData;
