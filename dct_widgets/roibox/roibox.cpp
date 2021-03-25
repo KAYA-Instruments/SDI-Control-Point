@@ -22,7 +22,6 @@
  *****************************************************************************/
 #include <QtDebug>
 
-#include "roi_interpolation.h"
 #include "roibox.h"
 #include "ui_roibox.h"
 
@@ -36,18 +35,21 @@ namespace Ui {
 /******************************************************************************
  * local definitions
  *****************************************************************************/
-#define ROI_CURVE_ID                   ( 0 )
-#define ROI_POINT_CURVE_ID             ( 1 )
-#define WHITE_CLIP_CURVE_ID            ( 2 )
+#define ROI_WIDTH_START_ID             ( 0 )
+#define ROI_HEIGHT_START_ID            ( 1 )
+#define ROI_WIDTH_END_ID               ( 2 )
+#define ROI_HEIGHT_END_ID              ( 3 )
+#define ROI_OFFSET_X_ID                ( 4 )
+#define ROI_OFFSET_Y_ID                ( 5 )
 
 /******************************************************************************
  * Settings
  *****************************************************************************/
 #define ROI_SETTINGS_SECTION_NAME      ( "ROI" )
-#define ROI_SETTINGS_ENABLE            ( "enable" )
-#define ROI_SETTINGS_POINT             ( "point" )
-#define ROI_SETTINGS_SLOPE             ( "slope" )
-#define ROI_SETTINGS_CLIP              ( "clip" )
+#define ROI_SETTINGS_WIDTH             ( "width" )
+#define ROI_SETTINGS_HEIGHT            ( "height" )
+#define ROI_SETTINGS_OFFSET_X          ( "offset_x" )
+#define ROI_SETTINGS_OFFSET_Y          ( "offset_y" )
 
 /******************************************************************************
  * ROIBox::PrivateData
@@ -57,7 +59,6 @@ class ROIBox::PrivateData
 public:
     PrivateData( QWidget * parent )
         : m_ui( new Ui::UI_ROIBox )
-        , m_interpolate( new ROIInterpolation )
         , width_step ( 1 )
         , height_step ( 1 )
         , max_width ( 0 )
@@ -78,33 +79,47 @@ public:
         axisRectGradient.setColorAt(0, QColor(120, 120, 120));
         axisRectGradient.setColorAt(1, QColor(48, 48, 48));
         m_ui->ROIPlot->axisRect()->setBackground(axisRectGradient);
-    };
+    }
 
     ~PrivateData()
     {
         delete m_ui;
-        delete m_interpolate;
-    };
+    }
 
     void initROIPlot( QCustomPlot * plot )
     {
-        // ROI curve
-        QPen penROI( Qt::white );
+        // ROI width start point
+        QPen penROIwidth( Qt::yellow );
         plot->addGraph();
-        plot->graph( ROI_CURVE_ID )->setPen( penROI );
+        plot->graph( ROI_WIDTH_START_ID )->setPen( penROIwidth );
 
-        // ROI point curve
-        QPen penROIPoint( Qt::cyan );
+        // ROI height start point
+        QPen penROIheight( Qt::yellow );
         plot->addGraph();
-        plot->graph( ROI_POINT_CURVE_ID )->setPen( penROIPoint );
+        plot->graph( ROI_HEIGHT_START_ID )->setPen( penROIheight );
+
+        // ROI width end point
+        QPen penROIoffsetX_2( Qt::yellow );
+        plot->addGraph();
+        plot->graph( ROI_WIDTH_END_ID )->setPen( penROIoffsetX_2 );
+
+        // ROI height end point
+        QPen penROIoffsetY_2( Qt::yellow );
+        plot->addGraph();
+        plot->graph( ROI_HEIGHT_END_ID )->setPen( penROIoffsetY_2 );
  
-        // white clip curve
-        QPen penWhiteClip( Qt::yellow );
+        // ROI offsetX
+        QPen penROIoffsetX_1( Qt::white );
         plot->addGraph();
-        plot->graph( WHITE_CLIP_CURVE_ID )->setPen( penWhiteClip );
+        plot->graph( ROI_OFFSET_X_ID )->setPen( penROIoffsetX_1 );
+
+        // ROI offsetY
+        QPen penROIoffsetY_1( Qt::white );
+        plot->addGraph();
+        plot->graph( ROI_OFFSET_Y_ID )->setPen( penROIoffsetY_1 );
 
         plot->setBackground( QBrush(QColor(48,47,47)) );
-        plot->setInteractions( QCP::iRangeDrag | QCP::iRangeZoom );
+        plot->setInteractions( QCP::iSelectPlottables | QCP::iRangeZoom );
         plot->axisRect()->setupFullAxesBox(true);
         plot->xAxis->setLabel( "" );
         plot->xAxis->setLabelColor( QColor(177, 177, 177) );
@@ -131,42 +146,76 @@ public:
         plot->yAxis2->setTickLabelColor( QColor(177, 177, 177) );
     }
 
-    void setROIConfig( int point, int slope, int clip )
+    void setPlotRange()
     {
-        m_ui->ROIPlot->graph( ROI_CURVE_ID )->data()->clear();
-        m_ui->ROIPlot->graph( ROI_POINT_CURVE_ID )->data()->clear();
-        m_ui->ROIPlot->graph( WHITE_CLIP_CURVE_ID )->data()->clear();
+        m_ui->ROIPlot->xAxis->setRange( 0, max_width );
+        m_ui->ROIPlot->yAxis->setRange( 0, max_height );
+    }
 
-        QVector<double> x( 1024 );
-        QVector<double> y( 1024 );
-        m_interpolate->setConfig( point, slope, clip );
-        for ( int i=0; i<1024; i+=1 )
-        {
-            x[i] = (((double)(i<<2)) * 400.0f) / 4096.0f;
-            y[i] = (((double)(m_interpolate->interpolate( (i<<2) ) * (i<<2))) / 16384.0f * clip) / 4096.0f;
-        }
+    void setROIConfig()
+    {
+        m_ui->ROIPlot->graph( ROI_WIDTH_START_ID )->data()->clear();
+        m_ui->ROIPlot->graph( ROI_HEIGHT_START_ID )->data()->clear();
+        m_ui->ROIPlot->graph( ROI_WIDTH_END_ID )->data()->clear();
+        m_ui->ROIPlot->graph( ROI_HEIGHT_END_ID )->data()->clear();
+        m_ui->ROIPlot->graph( ROI_OFFSET_X_ID )->data()->clear();
+        m_ui->ROIPlot->graph( ROI_OFFSET_Y_ID )->data()->clear();
 
-        QVector<double> x1( 2 );
-        QVector<double> y1( 2 );
-        x1[0] =   0.0f;
-        x1[1] = 400.0f;
-        y1[0] = y1[1] = powf( (double)point/clip, 1/0.45f ) * clip;
 
-        QVector<double> x2( 2 );
-        QVector<double> y2( 2 );
-        x2[0] =   0.0f;
-        x2[1] = 400.0f;
-        y2[0] = y2[1] = (double)clip;
+        // height start point
+        QVector<double> height_x_start( 2 );
+        QVector<double> height_y_start( 2 );
+        height_x_start[0] = height_x_start[1] = offset_x;
+        height_y_start[0] = height;
+        height_y_start[1] = offset_y;
 
-        m_ui->ROIPlot->graph( ROI_CURVE_ID )->setData( x, y );
-        m_ui->ROIPlot->graph( ROI_POINT_CURVE_ID )->setData( x1, y1 );
-        m_ui->ROIPlot->graph( WHITE_CLIP_CURVE_ID )->setData( x2, y2 );
+        // width start point
+        QVector<double> width_x_start( 2 );
+        QVector<double> width_y_start( 2 );
+        width_x_start[0] = offset_x;
+        width_x_start[1] = width;
+        width_y_start[0] = width_y_start[1] = offset_y;
+
+        // height end point
+        QVector<double> height_x_end( 2 );
+        QVector<double> height_y_end( 2 );
+        height_x_end[0] = height_x_end[1] = width;
+        height_y_end[0] = height;
+        height_y_end[1] = offset_y;
+
+        // width end point
+        QVector<double> width_x_end( 2 );
+        QVector<double> width_y_end( 2 );
+        width_x_end[0] = offset_x;
+        width_x_end[1] = width;
+        width_y_end[0] = width_y_end[1] = height;
+
+        //offset X
+        QVector<double> offset_x_coor_x( 2 );
+        QVector<double> offset_x_coor_y( 2 );
+        offset_x_coor_x[0] = 0.0;
+        offset_x_coor_x[1] = offset_x;
+        offset_x_coor_y[0] = offset_x_coor_y[1] = offset_y;
+
+        // offset Y
+        QVector<double> offset_y_coor_x( 2 );
+        QVector<double> offset_y_coor_y( 2 );
+        offset_y_coor_x[0] = offset_y_coor_x[1] = offset_x;
+        offset_y_coor_y[0] = 0.0;
+        offset_y_coor_y[1] = offset_y;
+
+        m_ui->ROIPlot->graph( ROI_WIDTH_START_ID )->setData( height_x_start, height_y_start );
+        m_ui->ROIPlot->graph( ROI_HEIGHT_START_ID )->setData( width_x_start, width_y_start );
+        m_ui->ROIPlot->graph( ROI_WIDTH_END_ID )->setData( height_x_end, height_y_end );
+        m_ui->ROIPlot->graph( ROI_HEIGHT_END_ID )->setData( width_x_end, width_y_end );
+        m_ui->ROIPlot->graph( ROI_OFFSET_X_ID )->setData( offset_x_coor_x, offset_x_coor_y );
+        m_ui->ROIPlot->graph( ROI_OFFSET_Y_ID )->setData( offset_y_coor_x, offset_y_coor_y );
+
 
         m_ui->ROIPlot->replot();
     }
 
     Ui::UI_ROIBox *        m_ui;
-    ROIInterpolation *     m_interpolate;  /**< interpolation class */
 
     int                 width_step;
     int                 height_step;
@@ -292,7 +341,7 @@ void ROIBox::SetROIUIs()
     d_data->m_ui->sldStatROIOffsetY->setValue( d_data->offset_y );
     d_data->m_ui->sldStatROIOffsetY->blockSignals( false );
 
-    //d_data->setROIConfig( value, ROISlope(), WhiteClip() );
+    d_data->setROIConfig();
 }
 
 /******************************************************************************
@@ -304,6 +353,8 @@ void ROIBox::onStatROIInfoChange( int max_width, int max_height, int width_step,
     d_data->max_height = max_height;
     d_data->width_step = width_step;
     d_data->height_step = height_step;
+
+    d_data->setPlotRange();
 
     d_data->m_ui->sbxStatROIWidth->blockSignals( true );
     d_data->m_ui->sbxStatROIWidth->setMaximum( d_data->max_width );
@@ -382,7 +433,7 @@ void ROIBox::StatROIChange()
     emit StatROIChanged(d_data->width, d_data->height, d_data->offset_x, d_data->offset_y);
     setNormalCursor();
 
-    d_data->setROIConfig( ROI_POINT_DEFAULT, ROI_SLOPE_DEFAULT, WHITE_CLIP_DEFAULT );
+    d_data->setROIConfig();
 
    //emit ROIConfigChanged( (int)ROIEnable(), ROI_POINT_DEFAULT, ROI_SLOPE_DEFAULT, WHITE_CLIP_DEFAULT );
 }
