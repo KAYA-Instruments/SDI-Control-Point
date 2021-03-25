@@ -321,6 +321,11 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
         m_activeWidgets.append(m_ui->dpccBox);
         m_ui->tabWidget->addTab(m_ui->tabDpcc, QIcon(":/images/tab/dpcc.png"), "");
     }
+    if (deviceFeatures.hasROIItf)
+    {
+        m_activeWidgets.append(m_ui->roiBox);
+        m_ui->tabWidget->addTab(m_ui->tabROI, QIcon(":/images/tab/roi.png"), "");
+    }
     if (deviceFeatures.hasIspConversion)
     {
         m_activeWidgets.append(m_ui->outBox);
@@ -885,6 +890,16 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
     {
         connect( dev->GetKneeItf(), SIGNAL(KneeConfigChanged(int,int,int,int)), m_ui->kneeBox, SLOT(onKneeConfigChange(int,int,int,int)) );
         connect( m_ui->kneeBox, SIGNAL(KneeConfigChanged(int,int,int,int)), dev->GetKneeItf(), SLOT(onKneeConfigChange(int,int,int,int)) );
+    }
+
+    //////////////////////////
+    // Stat ROI function
+    //////////////////////////
+    if (deviceFeatures.hasROIItf)
+    {
+        connect( dev->GetROIItf(), SIGNAL(StatROIInfoChanged(int,int,int,int)), m_ui->roiBox, SLOT(onStatROIInfoChange(int,int,int,int)) );
+        connect( dev->GetROIItf(), SIGNAL(StatROIChanged(int,int,int,int)), m_ui->roiBox, SLOT(onStatROIChange(int,int,int,int)) );
+        connect( m_ui->roiBox, SIGNAL(StatROIChanged(int,int,int,int)), dev->GetROIItf(), SLOT(onStatROIChange(int,int,int,int)) );
     }
 
     //////////////////////////

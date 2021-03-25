@@ -36,6 +36,7 @@ public:
     ChainItf *      GetChainItf() const override;
     LensItf *       GetLensItf() const override;
     KneeItf *       GetKneeItf() const override;
+    ROIItf *        GetROIItf() const override;
     DpccItf *       GetDpccItf() const override;
 
 //    bool GetCopyFlag() const override;

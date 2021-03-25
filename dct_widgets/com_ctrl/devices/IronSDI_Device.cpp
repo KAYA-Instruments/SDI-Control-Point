@@ -171,6 +171,7 @@ public:
         m_ChainItf      = new ChainItf( c, p->clone( ComProtocol::CHAIN_INSTANCE, m_userCtx ) );
         m_LensItf       = new LensItf( c, p->clone( ComProtocol::LENS_INSTANCE, m_userCtx ) );
         m_KneeItf       = new KneeItf( c, p->clone( ComProtocol::KNEE_INSTANCE, m_userCtx ) );
+        m_ROIItf        = new ROIItf( c, p->clone( ComProtocol::ROI_INSTANCE, m_userCtx ) );
         m_DpccItf       = new DpccItf( c, p->clone( ComProtocol::DPCC_INSTANCE, m_userCtx ) );
 
         // NotifyWhiteBalanceChanged
@@ -205,6 +206,7 @@ public:
         delete m_ChainItf->GetComProtocol();
         delete m_LensItf->GetComProtocol();
         delete m_KneeItf->GetComProtocol();
+        delete m_ROIItf->GetComProtocol();
         delete m_DpccItf->GetComProtocol();
 
         // clear interface classes
@@ -217,6 +219,7 @@ public:
         delete m_ChainItf;
         delete m_LensItf;
         delete m_KneeItf;
+        delete m_ROIItf;
         delete m_DpccItf;
 
         // clear user context
@@ -233,6 +236,7 @@ public:
     ChainItf *      m_ChainItf;
     LensItf *       m_LensItf;
     KneeItf *       m_KneeItf;
+    ROIItf *        m_ROIItf;
     DpccItf *       m_DpccItf;
 
     ComProtocol *   m_protocol;
@@ -306,6 +310,7 @@ IronSDI_Device::features IronSDI_Device::getSupportedFeatures()
     deviceFeatures.hasSystemFan             = false;
     deviceFeatures.hasSystemBroadcast       = true; // TODO: only if RS485 is enabled
     deviceFeatures.hasRS232Interface        = true;
+    deviceFeatures.hasROIItf                = true;
 
     deviceFeatures.lutBitWidth              = 10;
     deviceFeatures.numTempSensors           = 2;
@@ -386,6 +391,14 @@ KneeItf * IronSDI_Device::GetKneeItf() const
 }
 
 /******************************************************************************
+ * IronSDI_Device::GetROIItf()
+ *****************************************************************************/
+ROIItf * IronSDI_Device::GetROIItf() const
+{
+    return ( d_data->m_ROIItf );
+}
+
+/******************************************************************************
  * IronSDI_Device::GetDpccItf()
  *****************************************************************************/
 DpccItf * IronSDI_Device::GetDpccItf() const
@@ -425,6 +438,7 @@ void IronSDI_Device::setComChannel( ComChannel * c )
     GetChainItf()   ->SetComChannel( c );
     GetLensItf()    ->SetComChannel( c );
     GetKneeItf()    ->SetComChannel( c );
+    GetROIItf()     ->SetComChannel( c );
     GetDpccItf()    ->SetComChannel( c );
 }
 
@@ -444,6 +458,7 @@ void IronSDI_Device::resync()
     GetChainItf()   ->resync();
     GetLensItf()    ->resync();
     GetKneeItf()    ->resync();
+    GetROIItf()     ->resync();
     GetDpccItf()    ->resync();
 }
 

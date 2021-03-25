@@ -41,6 +41,7 @@
 #include "IrisItf.h"
 #include "LensItf.h"
 #include "KneeItf.h"
+#include "ROIItf.h"
 #include "DpccItf.h"
 #include "OsdItf.h"
 
@@ -93,6 +94,7 @@ public:
         bool hasSystemCopySettings;
         bool hasSystemBroadcast;
         bool hasRS232Interface;
+        bool hasROIItf;
 
         unsigned int lutBitWidth;
         unsigned int numTempSensors;
@@ -141,6 +143,7 @@ public:
     virtual IrisItf *   GetIrisItf() const;
     virtual LensItf *   GetLensItf() const;
     virtual KneeItf *   GetKneeItf() const;
+    virtual ROIItf *    GetROIItf() const;
     virtual DpccItf *   GetDpccItf() const;
     virtual OsdItf *    GetOsdItf() const;
 

@@ -248,6 +248,20 @@
             </item>
            </layout>
           </widget>
+          <widget class="QWidget" name="tabROI">
+           <attribute name="icon">
+            <iconset resource="../resource/resource.qrc">
+             <normaloff>:/images/tab/roi.png</normaloff>:/images/tab/roi.png</iconset>
+           </attribute>
+           <attribute name="title">
+            <string/>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_15">
+            <item>
+             <widget class="ROIBox" name="roiBox" native="true"/>
+            </item>
+           </layout>
+          </widget>
           <widget class="QWidget" name="tabDpcc">
            <attribute name="icon">
             <iconset resource="../resource/resource.qrc">
@@ -607,6 +621,12 @@
    <class>LensDriverBox</class>
    <extends>QWidget</extends>
    <header>lensdriverbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ROIBox</class>
+   <extends>QWidget</extends>
+   <header>roibox.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

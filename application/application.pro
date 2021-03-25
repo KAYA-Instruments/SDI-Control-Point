@@ -121,13 +121,16 @@ INCLUDEPATH += ../libraries/include ..              \
                ../dct_widgets/fltbox                \
                ../dct_widgets/updatebox             \
                ../dct_widgets/kneebox               \
+               ../dct_widgets/roibox                \
                ../dct_widgets/dpccbox               \
                ../dct_widgets/lensdriverbox         \
                ../dct_widgets/textviewer            \
                ../dct_widgets/debugterminal
 
 SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
-           ../dct_widgets/com_ctrl/devices/IronSDI_Device.cpp \
+           ../dct_widgets/com_ctrl/devices/IronSDI_Device.cpp               \
+           ../dct_widgets/roibox/roi_interpolation.cpp                      \
+           ../dct_widgets/roibox/roibox.cpp                                 \
            ../dct_widgets/wbbox/wbbox.cpp                                   \
            ../dct_widgets/infobox/infobox.cpp                               \
            ../dct_widgets/blacklevelbox/blacklevelbox.cpp                   \
@@ -174,6 +177,7 @@ SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
            ../dct_widgets/com_ctrl/PlayBackItf.cpp                          \
            ../dct_widgets/com_ctrl/IrisItf.cpp                              \
            ../dct_widgets/com_ctrl/KneeItf.cpp                              \
+           ../dct_widgets/com_ctrl/ROIItf.cpp                               \
            ../dct_widgets/com_ctrl/DpccItf.cpp                              \
            ../dct_widgets/com_ctrl/OsdItf.cpp                               \
            ../dct_widgets/com_ctrl/LensItf.cpp                              \
@@ -200,6 +204,7 @@ SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
            ../libraries/ctrl_protocol/ctrl_protocol_osd.c                   \
            ../libraries/ctrl_protocol/ctrl_protocol_iris.c                  \
            ../libraries/ctrl_protocol/ctrl_protocol_knee.c                  \
+           ../libraries/ctrl_protocol/ctrl_protocol_roi.c                   \
            ../libraries/ctrl_protocol/ctrl_protocol_dpcc.c                  \
            ../libraries/ctrl_protocol/ctrl_protocol_lens.c                  \
            ../libraries/provideo_protocol/provideo_protocol.c               \
@@ -218,6 +223,7 @@ SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
            ../libraries/provideo_protocol/provideo_protocol_osd.c           \
            ../libraries/provideo_protocol/provideo_protocol_iris.c          \
            ../libraries/provideo_protocol/provideo_protocol_knee.c          \
+           ../libraries/provideo_protocol/provideo_protocol_roi.c           \
            ../libraries/provideo_protocol/provideo_protocol_dpcc.c          \
            ../libraries/provideo_protocol/provideo_protocol_lens.c          \
            ../libraries/simple_math/rgb2ycbcr.c                             \
@@ -229,15 +235,17 @@ SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
            ../libraries/csv/csvparser.c                                     \
            ../libraries/csv/csvwriter.c                                     \
            ../libraries/qcustomplot/qcustomplot.cpp                         \
-           ../libraries/xmodem/crc16-xmodem.c \
-           ../libraries/xmodem/transfer.cpp \
+           ../libraries/xmodem/crc16-xmodem.c                               \
+           ../libraries/xmodem/transfer.cpp                                 \
            mainwindow.cpp                                                   \
            main.cpp
 
 
 HEADERS  += ../libraries/include                                                \
-            ../dct_widgets/com_ctrl/devices/IronSDI_Device.h \
+            ../dct_widgets/com_ctrl/devices/IronSDI_Device.h                    \
             ../dct_widgets/mcceqbox/mcceqbox.h                                  \
+            ../dct_widgets/roibox/roi_interpolation.h                           \
+            ../dct_widgets/roibox/roibox.h                                      \
             ../dct_widgets/wbbox/wbbox.h                                        \
             ../dct_widgets/infobox/infobox.h                                    \
             ../dct_widgets/blacklevelbox/blacklevelbox.h                        \
@@ -284,6 +292,7 @@ HEADERS  += ../libraries/include                                                
             ../dct_widgets/com_ctrl/PlayBackItf.h                               \
             ../dct_widgets/com_ctrl/IrisItf.h                                   \
             ../dct_widgets/com_ctrl/KneeItf.h                                   \
+            ../dct_widgets/com_ctrl/ROIItf.h                                    \
             ../dct_widgets/com_ctrl/DpccItf.h                                   \
             ../dct_widgets/com_ctrl/OsdItf.h                                    \
             ../dct_widgets/com_ctrl/LensItf.h                                   \
@@ -299,8 +308,8 @@ HEADERS  += ../libraries/include                                                
             ../dct_widgets/dct_widgets_base.h                                   \
             ../libraries/include/csv/csvparser.h                                \
             ../libraries/include/csv/csvwriter.h                                \
-            ../libraries/include/xmodem/crc16-xmodem.h \
-            ../libraries/include/xmodem/transfer.h \
+            ../libraries/include/xmodem/crc16-xmodem.h                          \
+            ../libraries/include/xmodem/transfer.h                              \
             ../libraries/qcustomplot/qcustomplot.h                              \
             ../libraries/include/ctrl_channel/ctrl_channel.h                    \
             ../libraries/include/ctrl_channel/ctrl_channel_generic.h            \
@@ -315,6 +324,7 @@ HEADERS  += ../libraries/include                                                
             ../libraries/include/ctrl_protocol/ctrl_protocol_iris.h             \
             ../libraries/include/ctrl_protocol/ctrl_protocol_isp.h              \
             ../libraries/include/ctrl_protocol/ctrl_protocol_knee.h             \
+            ../libraries/include/ctrl_protocol/ctrl_protocol_roi.h              \
             ../libraries/include/ctrl_protocol/ctrl_protocol_lut.h              \
             ../libraries/include/ctrl_protocol/ctrl_protocol_mcc.h              \
             ../libraries/include/ctrl_protocol/ctrl_protocol_osd.h              \
@@ -339,6 +349,7 @@ HEADERS  += ../libraries/include                                                
             ../libraries/include/provideo_protocol/provideo_protocol_iris.h     \
             ../libraries/include/provideo_protocol/provideo_protocol_isp.h      \
             ../libraries/include/provideo_protocol/provideo_protocol_knee.h     \
+            ../libraries/include/provideo_protocol/provideo_protocol_roi.h      \
             ../libraries/include/provideo_protocol/provideo_protocol_lut.h      \
             ../libraries/include/provideo_protocol/provideo_protocol_mcc.h      \
             ../libraries/include/provideo_protocol/provideo_protocol_osd.h      \
@@ -349,6 +360,7 @@ HEADERS  += ../libraries/include                                                
             mainwindow.h
 
 FORMS    += ../dct_widgets/mcceqbox/mcceqbox.ui                             \
+            ../dct_widgets/roibox/roibox.ui                                 \
             ../dct_widgets/wbbox/wbbox.ui                                   \
             ../dct_widgets/infobox/infobox.ui                               \
             ../dct_widgets/blacklevelbox/blacklevelbox.ui                   \

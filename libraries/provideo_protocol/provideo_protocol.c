@@ -43,6 +43,7 @@
 #include <provideo_protocol/provideo_protocol_iris.h>
 #include <provideo_protocol/provideo_protocol_lens.h>
 #include <provideo_protocol/provideo_protocol_knee.h>
+#include <provideo_protocol/provideo_protocol_roi.h>
 #include <provideo_protocol/provideo_protocol_dpcc.h>
 
 /******************************************************************************
@@ -138,6 +139,12 @@ int provideo_protocol_init
     }
  
     res = provideo_protocol_knee_init( handle );
+    if ( res )
+    {
+        return ( res );
+    }
+
+    res = provideo_protocol_roi_init( handle );
     if ( res )
     {
         return ( res );
