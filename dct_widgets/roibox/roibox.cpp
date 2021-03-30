@@ -35,10 +35,10 @@ namespace Ui {
 /******************************************************************************
  * local definitions
  *****************************************************************************/
-#define ROI_WIDTH_START_ID             ( 0 )
-#define ROI_HEIGHT_START_ID            ( 1 )
-#define ROI_WIDTH_END_ID               ( 2 )
-#define ROI_HEIGHT_END_ID              ( 3 )
+#define ROI_WIDTH_END_ID               ( 0 )
+#define ROI_HEIGHT_END_ID              ( 1 )
+#define ROI_WIDTH_START_ID             ( 2 )
+#define ROI_HEIGHT_START_ID            ( 3 )
 #define ROI_OFFSET_X_ID                ( 4 )
 #define ROI_OFFSET_Y_ID                ( 5 )
 
@@ -88,25 +88,29 @@ public:
 
     void initROIPlot( QCustomPlot * plot )
     {
-        // ROI width start point
-        QPen penROIwidth( Qt::yellow );
-        plot->addGraph();
-        plot->graph( ROI_WIDTH_START_ID )->setPen( penROIwidth );
-
-        // ROI height start point
-        QPen penROIheight( Qt::yellow );
-        plot->addGraph();
-        plot->graph( ROI_HEIGHT_START_ID )->setPen( penROIheight );
+        // set axises' & grid colors. 'scale' makes the grid thicker
+        int scale = 3;
+        QColor color(250, 253, 50);
 
         // ROI width end point
-        QPen penROIoffsetX_2( Qt::yellow );
+        QPen penROIoffsetX_2( color , scale);
         plot->addGraph();
         plot->graph( ROI_WIDTH_END_ID )->setPen( penROIoffsetX_2 );
 
         // ROI height end point
-        QPen penROIoffsetY_2( Qt::yellow );
+        QPen penROIoffsetY_2( color , scale);
         plot->addGraph();
         plot->graph( ROI_HEIGHT_END_ID )->setPen( penROIoffsetY_2 );
+
+        // ROI width start point
+        QPen penROIwidth( color , scale);
+        plot->addGraph();
+        plot->graph( ROI_WIDTH_START_ID )->setPen( penROIwidth );
+
+        // ROI height start point
+        QPen penROIheight( color , scale);
+        plot->addGraph();
+        plot->graph( ROI_HEIGHT_START_ID )->setPen( penROIheight );
  
         // ROI offsetX
         QPen penROIoffsetX_1( Qt::white );
@@ -119,8 +123,10 @@ public:
         plot->graph( ROI_OFFSET_Y_ID )->setPen( penROIoffsetY_1 );
 
         plot->setBackground( QBrush(QColor(48,47,47)) );
-        plot->setInteractions( QCP::iSelectPlottables | QCP::iRangeZoom );
+        //plot->setInteractions( QCP::iRangeDrag | QCP::iRangeZoom); // | QCP::iSelectPlottables
         plot->axisRect()->setupFullAxesBox(true);
+        plot->setNotAntialiasedElement(QCP::AntialiasedElement::aeFills, true);
+
         plot->xAxis->setLabel( "" );
         plot->xAxis->setLabelColor( QColor(177, 177, 177) );
         plot->yAxis->setLabel( "" );
@@ -144,6 +150,20 @@ public:
         plot->yAxis2->setSubTickPen( QPen( QColor(177, 177, 177), 1) );
         plot->xAxis2->setTickLabelColor( QColor(177, 177, 177) );
         plot->yAxis2->setTickLabelColor( QColor(177, 177, 177) );
+
+        color.setAlpha(30);
+        m_ui->ROIPlot->graph(ROI_HEIGHT_END_ID)->setBrush(QBrush(color));
+
+        // make layers to show graph's bprdered rectangle
+        m_ui->ROIPlot->graph(ROI_HEIGHT_END_ID)->setChannelFillGraph(m_ui->ROIPlot->graph(ROI_HEIGHT_START_ID));
+        m_ui->ROIPlot->addLayer("abovemain", m_ui->ROIPlot->layer("main"), QCustomPlot::limAbove);
+        m_ui->ROIPlot->addLayer("belowmain", m_ui->ROIPlot->layer("main"), QCustomPlot::limBelow);
+        m_ui->ROIPlot->graph(ROI_HEIGHT_START_ID)->setLayer("belowmain");
+        m_ui->ROIPlot->xAxis->grid()->setLayer("belowmain");
+        m_ui->ROIPlot->yAxis->grid()->setLayer("belowmain");
+
+
+        m_ui->ROIPlot->replot();
     }
 
     void setPlotRange()
@@ -154,13 +174,17 @@ public:
 
     void setROIConfig()
     {
+        if(offset_x > width || offset_y > height)
+        {
+            return;
+        }
+
         m_ui->ROIPlot->graph( ROI_WIDTH_START_ID )->data()->clear();
         m_ui->ROIPlot->graph( ROI_HEIGHT_START_ID )->data()->clear();
         m_ui->ROIPlot->graph( ROI_WIDTH_END_ID )->data()->clear();
         m_ui->ROIPlot->graph( ROI_HEIGHT_END_ID )->data()->clear();
         m_ui->ROIPlot->graph( ROI_OFFSET_X_ID )->data()->clear();
         m_ui->ROIPlot->graph( ROI_OFFSET_Y_ID )->data()->clear();
-
 
         // height start point
         QVector<double> height_x_start( 2 );
@@ -210,7 +234,6 @@ public:
         m_ui->ROIPlot->graph( ROI_HEIGHT_END_ID )->setData( width_x_end, width_y_end );
         m_ui->ROIPlot->graph( ROI_OFFSET_X_ID )->setData( offset_x_coor_x, offset_x_coor_y );
         m_ui->ROIPlot->graph( ROI_OFFSET_Y_ID )->setData( offset_y_coor_x, offset_y_coor_y );
-
 
         m_ui->ROIPlot->replot();
     }
