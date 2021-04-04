@@ -33,7 +33,7 @@
  * Linear Contrast Definitions
  *****************************************************************************/
 #define LUT_LINEAR_CONTRAST_MIN                   (        0 )
-#define LUT_LINEAR_CONTRAST_MAX                   (    10000 )
+#define LUT_LINEAR_CONTRAST_MAX                   (    20000 )
 #define LUT_LINEAR_CONTRAST_DECIMALS              (        3 )
 #define LUT_LINEAR_CONTRAST_STEP                  (        1 )
 

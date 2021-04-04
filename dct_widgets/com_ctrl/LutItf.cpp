@@ -596,10 +596,10 @@ void LutItf::onLutRec709Change
     HANDLE_ERROR( res );
 
     // sync sample data 
-    GetLutSampleValuesRed();
-    GetLutSampleValuesGreen();
-    GetLutSampleValuesBlue();
-    GetLutSampleValuesMaster();
+    //GetLutSampleValuesRed();
+    //GetLutSampleValuesGreen();
+    //GetLutSampleValuesBlue();
+    //GetLutSampleValuesMaster();
 }
 
 /******************************************************************************

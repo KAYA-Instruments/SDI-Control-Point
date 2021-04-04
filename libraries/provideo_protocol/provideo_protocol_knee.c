@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *****************************************************************************/
 /**
- * @file    provideo_protocol_system.c
+ * @file    provideo_protocol_knee.c
  *
  * @brief   ProVideo Knee protocol implementations
  *

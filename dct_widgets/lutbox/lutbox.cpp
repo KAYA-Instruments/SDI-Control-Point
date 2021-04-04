@@ -139,7 +139,7 @@ enum LutFixedMode
 #define LUT_SETTINGS_REC709_GAMMA           ( "rec709_gamma" )
 #define LUT_SETTINGS_REC709_BRIGHTNESS      ( "rec709_brightness" )
 #define LUT_SETTINGS_FAST_GAMMA             ( "fast_gamma" )
-#define LUT_TABLE_NO_ROWS                   ( 24 )
+#define LUT_TABLE_NO_ROWS                   ( 48 )
 #define LUT_TABLE_NO_COLUMNS                ( 2 )
 #define LUT_NO_PRESETS                      ( 5 )
 
@@ -715,9 +715,9 @@ public:
         plot->replot();
     }
 
-    void drawFastGammaPlot( LutChannel ch, int gamma_int )
+    void drawFastGammaPlot( LutChannel ch, int gamma_int, bool apply_rec709 )
     {
-        float kink;
+        float threshold;
         float lcontrast;
         float lbrightness;
         float contrast;
@@ -744,7 +744,7 @@ public:
          *
          * lbrightness = 0
          *
-         * The point of the intersection is defined by x_i = kink and y_i. Since it goes
+         * The point of the intersection is defined by x_i = threshold and y_i. Since it goes
          * trough the origin the linear part can now also be described as:
          *
          * II) g(x) = y_i/x_i * x
@@ -782,25 +782,42 @@ public:
         // convert gamma to float
         gamma = TO_FLOAT( gamma_int );
 
-        // contrast and brightness are fixed to REC.709 defaults
-        contrast = TO_FLOAT( REC709_CONTRAST );
-        brightness = TO_FLOAT( REC709_BRIGHTNESS );
-
-        // calculate intersection point of linear part and gamma curve (see note above)
-        y_i = brightness / ( 1.0f - gamma);
-        x_i = powf(((y_i * gamma) / contrast), gamma);
-
-        // kink is x_i
-        kink = x_i;
-
-        // calculate linear contrast
-        lcontrast = y_i / x_i;
-
-        // linear brightness is fixed to 0
-        lbrightness = 0.0f;
-
         // compute inverse gamma
         inverse_gamma = 1.0f / gamma;
+
+        if(apply_rec709)
+        {
+            threshold   = float(m_ui->sbxRec709Threshold->value());
+            lcontrast   = float(m_ui->sbxRec709LinContrast->value());
+            lbrightness = float(m_ui->sbxRec709LinOffset->value());
+            contrast    = float(m_ui->sbxRec709Contrast->value());
+            brightness  = float(m_ui->sbxRec709Offset->value());
+
+            // calculate intersection point of linear part and gamma curve (see note above)
+            y_i = brightness / ( 1.0f - gamma);
+            x_i = powf(((y_i * gamma) / contrast), gamma);
+            //x_i = 0;
+        }
+
+        else
+        {
+            // contrast and brightness are fixed to REC.709 defaults
+            contrast = TO_FLOAT( REC709_CONTRAST );
+            brightness = TO_FLOAT( REC709_BRIGHTNESS );
+
+            // calculate intersection point of linear part and gamma curve (see note above)
+            y_i = brightness / ( 1.0f - gamma);
+            x_i = powf(((y_i * gamma) / contrast), gamma);
+
+            // threshold is x_i
+            threshold = x_i;
+
+            // calculate linear contrast
+            lcontrast = y_i / x_i;
+
+            // linear brightness is fixed to 0
+            lbrightness = 0.0f;
+        }
 
         // II. Calculate samples
         unsigned int const bit_width = m_bit_width;
@@ -809,14 +826,14 @@ public:
         for ( i = 0; i < (1 << bit_width); i += (1 << bit_width) / num_samples )
         {
             x.append( i );
-            y.append( sm_gamma_float((uint32_t)i, kink, lcontrast, lbrightness, contrast, inverse_gamma, brightness, (uint8_t)bit_width, (uint8_t)bit_width) );
+            y.append( sm_gamma_float((uint32_t)i, threshold, lcontrast, lbrightness, contrast, inverse_gamma, brightness, (uint8_t)bit_width, (uint8_t)bit_width) );
 
             // Add a sample at the intersection of linear part and gamma curve
             int x_i_int = (int)(x_i * (1 << bit_width));
             if ( x_i_int > i && x_i_int < (i + (1 << bit_width) / num_samples ) )
             {
                 x.append( x_i_int );
-                y.append( sm_gamma_float((uint32_t)x_i_int, kink, lcontrast, lbrightness, contrast, inverse_gamma, brightness, (uint8_t)bit_width, (uint8_t)bit_width) );
+                y.append( sm_gamma_float((uint32_t)x_i_int, threshold, lcontrast, lbrightness, contrast, inverse_gamma, brightness, (uint8_t)bit_width, (uint8_t)bit_width) );
             }
         }
 
@@ -953,7 +970,7 @@ LutBox::LutBox( QWidget * parent ) : DctWidgetBox( parent )
 
     // lut fast gamma
     connect( d_data->m_ui->sckbFastGamma, SIGNAL(ValueChanged(int)), this, SLOT(onFastGammaChanged(int)) );
-    connect( d_data->m_ui->btnDefaultFastGamma, SIGNAL(clicked()), this, SLOT(onDefaultFastGammaClicked()) );
+    //connect( d_data->m_ui->btnDefaultFastGamma, SIGNAL(clicked()), this, SLOT(onDefaultFastGammaClicked()) );
 
     // draw initial (master) lut line
     QVector<int> x;
@@ -1467,7 +1484,7 @@ void LutBox::onLutModeChange( int mode )
         d_data->m_ui->rbInterpolate->setChecked( true );
         d_data->m_ui->gbxPreset->setEnabled( true );
         d_data->m_ui->gbxSamplePoints->setEnabled( true );
-        d_data->m_ui->gbxDefaults->setEnabled( true );
+
         d_data->m_ui->LutPlot->setEnabled( true );
         d_data->m_ui->tabColorSelect->addTab( d_data->m_ui->tabRedChannel, QIcon(":/images/tab/red.png"), "Red" );
         d_data->m_ui->tabColorSelect->addTab( d_data->m_ui->tabGreenChannel, QIcon(":/images/tab/green.png"), "Green" );
@@ -1479,7 +1496,9 @@ void LutBox::onLutModeChange( int mode )
         // Disable fast gamma ui elements
         d_data->m_ui->rbFastGamma->setChecked( false );
         d_data->m_ui->sckbFastGamma->setEnabled( false );
-        d_data->m_ui->btnDefaultFastGamma->setEnabled( false );
+        d_data->m_ui->gbxLutGammaTable->setEnabled( false );
+        d_data->m_ui->btnDefaultRec709->setEnabled( false );
+        d_data->m_ui->btnSetRec709->setEnabled( false );
 
         // Uncheck fixed mode radio buttons
         d_data->m_ui->rbFixedRec709->setChecked( false );
@@ -1494,7 +1513,6 @@ void LutBox::onLutModeChange( int mode )
         d_data->m_ui->rbInterpolate->setChecked( false );
         d_data->m_ui->gbxPreset->setEnabled( false );
         d_data->m_ui->gbxSamplePoints->setEnabled( false );
-        d_data->m_ui->gbxDefaults->setEnabled( false );
         d_data->m_ui->tabColorSelect->setCurrentIndex( Master );
         d_data->m_ui->LutPlot->setEnabled( false );
         d_data->m_ui->tabColorSelect->removeTab( Blue );
@@ -1515,10 +1533,13 @@ void LutBox::onLutModeChange( int mode )
             // Enable fast gamma ui elements
             d_data->m_ui->rbFastGamma->setChecked( true );
             d_data->m_ui->sckbFastGamma->setEnabled( true );
-            d_data->m_ui->btnDefaultFastGamma->setEnabled( true );
+            d_data->m_ui->sbxRec709Gamma->setEnabled( true );
+            d_data->m_ui->gbxLutGammaTable->setEnabled( true );
+            d_data->m_ui->btnDefaultRec709->setEnabled( true );
+            d_data->m_ui->btnSetRec709->setEnabled( true );
 
             // Draw the fast gamma curve in the master plot
-            d_data->drawFastGammaPlot( Master, LutFastGamma() );
+            d_data->drawFastGammaPlot( Master, LutFastGamma(), false );
         }
 
         // If mode = fixed gamma, disable fast gamma UI elements
@@ -1527,7 +1548,9 @@ void LutBox::onLutModeChange( int mode )
             // Disable fast gamma ui elements
             d_data->m_ui->rbFastGamma->setChecked( false );
             d_data->m_ui->sckbFastGamma->setEnabled( false );
-            d_data->m_ui->btnDefaultFastGamma->setEnabled( false );
+            d_data->m_ui->gbxLutGammaTable->setEnabled( false );
+            d_data->m_ui->btnDefaultRec709->setEnabled( false );
+            d_data->m_ui->btnSetRec709->setEnabled( false );
 
             /* Note: We check the correct radio button in onLutFixedModeChange() */
         }
@@ -1617,6 +1640,15 @@ void LutBox::onRemoveSampleClicked()
                 d_data->m_ui->tblSamples->model()->removeRow( index.row() );
             }
         }
+
+        QVector<int> x;
+        QVector<int> y;
+
+        LutChannel ch = (LutChannel)d_data->m_ui->tabColorSelect->currentIndex();
+
+        // sort samples and remove X-duplicates (last X wins)
+        d_data->getDataFromModel( ch, x, y );
+        d_data->setSamples( ch, x, y );
     }
 }
 
@@ -1928,7 +1960,7 @@ void LutBox::onLutFastGammaChange( int gamma )
     if ( d_data->m_mode == LUT_MODE_FAST_GAMMA )
     {
         // Draw the fast gamma curve in the master plot
-        d_data->drawFastGammaPlot( Master, LutFastGamma() );
+        d_data->drawFastGammaPlot( Master, LutFastGamma(), false );
     }
 }
 /******************************************************************************
@@ -2106,6 +2138,7 @@ void LutBox::onColorSelectChange( int value )
         {
             case Red:
                 emit LutSampleValuesRedChanged( x,y );
+                //d_data->setSamples( Red, x, y );
                 break;
 
             case Green:
@@ -2155,9 +2188,12 @@ void LutBox::onSetRec709Clicked()
     int gamma       = TO_INT( d_data->m_ui->sbxRec709Gamma->value() );
     int brightness  = TO_INT( d_data->m_ui->sbxRec709Offset->value() );
 
+    // Draw the fast gamma curve in the master plot
+    d_data->drawFastGammaPlot(Master, TO_INT(d_data->m_ui->sbxRec709Gamma->value()) , true);
+
     setWaitCursor();
     emit LutRec709Changed( threshold, lcontrast, lbrightness, contrast, gamma, brightness );
-    emit LutInterpolateChanged();
+    //emit LutInterpolateChanged();
     setNormalCursor();
 }
 
@@ -2167,7 +2203,7 @@ void LutBox::onSetRec709Clicked()
 void LutBox::onFastGammaChanged( int gamma )
 {
     // Draw the fast gamma curve in the master plot
-    d_data->drawFastGammaPlot( Master, LutFastGamma() );
+    d_data->drawFastGammaPlot( Master, LutFastGamma(), false );
 
     // Emit fast gamma changed signal
     setWaitCursor();
