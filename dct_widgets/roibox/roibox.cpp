@@ -65,6 +65,10 @@ public:
         , max_height ( 0 )
         , width ( 0 )
         , height ( 0 )
+        , width_scaled ( 0 )
+        , height_scaled ( 0 )
+        , max_offset_x ( 0 )
+        , max_offset_y ( 0 )
         , offset_x ( 0 )
         , offset_y ( 0 )
     {
@@ -176,7 +180,7 @@ public:
     {
         if(offset_x > width || offset_y > height)
         {
-            return;
+            //return;
         }
 
         m_ui->ROIPlot->graph( ROI_WIDTH_START_ID )->data()->clear();
@@ -190,29 +194,29 @@ public:
         QVector<double> height_x_start( 2 );
         QVector<double> height_y_start( 2 );
         height_x_start[0] = height_x_start[1] = offset_x;
-        height_y_start[0] = height;
+        height_y_start[0] = height_scaled;
         height_y_start[1] = offset_y;
 
         // width start point
         QVector<double> width_x_start( 2 );
         QVector<double> width_y_start( 2 );
         width_x_start[0] = offset_x;
-        width_x_start[1] = width;
+        width_x_start[1] = width_scaled;
         width_y_start[0] = width_y_start[1] = offset_y;
 
         // height end point
         QVector<double> height_x_end( 2 );
         QVector<double> height_y_end( 2 );
-        height_x_end[0] = height_x_end[1] = width;
-        height_y_end[0] = height;
+        height_x_end[0] = height_x_end[1] = width_scaled;
+        height_y_end[0] = height_scaled;
         height_y_end[1] = offset_y;
 
         // width end point
         QVector<double> width_x_end( 2 );
         QVector<double> width_y_end( 2 );
         width_x_end[0] = offset_x;
-        width_x_end[1] = width;
-        width_y_end[0] = width_y_end[1] = height;
+        width_x_end[1] = width_scaled;
+        width_y_end[0] = width_y_end[1] = height_scaled;
 
         //offset X
         QVector<double> offset_x_coor_x( 2 );
@@ -246,6 +250,10 @@ public:
     int                 max_height;
     int                 width;
     int                 height;
+    int                 width_scaled;
+    int                 height_scaled;
+    int                 max_offset_x;
+    int                 max_offset_y;
     int                 offset_x;
     int                 offset_y;
 };
@@ -333,7 +341,7 @@ void ROIBox::applySettings( void )
 void ROIBox::SetROIUIs()
 {
     d_data->m_ui->sbxStatROIWidth->blockSignals( true );
-    d_data->m_ui->sbxStatROIWidth->setValue( d_data->width );
+    d_data->m_ui->sbxStatROIWidth->setValue( d_data->width);
     d_data->m_ui->sbxStatROIWidth->blockSignals( false );
 
     d_data->m_ui->sldStatROIWidth->blockSignals( true );
@@ -341,7 +349,7 @@ void ROIBox::SetROIUIs()
     d_data->m_ui->sldStatROIWidth->blockSignals( false );
 
     d_data->m_ui->sbxStatROIHeight->blockSignals( true );
-    d_data->m_ui->sbxStatROIHeight->setValue( d_data->height );
+    d_data->m_ui->sbxStatROIHeight->setValue( d_data->height);
     d_data->m_ui->sbxStatROIHeight->blockSignals( false );
 
     d_data->m_ui->sldStatROIHeight->blockSignals( true );
@@ -426,6 +434,8 @@ void ROIBox::onStatROIChange( int width, int height, int offset_x, int offset_y 
     d_data->offset_x = offset_x;
     d_data->offset_y = offset_y;
 
+    ConfigureMaxOffset();
+    ConfigureHeightWidth();
     SetROIUIs();
 }
 
@@ -448,6 +458,9 @@ void ROIBox::ConfigSldChange(int & data_ref, int index, int step)
  *****************************************************************************/
 void ROIBox::StatROIChange()
 {
+    ConfigureMaxOffset();
+    ConfigureHeightWidth();
+
     // Set all UIs
     SetROIUIs();
 
@@ -467,7 +480,6 @@ void ROIBox::StatROIChange()
 void ROIBox::onSbxStatROIOffsetXChange( int index )
 {
     d_data->offset_x = index;
-
     StatROIChange();
 }
 
@@ -485,7 +497,6 @@ void ROIBox::onSldStatROIOffsetXChange( int index )
 void ROIBox::onSbxStatROIOffsetYChange( int index )
 {
     d_data->offset_y = index;
-
     StatROIChange();
 }
 
@@ -544,4 +555,39 @@ void ROIBox::onBtnResetClicked()
     d_data->offset_y = 0;
 
     StatROIChange();
+}
+
+
+/******************************************************************************
+ * ROIBox::ConfigureHeightWidth
+ *****************************************************************************/
+void ROIBox::ConfigureHeightWidth()
+{
+    d_data->width_scaled = d_data->width + d_data->offset_x;
+    d_data->height_scaled = d_data->height + d_data->offset_y;
+}
+
+/******************************************************************************
+ * ROIBox::SetMaxOffset
+ *****************************************************************************/
+void ROIBox::ConfigureMaxOffset()
+{
+    d_data->max_offset_x = d_data->max_width - d_data->width;
+    d_data->max_offset_y = d_data->max_height - d_data->height;
+
+    d_data->m_ui->sbxStatROIOffsetX->setRange( 0, d_data->max_offset_x );
+    d_data->m_ui->sldStatROIOffsetX->setRange( 0, d_data->max_offset_x );
+
+    d_data->m_ui->sbxStatROIOffsetY->setRange( 0, d_data->max_offset_y );
+    d_data->m_ui->sldStatROIOffsetY->setRange( 0, d_data->max_offset_y );
+
+    if( d_data->offset_x > d_data->max_offset_x )
+    {
+        d_data->offset_x = d_data->max_offset_x;
+    }
+
+    if( d_data->offset_y > d_data->max_offset_y )
+    {
+        d_data->offset_y = d_data->max_offset_y;
+    }
 }

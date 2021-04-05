@@ -90,6 +90,8 @@ private:
     void ConfigSldChange( int & data_ref, int index, int step );
     void SetXRangeChanged( const QCPRange &, QCustomPlot * );
     void SetYRangeChanged( const QCPRange &, QCustomPlot * );
+    void ConfigureHeightWidth();
+    void ConfigureMaxOffset();
 
 private slots:
     void onBtnResetClicked();
