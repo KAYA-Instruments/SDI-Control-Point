@@ -900,6 +900,9 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         connect( dev->GetROIItf(), SIGNAL(StatROIInfoChanged(int,int,int,int)), m_ui->roiBox, SLOT(onStatROIInfoChange(int,int,int,int)) );
         connect( dev->GetROIItf(), SIGNAL(StatROIChanged(int,int,int,int)), m_ui->roiBox, SLOT(onStatROIChange(int,int,int,int)) );
         connect( m_ui->roiBox, SIGNAL(StatROIChanged(int,int,int,int)), dev->GetROIItf(), SLOT(onStatROIChange(int,int,int,int)) );
+
+        // video mode changed
+        connect( m_ui->inoutBox, SIGNAL(ROIVideoModeChanged()), dev->GetROIItf(), SLOT(onROIVideoModeChanged()) );
     }
 
     //////////////////////////

@@ -2574,6 +2574,7 @@ void InOutBox::onCbxVideoModeChange( int index )
     setWaitCursor();
     emit ChainVideoModeChanged( d_data->m_ui->cbxVideoMode->itemData( index ).toInt() );
     show4kGenlockNote( d_data->m_ui->cbxVideoMode->itemData( index ).toInt() );
+    emit ROIVideoModeChanged();
     setNormalCursor();
 }
 

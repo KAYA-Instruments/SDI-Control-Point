@@ -54,6 +54,7 @@ signals:
 public slots:
     // enable status
     void onStatROIChange( int width, int height, int offset_x, int offset_y );
+    void onROIVideoModeChanged();
 };
 
 #endif // _ROI_INTERFACE_H_

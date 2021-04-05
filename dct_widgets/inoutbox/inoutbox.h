@@ -204,6 +204,8 @@ signals:
 
     void ResyncRequest( void );
 
+    void ROIVideoModeChanged();
+
 public slots:
     void onBayerPatternChange( int value );
 

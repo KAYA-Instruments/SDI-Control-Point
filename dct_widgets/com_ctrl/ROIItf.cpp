@@ -103,3 +103,11 @@ void ROIItf::onStatROIChange( int width, int height, int offset_x, int offset_y 
     HANDLE_ERROR( res );
 }
 
+/******************************************************************************
+ * ROIItf::onROIVideoModeChanged
+ *****************************************************************************/
+void ROIItf::onROIVideoModeChanged()
+{
+    resync();
+}
+
