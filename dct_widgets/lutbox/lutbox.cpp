@@ -2099,23 +2099,23 @@ void LutBox::onLutPresetClicked( QAbstractButton * btn )
         switch ( d_data->m_ch )
         {
             case Red:
-                emit LutSampleValuesRedChanged( x,y );
+                //emit LutSampleValuesRedChanged( x,y );
                 break;
 
             case Green:
-                emit LutSampleValuesGreenChanged( x,y );
+                //emit LutSampleValuesGreenChanged( x,y );
                 break;
 
             case Blue:
-                emit LutSampleValuesBlueChanged( x,y );
+                //emit LutSampleValuesBlueChanged( x,y );
                 break;
 
             case Master:
-                emit LutSampleValuesMasterChanged( x,y );
+                //emit LutSampleValuesMasterChanged( x,y );
                 break;
 
             default:
-                emit LutSampleValuesChanged( x,y );
+                //emit LutSampleValuesChanged( x,y );
                 break;
         }
 
