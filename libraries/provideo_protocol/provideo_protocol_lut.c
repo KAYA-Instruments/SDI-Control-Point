@@ -563,7 +563,7 @@ static int set_lut_sample_internal
 
     int res;
 
-    unsigned n, i;
+    unsigned n, i, k;
 
     // parameter check
     if ( !x_i || !y_i || !no )
@@ -599,6 +599,76 @@ static int set_lut_sample_internal
         i+=8;
     }
 
+    if(0 != n)
+    {
+        // clear command buffer
+        memset( command, 0, sizeof(command) );
+
+        // create new cmd command according to calculated n
+        char new_cmd[CMD_SINGLE_LINE_COMMAND_SIZE];
+        memset( new_cmd, 0, sizeof(new_cmd) );
+
+        strcpy (new_cmd, cmd_1);
+        new_cmd[strlen(new_cmd)-1] = '\0';
+
+        for(k = 1; k < n; k++)
+        {
+            strcat (new_cmd," %i %i");
+
+            if(k == n - 1)
+            {
+                strcat (new_cmd,"\n");
+            }
+        }
+
+        switch ( n ) // TODO: replace switch-case to more elegant way using x_i[i+k], y_i[i+k]
+        {
+            case 7:
+                sprintf( command, new_cmd,
+                         x_i[i+0], y_i[i+0], x_i[i+1], y_i[i+1], x_i[i+2], y_i[i+2], x_i[i+3], y_i[i+3],
+                         x_i[i+4], y_i[i+4], x_i[i+5], y_i[i+5], x_i[i+6], y_i[i+6] );
+                break;
+            case 6:
+                sprintf( command, new_cmd,
+                         x_i[i+0], y_i[i+0], x_i[i+1], y_i[i+1], x_i[i+2], y_i[i+2], x_i[i+3], y_i[i+3],
+                         x_i[i+4], y_i[i+4], x_i[i+5], y_i[i+5]);
+                break;
+            case 5:
+                sprintf( command, new_cmd,
+                         x_i[i+0], y_i[i+0], x_i[i+1], y_i[i+1], x_i[i+2], y_i[i+2], x_i[i+3], y_i[i+3],
+                         x_i[i+4], y_i[i+4]);
+                break;
+            case 4:
+                sprintf( command, new_cmd,
+                         x_i[i+0], y_i[i+0], x_i[i+1], y_i[i+1], x_i[i+2], y_i[i+2], x_i[i+3], y_i[i+3]);
+                break;
+            case 3:
+                sprintf( command, new_cmd,
+                         x_i[i+0], y_i[i+0], x_i[i+1], y_i[i+1], x_i[i+2], y_i[i+2]);
+                break;
+            case 2:
+                sprintf( command, new_cmd,
+                         x_i[i+0], y_i[i+0], x_i[i+1], y_i[i+1]);
+                break;
+            case 1:
+                sprintf( command, new_cmd,
+                         x_i[i+0], y_i[i+0]);
+                break;
+        }
+
+        // send command to COM port
+        ctrl_channel_send_request( channel, (uint8_t *)command, strlen(command) );
+
+        // wait for response and evaluate
+        res = evaluate_set_response_with_tmo( channel, CMD_EVALUATE_SET_RESPONSE_TMO );
+
+        if ( res )
+        {
+            return ( res );
+        }
+    }
+
+    /*
     // send 4 sample points
     while ( n >= 4 )
     {
@@ -666,7 +736,7 @@ static int set_lut_sample_internal
             return ( res );
         }
     }
-
+    */
     return ( 0 );
 }
 
