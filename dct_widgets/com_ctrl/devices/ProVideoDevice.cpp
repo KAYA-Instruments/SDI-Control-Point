@@ -186,6 +186,14 @@ KneeItf * ProVideoDevice::GetKneeItf() const
 }
 
 /******************************************************************************
+ * ProVideoDevice::GetROIItf()
+ *****************************************************************************/
+ROIItf * ProVideoDevice::GetROIItf() const
+{
+    return nullptr;
+}
+
+/******************************************************************************
  * ProVideoDevice::GetKneeItf()
  *****************************************************************************/
 DpccItf * ProVideoDevice::GetDpccItf() const

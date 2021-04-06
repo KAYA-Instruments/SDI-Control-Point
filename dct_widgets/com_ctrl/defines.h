@@ -385,35 +385,36 @@ enum ExposureTime
 /******************************************************************************
  * Fixed ISO values
  *****************************************************************************/
-enum IsoValue
+enum GainValue
 {
-    IsoValueFirst = 0,
-    IsoValue80    = 0,          /**< ISO 80 */
-    IsoValue100   = 1,          /**< ISO 100 */
-    IsoValue125   = 2,          /**< ISO 125 */
-    IsoValue160   = 3,          /**< ISO 160 */
-    IsoValue200   = 4,          /**< ISO 200 */
-    IsoValue250   = 5,          /**< ISO 250 */
-    IsoValue320   = 6,          /**< ISO 320 */
-    IsoValue400   = 7,          /**< ISO 400 */
-    IsoValue500   = 8,          /**< ISO 500 */
-    IsoValue640   = 9,          /**< ISO 640 */
-    IsoValue800   = 10,         /**< ISO 800 */
-    IsoValue1000  = 11,         /**< ISO 1000 */
-    IsoValue1250  = 12,         /**< ISO 1250 */
-    IsoValue1600  = 13,         /**< ISO 1600 */
-    IsoValue2000  = 14,         /**< ISO 2000 */
-    IsoValue2500  = 15,         /**< ISO 2500 */
-    IsoValue3200  = 16,         /**< ISO 3200 */
-    IsoValue4000  = 17,         /**< ISO 4000 */
-    IsoValue5000  = 18,         /**< ISO 5000 */
-    IsoValue6400  = 19,         /**< ISO 6400 */
-    IsoValue8000  = 20,         /**< ISO 8000 */
-    IsoValue10000 = 21,         /**< ISO 10000 */
-    IsoValue12800 = 22,         /**< ISO 12800 */
-    IsoValue16000 = 23,         /**< ISO 16000 */
-    IsoValue20000 = 24,         /**< ISO 20000 */
-    IsoValue25600 = 25,         /**< ISO 25600 */
+    IsoValueFirst = 1,
+    IsoValue1     = 1,          /**< ISO 1   */
+    IsoValue2     = 2,          /**< ISO 2   */
+    IsoValue3     = 3,          /**< ISO 3   */
+    IsoValue4     = 4,          /**< ISO 4   */
+    IsoValue5     = 5,          /**< ISO 5   */
+    IsoValue6     = 6,          /**< ISO 6   */
+    IsoValue7     = 7,          /**< ISO 7   */
+    IsoValue8     = 8,          /**< ISO 8   */
+    IsoValue9     = 9,          /**< ISO 9   */
+    IsoValue10    = 10,         /**< ISO 10  */
+    IsoValue20    = 20,         /**< ISO 20  */
+    IsoValue30    = 30,         /**< ISO 30  */
+    IsoValue40    = 40,         /**< ISO 40  */
+    IsoValue50    = 50,         /**< ISO 50  */
+    IsoValue60    = 60,         /**< ISO 60  */
+    IsoValue70    = 70,         /**< ISO 70  */
+    IsoValue80    = 80,         /**< ISO 80  */
+    IsoValue90    = 90,         /**< ISO 90  */
+    IsoValue100   = 100,        /**< ISO 100 */
+    IsoValue120   = 120,        /**< ISO 120 */
+    IsoValue140   = 140,        /**< ISO 140 */
+    IsoValue160   = 160,        /**< ISO 160 */
+    IsoValue180   = 180,        /**< ISO 180 */
+    IsoValue200   = 200,        /**< ISO 200 */
+    IsoValue220   = 220,        /**< ISO 220 */
+    IsoValue240   = 240,        /**< ISO 240 */
+    IsoValue252   = 252,        /**< ISO 252 */
     IsoValueMax                 /**< number of normally supported ISO values (end marker) */
 };
 
@@ -601,7 +602,7 @@ int GetExposureTime( ExposureTime exposureIndex );
 QString GetExposureTimeString( ExposureTime exposureIndex );
 
 // return corresponding ISO value
-int GetIsoValue( IsoValue isoIndex );
+int GetIsoValue( GainValue gainIndex );
     
 // return corresponding sdi-mode name 
 QString GetSdiModeName( SdiMode mode );

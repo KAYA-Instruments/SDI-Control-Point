@@ -45,6 +45,7 @@ void AutoItf::resync()
     GetAecWeights();
     GetAwbEnable();
     GetAwbSpeed();
+    GetAwbThreshold();
 
     GetStatRGB();
 }
@@ -157,6 +158,26 @@ void AutoItf::GetAwbEnable()
 
         // emit a AwbEnableChanged signal
         emit AwbEnableChanged( (int)value );
+    }
+}
+
+/******************************************************************************
+ * AutoItf::GetAwbThreshold
+ *****************************************************************************/
+void AutoItf::GetAwbThreshold()
+{
+    // Is there a signal listener
+    if ( receivers(SIGNAL(AwbThresholdChanged(int))) > 0 )
+    {
+        uint16_t value;
+
+        // get threshold value
+        int res = ctrl_protocol_get_awb_threshold( GET_PROTOCOL_INSTANCE(this),
+                    GET_CHANNEL_INSTANCE(this), &value );
+        HANDLE_ERROR( res );
+
+        // emit a AwbThresholdChanged signal
+        emit AwbThresholdChanged( (int)value );
     }
 }
 
@@ -390,6 +411,16 @@ void AutoItf::onAwbEnableChange( int enable )
     
     // emit a NotifyWhiteBalanceChanged signal
     emit NotifyWhiteBalanceChanged();
+}
+
+/******************************************************************************
+ * AutoItf::onAwbThresholdChange
+ *****************************************************************************/
+void AutoItf::onAwbThresholdChange( int threshold )
+{
+    int res = ctrl_protocol_set_awb_threshold( GET_PROTOCOL_INSTANCE(this),
+            GET_CHANNEL_INSTANCE(this), (uint16_t)threshold );
+    HANDLE_ERROR( res );
 }
 
 /******************************************************************************

@@ -34,26 +34,42 @@
 /******************************************************************************
  * @brief command "cam_gain" 
  *****************************************************************************/
-#define CMD_GET_CAM_GAIN                    ( "cam_gain\n" )
-#define CMD_SET_CAM_GAIN                    ( "cam_gain %i\n" )
-#define CMD_SYNC_CAM_GAIN                   ( "cam_gain " )
-#define CMD_GET_CAM_GAIN_NO_PARMS           ( 1 )
+#define CMD_GET_CAM_GAIN                      ( "cam_gain\n" )
+#define CMD_SET_CAM_GAIN                      ( "cam_gain %i\n" )
+#define CMD_SYNC_CAM_GAIN                     ( "cam_gain " )
+#define CMD_GET_CAM_GAIN_NO_PARMS             ( 1 )
 
 /******************************************************************************
  * @brief command "cam_exposure" 
  *****************************************************************************/
-#define CMD_GET_CAM_EXPOSURE                ( "cam_exposure\n" )
-#define CMD_SET_CAM_EXPOSURE                ( "cam_exposure %i\n" )
-#define CMD_SYNC_CAM_EXPOSURE               ( "cam_exposure " )
-#define CMD_GET_CAM_EXPOSURE_NO_PARMS       ( 1 )
+#define CMD_GET_CAM_EXPOSURE                  ( "cam_exposure\n" )
+#define CMD_SET_CAM_EXPOSURE                  ( "cam_exposure %i\n" )
+#define CMD_SYNC_CAM_EXPOSURE                 ( "cam_exposure " )
+#define CMD_GET_CAM_EXPOSURE_NO_PARMS         ( 1 )
 
-/******************************************************************************
+/************************************************* *****************************
  * @brief command definition to read out the camera info
  *****************************************************************************/
-#define CMD_GET_CAM_INFO                    ( "cam_info\n" )
-#define CMD_SET_CAM_INFO                    ( "cam_info %i %i %i %i %i\n" )
-#define CMD_SYNC_CAM_INFO                   ( "cam_info " )
-#define CMD_GET_CAM_INFO_NO_PARMS           ( 5 )
+#define CMD_GET_CAM_INFO                      ( "cam_info\n" )
+#define CMD_SET_CAM_INFO                      ( "cam_info %i %i %i %i %i\n" )
+#define CMD_SYNC_CAM_INFO                     ( "cam_info " )
+#define CMD_GET_CAM_INFO_NO_PARMS             ( 5 )
+
+/******************************************************************************
+ * @brief command definition to read out the camera roi offset info
+ *****************************************************************************/
+#define CMD_GET_CAM_ROI_OFFSET_INFO           ( "cam_roi_offset_info\n" )
+#define CMD_SET_CAM_ROI_OFFSET_INFO           ( "cam_roi_offset_info %i %i %i %i\n" )
+#define CMD_SYNC_CAM_ROI_OFFSET_INFO          ( "cam_roi_offset_info " )
+#define CMD_GET_CAM_ROI_OFFSET_INFO_NO_PARMS  ( 4 )
+
+/******************************************************************************
+ * @brief command "cam_roi_offset "
+ *****************************************************************************/
+#define CMD_GET_CAM_ROI_OFFSET                ( "cam_roi_offset\n" )
+#define CMD_SET_CAM_ROI_OFFSET                ( "cam_roi_offset %i %i\n" )
+#define CMD_SYNC_CAM_ROI_OFFSET               ( "cam_roi_offset " )
+#define CMD_GET_CAM_ROI_OFFSET_NO_PARMS       ( 2 )
 
 /**************************************************************************//**
  * get_cam_info - get camera information
@@ -227,16 +243,145 @@ static int set_cam_exposure
     return ( set_param_int_X( channel, CMD_SET_CAM_EXPOSURE, INT( time ) ) );
 }
 
+/**************************************************************************//**
+ * get_cam_roi_offset_info - get camera ROI offset information
+ *****************************************************************************/
+static int get_cam_roi_offset_info
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    int const                   no,
+    uint8_t * const             values
+)
+{
+    (void) ctx;
+
+    ctrl_protocol_cam_roi_offset_info_t * v;
+
+    int v0;
+    int v1;
+    int v2;
+    int v3;
+
+    int res;
+
+    // parameter check
+    if ( !no || !values )
+    {
+        return ( -EINVAL );
+    }
+
+    // command call to get 4 parameters from provideo system
+    res = get_param_int_X( channel, 2,
+            CMD_GET_CAM_ROI_OFFSET_INFO, CMD_SYNC_CAM_ROI_OFFSET_INFO, CMD_SET_CAM_ROI_OFFSET_INFO, &v0, &v1, &v2, &v3);
+
+    // return error code
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
+    // return -EFAULT if number of parameter not matching
+    else if ( res != CMD_GET_CAM_ROI_OFFSET_INFO_NO_PARMS )
+    {
+        return ( -EFAULT );
+    }
+
+    // type-cast to range
+    v                = (ctrl_protocol_cam_roi_offset_info_t *)values;
+    v->offset_x_max  = UINT32( v0 );
+    v->offset_y_max  = UINT32( v1 );
+    v->offset_x_step = UINT32( v2 );
+    v->offset_y_step = UINT32( v3 );
+
+    return ( 0 );
+}
+
+/**************************************************************************//**
+ * get_cam_roi_offset - get ROI offset of camera-device
+ *****************************************************************************/
+static int get_cam_roi_offset
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    int const                   no,
+    uint8_t * const             values
+)
+{
+    (void) ctx;
+
+    ctrl_protocol_cam_roi_offset_t * v;
+
+    int v0;
+    int v1;
+
+    int res;
+
+    // parameter check
+    if ( !no || !values )
+    {
+        return ( -EINVAL );
+    }
+
+    // command call to get 4 parameters from provideo system
+    res = get_param_int_X( channel, 2,
+            CMD_GET_CAM_ROI_OFFSET, CMD_SYNC_CAM_ROI_OFFSET, CMD_SET_CAM_ROI_OFFSET, &v0, &v1);
+
+    // return error code
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
+    // return -EFAULT if number of parameter not matching
+    else if ( res != CMD_GET_CAM_ROI_OFFSET_NO_PARMS )
+    {
+        return ( -EFAULT );
+    }
+
+    // type-cast to range
+    v                = (ctrl_protocol_cam_roi_offset_t *)values;
+    v->offset_x  = UINT32( v0 );
+    v->offset_y  = UINT32( v1 );
+
+    return ( 0 );
+}
+
+/******************************************************************************
+ * set_cam_roi_offset - set ROI offset of camera-device
+ *****************************************************************************/
+static int set_cam_roi_offset
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    int const                   no,
+    uint8_t * const             values
+)
+{
+    (void) ctx;
+
+    if ( no != CMD_GET_CAM_ROI_OFFSET_NO_PARMS )
+    {
+        // return -EFAULT if number of parameter not matching
+        return ( -EFAULT );
+    }
+
+    return ( set_param_int_X( channel, CMD_SET_CAM_ROI_OFFSET, INT(values[0]), INT(values[1])) );
+}
+
 /******************************************************************************
  * CAM protocol driver declaration
  *****************************************************************************/
 static ctrl_protocol_cam_drv_t provideo_cam_drv = 
 {
-    .get_cam_info       = get_cam_info,
-    .get_cam_gain       = get_cam_gain,
-    .set_cam_gain       = set_cam_gain,
-    .get_cam_exposure   = get_cam_exposure,
-    .set_cam_exposure   = set_cam_exposure,
+    .get_cam_info             = get_cam_info,
+    .get_cam_gain             = get_cam_gain,
+    .set_cam_gain             = set_cam_gain,
+    .get_cam_exposure         = get_cam_exposure,
+    .set_cam_exposure         = set_cam_exposure,
+    .get_cam_roi_offset_info  = get_cam_roi_offset_info,
+    .get_cam_roi_offset       = get_cam_roi_offset,
+    .set_cam_roi_offset       = set_cam_roi_offset,
 };
 
 /******************************************************************************

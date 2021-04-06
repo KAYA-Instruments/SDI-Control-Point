@@ -58,7 +58,7 @@ void KneeItf::GetKneeConfig()
         
         // emit a KneeEnableChanged signal
         emit KneeConfigChanged( 
-            (int)c.enable, (int)c.knee_point, (int)c.knee_slope, (int)c.white_clip );
+            int(c.enable), int(c.knee_point), int(c.knee_slope), int(c.white_clip) );
     }
 }
 
@@ -69,10 +69,10 @@ void KneeItf::onKneeConfigChange( int enable, int point, int slope, int clip )
 {
     ctrl_protocol_knee_t c;
 
-    c.enable     = enable;
-    c.knee_point = point;
-    c.knee_slope = slope;
-    c.white_clip = clip;
+    c.enable     = uint8_t(enable);
+    c.knee_point = uint8_t(point);
+    c.knee_slope = uint8_t(slope);
+    c.white_clip = uint8_t(clip);
 
     // set knee function configuration on device
     int res = ctrl_protocol_set_knee_config( GET_PROTOCOL_INSTANCE(this),

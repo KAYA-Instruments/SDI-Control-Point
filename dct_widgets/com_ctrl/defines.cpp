@@ -521,62 +521,64 @@ QString GetExposureTimeString( ExposureTime exposureIndex )
 /******************************************************************************
  * GetIsoValue()
  *****************************************************************************/
-int GetIsoValue( IsoValue isoIndex )
+int GetIsoValue( GainValue gainIndex )
 {
-    switch ( isoIndex )
+    switch ( gainIndex )
     {
+        case IsoValue1:
+            return 1;
+        case IsoValue2:
+            return 2;
+        case IsoValue3:
+            return 3;
+        case IsoValue4:
+            return 4;
+        case IsoValue5:
+            return 5;
+        case IsoValue6:
+            return 6;
+        case IsoValue7:
+            return 7;
+        case IsoValue8:
+            return 8;
+        case IsoValue9:
+            return 9;
+        case IsoValue10:
+            return 10;
+        case IsoValue20:
+            return 20;
+        case IsoValue30:
+            return 30;
+        case IsoValue40:
+            return 40;
+        case IsoValue50:
+            return 50;
+        case IsoValue60:
+            return 60;
+        case IsoValue70:
+            return 70;
         case IsoValue80:
             return 80;
+        case IsoValue90:
+            return 90;
         case IsoValue100:
             return 100;
-        case IsoValue125:
-            return 125;
+        case IsoValue120:
+            return 120;
+        case IsoValue140:
+            return 140;
         case IsoValue160:
             return 160;
+        case IsoValue180:
+            return 180;
         case IsoValue200:
             return 200;
-        case IsoValue250:
-            return 250;
-        case IsoValue320:
-            return 320;
-        case IsoValue400:
-            return 400;
-        case IsoValue500:
-            return 500;
-        case IsoValue640:
-            return 640;
-        case IsoValue800:
-            return 800;
-        case IsoValue1000:
-            return 1000;
-        case IsoValue1250:
-            return 1250;
-        case IsoValue1600:
-            return 1600;
-        case IsoValue2000:
-            return 2000;
-        case IsoValue2500:
-            return 2500;
-        case IsoValue3200:
-            return 3200;
-        case IsoValue4000:
-            return 4000;
-        case IsoValue5000:
-            return 5000;
-        case IsoValue6400:
-            return 6400;
-        case IsoValue8000:
-            return 8000;
-        case IsoValue10000:
-            return 10000;
-        case IsoValue12800:
-            return 12800;
-        case IsoValue16000:
-            return 16000;
-        case IsoValue20000:
-            return 20000;
-        case IsoValue25600:
-            return 25600;
+        case IsoValue220:
+            return 220;
+        case IsoValue240:
+            return 240;
+        case IsoValue252:
+            return 252;
         default:
             return 0;
     }

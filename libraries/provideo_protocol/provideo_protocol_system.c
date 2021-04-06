@@ -252,6 +252,15 @@
 #define CMD_LOAD_SETTINGS_TMO                   ( 50000 )
 
 /******************************************************************************
+ * @brief command "default_settings"
+ *****************************************************************************/
+#define CMD_GET_DEFAULT_SETTINGS                ( "default_settings\n" )
+#define CMD_SET_DEFAULT_SETTINGS                ( "default_settings %i\n" )
+#define CMD_SYNC_DEFAULT_SETTINGS               ( "default_settings " )
+#define CMD_DEFAULT_SETTINGS_TMO                ( 30000 )
+#define CMD_GET_DEFAULT_SETTINGS_NO_PARMS       ( 1 )
+
+/******************************************************************************
  * @brief command "reset_settings" 
  *****************************************************************************/
 #define CMD_RESET_SETTINGS                      ( "reset_settings\n" )
@@ -1451,7 +1460,7 @@ static int get_device_list
                 /* Note: the check for offset != 0 is needed, because on Windows it
                  * seems to be possible that sscanf() has a result != 0 (meaning it has
                  * found parameters and parsed them) but still report an offset of 0. */
-                if ( (res == CMD_GET_DEVICE_LIST_NO_PARAMS) && (offset != 0) && (s[offset-1] == '\n') )
+                if ( (res == CMD_GET_DEVICE_LIST_NO_PARAMS) )// && (offset != 0) && (s[offset-1] == '\n') ) // TODO:check why condition "(offset != 0) && (s[offset-1] == '\n')" not working
                 {
                     if ( cnt >= CMD_DEVICE_LIST_MAX_DEVICES )
                     {
@@ -1996,7 +2005,7 @@ static int save_settings
 (
     void * const                ctx,
     ctrl_channel_handle_t const channel,
-    int userSetting
+    uint8_t userSetting
 )
 {
     (void) ctx;
@@ -2011,12 +2020,70 @@ static int load_settings
 (
     void * const                ctx,
     ctrl_channel_handle_t const channel,
-    int userSetting
+    uint8_t userSetting
 )
 {
     (void) ctx;
 
     return ( set_param_int_X_with_tmo( channel, CMD_LOAD_SETTINGS, CMD_LOAD_SETTINGS_TMO, INT( userSetting ) ) );
+}
+
+/******************************************************************************
+ * set_default_settings - set default settings on device
+ *****************************************************************************/
+static int set_default_settings
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    uint8_t userSetting
+)
+{
+    (void) ctx;
+
+    return ( set_param_int_X_with_tmo( channel, CMD_SET_DEFAULT_SETTINGS, CMD_DEFAULT_SETTINGS_TMO, INT( userSetting ) ) );
+}
+
+/******************************************************************************
+ * get_default_settings - get default settings from device
+ *****************************************************************************/
+static int get_default_settings
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    int8_t * const             userSetting
+)
+{
+    (void) ctx;
+
+    int value;
+    int res;
+
+    // parameter check
+    if ( !userSetting )
+    {
+        return ( -EINVAL );
+    }
+
+    // command call to get 1 parameter from provideo system
+    res = get_param_int_X( channel, 2,
+            CMD_GET_DEFAULT_SETTINGS, CMD_SYNC_DEFAULT_SETTINGS, CMD_SET_DEFAULT_SETTINGS, &value );
+
+    // return error code
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
+    // return -EFAULT if number of parameter not matching
+    else if ( res != CMD_GET_DEFAULT_SETTINGS_NO_PARMS )
+    {
+        return ( -EFAULT );
+    }
+
+    // type-cast to range
+    *userSetting = INT8( value );
+
+    return ( 0 );
 }
 
 /******************************************************************************
@@ -2105,6 +2172,8 @@ static ctrl_protocol_sys_drv_t provideo_sys_drv =
     .update                       = update,
     .save_settings                = save_settings,
     .load_settings                = load_settings,
+    .set_default_settings         = set_default_settings,
+    .get_default_settings         = get_default_settings,
     .reset_settings               = reset_settings,
     .copy_settings                = copy_settings,
 };

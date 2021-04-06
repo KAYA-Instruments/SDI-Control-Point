@@ -70,7 +70,7 @@ public:
         m_ui->KneePoint->setMaxAngle( 180 );
         m_ui->KneePoint->setMaxRounds( 1 );
         m_ui->KneePoint->setFmt( KNEE_POINT_DISPLAY_MASK );
-        m_ui->KneePoint->setMaxEvent( 20 );
+        m_ui->KneePoint->setMaxEvent( 1 );
 
         // kneeslope
         m_ui->KneeSlope->setRange( KNEE_SLOPE_MIN, KNEE_SLOPE_MAX );
@@ -80,7 +80,7 @@ public:
         m_ui->KneeSlope->setMaxAngle( 180 );
         m_ui->KneeSlope->setMaxRounds( 4 );
         m_ui->KneeSlope->setFmt( KNEE_SLOPE_DISPLAY_MASK );
-        m_ui->KneeSlope->setMaxEvent( 100 );
+        m_ui->KneeSlope->setMaxEvent( 1 );
 
         // whiteclip
         m_ui->WhiteClip->setRange( WHITE_CLIP_MIN, WHITE_CLIP_MAX );
@@ -90,7 +90,7 @@ public:
         m_ui->WhiteClip->setMaxAngle( 180 );
         m_ui->WhiteClip->setMaxRounds( 1 );
         m_ui->WhiteClip->setFmt( WHITE_CLIP_DISPLAY_MASK );
-        m_ui->WhiteClip->setMaxEvent( 20 );
+        m_ui->WhiteClip->setMaxEvent( -1 );
 
         // knee-plot
         initKneePlot( m_ui->KneePlot );
@@ -201,10 +201,10 @@ KneeBox::KneeBox( QWidget * parent ) : DctWidgetBox( parent )
 
     // signal transition
     connect( d_data->m_ui->cbxEnable, SIGNAL(stateChanged(int)), this, SLOT(onKneeEnableChange(int)) );
-
     connect( d_data->m_ui->KneePoint, SIGNAL(ValueChanged(int)), this, SLOT(onKneePointChange(int)) );
     connect( d_data->m_ui->KneeSlope, SIGNAL(ValueChanged(int)), this, SLOT(onKneeSlopeChange(int)) );
     connect( d_data->m_ui->WhiteClip, SIGNAL(ValueChanged(int)), this, SLOT(onWhiteClipChange(int)) );
+    connect( d_data->m_ui->btnReset, SIGNAL(clicked()), this, SLOT(onBtnResetClicked()) );
 }
 
 /******************************************************************************
@@ -355,13 +355,17 @@ void KneeBox::onKneeConfigChange( int enable, int point, int slope, int clip )
     d_data->m_ui->WhiteClip->blockSignals( false );
     
     d_data->setKneeConfig( point, slope, clip );
+
+    EnableKneeWidgets(KneeEnable());
 }
 
 /******************************************************************************
  * KneeBox::onKneeEnableChange
  *****************************************************************************/
-void KneeBox::onKneeEnableChange( int )
+void KneeBox::onKneeEnableChange( int enable)
 {
+    EnableKneeWidgets( enable == 0 ? false : true );
+
     setWaitCursor();
     emit KneeConfigChanged( (int)KneeEnable(), KneePoint(), KneeSlope(), WhiteClip() );
     setNormalCursor();
@@ -372,13 +376,13 @@ void KneeBox::onKneeEnableChange( int )
  *****************************************************************************/
 void KneeBox::onKneePointChange( int value )
 {
-    d_data->setKneeConfig( value, KneeSlope(), WhiteClip() );
     if ( KneeEnable() )
     {
         setWaitCursor();
         emit KneeConfigChanged( (int)KneeEnable(), value, KneeSlope(), WhiteClip() );
         setNormalCursor();
     }
+    d_data->setKneeConfig( value, KneeSlope(), WhiteClip() );
 }
 
 /******************************************************************************
@@ -386,13 +390,14 @@ void KneeBox::onKneePointChange( int value )
  *****************************************************************************/
 void KneeBox::onKneeSlopeChange( int value )
 {
-    d_data->setKneeConfig( KneePoint(), value, WhiteClip() );
     if ( KneeEnable() )
     {
         setWaitCursor();
         emit KneeConfigChanged( (int)KneeEnable(), KneePoint(), value, WhiteClip() );
         setNormalCursor();
     }
+
+    d_data->setKneeConfig( KneePoint(), value, WhiteClip() );
 }
 
 /******************************************************************************
@@ -400,13 +405,47 @@ void KneeBox::onKneeSlopeChange( int value )
  *****************************************************************************/
 void KneeBox::onWhiteClipChange( int value )
 {
-    d_data->setKneeConfig( KneePoint(), KneeSlope(), value );
     if ( KneeEnable() )
     {
         setWaitCursor();
         emit KneeConfigChanged( (int)KneeEnable(), KneePoint(), KneeSlope(), value );
         setNormalCursor();
     }
+
+    d_data->setKneeConfig( KneePoint(), KneeSlope(), value );
+}
+
+/******************************************************************************
+ * KneeBox::EnableKneeWidgets
+ *****************************************************************************/
+void KneeBox::EnableKneeWidgets(bool enable)
+{
+    d_data->m_ui->KneePoint->setEnabled( enable );
+    d_data->m_ui->KneeSlope->setEnabled( enable );
+    d_data->m_ui->WhiteClip->setEnabled( enable );
+    d_data->m_ui->btnReset->setEnabled( enable );
+}
+
+/******************************************************************************
+ * KneeBox::onBtnResetClicked
+ *****************************************************************************/
+void KneeBox::onBtnResetClicked()
+{
+    d_data->setKneeConfig( KNEE_POINT_DEFAULT, KNEE_SLOPE_DEFAULT, WHITE_CLIP_DEFAULT );
+
+   emit KneeConfigChanged( (int)KneeEnable(), KNEE_POINT_DEFAULT, KNEE_SLOPE_DEFAULT, WHITE_CLIP_DEFAULT );
+
+   d_data->m_ui->KneePoint->blockSignals( true );
+   d_data->m_ui->KneePoint->setValue( KNEE_POINT_DEFAULT );
+   d_data->m_ui->KneePoint->blockSignals( false );
+
+   d_data->m_ui->KneeSlope->blockSignals( true );
+   d_data->m_ui->KneeSlope->setValue( KNEE_SLOPE_DEFAULT );
+   d_data->m_ui->KneeSlope->blockSignals( false );
+
+   d_data->m_ui->WhiteClip->blockSignals( true );
+   d_data->m_ui->WhiteClip->setValue( WHITE_CLIP_DEFAULT );
+   d_data->m_ui->WhiteClip->blockSignals( false );
 }
 
 

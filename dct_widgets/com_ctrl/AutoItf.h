@@ -46,6 +46,7 @@ public:
     void GetAecSetup();
     void GetAecWeights();
     void GetAwbEnable();
+    void GetAwbThreshold();
     void GetAwbSpeed();
     void GetNoWbPresets();
     void GetWbPresets( int const no = 10 );
@@ -63,6 +64,7 @@ signals:
     void AecSetupChanged( QVector<int> value );
     void AecWeightsChanged( QVector<int> weights );
     void AwbEnableChanged( int value );
+    void AwbThresholdChanged( int threshold );
     void AwbSpeedChanged( int speed );
     void NoWbPresetsChanged( int value );
     void WbPresetsChanged( int id, QString name, int ct );
@@ -85,6 +87,7 @@ public slots:
     // auto white balance processing
     void onWbUpdate();
     void onAwbEnableChange( int enable );
+    void onAwbThresholdChange( int threshold );
     void onAwbSpeedChange( int enable );
     void onWbChange();
     void onWbPresetChange( int id );

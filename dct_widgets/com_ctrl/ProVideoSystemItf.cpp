@@ -62,6 +62,8 @@ void ProVideoSystemItf::resync()
     GetRunTime();
     // sync target system temperature
     GetFanTarget();
+    // sync default settings
+    GetDefaultSettings();
 }
 
 /******************************************************************************
@@ -1011,7 +1013,7 @@ void ProVideoSystemItf::onSaveSettings(int userSetting)
 {
     // save setting 
     int res = ctrl_protocol_save_settings( GET_PROTOCOL_INSTANCE(this),
-                    GET_CHANNEL_INSTANCE(this), userSetting );
+                    GET_CHANNEL_INSTANCE(this), uint8_t(userSetting) );
     HANDLE_ERROR( res );
 }
 
@@ -1022,8 +1024,46 @@ void ProVideoSystemItf::onLoadSettings(int userSetting)
 {
     // load settings
     int res = ctrl_protocol_load_settings( GET_PROTOCOL_INSTANCE(this),
-                    GET_CHANNEL_INSTANCE(this), userSetting );
+                    GET_CHANNEL_INSTANCE(this), uint8_t(userSetting) );
     HANDLE_ERROR( res );
+}
+
+/******************************************************************************
+ * ProVideoSystemItf::onSetDefaultSettings
+ *****************************************************************************/
+void ProVideoSystemItf::onSetDefaultSettings(int userSetting)
+{
+    // default settings
+    int res = ctrl_protocol_set_default_settings( GET_PROTOCOL_INSTANCE(this),
+                    GET_CHANNEL_INSTANCE(this), uint8_t(userSetting) );
+    HANDLE_ERROR( res );
+}
+
+/******************************************************************************
+ * ProVideoSystemItf::onGetDefaultSettingsRequest
+ *****************************************************************************/
+void ProVideoSystemItf::onGetDefaultSettingsRequest()
+{
+    GetDefaultSettings();
+}
+
+/******************************************************************************
+ * ProVideoSystemItf::GetDefaultSettings
+ *****************************************************************************/
+void ProVideoSystemItf::GetDefaultSettings()
+{
+    // Is there a signal listener
+    if ( receivers(SIGNAL(DefaultSettingsChanged(int8_t))) > 0 )
+    {
+        int8_t userSetting = -1;
+
+        // read current default setting
+        int res = ctrl_protocol_get_default_settings( GET_PROTOCOL_INSTANCE(this),
+                    GET_CHANNEL_INSTANCE(this), &userSetting );
+        HANDLE_ERROR( res );
+
+        emit DefaultSettingsChanged( userSetting );
+    }
 }
 
 /******************************************************************************

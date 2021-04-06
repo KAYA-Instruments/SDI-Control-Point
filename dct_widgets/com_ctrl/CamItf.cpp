@@ -39,6 +39,8 @@ void CamItf::resync()
     GetCameraInfo();
     GetCameraGain();
     GetCameraExposure();
+    GetCameraRoiOffsetInfo();
+    GetCameraRoiOffset();
 }
 
 /******************************************************************************
@@ -100,6 +102,63 @@ void CamItf::GetCameraExposure()
         // emit a CameraExposureChanged signal
         emit CameraExposureChanged( (int)value );
     }
+}
+
+/******************************************************************************
+ * CamItf::GetCameraRoiOffsetInfo
+ *****************************************************************************/
+void CamItf::GetCameraRoiOffsetInfo()
+{
+    // Is there at least one signal listener
+    if ( receivers(SIGNAL(CameraRoiOffsetInfoChanged(int, int, int, int))) > 0 )
+    {
+        ctrl_protocol_cam_roi_offset_info_t i;
+
+        // get camera info structure from device
+        int res = ctrl_protocol_get_cam_roi_offset_info( GET_PROTOCOL_INSTANCE(this),
+                    GET_CHANNEL_INSTANCE(this), sizeof(i), (uint8_t *)&i );
+        HANDLE_ERROR( res );
+
+        // emit a CameraRoiOffsetInfoChanged signal
+        emit CameraRoiOffsetInfoChanged(
+                int(i.offset_x_max), int(i.offset_y_max), int(i.offset_x_step), int(i.offset_y_step));
+    }
+}
+
+/******************************************************************************
+ * CamItf::GetCameraRoiOffset
+ *****************************************************************************/
+void CamItf::GetCameraRoiOffset()
+{
+    // Is there at least one signal listener
+    if ( receivers(SIGNAL(CameraRoiOffsetChanged(int, int))) > 0 )
+    {
+        ctrl_protocol_cam_roi_offset_t i;
+
+        // get camera info structure from device
+        int res = ctrl_protocol_get_cam_roi_offset( GET_PROTOCOL_INSTANCE(this),
+                    GET_CHANNEL_INSTANCE(this), sizeof(i), (uint8_t *)&i );
+        HANDLE_ERROR( res );
+
+        // emit a CameraRoiOffsetChanged signal
+        emit CameraRoiOffsetChanged(
+                int(i.offset_x), int(i.offset_y));
+    }
+}
+
+/******************************************************************************
+ * IspItf::onLscChange
+ *****************************************************************************/
+void CamItf::onCameraRoiOffsetChange( int offset_x, int offset_y )
+{
+    // convert to array
+    uint8_t values[2];
+    values[0] = (uint8_t)offset_x;
+    values[1] = (uint8_t)offset_y;
+
+    int res = ctrl_protocol_set_cam_roi_offset( GET_PROTOCOL_INSTANCE(this),
+            GET_CHANNEL_INSTANCE(this), 2, values );
+    HANDLE_ERROR( res );
 }
 
 /******************************************************************************

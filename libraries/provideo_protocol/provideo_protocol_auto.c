@@ -72,6 +72,14 @@
 #define CMD_GET_AWB_NO_PARAMS               ( 1 )
 
 /******************************************************************************
+ * @brief command "wb_threshold"
+ *****************************************************************************/
+#define CMD_GET_AWB_THRESHOLD               ( "wb_threshold\n" )
+#define CMD_SET_AWB_THRESHOLD               ( "wb_threshold %i\n" )
+#define CMD_SYNC_AWB_THRESHOLD              ( "wb_threshold " )
+#define CMD_GET_AWB_THRESHOLD_NO_PARAMS     ( 1 )
+
+/******************************************************************************
  * @brief command "awb_speed"
  *****************************************************************************/
 #define CMD_GET_AWB_SPEED                   ( "awb_speed\n" )
@@ -480,6 +488,63 @@ static int set_awb_enable
 {
     (void) ctx;
     return ( set_param_int_X( channel, CMD_SET_AWB, INT( enable ) ) );
+}
+
+/******************************************************************************
+ * get_awb_threshold - Gets current AWB threshold
+ *****************************************************************************/
+static int get_awb_threshold
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    uint16_t * const             threshold
+)
+{
+    (void) ctx;
+
+    int value;
+    int res;
+
+    // parameter check
+    if ( !threshold )
+    {
+        return ( -EINVAL );
+    }
+
+    // command call to get 1 parameter from provideo system
+    res = get_param_int_X( channel, 2,
+            CMD_GET_AWB_THRESHOLD, CMD_SYNC_AWB_THRESHOLD, CMD_SET_AWB_THRESHOLD, &value );
+
+    // return error code
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
+    // return -EFAULT if number of parameter not matching
+    else if ( res != CMD_GET_AWB_THRESHOLD_NO_PARAMS )
+    {
+        return ( -EFAULT );
+    }
+
+    // type-cast to range
+    *threshold = UINT16( value );
+
+    return ( 0 );
+}
+
+/******************************************************************************
+ * set_awb_threshold - Sets AWB threshold
+ *****************************************************************************/
+static int set_awb_threshold
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    uint16_t const               threshold
+)
+{
+    (void) ctx;
+    return ( set_param_int_X( channel, CMD_SET_AWB_THRESHOLD, INT( threshold ) ) );
 }
 
 /******************************************************************************
@@ -1146,6 +1211,8 @@ static ctrl_protocol_auto_drv_t provideo_auto_drv =
     .set_aec_weight             = set_aec_weight,
     .get_awb_enable             = get_awb_enable,
     .set_awb_enable             = set_awb_enable,
+    .get_awb_threshold          = get_awb_threshold,
+    .set_awb_threshold          = set_awb_threshold,
     .get_awb_speed              = get_awb_speed,
     .set_awb_speed              = set_awb_speed,
     .run_wb                     = run_wb,

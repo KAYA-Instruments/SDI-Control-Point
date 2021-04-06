@@ -15,64 +15,47 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *****************************************************************************/
 /**
- * @file    CamItf.h
+ * @file    ROIItf.h
  *
- * @brief   Camera Processing Interface
+ * @brief   ROI Interface
  *
  * @note    Multiple Inheritance of an QObject is not allowed.
  *
  *****************************************************************************/
-#ifndef _CAM_INTERFACE_H_
-#define _CAM_INTERFACE_H_
+#ifndef _ROI_INTERFACE_H_
+#define _ROI_INTERFACE_H_
 
 #include <QObject>
 
 #include "ProVideoItf.h"
 
-class CamItf : public ProVideoItf
+class ROIItf : public ProVideoItf
 {
     Q_OBJECT
 
 public:
-    explicit CamItf( ComChannel * c, ComProtocol * p )
+    explicit ROIItf( ComChannel * c, ComProtocol * p )
         : ProVideoItf( c, p )
     { }
 
     // resync all settings
     void resync() override;
 
-    // cam setting 
-    void GetCameraInfo();
-    void GetCameraGain();
-    void GetCameraExposure();
-    void GetCameraRoiOffsetInfo();
-    void GetCameraRoiOffset();
+    // configuration
+    void GetStatROIInfo();
+    void GetStatROI();
+
 
 signals:
-    // cam configuration
-    void CameraInfoChanged( int, int, int, int, int );
-    void CameraGainChanged( int value );
-    void CameraExposureChanged( int value );
-    void CameraRoiOffsetInfoChanged(int, int, int, int);
-    void CameraRoiOffsetChanged(int, int);
-
-    // new camera analogue gain set
-    // This is used to synchronize other interface components.
-    void NotifyCameraGainChanged();
+    // enable status
+    void StatROIChanged( int, int, int, int );
+    void StatROIInfoChanged( int, int, int, int );
 
 public slots:
-    // cam configuration
-    void onCameraGainChange( int );
-    void onCameraExposureChange( int );
-
-    // notifier slot for video-mode change
-    void onNotifyVideoModeChange();
-
-    // notifier slot for LOG mode change
-    void onNotifyLogModeChange();
-
-    // notifier slot for Roi Offset change
-    void onCameraRoiOffsetChange( int offset_x, int offset_y );
+    // enable status
+    void onStatROIChange( int width, int height, int offset_x, int offset_y );
+    void onROIVideoModeChanged();
 };
 
-#endif // _CAM_INTERFACE_H_
+#endif // _ROI_INTERFACE_H_
+

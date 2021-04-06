@@ -15,38 +15,38 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *****************************************************************************/
 /**
- * @file    kneebox.h
+ * @file    roibox.h
  *
- * @brief   Class definition of a knee box 
+ * @brief   Class definition of a ROI box
  *
  *****************************************************************************/
-#ifndef __KNEE_BOX_H__
-#define __KNEE_BOX_H__
+#ifndef __ROI_BOX_H__
+#define __ROI_BOX_H__
 
 #include <dct_widgets_base.h>
 #include <qcustomplot.h>
 
 /******************************************************************************
- * Knee-Point Definitions
+ * ROI-Point Definitions
  *****************************************************************************/
-#define KNEE_POINT_MIN                              (        1 )
-#define KNEE_POINT_MAX                              (      100 )
-#define KNEE_POINT_DEFAULT                          (       85 )
-#define KNEE_POINT_COMMA_POSITION                   (        0 )
-#define KNEE_POINT_BASE                             (       10 )
-#define KNEE_POINT_DISPLAY_MULTIPLIER               (        1 )
-#define KNEE_POINT_DISPLAY_MASK                     (  "%3.0f" )
+#define ROI_POINT_MIN                              (        1 )
+#define ROI_POINT_MAX                              (      100 )
+#define ROI_POINT_DEFAULT                          (       85 )
+#define ROI_POINT_COMMA_POSITION                   (        0 )
+#define ROI_POINT_BASE                             (       10 )
+#define ROI_POINT_DISPLAY_MULTIPLIER               (        1 )
+#define ROI_POINT_DISPLAY_MASK                     (  "%3.0f" )
 
 /******************************************************************************
- * Knee-Slope Definitions
+ * ROI-Slope Definitions
  *****************************************************************************/
-#define KNEE_SLOPE_MIN                              (      101 )
-#define KNEE_SLOPE_MAX                              (     1600 )
-#define KNEE_SLOPE_DEFAULT                          (      140 )
-#define KNEE_SLOPE_COMMA_POSITION                   (        2 )
-#define KNEE_SLOPE_BASE                             (       10 )
-#define KNEE_SLOPE_DISPLAY_MULTIPLIER               (        1 )
-#define KNEE_SLOPE_DISPLAY_MASK                     (  "%2.2f" )
+#define ROI_SLOPE_MIN                              (      101 )
+#define ROI_SLOPE_MAX                              (     1600 )
+#define ROI_SLOPE_DEFAULT                          (      140 )
+#define ROI_SLOPE_COMMA_POSITION                   (        2 )
+#define ROI_SLOPE_BASE                             (       10 )
+#define ROI_SLOPE_DISPLAY_MULTIPLIER               (        1 )
+#define ROI_SLOPE_DISPLAY_MASK                     (  "%2.2f" )
 
 /******************************************************************************
  * White-Clip Contrast Definitions
@@ -60,24 +60,15 @@
 #define WHITE_CLIP_DISPLAY_MASK                     (  "%3.0f" )
 
 /******************************************************************************
- * KneeBox Configuration Box Widget
+ * ROIBox Configuration Box Widget
  *****************************************************************************/
-class KneeBox : public DctWidgetBox
+class ROIBox : public DctWidgetBox
 {
     Q_OBJECT
 
 public:
-    explicit KneeBox( QWidget * parent = 0 );
-    ~KneeBox();
-
-    bool KneeEnable() const;
-    void setKneeEnable( const bool );
-    int  KneePoint() const;
-    void setKneePoint( const int );
-    int  KneeSlope() const;
-    void setKneeSlope( const int );
-    int  WhiteClip() const;
-    void setWhiteClip( const int );
+    explicit ROIBox( QWidget * parent = 0 );
+    ~ROIBox();
 
 protected:
     void prepareMode( const Mode ) Q_DECL_OVERRIDE;
@@ -87,27 +78,39 @@ protected:
     void applySettings( void ) Q_DECL_OVERRIDE;
 
 signals:
-    void KneeConfigChanged( int, int, int, int );
+    void StatROIChanged( int width, int height, int offset_x, int offset_y );
 
 public slots:
-    void onKneeConfigChange( int, int, int, int );
+    void onStatROIInfoChange( int max_width, int max_height, int width_step, int height_step );
+    void onStatROIChange( int width, int height, int offset_x, int offset_y );
  
 private:
+    void SetROIUIs();
+    void StatROIChange();
+    void ConfigSldChange( int & data_ref, int index, int step );
     void SetXRangeChanged( const QCPRange &, QCustomPlot * );
     void SetYRangeChanged( const QCPRange &, QCustomPlot * );
-    void EnableKneeWidgets(bool enable);
+    void ConfigureHeightWidth();
+    void ConfigureMaxOffset();
 
 private slots:
-    void onKneeEnableChange( int );
-    void onKneePointChange( int );
-    void onKneeSlopeChange( int );
-    void onWhiteClipChange( int );
     void onBtnResetClicked();
+
+    void onSbxStatROIOffsetXChange( int index );
+    void onSldStatROIOffsetXChange( int index );
+    void onSbxStatROIOffsetYChange( int index );
+    void onSldStatROIOffsetYChange( int index );
+
+    void onSbxStatROIWidthChange( int index );
+    void onSldStatROIWidthChange( int index );
+    void onSbxStatROIHeightChange( int index );
+    void onSldStatROIHeightChange( int index );
+
 
 private:
     class PrivateData;
     PrivateData * d_data;
 };
 
-#endif // __KNEE_BOX_H__
+#endif // __ROI_BOX_H__
 

@@ -201,6 +201,16 @@ int provideo_protocol_lens_init( ctrl_protocol_handle_t const, void * const  );
 int provideo_protocol_knee_init( ctrl_protocol_handle_t const, void * const  );
 
 /**************************************************************************//**
+ * @brief      Initialize a ProVideo ROI command control protocol
+ *
+ * @param[in]  handle   protocol instance to initialize
+ * @param[in]  ctx      user protocol context
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int provideo_protocol_roi_init( ctrl_protocol_handle_t const, void * const  );
+
+/**************************************************************************//**
  * @brief      Initialize a ProVideo Dpcc command control protocol
  *
  * @param[in]  handle   protocol instance to initialize

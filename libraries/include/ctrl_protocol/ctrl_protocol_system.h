@@ -859,7 +859,7 @@ int ctrl_protocol_save_settings
 (
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel,
-    int userSetting
+    uint8_t userSetting
 );
 
 /**************************************************************************//**
@@ -875,7 +875,39 @@ int ctrl_protocol_load_settings
 (
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel,
-    int userSetting
+    uint8_t userSetting
+);
+
+/**************************************************************************//**
+ * @brief Set default settings
+ *
+ * @param[in]  channel  control channel instance
+ * @param[in]  protocol control protocol instance
+ * @param[in]  userSetting index
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_set_default_settings
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t  const channel,
+    uint8_t                      userSetting
+);
+
+/**************************************************************************//**
+ * @brief Get default settings
+ *
+ * @param[in]  channel  control channel instance
+ * @param[in]  protocol control protocol instance
+ * @param[out] userSetting index
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_default_settings
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t  const channel,
+    int8_t * const               userSetting
 );
 
 /**************************************************************************//**
@@ -955,8 +987,10 @@ typedef struct ctrl_protocol_sys_drv_s
     ctrl_protocol_run_t             flush_buffers;
     ctrl_protocol_run_t             reboot;
     ctrl_protocol_run_t             update;
-    ctrl_protocol_run_t             save_settings;
-    ctrl_protocol_run_t             load_settings;
+    ctrl_protocol_set_uint8_t       save_settings;
+    ctrl_protocol_set_uint8_t       load_settings;
+    ctrl_protocol_set_uint8_t       set_default_settings;
+    ctrl_protocol_get_int8_t        get_default_settings;
     ctrl_protocol_run_t             reset_settings;
     ctrl_protocol_uint8_array_t     copy_settings;
 } ctrl_protocol_sys_drv_t;

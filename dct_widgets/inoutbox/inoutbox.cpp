@@ -121,11 +121,11 @@ typedef struct aec_setup_t {
     bool run;
     int setPoint;
     int speed;
-    int ClmTolerance;
-    int costGain;
-    int costTInt;
-    int costAperture;
-    int tAf;
+    int clmTolerance;
+    int activeGain;
+    int activeExposure;
+    int activeAperture;
+    int maxExposure;
     int maxGain;
     bool useCustomWeighting;
     uint8_t weights[25];
@@ -140,7 +140,7 @@ public:
     PrivateData()
         : m_ui( new Ui::UI_InOutBox )
         , m_cntEvents( 0 )
-        , m_maxEvents( 5 )
+        , m_maxEvents( -1 )
         , m_sbxStyle( new SpinBoxStyle() )
         , m_AecSetup{}
         , m_LscSetup{}
@@ -149,6 +149,10 @@ public:
         , m_AptEnable( true )
         , m_minIso( 1 )
         , m_weightDialog( new AecWeightsDialog() )
+        , offset_x_step ( 1 )
+        , offset_y_step ( 1 )
+        , roi_offset_x ( 0 )
+        , roi_offset_y ( 0 )
     {
         // do nothing
     }
@@ -176,6 +180,11 @@ public:
     int                 m_minIso;       /**< iso value of the device at gain 1 (1000) */
 
     AecWeightsDialog *  m_weightDialog;
+
+    int                 offset_x_step;
+    int                 offset_y_step;
+    int                 roi_offset_x;
+    int                 roi_offset_y;
 };
 
 /******************************************************************************
@@ -191,20 +200,26 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
 
     d_data->m_weightDialog->setParent( this, Qt::Dialog);
 
-    d_data->m_ui->sbxIso->setRange( 80, 400 );
-    d_data->m_ui->sldIso->setRange( 80, 400 );
+    d_data->m_ui->sbxAnalogGain->setRange( 0, 252 );
+    d_data->m_ui->sldAnalogGain->setRange( 0, 252 );
     
     d_data->m_ui->sbxExposure->setRange( 100, 20000 );
     d_data->m_ui->sldExposure->setRange( 100, 20000 );
 
-    d_data->m_ui->sbxSetPoint->setRange( 0, 1023 );
-    d_data->m_ui->sldSetPoint->setRange( 0, 1023 );
+    d_data->m_ui->sbxSetPoint->setRange( 0, 4095 );
+    d_data->m_ui->sldSetPoint->setRange( 0, 4095 );
 
-    d_data->m_ui->sbxMaxIso->setRange( 80, 400 );
-    d_data->m_ui->sldMaxIso->setRange( 80, 400 );
+    d_data->m_ui->sbxMaxAnalogGain->setRange( 0, 252 );
+    d_data->m_ui->sldMaxAnalogGain->setRange( 0, 252 );
+
+    d_data->m_ui->sbxMaxExposure->setRange( 100, 20000 );
+    d_data->m_ui->sldMaxExposure->setRange( 100, 20000 );
     
-    d_data->m_ui->sbxControlSpeed->setRange( 3, 30 );
-    d_data->m_ui->sldControlSpeed->setRange( 3, 30 );
+    d_data->m_ui->sbxControlSpeed->setRange( 0, 1000 );
+    d_data->m_ui->sldControlSpeed->setRange( 0, 1000 );
+
+    d_data->m_ui->sbxTolerance->setRange( 0, 100 );
+    d_data->m_ui->sldTolerance->setRange( 0, 1000 );
 
     d_data->m_ui->sbxK->setRange( 0.0, 2.0 );
     d_data->m_ui->sbxK->setSingleStep( 0.01 );
@@ -233,6 +248,11 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->sbxGenLockOffsetVertical->setKeyboardTracking( false );
     d_data->m_ui->sbxGenlockOffsetHorizontal->setRange( -4095, 4095 );
     d_data->m_ui->sbxGenlockOffsetHorizontal->setKeyboardTracking( false );
+
+    d_data->m_ui->sbxRoiOffsetX->setRange( 0, 100 );
+    d_data->m_ui->sldRoiOffsetX->setRange( 0, 100 );
+    d_data->m_ui->sbxRoiOffsetY->setRange( 0, 100 );
+    d_data->m_ui->sldRoiOffsetY->setRange( 0, 100 );
 
     // fill bayer pattern combo box
     for ( int i=BayerPatternFirst; i<BayerPatternMax; i++ )
@@ -279,12 +299,12 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     }
 
     // overrule auto-repeat threshold
-    d_data->m_ui->sbxIso                    ->setStyle( d_data->m_sbxStyle );
+    d_data->m_ui->sbxAnalogGain             ->setStyle( d_data->m_sbxStyle );
     d_data->m_ui->sbxExposure               ->setStyle( d_data->m_sbxStyle );
     d_data->m_ui->sbxGenLockOffsetVertical  ->setStyle( d_data->m_sbxStyle );
     d_data->m_ui->sbxGenlockOffsetHorizontal->setStyle( d_data->m_sbxStyle );
     d_data->m_ui->sbxSetPoint               ->setStyle( d_data->m_sbxStyle );
-    d_data->m_ui->sbxMaxIso                 ->setStyle( d_data->m_sbxStyle );
+    d_data->m_ui->sbxMaxAnalogGain          ->setStyle( d_data->m_sbxStyle );
     d_data->m_ui->sbxAperture               ->setStyle( d_data->m_sbxStyle );
     d_data->m_ui->sbxK                      ->setStyle( d_data->m_sbxStyle );
     d_data->m_ui->sbxOffset                 ->setStyle( d_data->m_sbxStyle );
@@ -295,9 +315,9 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->cbxBayerPattern, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxBayerPatternChange(int)) );
 
     // gain
-    connect( d_data->m_ui->sldIso, SIGNAL(valueChanged(int)), this, SLOT(onSldIsoChange(int)) );
-    connect( d_data->m_ui->sldIso, SIGNAL(sliderReleased()), this, SLOT(onSldIsoReleased()) );
-    connect( d_data->m_ui->sbxIso, SIGNAL(valueChanged(int)), this, SLOT(onSbxIsoChange(int)) );
+    connect( d_data->m_ui->sldAnalogGain, SIGNAL(valueChanged(int)), this, SLOT(onSldIsoChange(int)) );
+    connect( d_data->m_ui->sldAnalogGain, SIGNAL(sliderReleased()), this, SLOT(onSldIsoReleased()) );
+    connect( d_data->m_ui->sbxAnalogGain, SIGNAL(valueChanged(double)), this, SLOT(onSbxIsoChange(double)) );
     connect( d_data->m_ui->cbxIso, SIGNAL(activated(int)), this, SLOT(onCbxIsoChange(int)) );
 
     // exposure
@@ -307,6 +327,44 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->cbxExposure, SIGNAL(activated(int)), this, SLOT(onCbxExposureChange(int)) );
     connect( d_data->m_ui->btnExposureMinus, SIGNAL(clicked()), this, SLOT(onBtnExposureMinusClicked()) );
     connect( d_data->m_ui->btnExposurePlus, SIGNAL(clicked()), this, SLOT(onBtnExposurePlusClicked()) );
+
+    // auto exposure & gain
+    connect( d_data->m_ui->cbxAecEnable, SIGNAL(stateChanged(int)), this, SLOT(onCbxAecEnableChange(int)) );
+    connect( d_data->m_ui->cbxAecWeight, SIGNAL(stateChanged(int)), this, SLOT(onCbxAecWeightChange(int)) );
+    connect( d_data->m_ui->cbxMaxAnalogGainEnable, SIGNAL(stateChanged(int)), this, SLOT(onCbxMaxAnalogGainEnableChange(int)) );
+    connect( d_data->m_ui->cbxMaxExposureEnable, SIGNAL(stateChanged(int)), this, SLOT(onCbxMaxExposureEnableChange(int)) );
+
+    connect( this, SIGNAL(WeightDialogAecWeightsChanged(QVector<int>)), d_data->m_weightDialog, SLOT(onAecWeightsChange(QVector<int>)) );
+    connect( d_data->m_weightDialog, SIGNAL(AecWeightChanged(int,int)), this, SIGNAL(AecWeightChanged(int,int)) );
+
+    connect( d_data->m_ui->btnAecWeight, SIGNAL(clicked()), d_data->m_weightDialog, SLOT(show()) );
+
+    connect( d_data->m_ui->sldSetPoint, SIGNAL(valueChanged(int)), this, SLOT(onSldSetPointChange(int)) );
+    connect( d_data->m_ui->sldSetPoint, SIGNAL(sliderReleased()), this, SLOT(onSldSetPointReleased()) );
+    connect( d_data->m_ui->sbxSetPoint, SIGNAL(valueChanged(int)), this, SLOT(onSbxSetPointChange(int)) );
+
+    connect( d_data->m_ui->sldMaxAnalogGain, SIGNAL(valueChanged(int)), this, SLOT(onSldMaxAnalogGainChange(int)) );
+    connect( d_data->m_ui->sldMaxAnalogGain, SIGNAL(sliderReleased()), this, SLOT(onSldMaxAnalogGainReleased()) );
+    connect( d_data->m_ui->sbxMaxAnalogGain, SIGNAL(valueChanged(double)), this, SLOT(onSbxMaxAnalogGainChange(double)) );
+
+    connect( d_data->m_ui->sldMaxExposure, SIGNAL(valueChanged(int)), this, SLOT(onSldMaxExposureChange(int)) );
+    connect( d_data->m_ui->sldMaxExposure, SIGNAL(sliderReleased()), this, SLOT(onSldMaxExposureReleased()) );
+    connect( d_data->m_ui->sbxMaxExposure, SIGNAL(valueChanged(int)), this, SLOT(onSbxMaxExposureChange(int)) );
+
+    connect( d_data->m_ui->sldControlSpeed, SIGNAL(valueChanged(int)), this, SLOT(onSldControlSpeedChange(int)) );
+    connect( d_data->m_ui->sldControlSpeed, SIGNAL(sliderReleased()), this, SLOT(onSldControlSpeedReleased()) );
+    connect( d_data->m_ui->sbxControlSpeed, SIGNAL(valueChanged(int)), this, SLOT(onSbxControlSpeedChange(int)) );
+
+    connect( d_data->m_ui->rdbTaf50Hz, SIGNAL( toggled(bool) ), this, SLOT(onTafToggle(bool)) );
+    connect( d_data->m_ui->rdbTaf60Hz, SIGNAL( toggled(bool) ), this, SLOT(onTafToggle(bool)) );
+
+    connect( d_data->m_ui->sldAperture, SIGNAL(valueChanged(int)), this, SLOT(onSldIrisAptChange(int)) );
+    connect( d_data->m_ui->sldAperture, SIGNAL(sliderReleased()), this, SLOT(onSldIrisAptReleased()) );
+    connect( d_data->m_ui->sbxAperture, SIGNAL(valueChanged(int)), this, SLOT(onSbxIrisAptChange(int)) );
+
+    connect( d_data->m_ui->sldTolerance, SIGNAL(valueChanged(int)), this, SLOT(onSldToleranceChange(int)) );
+    connect( d_data->m_ui->sldTolerance, SIGNAL(sliderReleased()), this, SLOT(onSldToleranceReleased()) );
+    connect( d_data->m_ui->sbxTolerance, SIGNAL(valueChanged(double)), this, SLOT(onSbxToleranceChange(double)) );
 
     // video
     connect( d_data->m_ui->cbxVideoMode, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxVideoModeChange(int)) );
@@ -335,33 +393,11 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->cbxGenLockTermination, SIGNAL(stateChanged(int)), this, SLOT(onCbxGenlockTerminationChange(int)) );
     connect( d_data->m_ui->sbxGenLockLOLFilter, SIGNAL(valueChanged(int)), this, SLOT(onSbxGenlockLOLFilterValueChange(int)) );
 
-    // auto exposure
-    connect( d_data->m_ui->cbxAecEnable, SIGNAL(stateChanged(int)), this, SLOT(onCbxAecEnableChange(int)) );
-    connect( d_data->m_ui->cbxAecWeight, SIGNAL(stateChanged(int)), this, SLOT(onCbxAecWeightChange(int)) );
-
-    connect( this, SIGNAL(WeightDialogAecWeightsChanged(QVector<int>)), d_data->m_weightDialog, SLOT(onAecWeightsChange(QVector<int>)) );
-    connect( d_data->m_weightDialog, SIGNAL(AecWeightChanged(int,int)), this, SIGNAL(AecWeightChanged(int,int)) );
-
-    connect( d_data->m_ui->btnAecWeight, SIGNAL(clicked()), d_data->m_weightDialog, SLOT(show()) );
-
-    connect( d_data->m_ui->sldSetPoint, SIGNAL(valueChanged(int)), this, SLOT(onSldSetPointChange(int)) );
-    connect( d_data->m_ui->sldSetPoint, SIGNAL(sliderReleased()), this, SLOT(onSldSetPointReleased()) );
-    connect( d_data->m_ui->sbxSetPoint, SIGNAL(valueChanged(int)), this, SLOT(onSbxSetPointChange(int)) );
-
-    connect( d_data->m_ui->sldMaxIso, SIGNAL(valueChanged(int)), this, SLOT(onSldMaxIsoChange(int)) );
-    connect( d_data->m_ui->sldMaxIso, SIGNAL(sliderReleased()), this, SLOT(onSldMaxIsoReleased()) );
-    connect( d_data->m_ui->sbxMaxIso, SIGNAL(valueChanged(int)), this, SLOT(onSbxMaxIsoChange(int)) );
-
-    connect( d_data->m_ui->sldControlSpeed, SIGNAL(valueChanged(int)), this, SLOT(onSldControlSpeedChange(int)) );
-    connect( d_data->m_ui->sldControlSpeed, SIGNAL(sliderReleased()), this, SLOT(onSldControlSpeedReleased()) );
-    connect( d_data->m_ui->sbxControlSpeed, SIGNAL(valueChanged(int)), this, SLOT(onSbxControlSpeedChange(int)) );
-
-    connect( d_data->m_ui->rdbTaf50Hz, SIGNAL( toggled(bool) ), this, SLOT(onTafToggle(bool)) );
-    connect( d_data->m_ui->rdbTaf60Hz, SIGNAL( toggled(bool) ), this, SLOT(onTafToggle(bool)) );
-
-    connect( d_data->m_ui->sldAperture, SIGNAL(valueChanged(int)), this, SLOT(onSldIrisAptChange(int)) );
-    connect( d_data->m_ui->sldAperture, SIGNAL(sliderReleased()), this, SLOT(onSldIrisAptReleased()) );
-    connect( d_data->m_ui->sbxAperture, SIGNAL(valueChanged(int)), this, SLOT(onSbxIrisAptChange(int)) );
+    // ROI
+    connect( d_data->m_ui->sbxRoiOffsetX, SIGNAL(valueChanged(int)), this, SLOT(onSbxRoiOffsetXChange(int)) );
+    connect( d_data->m_ui->sbxRoiOffsetY, SIGNAL(valueChanged(int)), this, SLOT(onSbxRoiOffsetYChange(int)) );
+    connect( d_data->m_ui->sldRoiOffsetX, SIGNAL(valueChanged(int)), this, SLOT(onSldRoiOffsetXChange(int)) );
+    connect( d_data->m_ui->sldRoiOffsetY, SIGNAL(valueChanged(int)), this, SLOT(onSldRoiOffsetYChange(int)) );
 
     // timecode
     connect( d_data->m_ui->btnSetTimecode, SIGNAL(clicked()), this, SLOT(onBtnTimecodeSetClicked()) );
@@ -390,14 +426,7 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->lblAecWeights->hide();
     d_data->m_ui->cbxAecWeight->hide();
     d_data->m_ui->btnAecWeight->hide();
-
-    d_data->m_ui->lblMaxIso->hide();
-    d_data->m_ui->sbxMaxIso->hide();
-    d_data->m_ui->sldMaxIso->hide();
-
-    d_data->m_ui->lblControlSpeed->hide();
-    d_data->m_ui->sbxControlSpeed->hide();
-    d_data->m_ui->sldControlSpeed->hide();
+    d_data->m_ui->horizontalLayout_4->layout()->removeItem(d_data->m_ui->horizontalSpacer_5);
 
     d_data->m_ui->lblTaf->hide();
     d_data->m_ui->rdbTaf50Hz->hide();
@@ -405,12 +434,6 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
 
     d_data->m_ui->lblColorSpace->hide();
     d_data->m_ui->cbxColorSpace->hide();
-    //*******************************************
-
-    ////////////////////
-    // operation mode
-    ////////////////////
-    prepareMode( mode() ); 
 
     // Temporary hide unimplemented GenLock features
     d_data->m_ui->cbxGenLockTermination->hide();
@@ -423,6 +446,12 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->lblGenLockOffsetVertical->hide();
     d_data->m_ui->sbxGenlockOffsetHorizontal->hide();
     d_data->m_ui->lblGenLockOffsetHorizontal->hide();
+    //*******************************************
+
+    ////////////////////
+    // operation mode
+    ////////////////////
+    prepareMode( mode() ); 
 }
 
 /******************************************************************************
@@ -447,6 +476,14 @@ int InOutBox::gainToIso( int gain ) const
 int InOutBox::isoToGain( int iso ) const
 {
     return ( (iso * 1000) / d_data->m_minIso );
+}
+
+/******************************************************************************
+ * multiplyBy1000
+ *****************************************************************************/
+int InOutBox::multiplyBy1000( int value ) const
+{
+    return ( value * 1000 );
 }
 
 /******************************************************************************
@@ -513,7 +550,7 @@ void InOutBox::setBayerPattern( const int value )
  *****************************************************************************/
 int InOutBox::CameraIso() const
 {
-    return ( d_data->m_ui->sbxIso->value() );
+    return ( d_data->m_ui->sbxAnalogGain->value() );
 }
 
 /******************************************************************************
@@ -521,13 +558,13 @@ int InOutBox::CameraIso() const
  *****************************************************************************/
 void InOutBox::setCameraIso( const int value )
 {
-    d_data->m_ui->sldIso->blockSignals( true );
-    d_data->m_ui->sldIso->setValue( value );
-    d_data->m_ui->sldIso->blockSignals( false );
+    d_data->m_ui->sldAnalogGain->blockSignals( true );
+    d_data->m_ui->sldAnalogGain->setValue( value );
+    d_data->m_ui->sldAnalogGain->blockSignals( false );
 
-    d_data->m_ui->sbxIso->blockSignals( true );
-    d_data->m_ui->sbxIso->setValue( value );
-    d_data->m_ui->sbxIso->blockSignals( false );
+    d_data->m_ui->sbxAnalogGain->blockSignals( true );
+    d_data->m_ui->sbxAnalogGain->setValue( value );
+    d_data->m_ui->sbxAnalogGain->blockSignals( false );
 
     setWaitCursor();
     emit CameraGainChanged( isoToGain(value) );
@@ -574,8 +611,6 @@ bool InOutBox::AecEnable() const
 void InOutBox::setAecEnable( const bool value )
 {
     enableAecWidgets( value );
-    enableCamConfWidgets( !value );
-    
     d_data->m_ui->cbxAecEnable->blockSignals( true );
     d_data->m_ui->cbxAecEnable->setCheckState( value ? Qt::Checked : Qt::Unchecked );
     d_data->m_ui->cbxAecEnable->blockSignals( false );
@@ -636,13 +671,13 @@ int InOutBox::AecMaxIso() const
  *****************************************************************************/
 void InOutBox::setAecMaxIso( const int value )
 {
-    d_data->m_ui->sbxMaxIso->blockSignals( true );
-    d_data->m_ui->sbxMaxIso->setValue( value );
-    d_data->m_ui->sbxMaxIso->blockSignals( false );
+    d_data->m_ui->sbxMaxAnalogGain->blockSignals( true );
+    d_data->m_ui->sbxMaxAnalogGain->setValue( value );
+    d_data->m_ui->sbxMaxAnalogGain->blockSignals( false );
 
-    d_data->m_ui->sldMaxIso->blockSignals( true );
-    d_data->m_ui->sldMaxIso->setValue( value );
-    d_data->m_ui->sldMaxIso->blockSignals( false );
+    d_data->m_ui->sldMaxAnalogGain->blockSignals( true );
+    d_data->m_ui->sldMaxAnalogGain->setValue( value );
+    d_data->m_ui->sldMaxAnalogGain->blockSignals( false );
 
     d_data->m_AecSetup.maxGain = isoToGain( value );
 
@@ -684,7 +719,7 @@ void InOutBox::setAecControlSpeed( const int value )
  *****************************************************************************/
 int InOutBox::AecFlickerFrequency() const
 {
-    return ( d_data->m_AecSetup.tAf );
+    return ( d_data->m_AecSetup.maxExposure );
 }
 
 /******************************************************************************
@@ -694,19 +729,19 @@ void InOutBox::setAecFlickerFrequency( const int value )
 {
     if ( value == 8333 || value == 10000 )
     {
-        d_data->m_AecSetup.tAf = value;
+        //d_data->m_AecSetup.maxExposure = value;
     }
     else
     {
-        d_data->m_AecSetup.tAf = 10000;
+        //d_data->m_AecSetup.maxExposure = 10000;
     }
 
     d_data->m_ui->rdbTaf50Hz->blockSignals( true );
-    d_data->m_ui->rdbTaf50Hz->setChecked( d_data->m_AecSetup.tAf == 10000 );
+    d_data->m_ui->rdbTaf50Hz->setChecked( d_data->m_AecSetup.maxExposure == 10000 );
     d_data->m_ui->rdbTaf50Hz->blockSignals( false );
     
     d_data->m_ui->rdbTaf60Hz->blockSignals( true );
-    d_data->m_ui->rdbTaf60Hz->setChecked( d_data->m_AecSetup.tAf == 8333 );
+    d_data->m_ui->rdbTaf60Hz->setChecked( d_data->m_AecSetup.maxExposure == 8333 );
     d_data->m_ui->rdbTaf60Hz->blockSignals( false );
 
     setWaitCursor();
@@ -1630,22 +1665,30 @@ void InOutBox::onCameraInfoChange( int min_gain, int max_gain, int min_exposure,
 
     /* Setup Sliders and Spin Boxes */
     // Set gain / iso range
-    d_data->m_ui->sbxIso->blockSignals( true );
-    d_data->m_ui->sbxIso->setRange( gainToIso(min_gain), gainToIso(max_gain) );
-    d_data->m_ui->sbxIso->blockSignals( false );
+    d_data->m_ui->sbxAnalogGain->blockSignals( true );
+    d_data->m_ui->sbxAnalogGain->setRange( min_gain / 1000, max_gain / 1000 );
+    d_data->m_ui->sbxAnalogGain->blockSignals( false );
 
-    d_data->m_ui->sldIso->blockSignals( true );
-    d_data->m_ui->sldIso->setRange( gainToIso(min_gain), gainToIso(max_gain) );
-    d_data->m_ui->sldIso->blockSignals( false );
+    d_data->m_ui->sldAnalogGain->blockSignals( true );
+    d_data->m_ui->sldAnalogGain->setRange( min_gain / 1000, max_gain / 1000 );
+    d_data->m_ui->sldAnalogGain->blockSignals( false );
 
     // Set max iso range for auto exposure control
-    d_data->m_ui->sbxMaxIso->blockSignals( true );
-    d_data->m_ui->sbxMaxIso->setRange( gainToIso(min_gain), gainToIso(max_gain) );
-    d_data->m_ui->sbxMaxIso->blockSignals( false );
+    d_data->m_ui->sbxMaxAnalogGain->blockSignals( true );
+    d_data->m_ui->sbxMaxAnalogGain->setRange( min_gain / 1000, max_gain / 1000 );
+    d_data->m_ui->sbxMaxAnalogGain->blockSignals( false );
 
-    d_data->m_ui->sldMaxIso->blockSignals( true );
-    d_data->m_ui->sldMaxIso->setRange( gainToIso(min_gain), gainToIso(max_gain) );
-    d_data->m_ui->sldMaxIso->blockSignals( false );
+    d_data->m_ui->sldMaxAnalogGain->blockSignals( true );
+    d_data->m_ui->sldMaxAnalogGain->setRange( min_gain / 1000, max_gain / 1000 );
+    d_data->m_ui->sldMaxAnalogGain->blockSignals( false );
+
+    d_data->m_ui->sbxMaxExposure->blockSignals( true );
+    d_data->m_ui->sbxMaxExposure->setRange( min_exposure, max_exposure );
+    d_data->m_ui->sbxMaxExposure->blockSignals( false );
+
+    d_data->m_ui->sldMaxExposure->blockSignals( true );
+    d_data->m_ui->sldMaxExposure->setRange( min_exposure, max_exposure );
+    d_data->m_ui->sldMaxExposure->blockSignals( false );
 
     // Set exposure range
     d_data->m_ui->sbxExposure->blockSignals( true );
@@ -1661,14 +1704,15 @@ void InOutBox::onCameraInfoChange( int min_gain, int max_gain, int min_exposure,
     d_data->m_ui->cbxIso->clear();
 
     // Add the first item
-    d_data->m_ui->cbxIso->addItem( QString("Select ISO"), 0);
+    d_data->m_ui->cbxIso->addItem( QString("Select Gain"), 0);
 
     // Add iso values
     for ( int i = IsoValueFirst; i < IsoValueMax; i++ )
     {
         // Get the iso value
-        int iso = GetIsoValue( static_cast<IsoValue>(i) );
-        int gain = isoToGain( iso );
+        int iso = GetIsoValue( static_cast<GainValue>(i) );
+        //int gain = isoToGain( iso );
+        int gain = iso * 1000;
 
         // Check if iso value is in valid iso range for this video mode
         if ( gain < min_gain )
@@ -1684,7 +1728,7 @@ void InOutBox::onCameraInfoChange( int min_gain, int max_gain, int min_exposure,
         else
         {
             // Gain is within range, add iso value to combo box
-            d_data->m_ui->cbxIso->addItem( QString::number(iso), iso );
+            d_data->m_ui->cbxIso->addItem( "x" + QString::number(iso), iso );
         }
     }
 
@@ -1731,13 +1775,13 @@ void InOutBox::onCameraInfoChange( int min_gain, int max_gain, int min_exposure,
  *****************************************************************************/
 void InOutBox::onCameraGainChange( int value )
 {
-    d_data->m_ui->sbxIso->blockSignals( true );
-    d_data->m_ui->sbxIso->setValue( gainToIso(value) );
-    d_data->m_ui->sbxIso->blockSignals( false );
+    d_data->m_ui->sbxAnalogGain->blockSignals( true );
+    d_data->m_ui->sbxAnalogGain->setValue( gainToIso(value) );
+    d_data->m_ui->sbxAnalogGain->blockSignals( false );
 
-    d_data->m_ui->sldIso->blockSignals( true );
-    d_data->m_ui->sldIso->setValue( gainToIso(value) );
-    d_data->m_ui->sldIso->blockSignals( false );
+    d_data->m_ui->sldAnalogGain->blockSignals( true );
+    d_data->m_ui->sldAnalogGain->setValue( gainToIso(value) );
+    d_data->m_ui->sldAnalogGain->blockSignals( false );
 
     UpdateIsoComboBox( gainToIso(value) );
 }
@@ -1756,6 +1800,55 @@ void InOutBox::onCameraExposureChange( int value )
     d_data->m_ui->sldExposure->blockSignals( false );
 
     UpdateExposureComboBox( value );
+}
+
+/******************************************************************************
+ * InOutBox::onCameraRoiOffsetInfoChange
+ *****************************************************************************/
+void InOutBox::onCameraRoiOffsetInfoChange( int offset_x_max, int offset_y_max, int offset_x_step, int offset_y_step )
+{
+    d_data->offset_x_step = offset_x_step;
+    d_data->offset_y_step = offset_y_step;
+
+    d_data->m_ui->sbxRoiOffsetX->blockSignals( true );
+    d_data->m_ui->sbxRoiOffsetX->setMaximum( offset_x_max);
+    d_data->m_ui->sbxRoiOffsetX->setSingleStep( offset_x_step);
+    d_data->m_ui->sbxRoiOffsetX->blockSignals( false );
+
+    d_data->m_ui->sldRoiOffsetX->blockSignals( true );
+    d_data->m_ui->sldRoiOffsetX->setMaximum( offset_x_max );
+    d_data->m_ui->sldRoiOffsetX->blockSignals( false );
+
+    d_data->m_ui->sbxRoiOffsetY->blockSignals( true );
+    d_data->m_ui->sbxRoiOffsetY->setMaximum( offset_y_max );
+    d_data->m_ui->sbxRoiOffsetY->setSingleStep( offset_y_step );
+    d_data->m_ui->sbxRoiOffsetY->blockSignals( false );
+
+    d_data->m_ui->sldRoiOffsetY->blockSignals( true );
+    d_data->m_ui->sldRoiOffsetY->setMaximum( offset_y_max );
+    d_data->m_ui->sldRoiOffsetY->blockSignals( false );
+}
+
+/******************************************************************************
+ * InOutBox::onCameraRoiOffsetChange
+ *****************************************************************************/
+void InOutBox::onCameraRoiOffsetChange( int offset_x, int offset_y )
+{
+    d_data->roi_offset_x = offset_x;
+    d_data->m_ui->sbxRoiOffsetX->blockSignals( true );
+    d_data->m_ui->sbxRoiOffsetX->setValue( offset_x );
+    d_data->m_ui->sbxRoiOffsetX->blockSignals( false );
+    d_data->m_ui->sldRoiOffsetX->blockSignals( true );
+    d_data->m_ui->sldRoiOffsetX->setValue( offset_x );
+    d_data->m_ui->sldRoiOffsetX->blockSignals( false );
+
+    d_data->roi_offset_y = offset_y;
+    d_data->m_ui->sbxRoiOffsetY->blockSignals( true );
+    d_data->m_ui->sbxRoiOffsetY->setValue( offset_y );
+    d_data->m_ui->sbxRoiOffsetY->blockSignals( false );
+    d_data->m_ui->sldRoiOffsetY->blockSignals( true );
+    d_data->m_ui->sldRoiOffsetY->setValue( offset_y );
+    d_data->m_ui->sldRoiOffsetY->blockSignals( false );
 }
 
 /******************************************************************************
@@ -2037,19 +2130,19 @@ void InOutBox::onCbxBayerPatternChange( int index )
 void InOutBox::onSldIsoChange( int value )
 {
     // Set the spin box to new value
-    d_data->m_ui->sbxIso->blockSignals( true );
-    d_data->m_ui->sbxIso->setValue( value );
-    d_data->m_ui->sbxIso->blockSignals( false );
+    d_data->m_ui->sbxAnalogGain->blockSignals( true );
+    d_data->m_ui->sbxAnalogGain->setValue( value );
+    d_data->m_ui->sbxAnalogGain->blockSignals( false );
 
     // Note: the combo box is set with the released() event of the slider
 
-    if ( (d_data->m_ui->sldIso->isSliderDown()  ) &&
+    if ( (d_data->m_ui->sldAnalogGain->isSliderDown()  ) &&
          (d_data->m_cntEvents++ > d_data->m_maxEvents) )
     {
         d_data->m_cntEvents = 0;
         
         setWaitCursor();
-        emit CameraGainChanged( isoToGain(value) );
+        emit CameraGainChanged( multiplyBy1000(value) );
         setNormalCursor();
     }
 }
@@ -2063,29 +2156,29 @@ void InOutBox::onSldIsoReleased()
 
     /* Set the combo box to new value, blocking signals is not needed, as we only use
      * the activated() event of the combo box which is only triggerd by user interaction */
-    UpdateIsoComboBox( d_data->m_ui->sldIso->value() );
+    UpdateIsoComboBox( d_data->m_ui->sldAnalogGain->value() );
         
     setWaitCursor();
-    emit CameraGainChanged( isoToGain(d_data->m_ui->sldIso->value()) );
+    emit CameraGainChanged( multiplyBy1000(d_data->m_ui->sldAnalogGain->value()) );
     setNormalCursor();
 }
 
 /******************************************************************************
  * InOutBox::onSbxIsoChange
  *****************************************************************************/
-void InOutBox::onSbxIsoChange( int value )
+void InOutBox::onSbxIsoChange( double value )
 {
     // Set the slider to new value
-    d_data->m_ui->sldIso->blockSignals( true );
-    d_data->m_ui->sldIso->setValue( value );
-    d_data->m_ui->sldIso->blockSignals( false );
+    d_data->m_ui->sldAnalogGain->blockSignals( true );
+    d_data->m_ui->sldAnalogGain->setValue( int(value) );
+    d_data->m_ui->sldAnalogGain->blockSignals( false );
 
     /* Set the combo box to new value, blocking signals is not needed, as we only use
      * the activated() event of the combo box which is only triggerd by user interaction */
-    UpdateIsoComboBox( value );
+    UpdateIsoComboBox( int(value) );
 
     setWaitCursor();
-    emit CameraGainChanged( isoToGain(value) );
+    emit CameraGainChanged( int(value * 1000.0) );
     setNormalCursor();
 }
 
@@ -2104,18 +2197,18 @@ void InOutBox::onCbxIsoChange( int index )
     int iso = d_data->m_ui->cbxIso->currentData().toInt();
 
     // Set spin box to new iso value
-    d_data->m_ui->sbxIso->blockSignals( true );
-    d_data->m_ui->sbxIso->setValue( iso );
-    d_data->m_ui->sbxIso->blockSignals( false );
+    d_data->m_ui->sbxAnalogGain->blockSignals( true );
+    d_data->m_ui->sbxAnalogGain->setValue( iso );
+    d_data->m_ui->sbxAnalogGain->blockSignals( false );
 
     // Set slider to new iso value
-    d_data->m_ui->sldIso->blockSignals( true );
-    d_data->m_ui->sldIso->setValue( iso );
-    d_data->m_ui->sldIso->blockSignals( false );
+    d_data->m_ui->sldAnalogGain->blockSignals( true );
+    d_data->m_ui->sldAnalogGain->setValue( iso );
+    d_data->m_ui->sldAnalogGain->blockSignals( false );
 
     // Emit gain changed event
     setWaitCursor();
-    emit CameraGainChanged( isoToGain(iso) );
+    emit CameraGainChanged( multiplyBy1000(iso) );
     setNormalCursor();
 }
 
@@ -2125,7 +2218,7 @@ void InOutBox::onCbxIsoChange( int index )
 void InOutBox::onBtnIsoMinusClicked( )
 {
     // Get current ISO value
-    int currentIso = d_data->m_ui->sbxIso->value();
+    int currentIso = d_data->m_ui->sbxAnalogGain->value();
 
     // Loop over all available ISO values until the next smaller ISO is found
     int i;
@@ -2169,7 +2262,7 @@ void InOutBox::onBtnIsoMinusClicked( )
 void InOutBox::onBtnIsoPlusClicked( )
 {
     // Get current ISO value
-    int currentIso = d_data->m_ui->sbxIso->value();
+    int currentIso = d_data->m_ui->sbxAnalogGain->value();
 
     // Loop over all available ISO values until the next bigger ISO is found
     int i;
@@ -2384,6 +2477,96 @@ void InOutBox::onBtnExposurePlusClicked( )
 }
 
 /******************************************************************************
+ * InOutBox::onSbxRoiOffsetXChange
+ *****************************************************************************/
+void InOutBox::onSbxRoiOffsetXChange( int index )
+{
+    d_data->roi_offset_x = index;
+
+    // Set slider to new ROI value
+    d_data->m_ui->sldRoiOffsetX->blockSignals( true );
+    d_data->m_ui->sldRoiOffsetX->setValue( index );
+    d_data->m_ui->sldRoiOffsetX->blockSignals( false );
+
+    // Emit ROI changed event
+    setWaitCursor();
+    emit CameraRoiOffsetChanged( d_data->roi_offset_x , d_data->roi_offset_y);
+    setNormalCursor();
+}
+
+/******************************************************************************
+ * InOutBox::onSbxRoiOffsetYChange
+ *****************************************************************************/
+void InOutBox::onSbxRoiOffsetYChange( int index )
+{
+    d_data->roi_offset_y = index;
+
+    // Set slider to new ROI value
+    d_data->m_ui->sldRoiOffsetY->blockSignals( true );
+    d_data->m_ui->sldRoiOffsetY->setValue( index );
+    d_data->m_ui->sldRoiOffsetY->blockSignals( false );
+
+    // Emit ROI changed event
+    setWaitCursor();
+    emit CameraRoiOffsetChanged( d_data->roi_offset_x, d_data->roi_offset_y);
+    setNormalCursor();
+}
+
+/******************************************************************************
+ * InOutBox::onSldRoiOffsetXChange
+ *****************************************************************************/
+void InOutBox::onSldRoiOffsetXChange( int index )
+{
+    int temp_index = index / d_data->offset_x_step * d_data->offset_x_step;
+
+    if(d_data->roi_offset_x != temp_index)
+    {
+        d_data->roi_offset_x = temp_index;
+        // Set slider to new ROI value (reimplement slider value change)
+        d_data->m_ui->sldRoiOffsetX->blockSignals( true );
+        d_data->m_ui->sldRoiOffsetX->setValue( d_data->roi_offset_x );
+        d_data->m_ui->sldRoiOffsetX->blockSignals( false );
+
+        // Set spin box to new ROI value
+        d_data->m_ui->sbxRoiOffsetX->blockSignals( true );
+        d_data->m_ui->sbxRoiOffsetX->setValue( d_data->roi_offset_x );
+        d_data->m_ui->sbxRoiOffsetX->blockSignals( false );
+
+        // Emit ROI changed event
+        setWaitCursor();
+        emit CameraRoiOffsetChanged(d_data->roi_offset_x , d_data->roi_offset_y);
+        setNormalCursor();
+    }
+}
+
+/******************************************************************************
+ * InOutBox::onSldRoiOffsetYChange
+ *****************************************************************************/
+void InOutBox::onSldRoiOffsetYChange( int index )
+{
+    int temp_index = index / d_data->offset_y_step * d_data->offset_y_step;
+
+    if(d_data->roi_offset_y != temp_index)
+    {
+        d_data->roi_offset_y = temp_index;
+        // Set slider to new ROI value (reimplement value change)
+        d_data->m_ui->sldRoiOffsetY->blockSignals( true );
+        d_data->m_ui->sldRoiOffsetY->setValue( d_data->roi_offset_y );
+        d_data->m_ui->sldRoiOffsetY->blockSignals( false );
+
+        // Set spin box to new ROI value
+        d_data->m_ui->sbxRoiOffsetY->blockSignals( true );
+        d_data->m_ui->sbxRoiOffsetY->setValue(d_data->roi_offset_y);
+        d_data->m_ui->sbxRoiOffsetY->blockSignals( false );
+
+        // Emit ROI changed event
+        setWaitCursor();
+        emit CameraRoiOffsetChanged( d_data->roi_offset_x, d_data->roi_offset_y);
+        setNormalCursor();
+    }
+}
+
+/******************************************************************************
  * InOutBox::onCbxVideoModeChange
  *****************************************************************************/
 void InOutBox::onCbxVideoModeChange( int index )
@@ -2391,6 +2574,7 @@ void InOutBox::onCbxVideoModeChange( int index )
     setWaitCursor();
     emit ChainVideoModeChanged( d_data->m_ui->cbxVideoMode->itemData( index ).toInt() );
     show4kGenlockNote( d_data->m_ui->cbxVideoMode->itemData( index ).toInt() );
+    emit ROIVideoModeChanged();
     setNormalCursor();
 }
 
@@ -2645,7 +2829,6 @@ void InOutBox::onCbxAecEnableChange( int value )
     bool enable = (value == Qt::Checked) ? true : false;
 
     enableAecWidgets( enable );
-    enableCamConfWidgets( !enable );
 
     d_data->m_AecSetup.run = enable;
 
@@ -2660,6 +2843,41 @@ void InOutBox::onCbxAecEnableChange( int value )
         emit ResyncRequest();
         setNormalCursor();
     }
+}
+
+/******************************************************************************
+ * InOutBox::onCbxMaxAnalogGainEnableChange
+ *****************************************************************************/
+void InOutBox::onCbxMaxAnalogGainEnableChange( int value )
+{
+    bool enable = (value == Qt::Checked) ? true : false;
+
+    d_data->m_AecSetup.activeGain = enable;
+    d_data->m_AecSetup.maxGain = multiplyBy1000(d_data->m_ui->sldMaxAnalogGain->value());
+
+    enableGainConfWidgets( !enable );
+    enableMaxAnalogGainWidgets( enable );
+
+    setWaitCursor();
+    emit AecSetupChanged( createAecVector() );
+    setNormalCursor();
+}
+
+/******************************************************************************
+ * InOutBox::onCbxMaxExposureEnableChange
+ *****************************************************************************/
+void InOutBox::onCbxMaxExposureEnableChange( int value )
+{
+    bool enable = (value == Qt::Checked) ? true : false;
+
+    d_data->m_AecSetup.activeExposure = enable;
+
+    enableCamConfWidgets( !enable );
+    enableMaxExposureWidgets( enable );
+
+    setWaitCursor();
+    emit AecSetupChanged( createAecVector() );
+    setNormalCursor();
 }
 
 /******************************************************************************
@@ -2685,11 +2903,13 @@ void InOutBox::onCbxAecWeightChange( int value )
 void InOutBox::onAecEnableChange( int enable )
 {
     enableAecWidgets( enable ? true : false );
-    enableCamConfWidgets( enable ? false : true );
 
     d_data->m_ui->cbxAecEnable->blockSignals( true );
     d_data->m_ui->cbxAecEnable->setCheckState( enable ? Qt::Checked : Qt::Unchecked );
     d_data->m_ui->cbxAecEnable->blockSignals( false );
+
+    d_data->m_AecSetup.run = enable ? true : false;
+    createAecVector();
 }
 
 /******************************************************************************
@@ -2702,11 +2922,11 @@ void InOutBox::onAecSetupChange( QVector<int> values )
         d_data->m_AecSetup.run                = values[0];
         d_data->m_AecSetup.setPoint           = values[1];
         d_data->m_AecSetup.speed              = values[2];
-        d_data->m_AecSetup.ClmTolerance       = values[3];
-        d_data->m_AecSetup.costGain           = values[4];
-        d_data->m_AecSetup.costTInt           = values[5];
-        d_data->m_AecSetup.costAperture       = values[6];
-        d_data->m_AecSetup.tAf                = values[7];
+        d_data->m_AecSetup.clmTolerance       = values[3];
+        d_data->m_AecSetup.activeGain         = values[4];
+        d_data->m_AecSetup.activeExposure     = values[5];
+        d_data->m_AecSetup.activeAperture     = values[6];
+        d_data->m_AecSetup.maxExposure        = values[7];
         d_data->m_AecSetup.maxGain            = values[8];
         d_data->m_AecSetup.useCustomWeighting = values[9];
 
@@ -2777,17 +2997,17 @@ void InOutBox::onSbxSetPointChange( int value )
 }
 
 /******************************************************************************
- * InOutBox::onSldMaxIsoChange
+ * InOutBox::onSldMaxAnalogGainChange
  *****************************************************************************/
-void InOutBox::onSldMaxIsoChange( int value )
+void InOutBox::onSldMaxAnalogGainChange( int value )
 {
-    d_data->m_ui->sbxMaxIso->blockSignals( true );
-    d_data->m_ui->sbxMaxIso->setValue( value );
-    d_data->m_ui->sbxMaxIso->blockSignals( false );
+    d_data->m_ui->sbxMaxAnalogGain->blockSignals( true );
+    d_data->m_ui->sbxMaxAnalogGain->setValue( value );
+    d_data->m_ui->sbxMaxAnalogGain->blockSignals( false );
 
-    d_data->m_AecSetup.maxGain = isoToGain( value );
+    d_data->m_AecSetup.maxGain = multiplyBy1000( value );
 
-    if ( (d_data->m_ui->sldMaxIso->isSliderDown()  ) &&
+    if ( (d_data->m_ui->sldMaxAnalogGain->isSliderDown()  ) &&
          (d_data->m_cntEvents++ > d_data->m_maxEvents) )
     {
         d_data->m_cntEvents = 0;
@@ -2799,9 +3019,9 @@ void InOutBox::onSldMaxIsoChange( int value )
 }
 
 /******************************************************************************
- * InOutBox::onSldMaxIsoReleased
+ * InOutBox::onSldMaxAnalogGainReleased
  *****************************************************************************/
-void InOutBox::onSldMaxIsoReleased()
+void InOutBox::onSldMaxAnalogGainReleased()
 {
     d_data->m_cntEvents = 0;
 
@@ -2811,15 +3031,65 @@ void InOutBox::onSldMaxIsoReleased()
 }
 
 /******************************************************************************
- * InOutBox::onSbxMaxIsoChange
+ * InOutBox::onSbxMaxAnalogGainChange
  *****************************************************************************/
-void InOutBox::onSbxMaxIsoChange( int value )
+void InOutBox::onSbxMaxAnalogGainChange( double value )
 {
-    d_data->m_ui->sldMaxIso->blockSignals( true );
-    d_data->m_ui->sldMaxIso->setValue( value );
-    d_data->m_ui->sldMaxIso->blockSignals( false );
+    d_data->m_ui->sldMaxAnalogGain->blockSignals( true );
+    d_data->m_ui->sldMaxAnalogGain->setValue( int(value) );
+    d_data->m_ui->sldMaxAnalogGain->blockSignals( false );
 
-    d_data->m_AecSetup.maxGain = isoToGain( value );
+    d_data->m_AecSetup.maxGain = int(value * 1000.0);
+
+    setWaitCursor();
+    emit AecSetupChanged( createAecVector() );
+    setNormalCursor();
+}
+
+/******************************************************************************
+ * InOutBox::onSldMaxExposureChange
+ *****************************************************************************/
+void InOutBox::onSldMaxExposureChange( int value )
+{
+    d_data->m_ui->sbxMaxExposure->blockSignals( true );
+    d_data->m_ui->sbxMaxExposure->setValue( value );
+    d_data->m_ui->sbxMaxExposure->blockSignals( false );
+
+    d_data->m_AecSetup.maxExposure = value;
+
+    if ( (d_data->m_ui->sldMaxExposure->isSliderDown()  ) &&
+         (d_data->m_cntEvents++ > d_data->m_maxEvents) )
+    {
+        d_data->m_cntEvents = 0;
+
+        setWaitCursor();
+        emit AecSetupChanged( createAecVector() );
+        setNormalCursor();
+    }
+}
+
+/******************************************************************************
+ * InOutBox::onSldMaxExposureReleased
+ *****************************************************************************/
+void InOutBox::onSldMaxExposureReleased()
+{
+    d_data->m_cntEvents = 0;
+
+    setWaitCursor();
+    emit AecSetupChanged( createAecVector() );
+    setNormalCursor();
+}
+
+/******************************************************************************
+ * InOutBox::onSbxMaxExposureChange
+ *****************************************************************************/
+void InOutBox::onSbxMaxExposureChange( int value )
+{
+    d_data->m_ui->sldMaxExposure->blockSignals( true );
+    d_data->m_ui->sldMaxExposure->setValue( value );
+    d_data->m_ui->sldMaxExposure->blockSignals( false );
+
+    d_data->m_AecSetup.maxExposure = value;
 
     setWaitCursor();
     emit AecSetupChanged( createAecVector() );
@@ -2876,6 +3146,55 @@ void InOutBox::onSbxControlSpeedChange( int value )
     setNormalCursor();
 }
 
+/******************************************************************************
+ * InOutBox::onSldMaxIsoChange
+ *****************************************************************************/
+void InOutBox::onSldToleranceChange( int value )
+{
+    d_data->m_ui->sbxTolerance->blockSignals( true );
+    d_data->m_ui->sbxTolerance->setValue( double(value) / 10.0);
+    d_data->m_ui->sbxTolerance->blockSignals( false );
+
+    d_data->m_AecSetup.clmTolerance = value;
+
+    if ( (d_data->m_ui->sldTolerance->isSliderDown()  ) &&
+         (d_data->m_cntEvents++ > d_data->m_maxEvents) )
+    {
+        d_data->m_cntEvents = 0;
+
+        setWaitCursor();
+        emit AecSetupChanged( createAecVector() );
+        setNormalCursor();
+    }
+}
+
+/******************************************************************************
+ * InOutBox::onSldMaxIsoReleased
+ *****************************************************************************/
+void InOutBox::onSldToleranceReleased()
+{
+    d_data->m_cntEvents = 0;
+
+    setWaitCursor();
+    emit AecSetupChanged( createAecVector() );
+    setNormalCursor();
+}
+
+/******************************************************************************
+ * InOutBox::onSbxMaxIsoChange
+ *****************************************************************************/
+void InOutBox::onSbxToleranceChange( double value )
+{
+    d_data->m_ui->sldTolerance->blockSignals( true );
+    d_data->m_ui->sldTolerance->setValue( int(value * 10.0) );
+    d_data->m_ui->sldTolerance->blockSignals( false );
+
+    d_data->m_AecSetup.clmTolerance = int(value * 10.0);
+
+    setWaitCursor();
+    emit AecSetupChanged( createAecVector() );
+    setNormalCursor();
+}
 
 /******************************************************************************
  * InOutBox::onAecStatChange
@@ -2909,12 +3228,12 @@ void InOutBox::onAecStatChange( QVector<int> values )
 void InOutBox::UpdateIsoPlusMinusButtons()
 {
     // Get current ISO value
-    int iso = d_data->m_ui->sbxIso->value();
+    int iso = d_data->m_ui->sbxAnalogGain->value();
 
     /* Disable minus button, if the value is smaller than the value of the first combo box item
      * or the iso spin box is diabled (aec enabled) */
     if ( iso <= d_data->m_ui->cbxIso->itemData(1).toInt() ||
-         !d_data->m_ui->sbxIso->isEnabled() )
+         !d_data->m_ui->sbxAnalogGain->isEnabled() )
     {
         d_data->m_ui->btnIsoMinus->setEnabled( false );
     }
@@ -2927,7 +3246,7 @@ void InOutBox::UpdateIsoPlusMinusButtons()
     /* Disable plus button, if this the value is bigger than the value of the last combo box item
      * or the iso spin box is disabled (aec enabled) */
     if ( iso >= d_data->m_ui->cbxIso->itemData(d_data->m_ui->cbxIso->count() - 1).toInt() ||
-         !d_data->m_ui->sbxIso->isEnabled() )
+         !d_data->m_ui->sbxAnalogGain->isEnabled() )
     {
         d_data->m_ui->btnIsoPlus->setEnabled( false );
     }
@@ -3037,13 +3356,27 @@ void InOutBox::updateAecSetupWidgets( void )
     d_data->m_ui->sldSetPoint->setValue( d_data->m_AecSetup.setPoint );
     d_data->m_ui->sldSetPoint->blockSignals( false );
 
-    // Max ISO
-    d_data->m_ui->sbxMaxIso->blockSignals( true );
-    d_data->m_ui->sbxMaxIso->setValue( gainToIso(d_data->m_AecSetup.maxGain) );
-    d_data->m_ui->sbxMaxIso->blockSignals( false );
-    d_data->m_ui->sldMaxIso->blockSignals( true );
-    d_data->m_ui->sldMaxIso->setValue( gainToIso(d_data->m_AecSetup.maxGain) );
-    d_data->m_ui->sldMaxIso->blockSignals( false );
+    // Max Analog Gain
+    d_data->m_ui->cbxMaxAnalogGainEnable->blockSignals( true );
+    d_data->m_ui->cbxMaxAnalogGainEnable->setChecked(d_data->m_AecSetup.activeGain);
+    d_data->m_ui->cbxMaxAnalogGainEnable->blockSignals( false );
+    d_data->m_ui->sbxMaxAnalogGain->blockSignals( true );
+    d_data->m_ui->sbxMaxAnalogGain->setValue( gainToIso(d_data->m_AecSetup.maxGain) );
+    d_data->m_ui->sbxMaxAnalogGain->blockSignals( false );
+    d_data->m_ui->sldMaxAnalogGain->blockSignals( true );
+    d_data->m_ui->sldMaxAnalogGain->setValue( gainToIso(d_data->m_AecSetup.maxGain) );
+    d_data->m_ui->sldMaxAnalogGain->blockSignals( false );
+
+    // Max Exposure
+    d_data->m_ui->cbxMaxExposureEnable->blockSignals( true );
+    d_data->m_ui->cbxMaxExposureEnable->setChecked(d_data->m_AecSetup.activeExposure);
+    d_data->m_ui->cbxMaxExposureEnable->blockSignals( false );
+    d_data->m_ui->sbxMaxExposure->blockSignals( true );
+    d_data->m_ui->sbxMaxExposure->setValue( gainToIso(d_data->m_AecSetup.maxExposure) );
+    d_data->m_ui->sbxMaxExposure->blockSignals( false );
+    d_data->m_ui->sldMaxExposure->blockSignals( true );
+    d_data->m_ui->sldMaxExposure->setValue( gainToIso(d_data->m_AecSetup.maxExposure) );
+    d_data->m_ui->sldMaxExposure->blockSignals( false );
 
     // Control Speed
     d_data->m_ui->sbxControlSpeed->blockSignals( true );
@@ -3055,12 +3388,20 @@ void InOutBox::updateAecSetupWidgets( void )
 
     // flicker
     d_data->m_ui->rdbTaf50Hz->blockSignals( true );
-    d_data->m_ui->rdbTaf50Hz->setChecked( d_data->m_AecSetup.tAf == 10000 );
+    d_data->m_ui->rdbTaf50Hz->setChecked( d_data->m_AecSetup.maxExposure == 10000 );
     d_data->m_ui->rdbTaf50Hz->blockSignals( false );
 
     d_data->m_ui->rdbTaf60Hz->blockSignals( true );
-    d_data->m_ui->rdbTaf60Hz->setChecked( d_data->m_AecSetup.tAf == 8333 );
+    d_data->m_ui->rdbTaf60Hz->setChecked( d_data->m_AecSetup.maxExposure == 8333 );
     d_data->m_ui->rdbTaf60Hz->blockSignals( false );
+
+    // Tolerance
+    d_data->m_ui->sbxTolerance->blockSignals( true );
+    d_data->m_ui->sbxTolerance->setValue( double(d_data->m_AecSetup.clmTolerance) / 10.0);
+    d_data->m_ui->sbxTolerance->blockSignals( false );
+    d_data->m_ui->sldTolerance->blockSignals( true );
+    d_data->m_ui->sldTolerance->setValue( d_data->m_AecSetup.clmTolerance );
+    d_data->m_ui->sldTolerance->blockSignals( false );
 }
 
 /******************************************************************************
@@ -3128,14 +3469,25 @@ void InOutBox::enableAecWidgets( bool enable )
     d_data->m_ui->sbxSetPoint->setEnabled( enable );
     d_data->m_ui->sldSetPoint->setEnabled( enable );
 
-    d_data->m_ui->sbxMaxIso->setEnabled( enable );
-    d_data->m_ui->sldMaxIso->setEnabled( enable );
+    d_data->m_ui->cbxMaxAnalogGainEnable->setEnabled( enable );
+    d_data->m_ui->sbxMaxAnalogGain->setEnabled( enable ? d_data->m_AecSetup.activeGain : enable );
+    d_data->m_ui->sldMaxAnalogGain->setEnabled( enable ? d_data->m_AecSetup.activeGain : enable );
+
+    d_data->m_ui->cbxMaxExposureEnable->setEnabled( enable );
+    d_data->m_ui->sbxMaxExposure->setEnabled(enable ? d_data->m_AecSetup.activeExposure : enable );
+    d_data->m_ui->sldMaxExposure->setEnabled(enable ? d_data->m_AecSetup.activeExposure : enable );
+
+    enableGainConfWidgets(enable ? !d_data->m_AecSetup.activeGain : true );
+    enableCamConfWidgets(enable ? !d_data->m_AecSetup.activeExposure : true );
 
     d_data->m_ui->sbxControlSpeed->setEnabled( enable );
     d_data->m_ui->sldControlSpeed->setEnabled( enable );
 
     d_data->m_ui->rdbTaf50Hz->setEnabled( enable );
     d_data->m_ui->rdbTaf60Hz->setEnabled( enable );
+
+    d_data->m_ui->sbxTolerance->setEnabled( enable );
+    d_data->m_ui->sldTolerance->setEnabled( enable );
 }
 
 /******************************************************************************
@@ -3155,12 +3507,30 @@ void InOutBox::enableCamConfWidgets( bool enable )
 /******************************************************************************
  * InOutBox::enableIsoConfWidgets
  *****************************************************************************/
-void InOutBox::enableIsoConfWidgets( bool enable )
+void InOutBox::enableGainConfWidgets( bool enable )
 {
-    d_data->m_ui->sbxIso->setEnabled( enable );
-    d_data->m_ui->sldIso->setEnabled( enable );
+    d_data->m_ui->sbxAnalogGain->setEnabled( enable );
+    d_data->m_ui->sldAnalogGain->setEnabled( enable );
     d_data->m_ui->cbxIso->setEnabled( enable );
     UpdateIsoPlusMinusButtons();
+}
+
+/******************************************************************************
+ * InOutBox::enableMaxAnalogGainWidgets
+ *****************************************************************************/
+void InOutBox::enableMaxAnalogGainWidgets( bool enable )
+{
+    d_data->m_ui->sbxMaxAnalogGain->setEnabled( enable );
+    d_data->m_ui->sldMaxAnalogGain->setEnabled( enable );
+}
+
+/******************************************************************************
+ * InOutBox::enableMaxExposureWidgets
+ *****************************************************************************/
+void InOutBox::enableMaxExposureWidgets( bool enable )
+{
+    d_data->m_ui->sbxMaxExposure->setEnabled( enable );
+    d_data->m_ui->sldMaxExposure->setEnabled( enable );
 }
 
 /******************************************************************************
@@ -3205,11 +3575,11 @@ QVector<int> InOutBox::createAecVector( void )
     values[0] = static_cast<int>(d_data->m_AecSetup.run);
     values[1] = d_data->m_AecSetup.setPoint;
     values[2] = d_data->m_AecSetup.speed;
-    values[3] = d_data->m_AecSetup.ClmTolerance;
-    values[4] = d_data->m_AecSetup.costGain;
-    values[5] = d_data->m_AecSetup.costTInt;
-    values[6] = d_data->m_AecSetup.costAperture;
-    values[7] = d_data->m_AecSetup.tAf;
+    values[3] = d_data->m_AecSetup.clmTolerance;
+    values[4] = d_data->m_AecSetup.activeGain;
+    values[5] = d_data->m_AecSetup.activeExposure;
+    values[6] = d_data->m_AecSetup.activeAperture;
+    values[7] = d_data->m_AecSetup.maxExposure;
     values[8] = d_data->m_AecSetup.maxGain;
     values[9] = static_cast<int>(d_data->m_AecSetup.useCustomWeighting);
     return ( values );
@@ -3295,12 +3665,12 @@ void InOutBox::onTafToggle( bool )
     if( d_data->m_ui->rdbTaf50Hz->isChecked() )
     {
         // 50 Hz
-        d_data->m_AecSetup.tAf = 10000;
+        d_data->m_AecSetup.maxExposure = 10000;
     }
     else
     {
         // 60 Hz
-        d_data->m_AecSetup.tAf = 8333;
+        d_data->m_AecSetup.maxExposure = 8333;
     }
 
     setWaitCursor();

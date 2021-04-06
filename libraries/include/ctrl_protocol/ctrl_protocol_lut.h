@@ -41,7 +41,7 @@ extern "C" {
  * @brief max numbers of LUT values
  *****************************************************************************/
 #define MAX_VALUES_LUT          ( 4096u )
-#define MAX_NO_SAMPLE_POINTS    ( 24u )
+#define MAX_NO_SAMPLE_POINTS    ( 48u )
 
 /**************************************************************************//**
  * @brief lut enable struct

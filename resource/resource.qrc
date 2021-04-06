@@ -178,5 +178,9 @@
         <file>images/back/dial-back-green_full.png</file>
         <file>images/back/dial-back-red_full.png</file>
         <file>icons/default.png</file>
+        <file>icons/save_to_file.png</file>
+        <file>icons/load_from_file.png</file>
+        <file>icons/default2.png</file>
+        <file>images/tab/roi.png</file>
     </qresource>
 </RCC>

@@ -48,6 +48,7 @@ public:
         IRIS_INSTANCE,
         LENS_INSTANCE,
         KNEE_INSTANCE,
+        ROI_INSTANCE,
         DPCC_INSTANCE
     };
 

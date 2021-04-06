@@ -76,7 +76,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <property name="iconSize">
            <size>
@@ -248,6 +248,20 @@
             </item>
            </layout>
           </widget>
+          <widget class="QWidget" name="tabROI">
+           <attribute name="icon">
+            <iconset resource="../resource/resource.qrc">
+             <normaloff>:/images/tab/roi.png</normaloff>:/images/tab/roi.png</iconset>
+           </attribute>
+           <attribute name="title">
+            <string/>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_15">
+            <item>
+             <widget class="ROIBox" name="roiBox" native="true"/>
+            </item>
+           </layout>
+          </widget>
           <widget class="QWidget" name="tabDpcc">
            <attribute name="icon">
             <iconset resource="../resource/resource.qrc">
@@ -394,7 +408,7 @@
   <action name="actionLoadSettings">
    <property name="icon">
     <iconset resource="../resource/resource.qrc">
-     <normaloff>:/icons/load.png</normaloff>:/icons/load.png</iconset>
+     <normaloff>:/icons/load2.png</normaloff>:/icons/load2.png</iconset>
    </property>
    <property name="text">
     <string>loadSettings</string>
@@ -406,7 +420,7 @@
   <action name="actionSaveSettings">
    <property name="icon">
     <iconset resource="../resource/resource.qrc">
-     <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
+     <normaloff>:/icons/save2.png</normaloff>:/icons/save2.png</iconset>
    </property>
    <property name="text">
     <string>saveSettings</string>
@@ -418,7 +432,7 @@
   <action name="actionSaveToFile">
    <property name="icon">
     <iconset resource="../resource/resource.qrc">
-     <normaloff>:/icons/save2.png</normaloff>:/icons/save2.png</iconset>
+     <normaloff>:/icons/save_to_file.png</normaloff>:/icons/save_to_file.png</iconset>
    </property>
    <property name="text">
     <string>saveToFile</string>
@@ -430,7 +444,7 @@
   <action name="actionLoadFromFile">
    <property name="icon">
     <iconset resource="../resource/resource.qrc">
-     <normaloff>:/icons/load2.png</normaloff>:/icons/load2.png</iconset>
+     <normaloff>:/icons/load_from_file.png</normaloff>:/icons/load_from_file.png</iconset>
    </property>
    <property name="text">
     <string>LoadFromFile</string>
@@ -537,7 +551,7 @@
    </property>
    <property name="icon">
     <iconset resource="../resource/resource.qrc">
-     <normaloff>:/icons/default.png</normaloff>:/icons/default.png</iconset>
+     <normaloff>:/icons/default2.png</normaloff>:/icons/default2.png</iconset>
    </property>
    <property name="text">
     <string>defaultSettings</string>
@@ -607,6 +621,12 @@
    <class>LensDriverBox</class>
    <extends>QWidget</extends>
    <header>lensdriverbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ROIBox</class>
+   <extends>QWidget</extends>
+   <header>roibox.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

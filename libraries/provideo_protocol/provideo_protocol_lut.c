@@ -239,7 +239,7 @@
 #define CMD_SET_LUT_FAST_GAMMA_TMO              ( 3000 )
 
 /******************************************************************************
- * @brief command "lut_mode"
+ * @brief command "log_mode"
  *****************************************************************************/
 #define CMD_GET_LOG_MODE                        ( "log_mode\n" )
 #define CMD_SET_LOG_MODE                        ( "log_mode %i\n" )
