@@ -563,7 +563,7 @@ static int set_lut_sample_internal
 
     int res;
 
-    unsigned n, i, k;
+    unsigned n, i;
 
     // parameter check
     if ( !x_i || !y_i || !no )
@@ -601,15 +601,50 @@ static int set_lut_sample_internal
 
     if(0 != n)
     {
+        // create new cmd command according to calculated n
         // clear command buffer
         memset( command, 0, sizeof(command) );
 
+        // add first entry
+        sprintf (command, cmd_1, x_i[i], y_i[i]);
+        command[strlen(command)-1] = '\0';
+        i++;
+        n--;
+
+        char command_tmp[CMD_SINGLE_LINE_COMMAND_SIZE];
+        while(n > 0)
+        {
+            memset( command_tmp, 0, sizeof(command_tmp) ); // reset temporary string
+            sprintf (command_tmp, " %i %i", x_i[i], y_i[i]); // construct next entry
+            strcat (command, command_tmp); // add next entry to main command
+            i++;
+            n--;
+        }
+
+        strcat (command,"\n");
+        // send command to COM port
+        ctrl_channel_send_request( channel, (uint8_t *)command, strlen(command) );
+
+        // wait for response and evaluate
+        res = evaluate_set_response_with_tmo( channel, CMD_EVALUATE_SET_RESPONSE_TMO );
+
+        if ( res )
+        {
+            return ( res );
+        }
+    }
+
+/*
+    if(0 != n)
+    {
         // create new cmd command according to calculated n
         char new_cmd[CMD_SINGLE_LINE_COMMAND_SIZE];
         memset( new_cmd, 0, sizeof(new_cmd) );
 
         strcpy (new_cmd, cmd_1);
         new_cmd[strlen(new_cmd)-1] = '\0';
+
+        unsigned k;
 
         for(k = 1; k < n; k++)
         {
@@ -667,8 +702,9 @@ static int set_lut_sample_internal
             return ( res );
         }
     }
+*/
 
-    /*
+/*
     // send 4 sample points
     while ( n >= 4 )
     {
@@ -736,7 +772,8 @@ static int set_lut_sample_internal
             return ( res );
         }
     }
-    */
+
+*/
     return ( 0 );
 }
 

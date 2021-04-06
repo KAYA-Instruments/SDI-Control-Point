@@ -973,6 +973,8 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
                  dev->GetLutItf(), SLOT(onLutSampleValuesGreenRequest()) );
         connect( m_ui->lutBox, SIGNAL(LutSampleValuesBlueRequested()),
                  dev->GetLutItf(), SLOT(onLutSampleValuesBlueRequest()) );
+        connect( m_ui->lutBox, SIGNAL(LutSampleValuesMasterRequested()),
+                 dev->GetLutItf(), SLOT(onLutSampleValuesMasterRequest()()) );
 
         connect( dev->GetLutItf(), SIGNAL(LutFastGammaChanged(int)), m_ui->lutBox, SLOT(onLutFastGammaChange(int)) );
         connect( m_ui->lutBox, SIGNAL(LutFastGammaChanged(int)), dev->GetLutItf(), SLOT(onLutFastGammaChange(int)) );
