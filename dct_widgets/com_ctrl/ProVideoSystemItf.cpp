@@ -38,7 +38,7 @@
 void ProVideoSystemItf::resync()
 {
     // make sure device buffers are flushed
-    flushDeviceBuffers();
+    // flushDeviceBuffers();
 
     // sync system info
     GetSystemInfo();
@@ -69,73 +69,78 @@ void ProVideoSystemItf::resync()
 /******************************************************************************
  * ProVideoSystemItf::GetSystemInfo
  *****************************************************************************/
-void ProVideoSystemItf::GetSystemInfo()
+void ProVideoSystemItf::GetSystemInfo(bool bEmitUpdate)
 {
-    ctrl_protocol_version_t system_info;
-
-    memset( &system_info, 0, sizeof(system_info) );
-
     // read current system info
-    int res = ctrl_protocol_get_system_info( GET_PROTOCOL_INSTANCE(this),
+    if(!m_bSysInfoInit)
+    {
+        m_bSysInfoInit = true;
+
+        int res = ctrl_protocol_get_system_info( GET_PROTOCOL_INSTANCE(this),
                     GET_CHANNEL_INSTANCE(this),
-                    sizeof(system_info), (uint8_t *)&system_info );
-    HANDLE_ERROR( res );
+                    sizeof(m_system_info), (uint8_t *)&m_system_info );
+        HANDLE_ERROR( res );
+    }
 
-    // emit a SystemPlatformChanged signal
-    emit SystemPlatformChanged( QString((char *)system_info.system_platform) );
+    if(bEmitUpdate)
+    {
 
-    // emit a DeviceNameChanged signal
-    /* Check if device name contains valid characters. When devices come
+        // emit a SystemPlatformChanged signal
+        emit SystemPlatformChanged( QString((char *)m_system_info.system_platform) );
+
+        // emit a DeviceNameChanged signal
+        /* Check if device name contains valid characters. When devices come
      * fresh from the factory they might have garbage device names which can
      * crash the GUI. */
-    QString device_name((char *)system_info.device_name);
-    bool containsNonASCII = device_name.contains(QRegularExpression(QStringLiteral("[^\\x{0000}-\\x{007F}]")));
-    if ( containsNonASCII )
-    {
-        device_name = QString("???");
+        QString device_name((char *)m_system_info.device_name);
+        bool containsNonASCII = device_name.contains(QRegularExpression(QStringLiteral("[^\\x{0000}-\\x{007F}]")));
+        if ( containsNonASCII )
+        {
+            device_name = QString("???");
+        }
+        emit DeviceNameChanged( device_name );
+
+        // emit a DeviceIdChanged signal
+        emit DeviceIdChanged( m_system_info.system_id[0], m_system_info.system_id[1],
+                m_system_info.system_id[2], m_system_info.system_id[3] );
+
+        // emit a SystemValidityChanged signal
+        emit SystemValidityChanged( QString((char *)m_system_info.system_validity) );
+
+        // emit a BitStreamVersionChanged signal
+        emit BitStreamVersionChanged( m_system_info.hw_revision );
+
+        // emit a BootloaderVersionChanged signal
+        emit BootloaderVersionChanged( m_system_info.loader_version[0] );
+
+        // emit a ApplicationVersionChanged signal
+        emit ApplicationVersionChanged( QString((char *)m_system_info.sw_release_id) );
+
+        // emit a ApplicationReleaseDateChanged signal
+        emit ApplicationReleaseDateChanged( QString((char *)m_system_info.sw_release_date) );
+
+        // emit a ApplicationBuildDateChanged signal
+        emit ApplicationBuildDateChanged( QString((char *)m_system_info.sw_build_date) );
+
+        // emit a FeatureMaskHwChanged signal
+        emit FeatureMaskHwChanged( m_system_info.feature_mask_HW );
+
+        if ( m_HwMask )
+        {
+            emit FeatureMaskHwListChanged( m_HwMask->interpret( m_system_info.feature_mask_HW ) );
+        }
+
+        // emit a FeatureMaskSwChanged signal
+        emit FeatureMaskSwChanged( m_system_info.feature_mask_SW );
+
+        if ( m_SwMask )
+        {
+            emit FeatureMaskSwListChanged( m_SwMask->interpret( m_system_info.feature_mask_SW ) );
+        }
+
+        // emit a ResolutionMaskChanged signal
+        emit ResolutionMaskChanged( m_system_info.resolution_mask[0], m_system_info.resolution_mask[1], m_system_info.resolution_mask[2] );
     }
-    emit DeviceNameChanged( device_name );
-
-    // emit a DeviceIdChanged signal
-    emit DeviceIdChanged( system_info.system_id[0], system_info.system_id[1],
-                          system_info.system_id[2], system_info.system_id[3] );
-
-    // emit a SystemValidityChanged signal
-    emit SystemValidityChanged( QString((char *)system_info.system_validity) );
-
-    // emit a BitStreamVersionChanged signal
-    emit BitStreamVersionChanged( system_info.hw_revision );
-
-    // emit a BootloaderVersionChanged signal
-    emit BootloaderVersionChanged( system_info.loader_version[0] );
-
-    // emit a ApplicationVersionChanged signal
-    emit ApplicationVersionChanged( QString((char *)system_info.sw_release_id) );
-
-    // emit a ApplicationReleaseDateChanged signal
-    emit ApplicationReleaseDateChanged( QString((char *)system_info.sw_release_date) );
-
-    // emit a ApplicationBuildDateChanged signal
-    emit ApplicationBuildDateChanged( QString((char *)system_info.sw_build_date) );
-
-    // emit a FeatureMaskHwChanged signal
-    emit FeatureMaskHwChanged( system_info.feature_mask_HW );
-
-    if ( m_HwMask )
-    {
-        emit FeatureMaskHwListChanged( m_HwMask->interpret( system_info.feature_mask_HW ) );
-    }
-
-    // emit a FeatureMaskSwChanged signal
-    emit FeatureMaskSwChanged( system_info.feature_mask_SW );
-
-    if ( m_SwMask )
-    {
-        emit FeatureMaskSwListChanged( m_SwMask->interpret( system_info.feature_mask_SW ) );
-    }
-
-    // emit a ResolutionMaskChanged signal
-    emit ResolutionMaskChanged( system_info.resolution_mask[0], system_info.resolution_mask[1], system_info.resolution_mask[2] );
 }
 
 /******************************************************************************
@@ -143,6 +148,15 @@ void ProVideoSystemItf::GetSystemInfo()
  *****************************************************************************/
 void ProVideoSystemItf::GetSystemPlatform()
 {
+    if(!m_bSysInfoInit)
+    {
+        GetSystemInfo(false);
+    }
+
+    emit SystemPlatformChanged( QString((char *)m_system_info.system_platform) );
+    return;
+
+    /*
     // Is there a signal listener
     if ( receivers(SIGNAL(SystemPlatformChanged(QString))) > 0 )
     {
@@ -159,6 +173,7 @@ void ProVideoSystemItf::GetSystemPlatform()
         // emit a SystemPlatformChanged signal
         emit SystemPlatformChanged( QString((char *)system_platform) );
     }
+    */
 }
 
 /******************************************************************************

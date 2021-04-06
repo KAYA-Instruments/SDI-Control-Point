@@ -28,6 +28,7 @@
 #include <QObject>
 
 #include "ProVideoItf.h"
+#include <ctrl_protocol/ctrl_protocol_system.h>
 
 // Struct that contains connection information about a device
 typedef struct rs485Device
@@ -54,14 +55,17 @@ public:
     explicit ProVideoSystemItf( ComChannel * c, ComProtocol * p )
         : ProVideoItf( c, p ),
           m_HwMask( nullptr ),
-          m_SwMask( nullptr )
-    { }
+          m_SwMask( nullptr ),
+          m_bSysInfoInit(false)
+    {
+        memset(&m_system_info, 0, sizeof(m_system_info));
+    }
  
     // resync all settings
     void resync() override;
 
     // complete system info
-    void GetSystemInfo();
+    void GetSystemInfo(bool bEmitUpdate = true);
 
     // system platform
     void GetSystemPlatform();
@@ -211,6 +215,9 @@ public slots:
 private:
     MaskInterpreter * m_HwMask;
     MaskInterpreter * m_SwMask;
+
+    ctrl_protocol_version_t m_system_info;
+    bool m_bSysInfoInit;
 };
 
 #endif // _PROVIDEO_SYSTEM_INTERFACE_H_
