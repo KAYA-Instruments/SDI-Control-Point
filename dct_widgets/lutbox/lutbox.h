@@ -152,6 +152,7 @@ signals:
     void LutSampleValuesRedRequested();
     void LutSampleValuesGreenRequested();
     void LutSampleValuesBlueRequested();
+    void LutSampleValuesMasterRequested();
 
     void LutInterpolateChanged();
     void LutInterpolateRedChanged();

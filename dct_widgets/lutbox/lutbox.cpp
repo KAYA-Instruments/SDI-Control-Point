@@ -383,6 +383,12 @@ public:
         m_ui->sbxRec709Offset->blockSignals( true );
         m_ui->sbxRec709Offset->setValue( TO_DOUBLE(REC709_BRIGHTNESS) );
         m_ui->sbxRec709Offset->blockSignals( false );
+
+        // Reset the knob box
+        m_ui->sckbFastGamma->blockSignals( true );
+        m_ui->sckbFastGamma->setValue(REC709_GAMMA);
+        m_ui->sckbFastGamma->blockSignals( false );
+
     }
 
     // initialize plot widget
@@ -402,6 +408,9 @@ public:
         QPen penFinal( FinalColor[ch] );
         plot->addGraph();
         plot->graph( FINAL_CURVE_ID )->setPen( penFinal );
+
+        // background curve unused thus it is temporarily  hidden
+        plot->graph( FINAL_CURVE_ID )->setVisible(false);
 
         // sample curve
         QPen penSamples( Qt::yellow );
@@ -2090,23 +2099,23 @@ void LutBox::onLutPresetClicked( QAbstractButton * btn )
         switch ( d_data->m_ch )
         {
             case Red:
-                emit LutSampleValuesRedChanged( x,y );
+                //emit LutSampleValuesRedChanged( x,y );
                 break;
 
             case Green:
-                emit LutSampleValuesGreenChanged( x,y );
+                //emit LutSampleValuesGreenChanged( x,y );
                 break;
 
             case Blue:
-                emit LutSampleValuesBlueChanged( x,y );
+                //emit LutSampleValuesBlueChanged( x,y );
                 break;
 
             case Master:
-                emit LutSampleValuesMasterChanged( x,y );
+                //emit LutSampleValuesMasterChanged( x,y );
                 break;
 
             default:
-                emit LutSampleValuesChanged( x,y );
+                //emit LutSampleValuesChanged( x,y );
                 break;
         }
 
@@ -2133,38 +2142,45 @@ void LutBox::onColorSelectChange( int value )
         QVector<int> x;
         QVector<int> y;
 
-        d_data->getDataFromModel( d_data->m_ch, x, y  );
+        //d_data->getDataFromModel( d_data->m_ch, x, y  );
+        d_data->setDataModel( (LutChannel)value );
+        d_data->m_ch = (LutChannel)value ;
+
         switch ( d_data->m_ch )
         {
             case Red:
-                emit LutSampleValuesRedChanged( x,y );
-                //d_data->setSamples( Red, x, y );
+                //emit LutSampleValuesRedChanged( x,y );
+                emit LutSampleValuesRedRequested();
                 break;
 
             case Green:
-                emit LutSampleValuesGreenChanged( x,y );
+                //emit LutSampleValuesGreenChanged( x,y );
+                emit LutSampleValuesGreenRequested();
                 break;
         
             case Blue:
-                emit LutSampleValuesBlueChanged( x,y );
+                //emit LutSampleValuesBlueChanged( x,y );
+                emit LutSampleValuesBlueRequested();
                 break;
             
             case Master:
-                emit LutSampleValuesMasterChanged( x,y );
+                //emit LutSampleValuesMasterChanged( x,y );
+                emit LutSampleValuesMasterRequested();
                 break;
         
             default:
-                emit LutSampleValuesChanged( x,y );
+                //emit LutSampleValuesChanged( x,y );
+                emit LutSampleValuesMasterRequested();
                 break;
         }
         
-        d_data->setDataModel( (LutChannel)value );
+        //d_data->setDataModel( (LutChannel)value );
 
         // old selection model is deleted => create a new connection
-        connect( d_data->m_ui->tblSamples->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-                 this, SLOT(onSelectionChange(const QItemSelection &, const QItemSelection &)) );
+        //connect( d_data->m_ui->tblSamples->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+        //         this, SLOT(onSelectionChange(const QItemSelection &, const QItemSelection &)) );
 
-        d_data->m_ch = (LutChannel)value ;
+        //d_data->m_ch = (LutChannel)value ;
     }
 }
 

@@ -95,7 +95,7 @@ extern "C" {
 /******************************************************************************
  * @brief Default command time-out 100 milliseconds
  *****************************************************************************/
-#define DEFAULT_CMD_TIMEOUT                 ( 100 )
+#define DEFAULT_CMD_TIMEOUT                 ( 400 )
 
 /******************************************************************************
  * @brief max buffer size of a single line command 

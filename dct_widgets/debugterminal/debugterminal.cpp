@@ -32,6 +32,7 @@
 
 #include "debugterminal.h"
 #include "ui_debugterminal.h"
+#include <provideo_protocol/provideo_protocol_common.h>
 
 /******************************************************************************
  * DebugTerminal::DebugTerminal
@@ -46,6 +47,7 @@ DebugTerminal::DebugTerminal( QWidget *parent ) :
 
     // Limit number of lines in the text browser to 10000
     ui->tbTerminal->document()->setMaximumBlockCount( 10000 );
+    ui->sbxWaitTime->setValue(DEFAULT_CMD_TIMEOUT);
 
     // Install event filter on line edit to catch arrow up, down events
     ui->letInput->installEventFilter(this);
