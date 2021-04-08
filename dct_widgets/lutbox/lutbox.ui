@@ -508,6 +508,19 @@
       </widget>
      </item>
      <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
       <widget class="QGroupBox" name="gbxFastGamma">
        <property name="title">
         <string>Fast Gamma</string>
@@ -944,6 +957,19 @@
       </widget>
      </item>
      <item>
+      <spacer name="horizontalSpacer_4">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
       <widget class="QGroupBox" name="gbxFixedGamma">
        <property name="title">
         <string>Fixed Gamma</string>
@@ -1012,7 +1038,7 @@
   <customwidget>
    <class>SingleChannelKnobBox</class>
    <extends>QGroupBox</extends>
-   <header>singlechannelknobbox.h</header>
+   <header location="global">singlechannelknobbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
