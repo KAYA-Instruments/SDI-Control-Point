@@ -129,31 +129,51 @@ public:
         plot->setBackground( QBrush(QColor(48,47,47)) );
         //plot->setInteractions( QCP::iRangeDrag | QCP::iRangeZoom); // | QCP::iSelectPlottables
         plot->axisRect()->setupFullAxesBox(true);
-        plot->setNotAntialiasedElement(QCP::AntialiasedElement::aeFills, true);
+        //plot->setNotAntialiasedElement(QCP::AntialiasedElement::aeFills, true);
 
-        plot->xAxis->setLabel( "" );
+        //plot->xAxis->setLabel( "" );
+        //plot->xAxis2->setLabel( "" );
+        //plot->yAxis->setLabel( "" );
+        //plot->yAxis2->setLabel( "" );
+
         plot->xAxis->setLabelColor( QColor(177, 177, 177) );
-        plot->yAxis->setLabel( "" );
+        plot->xAxis2->setLabelColor( QColor(177, 177, 177) );
         plot->yAxis->setLabelColor( QColor(177, 177, 177) );
-        plot->xAxis->setRange( 0, 400 );
-        plot->yAxis->setRange( 0, 110 );
-        plot->xAxis->setBasePen( QPen(QColor(177, 177, 177), 1) );
-        plot->yAxis->setBasePen( QPen(QColor(177, 177, 177), 1) );
-        plot->xAxis->setTickPen( QPen(QColor(177, 177, 177), 1) );
-        plot->yAxis->setTickPen( QPen(QColor(177, 177, 177), 1) );
-        plot->xAxis->setSubTickPen( QPen( QColor(177, 177, 177), 1) );
-        plot->yAxis->setSubTickPen( QPen( QColor(177, 177, 177), 1) );
-        plot->xAxis->setTickLabelColor( QColor(177, 177, 177) );
-        plot->yAxis->setTickLabelColor( QColor(177, 177, 177) );
+        plot->yAxis2->setLabelColor( QColor(177, 177, 177) );
 
+        plot->xAxis->setRange( 0, 400 );
+        plot->xAxis2->setRange( 0, 400 );
+        plot->yAxis->setRange( 0, 400 );
+        plot->yAxis2->setRange( 0, 400 );
+
+        plot->xAxis->setBasePen( QPen(QColor(177, 177, 177), 1) );
         plot->xAxis2->setBasePen( QPen(QColor(177, 177, 177), 1) );
+        plot->yAxis->setBasePen( QPen(QColor(177, 177, 177), 1) );
         plot->yAxis2->setBasePen( QPen(QColor(177, 177, 177), 1) );
+
+        plot->xAxis->setTickPen( QPen(QColor(177, 177, 177), 1) );
         plot->xAxis2->setTickPen( QPen(QColor(177, 177, 177), 1) );
+        plot->yAxis->setTickPen( QPen(QColor(177, 177, 177), 1) );
         plot->yAxis2->setTickPen( QPen(QColor(177, 177, 177), 1) );
+
+        plot->xAxis->setSubTickPen( QPen( QColor(177, 177, 177), 1) );
         plot->xAxis2->setSubTickPen( QPen( QColor(177, 177, 177), 1) );
+        plot->yAxis->setSubTickPen( QPen( QColor(177, 177, 177), 1) );
         plot->yAxis2->setSubTickPen( QPen( QColor(177, 177, 177), 1) );
+
+        plot->xAxis->setTickLabelColor( QColor(177, 177, 177) );
         plot->xAxis2->setTickLabelColor( QColor(177, 177, 177) );
+        plot->yAxis->setTickLabelColor( QColor(177, 177, 177) );
         plot->yAxis2->setTickLabelColor( QColor(177, 177, 177) );
+
+        plot->xAxis->setVisible(true);
+        plot->xAxis2->setVisible(true);
+        plot->yAxis->setVisible(true);
+        plot->yAxis2->setVisible(true);
+
+        //plot->xAxis2->setTickLabel("test");
+        //plot->xAxis2->orientation(QCP::msTop);
+        //AxisType::atTop
 
         color.setAlpha(30);
         m_ui->ROIPlot->graph(ROI_HEIGHT_END_ID)->setBrush(QBrush(color));
@@ -166,6 +186,8 @@ public:
         m_ui->ROIPlot->xAxis->grid()->setLayer("belowmain");
         m_ui->ROIPlot->yAxis->grid()->setLayer("belowmain");
 
+        plot->yAxis->setRangeReversed(true);
+        plot->yAxis2->setRangeReversed(true);
 
         m_ui->ROIPlot->replot();
     }
@@ -173,7 +195,9 @@ public:
     void setPlotRange()
     {
         m_ui->ROIPlot->xAxis->setRange( 0, max_width );
+        m_ui->ROIPlot->xAxis2->setRange( 0, max_width );
         m_ui->ROIPlot->yAxis->setRange( 0, max_height );
+        m_ui->ROIPlot->yAxis2->setRange( 0, max_height );
     }
 
     void setROIConfig()

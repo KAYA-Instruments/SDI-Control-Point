@@ -647,11 +647,11 @@ void WbBox::onWbPresetsChange( int id, QString name, int ct )
             break;
 
         case 2700:
-            d_data->m_ui->WbButtonBox->addButton( s, QPixmap(":/images/wb/candle.png") );
+            d_data->m_ui->WbButtonBox->addButton( s, QPixmap(":/images/wb/tungsten.png") );
             break;
 
         case 3700:
-            d_data->m_ui->WbButtonBox->addButton( s, QPixmap(":/images/wb/tungsten.png") );
+            d_data->m_ui->WbButtonBox->addButton( s, QPixmap(":/images/wb/candle.png") );
             break;
 
         case 4000:
