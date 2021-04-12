@@ -59,7 +59,7 @@ int ctrl_protocol_get_cam_roi_offset_info
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel,
     int const                    no,
-    uint8_t * const              values
+    uint16_t * const              values
 )
 {
     CHECK_HANDLE( protocol );
@@ -77,7 +77,7 @@ int ctrl_protocol_get_cam_roi_offset
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel,
     int const                    no,
-    uint8_t * const              values
+    uint16_t * const              values
 )
 {
     CHECK_HANDLE( protocol );
@@ -95,7 +95,7 @@ int ctrl_protocol_set_cam_roi_offset
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel,
     int const                    no,
-    uint8_t * const              values
+    uint16_t * const              values
 )
 {
     CHECK_DRV_FUNC( CAM_DRV(protocol->drv), set_cam_roi_offset );
