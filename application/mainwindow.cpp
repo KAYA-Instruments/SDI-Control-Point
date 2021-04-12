@@ -2222,7 +2222,7 @@ void MainWindow::onAecResyncRequest()
         }
         if (features.hasCamItf)
         {
-            m_dev->GetCamItf()->resync();
+            m_dev->GetCamItf()->resyncAEC();
         }
         QApplication::setOverrideCursor( Qt::ArrowCursor );
     }

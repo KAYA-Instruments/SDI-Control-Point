@@ -40,6 +40,7 @@ public:
 
     // resync all settings
     void resync() override;
+    void resyncAEC();
 
     // cam setting 
     void GetCameraInfo();
