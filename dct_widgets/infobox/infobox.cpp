@@ -128,8 +128,8 @@ InfoBox::InfoBox( QWidget * parent ) : DctWidgetBox( parent )
     /*
      * This features are not used
      */
-    d_data->m_ui->lblSystemId->hide();
-    d_data->m_ui->letSystemId->hide();
+    //d_data->m_ui->lblSystemId->hide();
+    //d_data->m_ui->letSystemId->hide();
 
     d_data->m_ui->lblSystemValidity->hide();
     d_data->m_ui->letSystemValidity->hide();
