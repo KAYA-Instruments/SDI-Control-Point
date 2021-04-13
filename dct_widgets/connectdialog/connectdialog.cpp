@@ -379,6 +379,7 @@ bool ConnectDialog::connectWithDevice()
         genericDevice.GetProVideoSystemItf()->GetSystemPlatform();
         bIsKnown = DeviceIsKnown(genericDevice.getSystemPlatform());
     }
+
     // if not connected, close the active channel
     else if ( bOpen && pActiveChannel )
     {
@@ -390,6 +391,9 @@ bool ConnectDialog::connectWithDevice()
     QString systemPlatform = genericDevice.getSystemPlatform();
     if ( bIsKnown )
     {
+        uint32_t HwMask = genericDevice.GetProVideoSystemItf()->GetHwMask();
+        uint32_t SwMask = genericDevice.GetProVideoSystemItf()->GetSwMask();
+
         ProVideoDevice * connectedDevice = nullptr;
         if ( systemPlatform == KNOWN_DEVICE_XBOW )
         {
@@ -405,7 +409,7 @@ bool ConnectDialog::connectWithDevice()
         }
         else if ( systemPlatform == KNOWN_DEVICE_IRON_SDI )
         {
-            connectedDevice = new IronSDI_Device( pActiveChannel, new ProVideoProtocol() );
+            connectedDevice = new IronSDI_Device( pActiveChannel, new ProVideoProtocol(), HwMask , SwMask);
         }
         qDebug() << "connected with:" << systemPlatform;
 

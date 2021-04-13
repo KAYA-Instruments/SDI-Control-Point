@@ -1105,3 +1105,19 @@ void ProVideoSystemItf::onCopySettings( int src, int dest )
     HANDLE_ERROR( res );
 }
 
+
+/******************************************************************************
+ * ProVideoSystemItf::GetHwMask
+ *****************************************************************************/
+uint32_t ProVideoSystemItf::GetHwMask()
+{
+    return m_system_info.feature_mask_HW;
+}
+
+/******************************************************************************
+ * ProVideoSystemItf::GetSwMask
+ *****************************************************************************/
+uint32_t ProVideoSystemItf::GetSwMask()
+{
+    return m_system_info.feature_mask_SW;
+}

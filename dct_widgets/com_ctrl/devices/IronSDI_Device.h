@@ -14,9 +14,10 @@
 class IronSDI_Device : public ProVideoDevice
 {
 public:
-    explicit IronSDI_Device( ComChannel * c, ComProtocol * p );
+    explicit IronSDI_Device( ComChannel * c, ComProtocol * p , uint32_t HwMask, uint32_t SwMask);
     IronSDI_Device( const ProVideoDevice &baseObj );
     ~IronSDI_Device() override;
+    void setSupportedFeatures(const uint32_t HwMask, const uint32_t SwMask);
 
     // set communication channel
     void setComChannel( ComChannel * ) override;

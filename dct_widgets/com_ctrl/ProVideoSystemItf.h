@@ -154,6 +154,9 @@ public:
     // set mask interpreter (software mask)
     void SetMaskSwInterpreter( MaskInterpreter * );
 
+    uint32_t GetHwMask();
+    uint32_t GetSwMask();
+
 signals:
     // system identifier
     void SystemPlatformChanged( QString name );
