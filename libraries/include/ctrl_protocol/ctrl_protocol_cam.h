@@ -93,10 +93,10 @@ int ctrl_protocol_get_cam_info
  *****************************************************************************/
 typedef struct ctrl_protocol_cam_roi_offset_info_s
 {
-    uint32_t    offset_x_max;     /**< maximum offset x of the camera */
-    uint32_t    offset_y_max;     /**< maximum offset y of the camera */
-    uint32_t    offset_x_step;    /**< offset x step of the camera */
-    uint32_t    offset_y_step;    /**< offset y step of the camera */
+    uint16_t    offset_x_max;     /**< maximum offset x of the camera */
+    uint16_t    offset_y_max;     /**< maximum offset y of the camera */
+    uint16_t    offset_x_step;    /**< offset x step of the camera */
+    uint16_t    offset_y_step;    /**< offset y step of the camera */
 } ctrl_protocol_cam_roi_offset_info_t;
 
 /**************************************************************************//**
@@ -114,7 +114,7 @@ int ctrl_protocol_get_cam_roi_offset_info
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel,
     int const                    no,
-    uint8_t * const              values
+    uint16_t * const              values
 );
 
 /**************************************************************************//**
@@ -122,8 +122,8 @@ int ctrl_protocol_get_cam_roi_offset_info
  *****************************************************************************/
 typedef struct ctrl_protocol_cam_roi_offset_s
 {
-    uint32_t    offset_x;     /**< actuel offset x of the camera */
-    uint32_t    offset_y;     /**< actuel offset y of the camera */
+    uint16_t    offset_x;     /**< actuel offset x of the camera */
+    uint16_t    offset_y;     /**< actuel offset y of the camera */
 } ctrl_protocol_cam_roi_offset_t;
 
 /**************************************************************************//**
@@ -141,7 +141,7 @@ int ctrl_protocol_get_cam_roi_offset
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel,
     int const                    no,
-    uint8_t * const              values
+    uint16_t * const              values
 );
 
 /**************************************************************************//**
@@ -159,7 +159,7 @@ int ctrl_protocol_set_cam_roi_offset
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel,
     int const                    no,
-    uint8_t * const              values
+    uint16_t * const              values
 );
 
 /**************************************************************************//**
@@ -395,9 +395,9 @@ typedef struct ctrl_protocol_cam_drv_s
     ctrl_protocol_set_uint32_t      set_cam_gain;
     ctrl_protocol_get_uint32_t      get_cam_exposure;
     ctrl_protocol_set_uint32_t      set_cam_exposure;
-    ctrl_protocol_uint8_array_t     get_cam_roi_offset_info;
-    ctrl_protocol_uint8_array_t     get_cam_roi_offset;
-    ctrl_protocol_uint8_array_t     set_cam_roi_offset;
+    ctrl_protocol_uint16_array_t    get_cam_roi_offset_info;
+    ctrl_protocol_uint16_array_t    get_cam_roi_offset;
+    ctrl_protocol_uint16_array_t    set_cam_roi_offset;
 } ctrl_protocol_cam_drv_t;
 
 /**************************************************************************//**

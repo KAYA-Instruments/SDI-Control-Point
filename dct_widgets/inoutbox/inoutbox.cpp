@@ -1776,11 +1776,11 @@ void InOutBox::onCameraInfoChange( int min_gain, int max_gain, int min_exposure,
 void InOutBox::onCameraGainChange( int value )
 {
     d_data->m_ui->sbxAnalogGain->blockSignals( true );
-    d_data->m_ui->sbxAnalogGain->setValue( gainToIso(value) );
+    d_data->m_ui->sbxAnalogGain->setValue( double(value) / double(1000) );
     d_data->m_ui->sbxAnalogGain->blockSignals( false );
 
     d_data->m_ui->sldAnalogGain->blockSignals( true );
-    d_data->m_ui->sldAnalogGain->setValue( gainToIso(value) );
+    d_data->m_ui->sldAnalogGain->setValue( double(value) / double(1000) );
     d_data->m_ui->sldAnalogGain->blockSignals( false );
 
     UpdateIsoComboBox( gainToIso(value) );

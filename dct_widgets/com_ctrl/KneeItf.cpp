@@ -71,8 +71,8 @@ void KneeItf::onKneeConfigChange( int enable, int point, int slope, int clip )
 
     c.enable     = uint8_t(enable);
     c.knee_point = uint8_t(point);
-    c.knee_slope = uint8_t(slope);
-    c.white_clip = uint8_t(clip);
+    c.knee_slope = uint16_t(slope);
+    c.white_clip = uint16_t(clip);
 
     // set knee function configuration on device
     int res = ctrl_protocol_set_knee_config( GET_PROTOCOL_INSTANCE(this),

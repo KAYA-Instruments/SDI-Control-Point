@@ -251,7 +251,7 @@ static int get_cam_roi_offset_info
     void * const                ctx,
     ctrl_channel_handle_t const channel,
     int const                   no,
-    uint8_t * const             values
+    uint16_t * const             values
 )
 {
     (void) ctx;
@@ -289,10 +289,10 @@ static int get_cam_roi_offset_info
 
     // type-cast to range
     v                = (ctrl_protocol_cam_roi_offset_info_t *)values;
-    v->offset_x_max  = UINT32( v0 );
-    v->offset_y_max  = UINT32( v1 );
-    v->offset_x_step = UINT32( v2 );
-    v->offset_y_step = UINT32( v3 );
+    v->offset_x_max  = UINT16( v0 );
+    v->offset_y_max  = UINT16( v1 );
+    v->offset_x_step = UINT16( v2 );
+    v->offset_y_step = UINT16( v3 );
 
     return ( 0 );
 }
@@ -305,7 +305,7 @@ static int get_cam_roi_offset
     void * const                ctx,
     ctrl_channel_handle_t const channel,
     int const                   no,
-    uint8_t * const             values
+    uint16_t * const             values
 )
 {
     (void) ctx;
@@ -341,8 +341,8 @@ static int get_cam_roi_offset
 
     // type-cast to range
     v                = (ctrl_protocol_cam_roi_offset_t *)values;
-    v->offset_x  = UINT32( v0 );
-    v->offset_y  = UINT32( v1 );
+    v->offset_x  = UINT16( v0 );
+    v->offset_y  = UINT16( v1 );
 
     return ( 0 );
 }
@@ -355,7 +355,7 @@ static int set_cam_roi_offset
     void * const                ctx,
     ctrl_channel_handle_t const channel,
     int const                   no,
-    uint8_t * const             values
+    uint16_t * const             values
 )
 {
     (void) ctx;

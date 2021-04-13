@@ -44,6 +44,15 @@ void CamItf::resync()
 }
 
 /******************************************************************************
+ * CamItf::resync()
+ *****************************************************************************/
+void CamItf::resyncAEC()
+{
+    GetCameraGain();
+    GetCameraExposure();
+}
+
+/******************************************************************************
  * CamItf::GetCameraInfo
  *****************************************************************************/
 void CamItf::GetCameraInfo()
@@ -116,7 +125,7 @@ void CamItf::GetCameraRoiOffsetInfo()
 
         // get camera info structure from device
         int res = ctrl_protocol_get_cam_roi_offset_info( GET_PROTOCOL_INSTANCE(this),
-                    GET_CHANNEL_INSTANCE(this), sizeof(i), (uint8_t *)&i );
+                    GET_CHANNEL_INSTANCE(this), sizeof(i), (uint16_t *)&i );
         HANDLE_ERROR( res );
 
         // emit a CameraRoiOffsetInfoChanged signal
@@ -137,7 +146,7 @@ void CamItf::GetCameraRoiOffset()
 
         // get camera info structure from device
         int res = ctrl_protocol_get_cam_roi_offset( GET_PROTOCOL_INSTANCE(this),
-                    GET_CHANNEL_INSTANCE(this), sizeof(i), (uint8_t *)&i );
+                    GET_CHANNEL_INSTANCE(this), sizeof(i), (uint16_t *)&i );
         HANDLE_ERROR( res );
 
         // emit a CameraRoiOffsetChanged signal
@@ -152,9 +161,9 @@ void CamItf::GetCameraRoiOffset()
 void CamItf::onCameraRoiOffsetChange( int offset_x, int offset_y )
 {
     // convert to array
-    uint8_t values[2];
-    values[0] = (uint8_t)offset_x;
-    values[1] = (uint8_t)offset_y;
+    uint16_t values[2];
+    values[0] = (uint16_t)offset_x;
+    values[1] = (uint16_t)offset_y;
 
     int res = ctrl_protocol_set_cam_roi_offset( GET_PROTOCOL_INSTANCE(this),
             GET_CHANNEL_INSTANCE(this), 2, values );
@@ -190,9 +199,11 @@ void CamItf::onCameraExposureChange( int value )
  *****************************************************************************/
 void CamItf::onNotifyVideoModeChange()
 {
-    GetCameraInfo();        // to get new gain/exposure time ranges
-    GetCameraGain();        // to get new gain
-    GetCameraExposure();    // to get new exposure
+    GetCameraInfo();           // to get new gain/exposure time ranges
+    GetCameraGain();           // to get new gain
+    GetCameraExposure();       // to get new exposure
+    GetCameraRoiOffsetInfo();  // to get new ROI offset ranges
+    GetCameraRoiOffset();      // to get new ROI offset
 }
 
 /******************************************************************************
