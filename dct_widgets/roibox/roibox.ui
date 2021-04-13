@@ -20,7 +20,7 @@
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Region of Interest</string>
+      <string>Statistics Region of Interest</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>

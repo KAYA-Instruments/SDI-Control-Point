@@ -199,9 +199,11 @@ void CamItf::onCameraExposureChange( int value )
  *****************************************************************************/
 void CamItf::onNotifyVideoModeChange()
 {
-    GetCameraInfo();        // to get new gain/exposure time ranges
-    GetCameraGain();        // to get new gain
-    GetCameraExposure();    // to get new exposure
+    GetCameraInfo();           // to get new gain/exposure time ranges
+    GetCameraGain();           // to get new gain
+    GetCameraExposure();       // to get new exposure
+    GetCameraRoiOffsetInfo();  // to get new ROI offset ranges
+    GetCameraRoiOffset();      // to get new ROI offset
 }
 
 /******************************************************************************
