@@ -141,8 +141,8 @@
 #define CMD_SET_PROMPT                          ( "prompt %i\n" )
 #define CMD_SYNC_PROMPT                         ( "prompt " )
 #define CMD_GET_PROMPT_NO_PARMS                 ( 1 )
-#define CMD_GET_PROMPT_TMO                      ( 30 )
-#define CMD_SET_PROMPT_TMO                      ( 30 )
+#define CMD_GET_PROMPT_TMO                      ( 200 )
+#define CMD_SET_PROMPT_TMO                      ( 200 )
 
 /******************************************************************************
  * @brief command "debug" 
@@ -271,6 +271,16 @@
  *****************************************************************************/
 #define CMD_COPY_SETTINGS                       ( "copy_settings %i %i\n" )
 #define CMD_COPY_SETTINGS_NO_PARMS              ( 2 )
+
+/******************************************************************************
+ * @brief command "copy_settings"
+ *****************************************************************************/
+#define CMD_GET_DEVICE_SETTINGS                 ( "dump_settings\n" )
+#define CMD_SYNC_GET_DEVICE_SETTINGS            ( "dump_settings" )
+#define CMD_SET_DEVICE_SETTINGS                 ( "dump_settings %2000[^\t\r\n]\n" )
+#define CMD_GET_DEVICE_SETTINGS_NO_PARAMS       ( 1 )
+
+#define CMD_GET_DEVICE_SETTINGS_RESPONSE_LINES  ( 2000 )
 
 /******************************************************************************
  * get_system_info
@@ -2122,6 +2132,34 @@ static int copy_settings
     return ( set_param_int_X( channel, CMD_COPY_SETTINGS, INT( values[0] ), INT( values[1] ) ) );
 }
 
+/******************************************************************************
+ * get_device_settings
+ *****************************************************************************/
+static int get_device_settings
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    int const                   no,
+    uint8_t * const             settings
+)
+{
+    (void) ctx;
+
+    int res;
+
+    // parameter check
+    if ( !no || !settings || (no != sizeof(ctrl_protocol_system_settings_desc_t)) )
+    {
+        return ( -EINVAL );
+    }
+
+    // command call to get a string from provideo system
+    res = get_param_settings_string( channel, CMD_GET_DEVICE_SETTINGS_RESPONSE_LINES,
+            CMD_GET_DEVICE_SETTINGS, CMD_SYNC_GET_DEVICE_SETTINGS, CMD_SET_DEVICE_SETTINGS, (char *)settings );
+
+    return ( 0 );
+}
+
 
 /******************************************************************************
  * System protocol driver declaration
@@ -2176,6 +2214,7 @@ static ctrl_protocol_sys_drv_t provideo_sys_drv =
     .get_default_settings         = get_default_settings,
     .reset_settings               = reset_settings,
     .copy_settings                = copy_settings,
+    .get_device_settings          = get_device_settings,
 };
 
 /******************************************************************************

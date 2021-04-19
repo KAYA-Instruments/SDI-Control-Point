@@ -59,6 +59,8 @@ signals:
     void DefaultSettings(int userSetting);
     void DefaultSettingsRequest();
 
+    void SaveSettingsToFileRequest();
+
     void SdiOutChanged( int value );
 
     // copy settings
@@ -94,9 +96,9 @@ private slots:
     void onDefaultSettingsChanged(int8_t userSetting);
     void onLoadFromFileClicked();
     void onSaveToFileClicked();
+    void onSaveToFileClicked2();
     void onBroadcastClicked();
     void onSyncSettingsClicked();
-
     void onSdiOutChange( int value );
     void onSplitScreenChange( bool flag );
     void onCopyFlagChange( bool flag );

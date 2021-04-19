@@ -31,6 +31,7 @@
 
 #include <QThread>
 #include <QRegularExpression>
+#include <QTextStream>
 
 /******************************************************************************
  * ProVideoSystemItf::resync()
@@ -115,6 +116,8 @@ void ProVideoSystemItf::GetSystemInfo(bool bEmitUpdate)
 
         // emit a ApplicationVersionChanged signal
         emit ApplicationVersionChanged( QString((char *)m_system_info.sw_release_id) );
+
+        emit DeviceVersionChanged( QString((char *)m_system_info.sw_release_id) );
 
         // emit a ApplicationReleaseDateChanged signal
         emit ApplicationReleaseDateChanged( QString((char *)m_system_info.sw_release_date) );
@@ -1105,6 +1108,23 @@ void ProVideoSystemItf::onCopySettings( int src, int dest )
     HANDLE_ERROR( res );
 }
 
+/******************************************************************************
+ * ProVideoSystemItf::GetSavedSettingsToFile
+ *****************************************************************************/
+void ProVideoSystemItf::GetSavedSettingsToFile(QFile & file)
+{
+    ctrl_protocol_system_settings_desc_t settings;
+    //memset( settings, 0, sizeof(settings) );
+
+    // read current system string
+    int res = ctrl_protocol_save_settings_to_file( GET_PROTOCOL_INSTANCE(this),
+              GET_CHANNEL_INSTANCE(this), sizeof(settings), (uint8_t *)&settings );
+    HANDLE_ERROR( res );
+
+    QTextStream stream(&file);
+
+    stream << settings;
+}
 
 /******************************************************************************
  * ProVideoSystemItf::GetHwMask

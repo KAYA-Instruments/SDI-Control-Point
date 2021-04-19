@@ -26,6 +26,7 @@
 #define _PROVIDEO_SYSTEM_INTERFACE_H_
 
 #include <QObject>
+#include <QFile>
 
 #include "ProVideoItf.h"
 #include <ctrl_protocol/ctrl_protocol_system.h>
@@ -142,6 +143,8 @@ public:
 
     void GetDefaultSettings();
 
+    void GetSavedSettingsToFile(QFile & file);
+
     // check for connection to device
     bool isConnected();
 
@@ -166,6 +169,7 @@ signals:
     void BitStreamVersionChanged( uint32_t version );
     void BootloaderVersionChanged( uint32_t version );
     void ApplicationVersionChanged( QString version );
+    void DeviceVersionChanged( QString version );
     void ApplicationReleaseDateChanged( QString date );
     void ApplicationBuildDateChanged( QString date );
     void FeatureMaskHwChanged( uint32_t mask );

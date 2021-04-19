@@ -27,7 +27,6 @@
 #include <errno.h>
 #include <time.h>
 #include <vector> //  VLA Fix:
-
 #include <ctrl_channel/ctrl_channel.h>
 
 #include <provideo_protocol/provideo_protocol_common.h>
@@ -41,6 +40,8 @@
  * https://stackoverflow.com/questions/5404277/porting-clock-gettime-to-windows */
 #ifdef _WIN32
 #include <windows.h>
+
+#define CMD_GET_DUMP_SETTINGS_TMO 2000
 
 static LARGE_INTEGER getFILETIMEoffset()
 {
@@ -421,6 +422,62 @@ int get_param_string
     else
     {
         //res = evaluate_error_response( data, res ); VLA Fix:
+        res = evaluate_error_response( data.data(), res );
+    }
+
+    return ( res );
+}
+
+/******************************************************************************
+ * get_param_settings_string - Sends a given get-command to provideo device and
+ *                    parses device response for a string (for dump_settings)
+ *****************************************************************************/
+int get_param_settings_string
+(
+    ctrl_channel_handle_t const  channel,
+    int const                    lines,
+    char * const                 cmd_get,
+    char * const                 cmd_sync,
+    char * const                 cmd_set,
+    char *                       param
+)
+{
+    std::vector<char> data(lines);
+
+    int res;
+
+    // send get-command to control channel
+    ctrl_channel_send_request( channel, (uint8_t *)cmd_get, strlen(cmd_get) );
+
+    // read response from provideo device
+    res = evaluate_get_response_with_tmo( channel, data.data(), data.size(),
+                                          CMD_GET_DUMP_SETTINGS_TMO*CMD_SINGLE_LINE_RESPONSE_SIZE);
+
+    if ( !res )
+    {
+        bool res2 = strstr( data.data(), CMD_OK );
+        if(res2)
+        {
+            for (auto iter = data.begin(); iter != data.end(); ++iter)
+            {
+                auto jter = std::next(iter);
+
+                if(jter != data.end())
+                {
+                    if (*iter == 'O' && *jter == 'K')
+                    {
+                        jter = std::prev(data.erase(jter));
+                        data.erase(iter);
+                        break;
+                    }
+                }
+            }
+
+            memcpy ( param, data.data() , data.size() );
+        }
+    }
+    else
+    {
         res = evaluate_error_response( data.data(), res );
     }
 
