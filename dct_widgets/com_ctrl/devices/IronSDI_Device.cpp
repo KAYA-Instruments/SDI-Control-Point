@@ -14,37 +14,19 @@
 /******************************************************************************
  * hardware mask
  *****************************************************************************/
-#define IRON_SDI_FEATURE_CAMERA_LINK         ( 0x00000001u ) /**< camera link device */
-#define IRON_SDI_FEATURE_XPRESS              ( 0x00000002u ) /**< coax-press device */
-#define IRON_SDI_FEATURE_CHANNEL_0           ( 0x00000004u ) /**< video pipeline/chain 0 available */
-#define IRON_SDI_FEATURE_CHANNEL_1           ( 0x00000008u ) /**< video pipeline/chain 1 available */
-#define IRON_SDI_FEATURE_FPNC                ( 0x00000020u ) /**< fix pattern noise correction available */
-#define IRON_SDI_FEATURE_TFLT                ( 0x00000040u ) /**< temporal filter available */
-#define IRON_SDI_FEATURE_BFC                 ( 0x00000100u ) /**< black frame correction available */
-#define IRON_SDI_FEATURE_ZEBRA               ( 0x00000800u ) /**< OSD for zebra available */
-#define IRON_SDI_FEATURE_LOGO                ( 0x00001000u ) /**< OSD for logo available */
-#define IRON_SDI_FEATURE_TEST_PATTERN        ( 0x00001000u ) /**< OSD for test-pattern available */
-#define IRON_SDI_FEATURE_CENTER_MARKER       ( 0x00001000u ) /**< OSD for center marker available */
-#define IRON_SDI_FEATURE_MCC                 ( 0x00002000u ) /**< MCC is available */
-#define IRON_SDI_FEATURE_SEN_LUT             ( 0x00004000u ) /**< sensor LUT available */
-#define IRON_SDI_FEATURE_DPCC                ( 0x00008000u ) /**< DPCC available */
-#define IRON_SDI_FEATURE_WDR                 ( 0x00080000u ) /**< WDR/Knee available */
+#define IRON_SDI_FEATURE_HW_GENLOCK_MASK     ( 0x00000001u ) /**< GENLOCK available */
+#define IRON_SDI_FEATURE_MULTI_USERSET_MASK  ( 0x00000002u ) /**< MULTI USERSET available */
+#define IRON_SDI_FEATURE_HW_12BIT            ( 0x00000004u ) /**< 12BIT available */
+#define IRON_SDI_FEATURE_AWB_AEC_AEG_EX_MASK ( 0x00000008u ) /**< AWB AEC AEG EX MASK available */
+#define IRON_SDI_FEATURE_RS485_MASK          ( 0x00000010u ) /**< RS485 available */
+#define IRON_SDI_FEATURE_TIMECODE_MASK       ( 0x00000020u ) /**< TIMECODE available */
 
-#define IS_IRON_SDI_FEATURE_CAMERA_LINK(x)   ( x & IRON_SDI_FEATURE_CAMERA_LINK )
-#define IS_IRON_SDI_FEATURE_XPRESS(x)        ( x & IRON_SDI_FEATURE_XPRESS )
-#define IS_IRON_SDI_FEATURE_CHANNEL_0(x)     ( x & IRON_SDI_FEATURE_CHANNEL_0 )
-#define IS_IRON_SDI_FEATURE_CHANNEL_1(x)     ( x & IRON_SDI_FEATURE_CHANNEL_1 )
-#define IS_IRON_SDI_FEATURE_FPNC(x)          ( x & IRON_SDI_FEATURE_FPNC )
-#define IS_IRON_SDI_FEATURE_TFLT(x)          ( x & IRON_SDI_FEATURE_TFLT )
-#define IS_IRON_SDI_FEATURE_BFC(x)           ( x & IRON_SDI_FEATURE_BFC )
-#define IS_IRON_SDI_FEATURE_ZEBRA(x)         ( x & IRON_SDI_FEATURE_ZEBRA )
-#define IS_IRON_SDI_FEATURE_LOGO(x)          ( x & IRON_SDI_FEATURE_LOGO )
-#define IS_IRON_SDI_FEATURE_TEST_PATTERN(x)  ( x & IRON_SDI_FEATURE_TEST_PATTERN )
-#define IS_IRON_SDI_FEATURE_CENTER_MARKER(x) ( x & IRON_SDI_FEATURE_CENTER_MARKER )
-#define IS_IRON_SDI_FEATURE_MCC(x)           ( x & IRON_SDI_FEATURE_MCC )
-#define IS_IRON_SDI_FEATURE_SEN_LUT(x)       ( x & IRON_SDI_FEATURE_SEN_LUT )
-#define IS_IRON_SDI_FEATURE_DPCC(x)          ( x & IRON_SDI_FEATURE_DPCC )
-#define IS_IRON_SDI_FEATURE_WDR(x)           ( x & IRON_SDI_FEATURE_WDR )
+#define IS_IRON_SDI_FEATURE_HW_GENLOCK_MASK(x)     ( x & IRON_SDI_FEATURE_HW_GENLOCK_MASK  )
+#define IS_IRON_SDI_FEATURE_MULTI_USERSET_MASK(x)  ( x & IRON_SDI_FEATURE_MULTI_USERSET_MASK )
+#define IS_IRON_SDI_FEATURE_HW_12BIT(x)            ( x & IRON_SDI_FEATURE_HW_12BIT )
+#define IS_IRON_SDI_FEATURE_AWB_AEC_AEG_EX_MASK(x) ( x & IRON_SDI_FEATURE_AWB_AEC_AEG_EX_MASK )
+#define IS_IRON_SDI_FEATURE_RS485_MASK(x)          ( x & IRON_SDI_FEATURE_RS485_MASK )
+#define IS_IRON_SDI_FEATURE_TIMECODE_MASK(x)       ( x & IRON_SDI_FEATURE_TIMECODE_MASK )
 
 /******************************************************************************
  * hardware mask interpreter
@@ -60,77 +42,39 @@ public:
 
         features << "System: IronSDI";
 
-        if ( IS_IRON_SDI_FEATURE_CAMERA_LINK( mask ) )
+        features << "Supported modules:";
+
+        if ( IS_IRON_SDI_FEATURE_HW_GENLOCK_MASK( mask ) )
         {
-            features << "- Camera Link";
+            features << "- Genlock";
         }
 
-        if ( IS_IRON_SDI_FEATURE_XPRESS( mask ) )
+        if ( IS_IRON_SDI_FEATURE_MULTI_USERSET_MASK( mask ) )
         {
-            features << "- Coaxpress";
+            features << "- Multi Userset";
         }
 
-        if ( IS_IRON_SDI_FEATURE_CHANNEL_0( mask ) )
+        if ( IS_IRON_SDI_FEATURE_HW_12BIT( mask ) )
         {
-            features << "- Live channel available";
+            features << "- 12 bit";
         }
 
-        if ( IS_IRON_SDI_FEATURE_CHANNEL_1( mask ) )
+        if ( IS_IRON_SDI_FEATURE_AWB_AEC_AEG_EX_MASK( mask ) )
         {
-            features << "- Playback channel available";
+            features << "- Auto white balance";
+            features << "- Auto Exposure";
+            features << "- Auto Gain";
+            features << "- ROI offset";
         }
 
-        if ( IS_IRON_SDI_FEATURE_ZEBRA( mask ) )
+        if ( IS_IRON_SDI_FEATURE_RS485_MASK( mask ) )
         {
-            features << "- zebra function available";
+            features << "- RS485 interface";
         }
 
-        if ( IS_IRON_SDI_FEATURE_TEST_PATTERN( mask ) )
+        if ( IS_IRON_SDI_FEATURE_TIMECODE_MASK( mask ) )
         {
-            features << "- test pattern generator available";
-        }
-
-        if ( IS_IRON_SDI_FEATURE_CENTER_MARKER( mask ) )
-        {
-            features << "- marker generator available";
-        }
-
-        // Correction Modules
-        features << "Supported correction functions:";
-
-        if ( IS_IRON_SDI_FEATURE_SEN_LUT( mask ) )
-        {
-            features << "- Sensor linearization available";
-        }
-
-        if ( IS_IRON_SDI_FEATURE_FPNC( mask ) )
-        {
-            features << "- Fix pattern noise correction available";
-        }
-
-        if ( IS_IRON_SDI_FEATURE_BFC( mask ) )
-        {
-            features << "- Dark frame correction available";
-        }
-
-        if ( IS_IRON_SDI_FEATURE_MCC( mask ) )
-        {
-            features << "- Multi color controller available";
-        }
-
-        if ( IS_IRON_SDI_FEATURE_TFLT( mask ) )
-        {
-            features << "- Temporal filter available";
-        }
-
-        if ( IS_IRON_SDI_FEATURE_DPCC( mask ) )
-        {
-            features << "- Defect/Hot pixel correction available";
-        }
-
-        if ( IS_IRON_SDI_FEATURE_WDR( mask ) )
-        {
-            features << "- Highlight control/Knee function available";
+            features << "- Timecode";
         }
 
         return ( features );
@@ -241,12 +185,14 @@ public:
 
     ComProtocol *   m_protocol;
     void *          m_userCtx;
+
+    features m_deviceFeatures;
 };
 
 /******************************************************************************
  * IronSDI_Device::IronSDI_Device()
  *****************************************************************************/
-IronSDI_Device::IronSDI_Device( ComChannel * c, ComProtocol * p )
+IronSDI_Device::IronSDI_Device( ComChannel * c, ComProtocol * p , uint32_t HwMask, uint32_t SwMask)
     : ProVideoDevice( c, p )
 {
     d_data = new PrivateData( c, p );
@@ -254,6 +200,8 @@ IronSDI_Device::IronSDI_Device( ComChannel * c, ComProtocol * p )
     // set mask interpretation classes on interface class
     GetProVideoSystemItf()->SetMaskHwInterpreter( new HwMaskInterpreter() );
     GetProVideoSystemItf()->SetMaskSwInterpreter( new SwMaskInterpreter() );
+
+    setSupportedFeatures(HwMask, SwMask);
 }
 
 /******************************************************************************
@@ -265,57 +213,75 @@ IronSDI_Device::~IronSDI_Device()
 }
 
 /******************************************************************************
+ * IronSDI_Device::()
+ *****************************************************************************/
+void IronSDI_Device::setSupportedFeatures(const uint32_t HwMask, const uint32_t SwMask)
+{
+    memset(&d_data->m_deviceFeatures, 0, sizeof (d_data->m_deviceFeatures));
+
+    features * deviceFeatures = &d_data->m_deviceFeatures;
+
+    // Set all available features
+    deviceFeatures->hasCamItf                = true;
+    deviceFeatures->hasChainItf              = true;
+    deviceFeatures->hasChainSdi2Mode         = false;
+    deviceFeatures->hasChainAudio            = false;
+    deviceFeatures->hasChainDownscale        = true;
+    deviceFeatures->hasChainGenLock          = false;
+    deviceFeatures->hasChainTimeCode         = false;
+    deviceFeatures->hasChainTimeCodeHold     = false;
+    deviceFeatures->hasChainSdiSettings      = true;
+    deviceFeatures->hasChainSelection        = false;
+    deviceFeatures->hasChainFlipVertical     = true;
+    deviceFeatures->hasChainFlipHorizontal   = true;
+    deviceFeatures->hasAutoItf               = true;
+    deviceFeatures->hasLensItf               = false;
+    deviceFeatures->hasIspItf                = true;
+    deviceFeatures->hasIspLsc                = false;
+    deviceFeatures->hasIspMasterBlackLevel   = true;
+    deviceFeatures->hasIspFlare              = true;
+    deviceFeatures->hasIspFilter             = false;
+    deviceFeatures->hasIspAutoWhiteBalance   = true;
+    deviceFeatures->hasIspGain               = true;
+    deviceFeatures->hasIspGreenGain          = true;
+    deviceFeatures->hasIspConversion         = true;
+    deviceFeatures->hasCprocItf              = true;
+    deviceFeatures->hasCprocItfHue           = true;
+    deviceFeatures->hasMccItf                = false;
+    deviceFeatures->hasKneeItf               = true;
+    deviceFeatures->hasLutItf                = true;
+    deviceFeatures->hasDpccItf               = true;
+    deviceFeatures->hasDpccFullFeautureSet   = true;
+    deviceFeatures->hasSystemSaveLoad        = true;
+    deviceFeatures->hasSystemUpdate          = true;
+    deviceFeatures->hasSystemRuntime         = false;
+    deviceFeatures->hasSystemFan             = false;
+    deviceFeatures->hasSystemBroadcast       = false;
+    deviceFeatures->hasRS232Interface        = true;
+    deviceFeatures->hasROIItf                = false;
+    deviceFeatures->lutBitWidth              = 10;
+    deviceFeatures->numTempSensors           = 2;
+
+    if((0xFFFFFFFF != SwMask) && HwMask)
+    {
+        deviceFeatures->hasChainGenLock      = IS_IRON_SDI_FEATURE_HW_GENLOCK_MASK( HwMask );
+        deviceFeatures->hasChainTimeCode     = IS_IRON_SDI_FEATURE_TIMECODE_MASK( HwMask );
+        deviceFeatures->hasChainTimeCodeHold = IS_IRON_SDI_FEATURE_TIMECODE_MASK( HwMask );
+        deviceFeatures->hasROIItf            = IS_IRON_SDI_FEATURE_AWB_AEC_AEG_EX_MASK( HwMask );
+        deviceFeatures->hasSystemBroadcast   = IS_IRON_SDI_FEATURE_RS485_MASK(HwMask); // TODO: only if RS485 is enabled
+        deviceFeatures->hasSystemSaveLoad    = IS_IRON_SDI_FEATURE_MULTI_USERSET_MASK( HwMask );
+
+        //if ( IS_IRON_SDI_FEATURE_HW_12BIT( HwMask ) )
+    }
+
+}
+
+/******************************************************************************
  * IronSDI_Device::getSupportedFeatures()
  *****************************************************************************/
 IronSDI_Device::features IronSDI_Device::getSupportedFeatures()
 {
-    // Init all features with false
-    features deviceFeatures;
-    memset(&deviceFeatures, 0, sizeof (deviceFeatures));
-
-    // Set all available features to true
-    deviceFeatures.hasCamItf                = true;
-    deviceFeatures.hasChainItf              = true;
-    deviceFeatures.hasChainSdi2Mode         = false;
-    deviceFeatures.hasChainAudio            = false;
-    deviceFeatures.hasChainDownscale        = true;
-    deviceFeatures.hasChainGenLock          = true;
-    deviceFeatures.hasChainTimeCode         = true;
-    deviceFeatures.hasChainTimeCodeHold     = true;
-    deviceFeatures.hasChainSdiSettings      = true;
-    deviceFeatures.hasChainSelection        = false;
-    deviceFeatures.hasChainFlipVertical     = true;
-    deviceFeatures.hasChainFlipHorizontal   = true;
-    deviceFeatures.hasAutoItf               = true;
-    deviceFeatures.hasLensItf               = false;
-    deviceFeatures.hasIspItf                = true;
-    deviceFeatures.hasIspLsc                = false;
-    deviceFeatures.hasIspMasterBlackLevel   = true;
-    deviceFeatures.hasIspFlare              = true;
-    deviceFeatures.hasIspFilter             = false;
-    deviceFeatures.hasIspAutoWhiteBalance   = true;
-    deviceFeatures.hasIspGain               = true;
-    deviceFeatures.hasIspGreenGain          = true;
-    deviceFeatures.hasIspConversion         = true;
-    deviceFeatures.hasCprocItf              = true;
-    deviceFeatures.hasCprocItfHue           = true;
-    deviceFeatures.hasMccItf                = false;
-    deviceFeatures.hasKneeItf               = true;
-    deviceFeatures.hasLutItf                = true;
-    deviceFeatures.hasDpccItf               = true;
-    deviceFeatures.hasDpccFullFeautureSet   = true;
-    deviceFeatures.hasSystemSaveLoad        = true;
-    deviceFeatures.hasSystemUpdate          = true;
-    deviceFeatures.hasSystemRuntime         = false;
-    deviceFeatures.hasSystemFan             = false;
-    deviceFeatures.hasSystemBroadcast       = true; // TODO: only if RS485 is enabled
-    deviceFeatures.hasRS232Interface        = true;
-    deviceFeatures.hasROIItf                = true;
-
-    deviceFeatures.lutBitWidth              = 10;
-    deviceFeatures.numTempSensors           = 2;
-
-    return deviceFeatures;
+    return d_data->m_deviceFeatures;
 }
 
 /******************************************************************************

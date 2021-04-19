@@ -124,6 +124,7 @@ public:
     // Get the device information (this does not invoke a com command!)
     QString getSystemPlatform();
     QString getDeviceName();
+    QString getDeviceVersion();
     unsigned int getBroadcastAddress();
     bool getBroadcastMasterMode();
     QList<rs485Device> getDeviceList();
@@ -154,6 +155,7 @@ public:
 private slots:
     void onSystemPlatformChange( QString name );
     void onDeviceNameChange( QString name );
+    void onDeviceVersionChange( QString name );
     void onBroadcastAddressChange( uint32_t broadcastAddress );
     void onBroadcastMasterModeChange( uint8_t isBroadcastMaster );
     void onDeviceListChange( QList<rs485Device> deviceList );

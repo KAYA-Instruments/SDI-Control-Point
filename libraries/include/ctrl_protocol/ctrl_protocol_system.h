@@ -76,6 +76,7 @@ enum SYSTEM_FEATURE
  * @brief application version type
  *****************************************************************************/
 typedef char ctrl_protocol_system_desc_t[50];
+typedef char ctrl_protocol_system_sett_t[100];
 
 /**************************************************************************//**
  * @brief Version object
@@ -940,6 +941,44 @@ int ctrl_protocol_copy_settings
     uint8_t * const              values
 );
 
+typedef char ctrl_protocol_system_settings_desc_t[2000];
+
+/**************************************************************************//**
+ * @brief Get the device settings string.
+ *
+ * @param[in]  channel  control channel instance
+ * @param[in]  protocol control protocol instance
+ * @param[in]  no       number of values (sizeof(ctrl_protocol_system_settings_desc_t))
+ * @param[in]  values   points to buffer
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_save_settings_to_file
+(
+    ctrl_protocol_handle_t const handle,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint8_t * const              settings
+);
+
+/**************************************************************************//**
+ * @brief Set the device settings string.
+ *
+ * @param[in]  channel  control channel instance
+ * @param[in]  protocol control protocol instance
+ * @param[in]  no       number of values (sizeof(ctrl_protocol_system_sett_t))
+ * @param[in]  values   points to buffer
+ *
+ * @return     0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_set_settings_from_file
+(
+    ctrl_protocol_handle_t const handle,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint8_t * const              settings
+);
+
 /**************************************************************************//**
  * @brief System protocol driver implementation
  *****************************************************************************/
@@ -993,6 +1032,8 @@ typedef struct ctrl_protocol_sys_drv_s
     ctrl_protocol_get_int8_t        get_default_settings;
     ctrl_protocol_run_t             reset_settings;
     ctrl_protocol_uint8_array_t     copy_settings;
+    ctrl_protocol_uint8_array_t     get_device_settings;
+    ctrl_protocol_uint8_array_t     set_device_settings;
 } ctrl_protocol_sys_drv_t;
 
 /******************************************************************************

@@ -31,6 +31,7 @@
 
 #include <QThread>
 #include <QRegularExpression>
+#include <QTextStream>
 
 /******************************************************************************
  * ProVideoSystemItf::resync()
@@ -115,6 +116,8 @@ void ProVideoSystemItf::GetSystemInfo(bool bEmitUpdate)
 
         // emit a ApplicationVersionChanged signal
         emit ApplicationVersionChanged( QString((char *)m_system_info.sw_release_id) );
+
+        emit DeviceVersionChanged( QString((char *)m_system_info.sw_release_id) );
 
         // emit a ApplicationReleaseDateChanged signal
         emit ApplicationReleaseDateChanged( QString((char *)m_system_info.sw_release_date) );
@@ -1105,3 +1108,55 @@ void ProVideoSystemItf::onCopySettings( int src, int dest )
     HANDLE_ERROR( res );
 }
 
+/******************************************************************************
+ * ProVideoSystemItf::GetSavedSettingsToFile
+ *****************************************************************************/
+void ProVideoSystemItf::GetSavedSettingsToFile(QFile & file)
+{
+    ctrl_protocol_system_settings_desc_t settings;
+    //memset( settings, 0, sizeof(settings) );
+
+    // read current system string
+    int res = ctrl_protocol_save_settings_to_file( GET_PROTOCOL_INSTANCE(this),
+              GET_CHANNEL_INSTANCE(this), sizeof(settings), (uint8_t *)&settings );
+    HANDLE_ERROR( res );
+
+    QTextStream stream(&file);
+
+    stream << settings;
+}
+
+/******************************************************************************
+ * ProVideoSystemItf::LoadSavedSettingsFromFile
+ *****************************************************************************/
+void ProVideoSystemItf::LoadSavedSettingsFromFile( QString settings )
+{
+    // Copy device name to array
+    ctrl_protocol_system_sett_t device_setting;
+    memset( device_setting, 0, sizeof(device_setting) );
+
+    std::string str = settings.toStdString();
+
+    strcpy( (char*)device_setting, str.c_str());
+
+    // send device name to device
+    int res = ctrl_protocol_set_settings_from_file( GET_PROTOCOL_INSTANCE(this),
+                    GET_CHANNEL_INSTANCE(this), settings.length(), (uint8_t *)device_setting );
+    HANDLE_ERROR( res );
+}
+
+/******************************************************************************
+ * ProVideoSystemItf::GetHwMask
+ *****************************************************************************/
+uint32_t ProVideoSystemItf::GetHwMask()
+{
+    return m_system_info.feature_mask_HW;
+}
+
+/******************************************************************************
+ * ProVideoSystemItf::GetSwMask
+ *****************************************************************************/
+uint32_t ProVideoSystemItf::GetSwMask()
+{
+    return m_system_info.feature_mask_SW;
+}

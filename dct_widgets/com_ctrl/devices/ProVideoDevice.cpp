@@ -44,6 +44,7 @@ public:
     {
         m_systemPlatform = "unknown platform";
         m_deviceName = "unknown device";
+        m_deviceVersion = "unknown version";
         m_broadcastAddress = 0;
         m_isBroadcastMaster = false;
         m_ProVideoSystemItf = new ProVideoSystemItf( c, p );
@@ -56,6 +57,7 @@ public:
 
     QString m_systemPlatform;
     QString m_deviceName;
+    QString m_deviceVersion;
     unsigned int m_broadcastAddress;
     bool m_isBroadcastMaster;
     QList<rs485Device> m_deviceList;
@@ -72,6 +74,7 @@ ProVideoDevice::ProVideoDevice( ComChannel * c, ComProtocol * p )
     // Connect signals to copy device parameters to local class variables on change
     connect( GetProVideoSystemItf(), SIGNAL(SystemPlatformChanged(QString)), this, SLOT(onSystemPlatformChange(QString)) );
     connect( GetProVideoSystemItf(), SIGNAL(DeviceNameChanged(QString)), this, SLOT(onDeviceNameChange(QString)) );
+    connect( GetProVideoSystemItf(), SIGNAL(DeviceVersionChanged(QString)), this, SLOT(onDeviceVersionChange(QString)) );
     connect( GetProVideoSystemItf(), SIGNAL(RS485BroadcastAddressChanged(uint32_t)), this, SLOT(onBroadcastAddressChange(uint32_t)) );
     connect( GetProVideoSystemItf(), SIGNAL(RS485BroadcastMasterChanged(uint8_t)), this, SLOT(onBroadcastMasterModeChange(uint8_t)) );
     connect( GetProVideoSystemItf(), SIGNAL(DeviceListChanged(QList<rs485Device>)), this, SLOT(onDeviceListChange(QList<rs485Device>)) );
@@ -301,6 +304,25 @@ void ProVideoDevice::onDeviceNameChange( QString name )
 QString ProVideoDevice::getDeviceName()
 {
     return d_data->m_deviceName;
+}
+
+/******************************************************************************
+ * ProVideoDevice::onDeviceVersionChange
+ *****************************************************************************/
+void ProVideoDevice::onDeviceVersionChange( QString version )
+{
+    d_data->m_deviceVersion = version;
+}
+
+/******************************************************************************
+ * ProVideoDevice::getDeviceVersion
+ * @brief This gets the device version which is stored in the class variable
+ *        of this object. It does not invoke a com command!
+ * @returns The deivce version
+ *****************************************************************************/
+QString ProVideoDevice::getDeviceVersion()
+{
+    return d_data->m_deviceVersion;
 }
 
 /******************************************************************************
