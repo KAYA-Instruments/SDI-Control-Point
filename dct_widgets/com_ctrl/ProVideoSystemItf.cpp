@@ -1127,6 +1127,25 @@ void ProVideoSystemItf::GetSavedSettingsToFile(QFile & file)
 }
 
 /******************************************************************************
+ * ProVideoSystemItf::LoadSavedSettingsFromFile
+ *****************************************************************************/
+void ProVideoSystemItf::LoadSavedSettingsFromFile( QString settings )
+{
+    // Copy device name to array
+    ctrl_protocol_system_sett_t device_setting;
+    memset( device_setting, 0, sizeof(device_setting) );
+
+    std::string str = settings.toStdString();
+
+    strcpy( (char*)device_setting, str.c_str());
+
+    // send device name to device
+    int res = ctrl_protocol_set_settings_from_file( GET_PROTOCOL_INSTANCE(this),
+                    GET_CHANNEL_INSTANCE(this), settings.length(), (uint8_t *)device_setting );
+    HANDLE_ERROR( res );
+}
+
+/******************************************************************************
  * ProVideoSystemItf::GetHwMask
  *****************************************************************************/
 uint32_t ProVideoSystemItf::GetHwMask()

@@ -95,6 +95,7 @@ private slots:
     void onDefaultSettingsClicked();
     void onDefaultSettingsChanged(int8_t userSetting);
     void onLoadFromFileClicked();
+    void onLoadFromFileClicked2();
     void onSaveToFileClicked();
     void onSaveToFileClicked2();
     void onBroadcastClicked();

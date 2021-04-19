@@ -144,6 +144,7 @@ public:
     void GetDefaultSettings();
 
     void GetSavedSettingsToFile(QFile & file);
+    void LoadSavedSettingsFromFile(QString setting );
 
     // check for connection to device
     bool isConnected();

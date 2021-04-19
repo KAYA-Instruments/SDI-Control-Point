@@ -823,6 +823,24 @@ int ctrl_protocol_save_settings_to_file
 }
 
 /******************************************************************************
+ * ctrl_protocol_set_settings_from_file
+ *****************************************************************************/
+int ctrl_protocol_set_settings_from_file
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint8_t * const              settings
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( SYS_DRV(protocol->drv), set_device_settings );
+    CHECK_NOT_NULL( no );
+    CHECK_NOT_NULL( settings );
+    return ( SYS_DRV(protocol->drv)->set_device_settings( protocol->ctx, channel, no, settings ) );
+}
+
+/******************************************************************************
  * ctrl_protocol_sys_register
  *****************************************************************************/
 int ctrl_protocol_sys_register

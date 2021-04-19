@@ -1678,9 +1678,9 @@ void MainWindow::onDefaultSettingsChanged(int8_t userSetting)
 }
 
 /******************************************************************************
- * MainWindow::onLoadFromFileClicked
+ * MainWindow::onLoadFromFileClicked2
  *****************************************************************************/
-void MainWindow::onLoadFromFileClicked()
+void MainWindow::onLoadFromFileClicked2()
 {
     QString directory = QDir::currentPath();
 
@@ -1811,6 +1811,90 @@ void MainWindow::onLoadFromFileClicked()
 
                 // Set dialog to 100%
                 progressDialog.setValue( progressSteps );
+                QApplication::processEvents();
+
+                // Re-enable updpates of the GUI
+                this->setUpdatesEnabled( true );
+            }
+        }
+    }
+}
+
+/******************************************************************************
+ * MainWindow::onLoadFromFileClicked
+ *****************************************************************************/
+void MainWindow::onLoadFromFileClicked()
+{
+    QString directory = QDir::currentPath();
+
+    QFileDialog dialog( this );
+    dialog.setDefaultSuffix( "txt" );
+    m_filename = dialog.getOpenFileName( this, tr("Load Device Settings"),
+                 directory, "Setting Files (*.txt);;All files (*.*)" );
+
+    if ( nullptr != m_filename )
+    {
+        QFileInfo file_info( m_filename );
+        if ( file_info.suffix().isEmpty() )
+        {
+            m_filename += ".txt";
+        }
+
+        if ( fileExists(m_filename) )
+        {
+            QFile file( m_filename );
+
+            if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+            {
+                QMessageBox::warning( this,
+                                      "Can not open file for reading.",
+                                      QString("The file %1 can not opened for reading. Do you have reading access for the "
+                                      "selected folder?").arg(m_filename) );
+            }
+            else
+            {
+                // Create progress dialog
+                QProgressDialog progressDialog( "Loading Settings...", "", 0, 100, this );
+                progressDialog.setCancelButton( nullptr );
+                progressDialog.setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowTitleHint);
+                progressDialog.show();
+
+                // sleep for 100ms and refresh progress bar, this ensures that the progress bar is correctly shown under linux
+                QThread::msleep( 100 );
+                progressDialog.setValue( 0 );
+                QApplication::processEvents(QEventLoop::WaitForMoreEvents);
+
+                // Disable updpates of the GUI
+                this->setUpdatesEnabled( false );
+
+                QString settings;
+                QTextStream stream(&file);
+                settings.append(stream.readAll());
+
+                int rem_index = settings.lastIndexOf("=");
+                settings.remove(0, rem_index + 3);
+
+                while( !settings.isEmpty() )
+                {
+                    int index =  settings.indexOf(QRegExp("\n"), 0);
+                    QString command = settings.left(index);
+
+                    // Load settings
+                    m_dev->GetProVideoSystemItf()->LoadSavedSettingsFromFile(command);
+
+                    // Remove sent command
+                    settings.remove(0, index + 1);
+                }
+
+                progressDialog.setValue( 50 );
+
+                file.close();
+
+                // Resync settings
+                m_dev->resync();
+
+                // Set dialog to 100%
+                progressDialog.setValue( 100 );
                 QApplication::processEvents();
 
                 // Re-enable updpates of the GUI

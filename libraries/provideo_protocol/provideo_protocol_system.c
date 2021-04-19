@@ -273,7 +273,7 @@
 #define CMD_COPY_SETTINGS_NO_PARMS              ( 2 )
 
 /******************************************************************************
- * @brief command "copy_settings"
+ * @brief command "dump_settings"
  *****************************************************************************/
 #define CMD_GET_DEVICE_SETTINGS                 ( "dump_settings\n" )
 #define CMD_SYNC_GET_DEVICE_SETTINGS            ( "dump_settings" )
@@ -281,6 +281,8 @@
 #define CMD_GET_DEVICE_SETTINGS_NO_PARAMS       ( 1 )
 
 #define CMD_GET_DEVICE_SETTINGS_RESPONSE_LINES  ( 2000 )
+
+#define CMD_SET_SETTINGS                        ( "%s\n" )
 
 /******************************************************************************
  * get_system_info
@@ -2160,6 +2162,39 @@ static int get_device_settings
     return ( 0 );
 }
 
+/******************************************************************************
+ * set_device_settings
+ *****************************************************************************/
+static int set_device_settings
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    int const                   no,
+    uint8_t * const             settings
+)
+{
+    (void) ctx;
+
+    int res;
+
+    // parameter check
+    if ( !no || !settings || (no > (int)sizeof(ctrl_protocol_system_sett_t)) )
+    {
+        return ( -EINVAL );
+    }
+
+    // command call to send a string to provideo system
+    res = set_param_string( channel, CMD_SET_SETTINGS, (char *)settings );
+
+    // return error code
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
+    return ( 0 );
+
+}
 
 /******************************************************************************
  * System protocol driver declaration
@@ -2215,6 +2250,7 @@ static ctrl_protocol_sys_drv_t provideo_sys_drv =
     .reset_settings               = reset_settings,
     .copy_settings                = copy_settings,
     .get_device_settings          = get_device_settings,
+    .set_device_settings          = set_device_settings,
 };
 
 /******************************************************************************
