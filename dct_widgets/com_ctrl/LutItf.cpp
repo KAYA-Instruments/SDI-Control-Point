@@ -48,8 +48,8 @@ void LutItf::resync()
     // operational mode
     GetLutMode();
     GetLutFixedMode();
-    GetLogMode();
-    GetPQMaxBrightness();
+    //GetLogMode();
+    //GetPQMaxBrightness();
 
     // preset
     // Note: Do this before GetLutFastGamma() otherwise the Lutbox might display the wrong plot

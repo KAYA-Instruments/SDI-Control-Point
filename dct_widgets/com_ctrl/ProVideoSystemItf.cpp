@@ -43,8 +43,8 @@ void ProVideoSystemItf::resync()
 
     // sync system info
     GetSystemInfo();
-    // sync RS232 bausrate 
-    GetRS232BaudRate();
+    // sync RS232 bausrate
+    //GetRS232BaudRate();
     // sync RS485 bausrate 
     GetRS485BaudRate();
     // sync RS485 slave address 
@@ -54,7 +54,7 @@ void ProVideoSystemItf::resync()
     // sync RS485 broadcast master
     GetRS485BroadcastMaster();
     // sync RS485 termination
-    GetRS485Termination();
+    //GetRS485Termination();
     // sync prompt enable-status 
     GetPrompt();
     // sync debug-level 

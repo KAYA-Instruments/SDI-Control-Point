@@ -42,9 +42,9 @@ void AutoItf::resync()
     GetStatExposureEnable();
     GetAecEnable();
     GetAecSetup();
-    GetAecWeights();
+    //GetAecWeights();
     GetAwbEnable();
-    GetAwbSpeed();
+    //GetAwbSpeed();
     GetAwbThreshold();
 
     GetStatRGB();

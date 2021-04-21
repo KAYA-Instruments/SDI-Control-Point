@@ -39,7 +39,7 @@ void IspItf::resync()
     GetLsc();
 
     // bayer pattern
-    GetBayerPattern();
+    //GetBayerPattern();
 
     // sync gains
     GetGain();

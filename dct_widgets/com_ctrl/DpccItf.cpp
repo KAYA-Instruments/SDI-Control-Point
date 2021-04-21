@@ -43,13 +43,13 @@ void DpccItf::resync()
     GetDpccCorrectionMode();
     
     // detection level
-    GetDpccDetectionLevel();
+    //GetDpccDetectionLevel();
 
     // defect pixel table
     GetDpccTable();
 
     // test mode
-    GetDpccTestMode();
+    //GetDpccTestMode();
 }
 
 /******************************************************************************
