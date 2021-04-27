@@ -564,6 +564,8 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         connect( dev->GetCamItf(), SIGNAL(CameraRoiOffsetInfoChanged(int,int,int,int)), m_ui->inoutBox, SLOT(onCameraRoiOffsetInfoChange(int,int,int,int)) );
         connect( dev->GetCamItf(), SIGNAL(CameraRoiOffsetChanged(int,int)), m_ui->inoutBox, SLOT(onCameraRoiOffsetChange(int,int)) );
         connect( m_ui->inoutBox, SIGNAL(CameraRoiOffsetChanged(int,int)), dev->GetCamItf(), SLOT(onCameraRoiOffsetChange(int,int)) );
+
+        connect( m_ui->inoutBox, SIGNAL(CameraDownscalerChange()), dev->GetCamItf(), SLOT(onDownscalerChange()) );
     }
 
 

@@ -172,6 +172,7 @@ signals:
     void CameraExposureChanged( int value );
 
     void CameraRoiOffsetChanged(int offset_x, int offset_y);
+    void CameraDownscalerChange();
 
     void ChainVideoModeChanged( int value );
     void ChainSdi2ModeChanged( int value );

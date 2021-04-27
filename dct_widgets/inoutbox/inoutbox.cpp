@@ -2597,6 +2597,10 @@ void InOutBox::onCbxSdi1DownscalerChange( int index )
 
     EmitDownscaleChanged( 1 , index );
 
+    // Get new ROI offset and stat ROI offset values
+    emit CameraDownscalerChange();
+    emit ROIVideoModeChanged();
+
     setNormalCursor();
 }
 
