@@ -28,7 +28,7 @@
 /******************************************************************************
  * general defines
  *****************************************************************************/
-#define MAX_NUM_CHAINS                  ( 2 )
+#define MAX_NUM_CHAINS                  ( 1 ) // TODO: set according to chain number
 #define MAX_DEVICE_ID                   ( 99 )
 #define SETTINGS_FILE_NAME              ( ".kaya-sdi-gui.ini" )
 

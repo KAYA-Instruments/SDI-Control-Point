@@ -214,3 +214,12 @@ void CamItf::onNotifyLogModeChange()
     GetCameraInfo();        // to get new gain/exposure time ranges
     GetCameraGain();        // to get new gain
 }
+
+/******************************************************************************
+ * CamItf::onDownscalerChange
+ *****************************************************************************/
+void CamItf::onDownscalerChange()
+{
+    GetCameraRoiOffsetInfo();  // to get new ROI offset ranges
+    GetCameraRoiOffset();      // to get new ROI offset
+}

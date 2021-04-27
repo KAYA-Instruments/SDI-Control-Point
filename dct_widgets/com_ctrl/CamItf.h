@@ -74,6 +74,9 @@ public slots:
 
     // notifier slot for Roi Offset change
     void onCameraRoiOffsetChange( int offset_x, int offset_y );
+
+    // notifier slot for Downscaler change
+    void onDownscalerChange();
 };
 
 #endif // _CAM_INTERFACE_H_

@@ -46,6 +46,7 @@
 #define MAIN_SETTINGS_SECTION_NAME          ( "MAIN" )
 #define MAIN_SETTINGS_SYSTEM_PLATFORM       ( "platform" )
 #define MAIN_SETTINGS_FILE_SCHEMA           ( "1" )
+#define RESET_IF_LUT_PRESET                 ( "lut_preset" )
 
 /******************************************************************************
  * Ui Settings which are stored in .ini file
@@ -563,6 +564,8 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         connect( dev->GetCamItf(), SIGNAL(CameraRoiOffsetInfoChanged(int,int,int,int)), m_ui->inoutBox, SLOT(onCameraRoiOffsetInfoChange(int,int,int,int)) );
         connect( dev->GetCamItf(), SIGNAL(CameraRoiOffsetChanged(int,int)), m_ui->inoutBox, SLOT(onCameraRoiOffsetChange(int,int)) );
         connect( m_ui->inoutBox, SIGNAL(CameraRoiOffsetChanged(int,int)), dev->GetCamItf(), SLOT(onCameraRoiOffsetChange(int,int)) );
+
+        connect( m_ui->inoutBox, SIGNAL(CameraDownscalerChange()), dev->GetCamItf(), SLOT(onDownscalerChange()) );
     }
 
 
@@ -1089,10 +1092,11 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
 
     connect( m_ui->infoBox, SIGNAL(GetRunTimeRequest()), dev->GetProVideoSystemItf(), SLOT(onGetRunTimeRequest()) );
     connect( m_ui->infoBox, SIGNAL(GetTempRequest(uint8_t)), dev->GetProVideoSystemItf(), SLOT(onGetTempRequest(uint8_t)) );
-    connect( m_ui->infoBox, SIGNAL(GetMaxTempRequest()), dev->GetProVideoSystemItf(), SLOT(onGetMaxTempRequest()) );
     connect( m_ui->infoBox, SIGNAL(GetFanSpeedRequest()), dev->GetProVideoSystemItf(), SLOT(onGetFanSpeedRequest()) );
-    connect( m_ui->infoBox, SIGNAL(GetOverTempCountRequest()), dev->GetProVideoSystemItf(), SLOT(onGetOverTempCountRequest()) );
     connect( m_ui->infoBox, SIGNAL(MaxTempReset()), dev->GetProVideoSystemItf(), SLOT(onMaxTempReset()) );
+    // TODO: Currently not implemented
+    //connect( m_ui->infoBox, SIGNAL(GetMaxTempRequest()), dev->GetProVideoSystemItf(), SLOT(onGetMaxTempRequest()) );
+    //connect( m_ui->infoBox, SIGNAL(GetOverTempCountRequest()), dev->GetProVideoSystemItf(), SLOT(onGetOverTempCountRequest()) );
 
     m_ui->infoBox->setNumTempSensors( deviceFeatures.numTempSensors );
 
@@ -1828,16 +1832,16 @@ void MainWindow::onLoadFromFileClicked()
     QString directory = QDir::currentPath();
 
     QFileDialog dialog( this );
-    dialog.setDefaultSuffix( "txt" );
+    dialog.setDefaultSuffix( "kyscp" );
     m_filename = dialog.getOpenFileName( this, tr("Load Device Settings"),
-                 directory, "Setting Files (*.txt);;All files (*.*)" );
+                 directory, "Setting Files (*.kyscp);;All files (*.*)" );
 
     if ( nullptr != m_filename )
     {
         QFileInfo file_info( m_filename );
         if ( file_info.suffix().isEmpty() )
         {
-            m_filename += ".txt";
+            m_filename += ".kyscp";
         }
 
         if ( fileExists(m_filename) )
@@ -1881,6 +1885,11 @@ void MainWindow::onLoadFromFileClicked()
 
                     // Load settings
                     m_dev->GetProVideoSystemItf()->LoadSavedSettingsFromFile(command);
+
+                    if( command.contains(RESET_IF_LUT_PRESET) )
+                    {
+                        m_dev->GetLutItf()->LutResetMasterSettingsMode();
+                    }
 
                     // Remove sent command
                     settings.remove(0, index + 1);
@@ -2046,18 +2055,18 @@ void MainWindow::onSaveToFileClicked()
     QString directory = QDir::currentPath();
     directory.append("/");
     directory.append(m_dev->getDeviceName());
-    directory.append(".txt");
+    directory.append(".kyscp");
 
     // NOTE: It can fail on gtk-systems when an empty filename is given
     //       in the native dialog-box, because GTK sends a SIGSEGV-signal
     //       to process and this is not handled by Qt.
     QFileDialog dialog( this );
-    dialog.setDefaultSuffix( "txt" );
+    dialog.setDefaultSuffix( "kyscp" );
 
     m_filename = dialog.getSaveFileName(
         this, tr("Save Device Settings"),
         directory,
-        "Setting Files (*.txt);;All files (*.*)"
+        "Setting Files (*.kyscp);;All files (*.*)"
     );
 
     QApplication::processEvents();
@@ -2098,7 +2107,7 @@ void MainWindow::onSaveToFileClicked()
             QTextStream out(&file);
 
             //// Write the device name and platform into the settings file
-            out << "Device : " << m_dev->getSystemPlatform() << endl << endl;
+            out << "Device Platform : " << m_dev->getSystemPlatform() << endl << endl;
             out << "Device Name : " << m_dev->getDeviceName() << endl << endl;
             out << "Device Firmware : " << m_dev->getDeviceVersion() << endl << endl;
             out << "Software Version : " << KAYA_VERSION_STR << endl << endl;

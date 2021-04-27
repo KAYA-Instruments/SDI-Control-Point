@@ -48,8 +48,8 @@ void LutItf::resync()
     // operational mode
     GetLutMode();
     GetLutFixedMode();
-    GetLogMode();
-    GetPQMaxBrightness();
+    //GetLogMode();
+    //GetPQMaxBrightness();
 
     // preset
     // Note: Do this before GetLutFastGamma() otherwise the Lutbox might display the wrong plot
@@ -898,6 +898,17 @@ void LutItf::onLutResetMaster( void )
 
     // sync sample data 
     GetLutSampleValuesMaster();
+}
+
+/******************************************************************************
+ * LutItf::LutResetMasterSettingsMode
+ *****************************************************************************/
+void LutItf::LutResetMasterSettingsMode( void )
+{
+    // set Blue-LUT reset on device
+    int res = ctrl_protocol_set_lut_reset_master( GET_PROTOCOL_INSTANCE(this),
+        GET_CHANNEL_INSTANCE(this) );
+    HANDLE_ERROR( res );
 }
 
 /******************************************************************************

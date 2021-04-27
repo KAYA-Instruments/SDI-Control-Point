@@ -62,11 +62,11 @@
 /******************************************************************************
  * @brief command "dpc_add_px" 
  *****************************************************************************/
-#define CMD_GET_DPCC_PIXEL                  ( "dpc_add_px\n" )
-#define CMD_SET_DPCC_PIXEL                  ( "dpc_add_px %i %i\n" )
-#define CMD_SET_DPCC_PIXELn                 ( "dpc_add_px %i %i\n%n" )
-#define CMD_SET_DPCC_PIXEL_WITH_COPY_FLAG   ( "dpc_add_px %i %i %i\n" )
-#define CMD_SYNC_DPCC_PIXEL                 ( "dpc_add_px " )
+#define CMD_GET_DPCC_PIXEL                  ( "dpc_add_pixel\n" )
+#define CMD_SET_DPCC_PIXEL                  ( "dpc_add_pixel %i %i\n" )
+#define CMD_SET_DPCC_PIXELn                 ( "dpc_add_pixel %i %i\n%n" )
+#define CMD_SET_DPCC_PIXEL_WITH_COPY_FLAG   ( "dpc_add_pixel %i %i %i\n" )
+#define CMD_SYNC_DPCC_PIXEL                 ( "dpc_add_pixel " )
 #define CMD_GET_DPCC_PIXEL_NO_PARMS         ( 2 )
 /* Usually transmitting one coordinate does not take long (well below the 100ms
  * default timeout), but as up to 2048 values can be transmitted the device
@@ -78,13 +78,13 @@
 /******************************************************************************
  * @brief command "dpc_del_px" 
  *****************************************************************************/
-#define CMD_DEL_DPCC_PIXEL                  ( "dpc_del_px %i\n" )
-#define CMD_DEL_DPCC_PIXEL_WITH_COPY_FLAG   ( "dpc_del_px %i %i %i\n" )
+#define CMD_DEL_DPCC_PIXEL                  ( "dpc_del_pixel %i\n" )
+#define CMD_DEL_DPCC_PIXEL_WITH_COPY_FLAG   ( "dpc_del_pixel %i %i %i\n" )
 
 /******************************************************************************
  * @brief command "dpc_del_px" 
  *****************************************************************************/
-#define CMD_CLEAR_DPCC_TABLE                ( "dpc_del_px\n" )
+#define CMD_CLEAR_DPCC_TABLE                ( "dpc_del_pixel\n" )
 #define CMD_CLEAR_DPCC_TABLE_TMO            ( 1000 )
 
 /******************************************************************************
