@@ -65,6 +65,8 @@ public:
     void GetLutSampleValuesBlue();
     void GetLutSampleValuesMaster();
 
+    void LutResetMasterSettingsMode( void );
+
     // fast gamma
     void GetLutFastGamma();
 

@@ -46,6 +46,7 @@
 #define MAIN_SETTINGS_SECTION_NAME          ( "MAIN" )
 #define MAIN_SETTINGS_SYSTEM_PLATFORM       ( "platform" )
 #define MAIN_SETTINGS_FILE_SCHEMA           ( "1" )
+#define RESET_IF_LUT_PRESET                 ( "lut_preset" )
 
 /******************************************************************************
  * Ui Settings which are stored in .ini file
@@ -1882,6 +1883,11 @@ void MainWindow::onLoadFromFileClicked()
 
                     // Load settings
                     m_dev->GetProVideoSystemItf()->LoadSavedSettingsFromFile(command);
+
+                    if( command.contains(RESET_IF_LUT_PRESET) )
+                    {
+                        m_dev->GetLutItf()->LutResetMasterSettingsMode();
+                    }
 
                     // Remove sent command
                     settings.remove(0, index + 1);

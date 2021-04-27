@@ -901,6 +901,17 @@ void LutItf::onLutResetMaster( void )
 }
 
 /******************************************************************************
+ * LutItf::LutResetMasterSettingsMode
+ *****************************************************************************/
+void LutItf::LutResetMasterSettingsMode( void )
+{
+    // set Blue-LUT reset on device
+    int res = ctrl_protocol_set_lut_reset_master( GET_PROTOCOL_INSTANCE(this),
+        GET_CHANNEL_INSTANCE(this) );
+    HANDLE_ERROR( res );
+}
+
+/******************************************************************************
  * LutItf::onLutFastGammaChange
  *****************************************************************************/
 void LutItf::onLutFastGammaChange( int gamma )
