@@ -541,9 +541,9 @@ void ROIBox::StatROIChange()
     SetROIUIs();
 
     // Emit ROI changed event
-    setWaitCursor();
+    //setWaitCursor();
     emit StatROIChanged(d_data->width, d_data->height, d_data->offset_x, d_data->offset_y);
-    setNormalCursor();
+    //setNormalCursor();
 
     d_data->setROIConfig();
 
