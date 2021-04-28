@@ -71,6 +71,7 @@ public:
         , max_offset_y ( 0 )
         , offset_x ( 0 )
         , offset_y ( 0 )
+        , numKeyPressEvent(false)
     {
         // initialize UI
         m_ui->setupUi( parent );
@@ -280,7 +281,38 @@ public:
     int                 max_offset_y;
     int                 offset_x;
     int                 offset_y;
+    bool                numKeyPressEvent;
 };
+
+bool ROIBox::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::KeyPress)
+    {
+        d_data->numKeyPressEvent = true;
+
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+        bool res = QObject::eventFilter(obj, event);
+
+        if (keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Enter)
+        {
+            d_data->numKeyPressEvent = false;
+            return QObject::eventFilter(obj, event);
+            //return true; /* Always accept return */
+        }
+        else
+        {
+            event->ignore();
+            return res;
+        }
+    }
+    else
+    {
+        d_data->numKeyPressEvent = false;
+
+        // standard event processing
+        return QObject::eventFilter(obj, event);
+    }
+}
 
 /******************************************************************************
  * ROIBox::ROIBox
@@ -313,6 +345,12 @@ ROIBox::ROIBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->sldStatROIHeight, SIGNAL(valueChanged(int)), this, SLOT(onSldStatROIHeightChange(int)) );
 
     connect( d_data->m_ui->btnReset, SIGNAL(clicked()), this, SLOT(onBtnResetClicked()) );
+
+    // Install event filter on line edit to catch events
+    d_data->m_ui->sbxStatROIOffsetX->installEventFilter(this);
+    d_data->m_ui->sbxStatROIOffsetY->installEventFilter(this);
+    d_data->m_ui->sbxStatROIWidth->installEventFilter(this);
+    d_data->m_ui->sbxStatROIHeight->installEventFilter(this);
 }
 
 /******************************************************************************
@@ -478,6 +516,20 @@ void ROIBox::ConfigSldChange(int & data_ref, int index, int step)
 }
 
 /******************************************************************************
+ * ROIBox::ConfigSbxChange
+ *****************************************************************************/
+void ROIBox::ConfigSbxChange(int & data_ref, int index, int step)
+{
+    int temp_index = index / step * step;
+
+    if(data_ref != temp_index || index != temp_index)
+    {
+        data_ref = temp_index;
+        StatROIChange();
+    }
+}
+
+/******************************************************************************
  * ROIBox::StatROIChange
  *****************************************************************************/
 void ROIBox::StatROIChange()
@@ -503,8 +555,10 @@ void ROIBox::StatROIChange()
  *****************************************************************************/
 void ROIBox::onSbxStatROIOffsetXChange( int index )
 {
-    d_data->offset_x = index;
-    StatROIChange();
+    if(!d_data->numKeyPressEvent)
+    {
+        ConfigSbxChange( d_data->offset_x, index, d_data->width_step);
+    }
 }
 
 /******************************************************************************
@@ -520,8 +574,10 @@ void ROIBox::onSldStatROIOffsetXChange( int index )
  *****************************************************************************/
 void ROIBox::onSbxStatROIOffsetYChange( int index )
 {
-    d_data->offset_y = index;
-    StatROIChange();
+    if(!d_data->numKeyPressEvent)
+    {
+        ConfigSbxChange( d_data->offset_y, index, d_data->height_step);
+    }
 }
 
 /******************************************************************************
@@ -537,13 +593,14 @@ void ROIBox::onSldStatROIOffsetYChange( int index )
  *****************************************************************************/
 void ROIBox::onSbxStatROIWidthChange( int index )
 {
-    d_data->width = index;
-
-    StatROIChange();
+    if(!d_data->numKeyPressEvent)
+    {
+        ConfigSbxChange( d_data->width, index, d_data->width_step);
+    }
 }
 
 /******************************************************************************
- * ROIBox::onSbxStatROIWidthChange
+ * ROIBox::onSldStatROIWidthChange
  *****************************************************************************/
 void ROIBox::onSldStatROIWidthChange( int index )
 {
@@ -555,9 +612,10 @@ void ROIBox::onSldStatROIWidthChange( int index )
  *****************************************************************************/
 void ROIBox::onSbxStatROIHeightChange( int index )
 {
-    d_data->height = index;
-
-    StatROIChange();
+    if(!d_data->numKeyPressEvent)
+    {
+        ConfigSbxChange( d_data->height, index, d_data->height_step);
+    }
 }
 
 /******************************************************************************

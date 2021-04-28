@@ -77,6 +77,8 @@ protected:
     void saveSettings( QSettings & ) Q_DECL_OVERRIDE;
     void applySettings( void ) Q_DECL_OVERRIDE;
 
+    bool eventFilter(QObject *obj, QEvent *evt) Q_DECL_OVERRIDE;
+
 signals:
     void StatROIChanged( int width, int height, int offset_x, int offset_y );
 
@@ -88,6 +90,7 @@ private:
     void SetROIUIs();
     void StatROIChange();
     void ConfigSldChange( int & data_ref, int index, int step );
+    void ConfigSbxChange( int & data_ref, int index, int step );
     void SetXRangeChanged( const QCPRange &, QCustomPlot * );
     void SetYRangeChanged( const QCPRange &, QCustomPlot * );
     void ConfigureHeightWidth();
@@ -105,7 +108,6 @@ private slots:
     void onSldStatROIWidthChange( int index );
     void onSbxStatROIHeightChange( int index );
     void onSldStatROIHeightChange( int index );
-
 
 private:
     class PrivateData;
