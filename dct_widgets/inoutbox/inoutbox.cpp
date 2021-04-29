@@ -25,6 +25,7 @@
 #include <QThread>
 #include <QTime>
 #include <QMessageBox>
+#include <QKeyEvent>
 
 #include "inoutbox.h"
 #include "ui_inoutbox.h"
@@ -153,6 +154,7 @@ public:
         , offset_y_step ( 1 )
         , roi_offset_x ( 0 )
         , roi_offset_y ( 0 )
+        , numKeyPressEvent(false)
     {
         // do nothing
     }
@@ -185,7 +187,39 @@ public:
     int                 offset_y_step;
     int                 roi_offset_x;
     int                 roi_offset_y;
+
+    bool                numKeyPressEvent;
 };
+
+bool InOutBox::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::KeyPress)
+    {
+        d_data->numKeyPressEvent = true;
+
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+        bool res = QObject::eventFilter(obj, event);
+
+        if (keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Enter)
+        {
+            d_data->numKeyPressEvent = false;
+            return QObject::eventFilter(obj, event);
+            //return true; /* Always accept return */
+        }
+        else
+        {
+            event->ignore();
+            return res;
+        }
+    }
+    else
+    {
+        d_data->numKeyPressEvent = false;
+
+        // standard event processing
+        return QObject::eventFilter(obj, event);
+    }
+}
 
 /******************************************************************************
  * InOutBox::InOutBox
@@ -448,6 +482,10 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->lblGenLockOffsetHorizontal->hide();
     //*******************************************
 
+    // Install event filter on line edit to catch events
+    d_data->m_ui->sbxRoiOffsetX->installEventFilter(this);
+    d_data->m_ui->sbxRoiOffsetY->installEventFilter(this);
+
     ////////////////////
     // operation mode
     ////////////////////
@@ -566,9 +604,9 @@ void InOutBox::setCameraIso( const int value )
     d_data->m_ui->sbxAnalogGain->setValue( value );
     d_data->m_ui->sbxAnalogGain->blockSignals( false );
 
-    setWaitCursor();
+    //setWaitCursor();
     emit CameraGainChanged( isoToGain(value) );
-    setNormalCursor();
+    //setNormalCursor();
 }
 
 /******************************************************************************
@@ -592,9 +630,9 @@ void InOutBox::setCameraExposure( const int value )
     d_data->m_ui->sbxExposure->setValue( value );
     d_data->m_ui->sbxExposure->blockSignals( false );
 
-    setWaitCursor();
+    //setWaitCursor();
     emit CameraExposureChanged( value );
-    setNormalCursor();
+    //setNormalCursor();
 }
 
 /******************************************************************************
@@ -653,9 +691,9 @@ void InOutBox::setAecSetPoint( const int value )
 
     d_data->m_AecSetup.setPoint = value;
     
-    setWaitCursor();
+    //setWaitCursor();
     emit AecSetupChanged( createAecVector() );
-    setNormalCursor();
+    //setNormalCursor();
 }
 
 /******************************************************************************
@@ -681,9 +719,9 @@ void InOutBox::setAecMaxIso( const int value )
 
     d_data->m_AecSetup.maxGain = isoToGain( value );
 
-    setWaitCursor();
+    //setWaitCursor();
     emit AecSetupChanged( createAecVector() );
-    setNormalCursor();
+    //setNormalCursor();
 }
 
 /******************************************************************************
@@ -709,9 +747,9 @@ void InOutBox::setAecControlSpeed( const int value )
 
     d_data->m_AecSetup.speed = value;
     
-    setWaitCursor();
+    //setWaitCursor();
     emit AecSetupChanged( createAecVector() );
-    setNormalCursor();
+    //setNormalCursor();
 }
 
 /******************************************************************************
@@ -2141,9 +2179,9 @@ void InOutBox::onSldIsoChange( int value )
     {
         d_data->m_cntEvents = 0;
         
-        setWaitCursor();
+        //setWaitCursor();
         emit CameraGainChanged( multiplyBy1000(value) );
-        setNormalCursor();
+        //setNormalCursor();
     }
 }
 
@@ -2158,9 +2196,9 @@ void InOutBox::onSldIsoReleased()
      * the activated() event of the combo box which is only triggerd by user interaction */
     UpdateIsoComboBox( d_data->m_ui->sldAnalogGain->value() );
         
-    setWaitCursor();
+    //setWaitCursor();
     emit CameraGainChanged( multiplyBy1000(d_data->m_ui->sldAnalogGain->value()) );
-    setNormalCursor();
+    //setNormalCursor();
 }
 
 /******************************************************************************
@@ -2177,9 +2215,9 @@ void InOutBox::onSbxIsoChange( double value )
      * the activated() event of the combo box which is only triggerd by user interaction */
     UpdateIsoComboBox( int(value) );
 
-    setWaitCursor();
+    //setWaitCursor();
     emit CameraGainChanged( int(value * 1000.0) );
-    setNormalCursor();
+    //setNormalCursor();
 }
 
 /******************************************************************************
@@ -2207,9 +2245,9 @@ void InOutBox::onCbxIsoChange( int index )
     d_data->m_ui->sldAnalogGain->blockSignals( false );
 
     // Emit gain changed event
-    setWaitCursor();
+    //setWaitCursor();
     emit CameraGainChanged( multiplyBy1000(iso) );
-    setNormalCursor();
+    //setNormalCursor();
 }
 
 /******************************************************************************
@@ -2317,9 +2355,9 @@ void InOutBox::onSldExposureChange( int value )
     {
         d_data->m_cntEvents = 0;
     
-        setWaitCursor();
+        //setWaitCursor();
         emit CameraExposureChanged( value );
-        setNormalCursor();
+        //setNormalCursor();
     }
 }
 
@@ -2334,9 +2372,9 @@ void InOutBox::onSldExposureReleased()
      * the activated() event of the combo box which is only triggerd by user interaction */
     UpdateExposureComboBox( d_data->m_ui->sldExposure->value() );
     
-    setWaitCursor();
+    //setWaitCursor();
     emit CameraExposureChanged( d_data->m_ui->sldExposure->value() );
-    setNormalCursor();
+    //setNormalCursor();
 }
 
 /******************************************************************************
@@ -2353,9 +2391,9 @@ void InOutBox::onSbxExposureChange( int value )
      * the activated() event of the combo box which is only triggerd by user interaction */
     UpdateExposureComboBox( value );
 
-    setWaitCursor();
+    //setWaitCursor();
     emit CameraExposureChanged( value );
-    setNormalCursor();
+    //setNormalCursor();
 }
 
 /******************************************************************************
@@ -2383,9 +2421,9 @@ void InOutBox::onCbxExposureChange( int index )
     d_data->m_ui->sldExposure->blockSignals( false );
 
     // Emit exposure changed event
-    setWaitCursor();
+    //setWaitCursor();
     emit CameraExposureChanged( exposure );
-    setNormalCursor();
+    ///setNormalCursor();
 }
 
 /******************************************************************************
@@ -2481,17 +2519,30 @@ void InOutBox::onBtnExposurePlusClicked( )
  *****************************************************************************/
 void InOutBox::onSbxRoiOffsetXChange( int index )
 {
-    d_data->roi_offset_x = index;
+    if( !d_data->numKeyPressEvent )
+    {
+        int temp_index = index / d_data->offset_x_step * d_data->offset_x_step;
 
-    // Set slider to new ROI value
-    d_data->m_ui->sldRoiOffsetX->blockSignals( true );
-    d_data->m_ui->sldRoiOffsetX->setValue( index );
-    d_data->m_ui->sldRoiOffsetX->blockSignals( false );
+        if( d_data->roi_offset_x != temp_index || index != temp_index )
+        {
+            d_data->roi_offset_x = temp_index;
 
-    // Emit ROI changed event
-    setWaitCursor();
-    emit CameraRoiOffsetChanged( d_data->roi_offset_x , d_data->roi_offset_y);
-    setNormalCursor();
+            // Set spin box to new ROI value
+            d_data->m_ui->sbxRoiOffsetX->blockSignals( true );
+            d_data->m_ui->sbxRoiOffsetX->setValue( d_data->roi_offset_x );
+            d_data->m_ui->sbxRoiOffsetX->blockSignals( false );
+
+            // Set slider to new ROI value
+            d_data->m_ui->sldRoiOffsetX->blockSignals( true );
+            d_data->m_ui->sldRoiOffsetX->setValue( d_data->roi_offset_x );
+            d_data->m_ui->sldRoiOffsetX->blockSignals( false );
+
+            // Emit ROI changed event
+            //setWaitCursor();
+            emit CameraRoiOffsetChanged( d_data->roi_offset_x , d_data->roi_offset_y );
+            //setNormalCursor();
+        }
+    }
 }
 
 /******************************************************************************
@@ -2499,17 +2550,30 @@ void InOutBox::onSbxRoiOffsetXChange( int index )
  *****************************************************************************/
 void InOutBox::onSbxRoiOffsetYChange( int index )
 {
-    d_data->roi_offset_y = index;
+    if( !d_data->numKeyPressEvent )
+    {
+        int temp_index = index / d_data->offset_x_step * d_data->offset_x_step;
 
-    // Set slider to new ROI value
-    d_data->m_ui->sldRoiOffsetY->blockSignals( true );
-    d_data->m_ui->sldRoiOffsetY->setValue( index );
-    d_data->m_ui->sldRoiOffsetY->blockSignals( false );
+        if( d_data->roi_offset_x != temp_index || index != temp_index )
+        {
+            d_data->roi_offset_y = index;
 
-    // Emit ROI changed event
-    setWaitCursor();
-    emit CameraRoiOffsetChanged( d_data->roi_offset_x, d_data->roi_offset_y);
-    setNormalCursor();
+            // Set spin box to new ROI value
+            d_data->m_ui->sbxRoiOffsetY->blockSignals( true );
+            d_data->m_ui->sbxRoiOffsetY->setValue( d_data->roi_offset_y );
+            d_data->m_ui->sbxRoiOffsetY->blockSignals( false );
+
+            // Set slider to new ROI value
+            d_data->m_ui->sldRoiOffsetY->blockSignals( true );
+            d_data->m_ui->sldRoiOffsetY->setValue( d_data->roi_offset_y );
+            d_data->m_ui->sldRoiOffsetY->blockSignals( false );
+
+            // Emit ROI changed event
+            //setWaitCursor();
+            emit CameraRoiOffsetChanged( d_data->roi_offset_x, d_data->roi_offset_y );
+            //setNormalCursor();
+        }
+    }
 }
 
 /******************************************************************************
@@ -2533,9 +2597,9 @@ void InOutBox::onSldRoiOffsetXChange( int index )
         d_data->m_ui->sbxRoiOffsetX->blockSignals( false );
 
         // Emit ROI changed event
-        setWaitCursor();
+        //setWaitCursor();
         emit CameraRoiOffsetChanged(d_data->roi_offset_x , d_data->roi_offset_y);
-        setNormalCursor();
+        //setNormalCursor();
     }
 }
 
@@ -2560,9 +2624,9 @@ void InOutBox::onSldRoiOffsetYChange( int index )
         d_data->m_ui->sbxRoiOffsetY->blockSignals( false );
 
         // Emit ROI changed event
-        setWaitCursor();
+        //setWaitCursor();
         emit CameraRoiOffsetChanged( d_data->roi_offset_x, d_data->roi_offset_y);
-        setNormalCursor();
+        //setNormalCursor();
     }
 }
 
@@ -2862,9 +2926,9 @@ void InOutBox::onCbxMaxAnalogGainEnableChange( int value )
     enableGainConfWidgets( !enable );
     enableMaxAnalogGainWidgets( enable );
 
-    setWaitCursor();
+    //setWaitCursor();
     emit AecSetupChanged( createAecVector() );
-    setNormalCursor();
+    //setNormalCursor();
 }
 
 /******************************************************************************
@@ -2879,9 +2943,9 @@ void InOutBox::onCbxMaxExposureEnableChange( int value )
     enableCamConfWidgets( !enable );
     enableMaxExposureWidgets( enable );
 
-    setWaitCursor();
+    //setWaitCursor();
     emit AecSetupChanged( createAecVector() );
-    setNormalCursor();
+    //setNormalCursor();
 }
 
 /******************************************************************************
@@ -2966,9 +3030,9 @@ void InOutBox::onSldSetPointChange( int value )
     {
         d_data->m_cntEvents = 0;
         
-        setWaitCursor();
+        //setWaitCursor();
         emit AecSetupChanged( createAecVector() );
-        setNormalCursor();
+        //setNormalCursor();
     }
 }
 
@@ -2979,9 +3043,9 @@ void InOutBox::onSldSetPointReleased()
 {
     d_data->m_cntEvents = 0;
 
-    setWaitCursor();
+    //setWaitCursor();
     emit AecSetupChanged( createAecVector() );
-    setNormalCursor();
+    //setNormalCursor();
 }
 
 /******************************************************************************
@@ -2995,9 +3059,9 @@ void InOutBox::onSbxSetPointChange( int value )
 
     d_data->m_AecSetup.setPoint = value;
     
-    setWaitCursor();
+    //setWaitCursor();
     emit AecSetupChanged( createAecVector() );
-    setNormalCursor();
+    //setNormalCursor();
 }
 
 /******************************************************************************
@@ -3016,9 +3080,9 @@ void InOutBox::onSldMaxAnalogGainChange( int value )
     {
         d_data->m_cntEvents = 0;
 
-        setWaitCursor();
+        //setWaitCursor();
         emit AecSetupChanged( createAecVector() );
-        setNormalCursor();
+        //setNormalCursor();
     }
 }
 
@@ -3029,9 +3093,9 @@ void InOutBox::onSldMaxAnalogGainReleased()
 {
     d_data->m_cntEvents = 0;
 
-    setWaitCursor();
+    //setWaitCursor();
     emit AecSetupChanged( createAecVector() );
-    setNormalCursor();
+    //setNormalCursor();
 }
 
 /******************************************************************************
@@ -3045,9 +3109,9 @@ void InOutBox::onSbxMaxAnalogGainChange( double value )
 
     d_data->m_AecSetup.maxGain = int(value * 1000.0);
 
-    setWaitCursor();
+    //setWaitCursor();
     emit AecSetupChanged( createAecVector() );
-    setNormalCursor();
+    //setNormalCursor();
 }
 
 /******************************************************************************
@@ -3066,9 +3130,9 @@ void InOutBox::onSldMaxExposureChange( int value )
     {
         d_data->m_cntEvents = 0;
 
-        setWaitCursor();
+        //setWaitCursor();
         emit AecSetupChanged( createAecVector() );
-        setNormalCursor();
+        //setNormalCursor();
     }
 }
 
@@ -3079,9 +3143,9 @@ void InOutBox::onSldMaxExposureReleased()
 {
     d_data->m_cntEvents = 0;
 
-    setWaitCursor();
+    //setWaitCursor();
     emit AecSetupChanged( createAecVector() );
-    setNormalCursor();
+    //setNormalCursor();
 }
 
 /******************************************************************************
@@ -3095,9 +3159,9 @@ void InOutBox::onSbxMaxExposureChange( int value )
 
     d_data->m_AecSetup.maxExposure = value;
 
-    setWaitCursor();
+    //setWaitCursor();
     emit AecSetupChanged( createAecVector() );
-    setNormalCursor();
+    //setNormalCursor();
 }
 
 /******************************************************************************
@@ -3116,9 +3180,9 @@ void InOutBox::onSldControlSpeedChange( int value )
     {
         d_data->m_cntEvents = 0;
         
-        setWaitCursor();
+        //setWaitCursor();
         emit AecSetupChanged( createAecVector() );
-        setNormalCursor();
+        //setNormalCursor();
     }
 }
 
@@ -3129,9 +3193,9 @@ void InOutBox::onSldControlSpeedReleased()
 {
     d_data->m_cntEvents = 0;
 
-    setWaitCursor();
+    //setWaitCursor();
     emit AecSetupChanged( createAecVector() );
-    setNormalCursor();
+    //setNormalCursor();
 }
 
 /******************************************************************************
@@ -3145,9 +3209,9 @@ void InOutBox::onSbxControlSpeedChange( int value )
 
     d_data->m_AecSetup.speed = value;
     
-    setWaitCursor();
+    //setWaitCursor();
     emit AecSetupChanged( createAecVector() );
-    setNormalCursor();
+    //setNormalCursor();
 }
 
 /******************************************************************************
@@ -3166,9 +3230,9 @@ void InOutBox::onSldToleranceChange( int value )
     {
         d_data->m_cntEvents = 0;
 
-        setWaitCursor();
+        //setWaitCursor();
         emit AecSetupChanged( createAecVector() );
-        setNormalCursor();
+        //setNormalCursor();
     }
 }
 
@@ -3179,9 +3243,9 @@ void InOutBox::onSldToleranceReleased()
 {
     d_data->m_cntEvents = 0;
 
-    setWaitCursor();
+    //setWaitCursor();
     emit AecSetupChanged( createAecVector() );
-    setNormalCursor();
+    //setNormalCursor();
 }
 
 /******************************************************************************
@@ -3195,9 +3259,9 @@ void InOutBox::onSbxToleranceChange( double value )
 
     d_data->m_AecSetup.clmTolerance = int(value * 10.0);
 
-    setWaitCursor();
+    //setWaitCursor();
     emit AecSetupChanged( createAecVector() );
-    setNormalCursor();
+    //setNormalCursor();
 }
 
 /******************************************************************************

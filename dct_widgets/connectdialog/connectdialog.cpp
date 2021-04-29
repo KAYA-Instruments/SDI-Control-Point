@@ -1848,7 +1848,7 @@ void ConnectDialog::reject()
         // Ask user if he wants to leave the GUI
         QMessageBox::StandardButton reply;
         reply = QMessageBox::question( this, "Close GUI?",
-                                       "The GUI is not connected to any device. Closing the connect dialog will also also close the GUI.\n\n"
+                                       "The GUI is not connected to any device. Closing the connect dialog will also close the GUI.\n\n"
                                        "Click 'Yes' to close the GUI, click 'No' to stay in the connect dialog.",
                                        QMessageBox::Yes | QMessageBox::No );
 

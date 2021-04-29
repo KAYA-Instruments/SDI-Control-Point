@@ -136,6 +136,8 @@ protected:
     void saveSettings( QSettings & s ) Q_DECL_OVERRIDE;
     void applySettings( void ) Q_DECL_OVERRIDE;
 
+    bool eventFilter(QObject *obj, QEvent *evt) Q_DECL_OVERRIDE;
+
     void addBayerPattern( QString name, int id );
     void addGenlockMode( QString name, int id );
     void addGenlockCrosslockEnable( QString name, int id);
