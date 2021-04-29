@@ -1878,3 +1878,8 @@ void ConnectDialog::rescan()
     updatePortsRS232( m_rs232 );
     updatePortsRS485( m_rs485 );
 }
+
+void ConnectDialog::on_tabController_currentChanged(int index)
+{
+    setActiveInterface( static_cast<Interface>(index) );
+}
