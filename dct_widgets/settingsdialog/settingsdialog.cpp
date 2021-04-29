@@ -39,8 +39,8 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     // initialize UI
     m_ui->setupUi(this);
 
-    // Change text of the "Save" button to "Apply and Save"
-    m_ui->buttonBox->button(QDialogButtonBox::Save)->setText("Apply and Save");
+    // Change text of the "Save" button to "Apply"
+    m_ui->buttonBox->button(QDialogButtonBox::Save)->setText("Apply");
 
     // add baudrates to baudrate combo boxes
     /* Note: Slow baudrates below 57600 baud are not supported by the GUI because
@@ -376,7 +376,7 @@ void SettingsDialog::accept()
 
     // Apply device name and serial port settings
     onBtnApplyDeviceNameClicked();
-    onBtnApplySerialPortSettingsClicked();
+    //onBtnApplySerialPortSettingsClicked();
 
     // Send device name changed event
     emit SaveSettings();
