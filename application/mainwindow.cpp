@@ -47,6 +47,10 @@
 #define MAIN_SETTINGS_SYSTEM_PLATFORM       ( "platform" )
 #define MAIN_SETTINGS_FILE_SCHEMA           ( "1" )
 #define RESET_IF_LUT_PRESET                 ( "lut_preset" )
+#define INTERPOLATE_MASTER_IF_LUT_PRESET    ( "lut_sample_master" )
+#define INTERPOLATE_RED_IF_LUT_PRESET       ( "lut_sample_red" )
+#define INTERPOLATE_GREEN_IF_LUT_PRESET     ( "lut_sample_green" )
+#define INTERPOLATE_BLUE_IF_LUT_PRESET      ( "lut_sample_blue" )
 
 /******************************************************************************
  * Ui Settings which are stored in .ini file
@@ -1671,9 +1675,12 @@ void MainWindow::onDefaultSettingsChanged(int8_t userSetting)
     {
         if(m_bUserSetComboBox)
         {
+            int index = m_userSetComboBox->currentIndex();
+            setUserSettingsDlg();
+            m_userSetComboBox->setCurrentIndex(index);
+
             if(-1 != userSetting)
             {
-                setUserSettingsDlg();
                 m_userSetComboBox->setItemText(userSetting, "Setting "+ QString::number(userSetting) + " (default)");
                 m_userSetComboBox->setCurrentIndex(userSetting);
             }
