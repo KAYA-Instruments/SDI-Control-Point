@@ -25,6 +25,7 @@
 #include <QThread>
 #include <QTime>
 #include <QMessageBox>
+#include <QKeyEvent>
 
 #include "inoutbox.h"
 #include "ui_inoutbox.h"
@@ -153,6 +154,7 @@ public:
         , offset_y_step ( 1 )
         , roi_offset_x ( 0 )
         , roi_offset_y ( 0 )
+        , numKeyPressEvent(false)
     {
         // do nothing
     }
@@ -185,7 +187,39 @@ public:
     int                 offset_y_step;
     int                 roi_offset_x;
     int                 roi_offset_y;
+
+    bool                numKeyPressEvent;
 };
+
+bool InOutBox::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::KeyPress)
+    {
+        d_data->numKeyPressEvent = true;
+
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+        bool res = QObject::eventFilter(obj, event);
+
+        if (keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Enter)
+        {
+            d_data->numKeyPressEvent = false;
+            return QObject::eventFilter(obj, event);
+            //return true; /* Always accept return */
+        }
+        else
+        {
+            event->ignore();
+            return res;
+        }
+    }
+    else
+    {
+        d_data->numKeyPressEvent = false;
+
+        // standard event processing
+        return QObject::eventFilter(obj, event);
+    }
+}
 
 /******************************************************************************
  * InOutBox::InOutBox
@@ -447,6 +481,10 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->sbxGenlockOffsetHorizontal->hide();
     d_data->m_ui->lblGenLockOffsetHorizontal->hide();
     //*******************************************
+
+    // Install event filter on line edit to catch events
+    d_data->m_ui->sbxRoiOffsetX->installEventFilter(this);
+    d_data->m_ui->sbxRoiOffsetY->installEventFilter(this);
 
     ////////////////////
     // operation mode
@@ -2481,17 +2519,30 @@ void InOutBox::onBtnExposurePlusClicked( )
  *****************************************************************************/
 void InOutBox::onSbxRoiOffsetXChange( int index )
 {
-    d_data->roi_offset_x = index;
+    if( !d_data->numKeyPressEvent )
+    {
+        int temp_index = index / d_data->offset_x_step * d_data->offset_x_step;
 
-    // Set slider to new ROI value
-    d_data->m_ui->sldRoiOffsetX->blockSignals( true );
-    d_data->m_ui->sldRoiOffsetX->setValue( index );
-    d_data->m_ui->sldRoiOffsetX->blockSignals( false );
+        if( d_data->roi_offset_x != temp_index || index != temp_index )
+        {
+            d_data->roi_offset_x = temp_index;
 
-    // Emit ROI changed event
-    //setWaitCursor();
-    emit CameraRoiOffsetChanged( d_data->roi_offset_x , d_data->roi_offset_y);
-    //setNormalCursor();
+            // Set spin box to new ROI value
+            d_data->m_ui->sbxRoiOffsetX->blockSignals( true );
+            d_data->m_ui->sbxRoiOffsetX->setValue( d_data->roi_offset_x );
+            d_data->m_ui->sbxRoiOffsetX->blockSignals( false );
+
+            // Set slider to new ROI value
+            d_data->m_ui->sldRoiOffsetX->blockSignals( true );
+            d_data->m_ui->sldRoiOffsetX->setValue( d_data->roi_offset_x );
+            d_data->m_ui->sldRoiOffsetX->blockSignals( false );
+
+            // Emit ROI changed event
+            //setWaitCursor();
+            emit CameraRoiOffsetChanged( d_data->roi_offset_x , d_data->roi_offset_y );
+            //setNormalCursor();
+        }
+    }
 }
 
 /******************************************************************************
@@ -2499,17 +2550,30 @@ void InOutBox::onSbxRoiOffsetXChange( int index )
  *****************************************************************************/
 void InOutBox::onSbxRoiOffsetYChange( int index )
 {
-    d_data->roi_offset_y = index;
+    if( !d_data->numKeyPressEvent )
+    {
+        int temp_index = index / d_data->offset_x_step * d_data->offset_x_step;
 
-    // Set slider to new ROI value
-    d_data->m_ui->sldRoiOffsetY->blockSignals( true );
-    d_data->m_ui->sldRoiOffsetY->setValue( index );
-    d_data->m_ui->sldRoiOffsetY->blockSignals( false );
+        if( d_data->roi_offset_x != temp_index || index != temp_index )
+        {
+            d_data->roi_offset_y = index;
 
-    // Emit ROI changed event
-    //setWaitCursor();
-    emit CameraRoiOffsetChanged( d_data->roi_offset_x, d_data->roi_offset_y);
-    //setNormalCursor();
+            // Set spin box to new ROI value
+            d_data->m_ui->sbxRoiOffsetY->blockSignals( true );
+            d_data->m_ui->sbxRoiOffsetY->setValue( d_data->roi_offset_y );
+            d_data->m_ui->sbxRoiOffsetY->blockSignals( false );
+
+            // Set slider to new ROI value
+            d_data->m_ui->sldRoiOffsetY->blockSignals( true );
+            d_data->m_ui->sldRoiOffsetY->setValue( d_data->roi_offset_y );
+            d_data->m_ui->sldRoiOffsetY->blockSignals( false );
+
+            // Emit ROI changed event
+            //setWaitCursor();
+            emit CameraRoiOffsetChanged( d_data->roi_offset_x, d_data->roi_offset_y );
+            //setNormalCursor();
+        }
+    }
 }
 
 /******************************************************************************
