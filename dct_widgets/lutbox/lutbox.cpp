@@ -907,6 +907,40 @@ public:
     QString                 m_filename;
 };
 
+bool LutBox::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::KeyPress)
+    {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+        bool res = QObject::eventFilter(obj, event);
+
+        if (keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Enter)
+        {
+            QVector<int> x;
+            QVector<int> y;
+
+            LutChannel ch = (LutChannel)d_data->m_ui->tabColorSelect->currentIndex();
+
+            // sort samples and remove X-duplicates (last X wins)
+            d_data->getDataFromModel( ch, x, y );
+            d_data->setSamples( ch, x, y );
+
+            //return true; /* Always accept return */
+            return QObject::eventFilter(obj, event);
+        }
+        else
+        {
+            event->ignore();
+            return res;
+        }
+    }
+    else
+    {
+        // standard event processing
+        return QObject::eventFilter(obj, event);
+    }
+}
+
 /******************************************************************************
  * LutBox::LutBox
  *****************************************************************************/
@@ -980,6 +1014,8 @@ LutBox::LutBox( QWidget * parent ) : DctWidgetBox( parent )
     // lut fast gamma
     connect( d_data->m_ui->sckbFastGamma, SIGNAL(ValueChanged(int)), this, SLOT(onFastGammaChanged(int)) );
     //connect( d_data->m_ui->btnDefaultFastGamma, SIGNAL(clicked()), this, SLOT(onDefaultFastGammaClicked()) );
+
+    d_data->m_ui->tblSamples->installEventFilter(this);
 
     // draw initial (master) lut line
     QVector<int> x;
