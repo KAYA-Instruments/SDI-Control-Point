@@ -531,3 +531,12 @@ void AutoItf::onAecWeightChange( int index, int weight )
             GET_CHANNEL_INSTANCE(this), 2, &value_array[0] );
     HANDLE_ERROR( res );
 }
+
+/******************************************************************************
+ * AutoItf::onGetAecSetup
+ *****************************************************************************/
+void AutoItf::onGetAecSetup()
+{
+    GetAecSetup();
+}
+

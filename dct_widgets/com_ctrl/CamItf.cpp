@@ -195,6 +195,22 @@ void CamItf::onCameraExposureChange( int value )
 }
 
 /******************************************************************************
+ * CamItf::onAnalogGainResyncRequest()
+ *****************************************************************************/
+void CamItf::onAnalogGainResyncRequest()
+{
+    GetCameraGain();
+}
+
+/******************************************************************************
+ * CamItf::onMaxExposureResyncRequest()
+ *****************************************************************************/
+void CamItf::onMaxExposureResyncRequest()
+{
+    GetCameraExposure();
+}
+
+/******************************************************************************
  * CamItf::onNotifyVideoModeChange
  *****************************************************************************/
 void CamItf::onNotifyVideoModeChange()

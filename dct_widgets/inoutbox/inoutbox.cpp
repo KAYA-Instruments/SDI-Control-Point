@@ -2902,6 +2902,7 @@ void InOutBox::onCbxAecEnableChange( int value )
 
     setWaitCursor();
     emit AecEnableChanged( d_data->m_AecSetup.run );
+
     setNormalCursor();
     
     if ( value == 0 )
@@ -2909,6 +2910,12 @@ void InOutBox::onCbxAecEnableChange( int value )
         // aec disabled, update exposure, gain, aperture widgets
         setWaitCursor();
         emit ResyncRequest();
+        setNormalCursor();
+    }
+    else
+    {
+        setWaitCursor();
+        emit GetAecSetup();
         setNormalCursor();
     }
 }
@@ -2929,6 +2936,18 @@ void InOutBox::onCbxMaxAnalogGainEnableChange( int value )
     //setWaitCursor();
     emit AecSetupChanged( createAecVector() );
     //setNormalCursor();
+    if ( value == 0 )
+    {
+        setWaitCursor();
+        emit ResyncAnalogGain();
+        setNormalCursor();
+    }
+    else
+    {
+        setWaitCursor();
+        emit GetAecSetup();
+        setNormalCursor();
+    }
 }
 
 /******************************************************************************
@@ -2946,6 +2965,19 @@ void InOutBox::onCbxMaxExposureEnableChange( int value )
     //setWaitCursor();
     emit AecSetupChanged( createAecVector() );
     //setNormalCursor();
+
+    if ( value == 0 )
+    {
+        setWaitCursor();
+        emit ResyncMaxExposure();
+        setNormalCursor();
+    }
+    else
+    {
+        setWaitCursor();
+        emit GetAecSetup();
+        setNormalCursor();
+    }
 }
 
 /******************************************************************************
