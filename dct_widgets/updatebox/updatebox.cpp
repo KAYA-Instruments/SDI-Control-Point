@@ -633,8 +633,8 @@ void UpdateBox::setSystemState( SystemStates state, bool force )
         {
             // flash state, set run button text to abort, so that user can stop the update
             d_data->m_ui->letSystemMode->setText( SYSTEM_STATE_FLASHING );
-            d_data->m_ui->btnRun->setEnabled( true );
-            d_data->m_ui->btnRun->setText( "Abort" );
+            d_data->m_ui->btnRun->setEnabled( false );
+            // d_data->m_ui->btnRun->setText( "Abort" );
         }
         else if ( state == RebootState )
         {

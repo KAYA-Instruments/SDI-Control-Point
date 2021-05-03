@@ -135,6 +135,8 @@ protected:
     void loadProfile( QSettings & s );
     void saveProfile( QSettings & s );
 
+    bool eventFilter(QObject *obj, QEvent *evt) Q_DECL_OVERRIDE;
+
 signals:
     void LutEnableChanged( int, int );
     void LutModeChanged( int );

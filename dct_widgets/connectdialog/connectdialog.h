@@ -152,6 +152,8 @@ private slots:
     void onDetectButtonClick();
     void onScanButtonClick();
 
+    void on_tabController_currentChanged(int index);
+
 protected:
     void showEvent( QShowEvent* event ) Q_DECL_OVERRIDE;
 
