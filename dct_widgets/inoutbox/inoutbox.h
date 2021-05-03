@@ -206,8 +206,12 @@ signals:
     void IrisAptChanged( int );
 
     void ResyncRequest( void );
+    void ResyncAnalogGain( void );
+    void ResyncMaxExposure( void );
 
     void ROIVideoModeChanged();
+
+    void GetAecSetup();
 
 public slots:
     void onBayerPatternChange( int value );

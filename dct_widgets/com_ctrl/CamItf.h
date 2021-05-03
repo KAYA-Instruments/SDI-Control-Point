@@ -66,6 +66,9 @@ public slots:
     void onCameraGainChange( int );
     void onCameraExposureChange( int );
 
+    void onAnalogGainResyncRequest();
+    void onMaxExposureResyncRequest();
+
     // notifier slot for video-mode change
     void onNotifyVideoModeChange();
 

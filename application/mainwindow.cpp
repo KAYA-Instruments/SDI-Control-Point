@@ -559,10 +559,12 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         // connect camera gain
         connect( dev->GetCamItf(), SIGNAL(CameraGainChanged(int)), m_ui->inoutBox, SLOT(onCameraGainChange(int)) );
         connect( m_ui->inoutBox, SIGNAL(CameraGainChanged(int)), dev->GetCamItf(), SLOT(onCameraGainChange(int)) );
+        connect( m_ui->inoutBox, SIGNAL(ResyncAnalogGain()), dev->GetCamItf(), SLOT(onAnalogGainResyncRequest()) );
 
         // connect camera exposure
         connect( dev->GetCamItf(), SIGNAL(CameraExposureChanged(int)), m_ui->inoutBox, SLOT(onCameraExposureChange(int)) );
         connect( m_ui->inoutBox, SIGNAL(CameraExposureChanged(int)), dev->GetCamItf(), SLOT(onCameraExposureChange(int)) );
+        connect( m_ui->inoutBox, SIGNAL(ResyncMaxExposure()), dev->GetCamItf(), SLOT(onMaxExposureResyncRequest()) );
 
         // connect camera ROI offset info & ROI offset
         connect( dev->GetCamItf(), SIGNAL(CameraRoiOffsetInfoChanged(int,int,int,int)), m_ui->inoutBox, SLOT(onCameraRoiOffsetInfoChange(int,int,int,int)) );
@@ -664,9 +666,12 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
 
         connect( dev->GetAutoItf(), SIGNAL(AecSetupChanged(QVector<int>)), m_ui->inoutBox, SLOT(onAecSetupChange(QVector<int>)) );
         connect( m_ui->inoutBox, SIGNAL(AecSetupChanged(QVector<int>)), dev->GetAutoItf(), SLOT(onAecSetupChange(QVector<int>)) );
+        connect( m_ui->inoutBox, SIGNAL(GetAecSetup()), dev->GetAutoItf(), SLOT(onGetAecSetup()) );
 
         connect( dev->GetAutoItf(), SIGNAL(AecWeightsChanged(QVector<int>)), m_ui->inoutBox, SLOT(onAecWeightsChange(QVector<int>)) );
         connect( m_ui->inoutBox, SIGNAL(AecWeightChanged(int,int)), dev->GetAutoItf(), SLOT(onAecWeightChange(int,int)) );
+
+
     }
 
     if (deviceFeatures.hasIrisItf)
@@ -1896,6 +1901,7 @@ void MainWindow::onLoadFromFileClicked()
                     if( command.contains(RESET_IF_LUT_PRESET) )
                     {
                         m_dev->GetLutItf()->LutResetMasterSettingsMode();
+                        QThread::msleep( 100 );
                     }
 
                     // Remove sent command

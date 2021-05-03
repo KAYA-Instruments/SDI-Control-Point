@@ -98,6 +98,7 @@ public slots:
     void onAecEnableChange( int enable );
     void onAecSetupChange( QVector<int> value );
     void onAecWeightChange( int index, int weight );
+    void onGetAecSetup();
 
     // notifier slot for white-balance update 
     void onNotifyWhiteBalanceUpdate();
