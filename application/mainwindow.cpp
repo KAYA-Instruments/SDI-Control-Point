@@ -1890,6 +1890,8 @@ void MainWindow::onLoadFromFileClicked()
                 int rem_index = settings.lastIndexOf("=");
                 settings.remove(0, rem_index + 3);
 
+                progressDialog.setValue( 20 );
+
                 while( !settings.isEmpty() )
                 {
                     int index =  settings.indexOf(QRegExp("\n"), 0);
@@ -1898,6 +1900,7 @@ void MainWindow::onLoadFromFileClicked()
                     // Load settings
                     m_dev->GetProVideoSystemItf()->LoadSavedSettingsFromFile(command);
 
+                    QThread::msleep( 50 );
                     if( command.contains(RESET_IF_LUT_PRESET) )
                     {
                         m_dev->GetLutItf()->LutResetMasterSettingsMode();

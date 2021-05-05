@@ -270,8 +270,7 @@ void IronSDI_Device::setSupportedFeatures(const uint32_t HwMask, const uint32_t 
         deviceFeatures->hasROIItf            = IS_IRON_SDI_FEATURE_AWB_AEC_AEG_EX_MASK( HwMask );
         deviceFeatures->hasSystemBroadcast   = IS_IRON_SDI_FEATURE_RS485_MASK(HwMask); // TODO: only if RS485 is enabled
         deviceFeatures->hasSystemSaveLoad    = IS_IRON_SDI_FEATURE_MULTI_USERSET_MASK( HwMask );
-
-        //if ( IS_IRON_SDI_FEATURE_HW_12BIT( HwMask ) )
+        deviceFeatures->lutBitWidth          = IS_IRON_SDI_FEATURE_HW_12BIT( HwMask ) ? 12 : 10;
     }
 
 }

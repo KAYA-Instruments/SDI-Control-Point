@@ -274,7 +274,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Scan the full port range (0 - 99) for all supported baudrates:.</string>
+          <string>Scan the full device address range (0 - 99) for all supported baudrates:</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -285,6 +285,9 @@
         <widget class="QPushButton" name="btScan">
          <property name="focusPolicy">
           <enum>Qt::StrongFocus</enum>
+         </property>
+         <property name="toolTip">
+          <string>Scan for all device address range</string>
          </property>
          <property name="text">
           <string>Scan All Baudrates for Devices</string>
