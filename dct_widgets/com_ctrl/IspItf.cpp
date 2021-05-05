@@ -946,3 +946,11 @@ void IspItf::onNotifyCameraGainChange()
 //    GetBlackLevel();  // Why was that here? The black levels do not change on gain change, so no need to fetch them
 }
 
+/******************************************************************************
+ * IspItf::onColorConversionMatrixRequested
+ *****************************************************************************/
+void IspItf::onColorConversionMatrixRequested()
+{
+    GetColorConversionMatrix();
+}
+

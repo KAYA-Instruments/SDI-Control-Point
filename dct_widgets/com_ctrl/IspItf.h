@@ -183,6 +183,8 @@ public slots:
                                         int c3, int c4, int c5,
                                         int c6, int c7, int c8 );
 
+    void onColorConversionMatrixRequested();
+
     // color space
     void onColorSpaceChange( int value );
 

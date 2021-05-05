@@ -1045,6 +1045,8 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
                  m_ui->outBox, SLOT(onColorConversionMatrixChange(int,int,int,int,int,int,int,int,int)) );
         connect( m_ui->outBox, SIGNAL(ColorConversionMatrixChanged(int,int,int,int,int,int,int,int,int)),
                  dev->GetIspItf(), SLOT(onColorConversionMatrixChange(int,int,int,int,int,int,int,int,int)) );
+        connect( m_ui->inoutBox, SIGNAL(ColorConversionMatrixRequested()),
+                 dev->GetIspItf(), SLOT(onColorConversionMatrixRequested()) );
     }
 
     if ( deviceFeatures.hasChainSdiSettings || deviceFeatures.hasChainHdmiSettings )
