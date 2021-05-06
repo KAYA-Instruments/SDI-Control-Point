@@ -1004,6 +1004,11 @@ LutBox::LutBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->LutPlotGreen , SIGNAL(mousePress(QMouseEvent*)), this, SLOT(onGreenPlotClicked(QMouseEvent*)) );
     connect( d_data->m_ui->LutPlotBlue  , SIGNAL(mousePress(QMouseEvent*)), this, SLOT(onBluePlotClicked(QMouseEvent*)) );
 
+    connect( d_data->m_ui->LutPlot      , SIGNAL(mouseMove(QMouseEvent*)), this, SLOT(onMasterPlotShowPoint(QMouseEvent*)) );
+    connect( d_data->m_ui->LutPlotRed   , SIGNAL(mouseMove(QMouseEvent*)), this, SLOT(onRedPlotShowPoint(QMouseEvent*)) );
+    connect( d_data->m_ui->LutPlotGreen , SIGNAL(mouseMove(QMouseEvent*)), this, SLOT(onGreenPlotShowPoint(QMouseEvent*)) );
+    connect( d_data->m_ui->LutPlotBlue  , SIGNAL(mouseMove(QMouseEvent*)), this, SLOT(onBluePlotShowPoint(QMouseEvent*)) );
+
     connect( d_data->m_ui->tblSamples->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
              this, SLOT(onSelectionChange(const QItemSelection &, const QItemSelection &)) );
 
@@ -2452,6 +2457,30 @@ void LutBox::PlotClicked( QMouseEvent * evt, LutChannel ch )
 }
 
 /******************************************************************************
+ * LutBox::PlotShowPoint
+ *****************************************************************************/
+void LutBox::PlotShowPoint( QMouseEvent * evt, LutChannel ch )
+{
+    // get pixel coordinate
+    QPoint p = evt->pos();
+
+    QCustomPlot * plot = d_data->getLutPlot( ch );
+
+    // I. Compute new sample coordinates
+    // compute coordinates
+    double x_ = plot->xAxis->pixelToCoord( (double)p.x() );
+    double y_ = plot->yAxis->pixelToCoord( (double)p.y() );
+
+    int x = (int)(x_ * (1 << LutBitWidth()));
+    int y = (int)(y_ * (1 << LutBitWidth()));
+
+    if(x >= 0 && y >= 0)
+    {
+        d_data->m_ui->letPlotAsixPoint->setText(QString::number(x) + " ," + QString::number(y));
+    }
+}
+
+/******************************************************************************
  * LutBox::onMasterPlotClicked
  *****************************************************************************/
 void LutBox::onMasterPlotClicked( QMouseEvent * evt )
@@ -2481,6 +2510,38 @@ void LutBox::onGreenPlotClicked( QMouseEvent * evt )
 void LutBox::onBluePlotClicked( QMouseEvent * evt )
 {
     PlotClicked( evt, Blue );
+}
+
+/******************************************************************************
+ * LutBox::onMasterPlotShowPoint
+ *****************************************************************************/
+void LutBox::onMasterPlotShowPoint( QMouseEvent * evt )
+{
+    PlotShowPoint( evt, Master );
+}
+
+/******************************************************************************
+ * LutBox::onRedPlotShowPoint
+ *****************************************************************************/
+void LutBox::onRedPlotShowPoint( QMouseEvent * evt )
+{
+    PlotShowPoint( evt, Red );
+}
+
+/******************************************************************************
+ * LutBox::onGreenPlotShowPoint
+ *****************************************************************************/
+void LutBox::onGreenPlotShowPoint( QMouseEvent * evt )
+{
+    PlotShowPoint( evt, Green );
+}
+
+/******************************************************************************
+ * LutBox::onBluePlotShowPoint
+ *****************************************************************************/
+void LutBox::onBluePlotShowPoint( QMouseEvent * evt )
+{
+    PlotShowPoint( evt, Blue );
 }
 
 /******************************************************************************

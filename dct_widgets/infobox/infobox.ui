@@ -929,19 +929,6 @@
          </layout>
         </item>
         <item>
-         <spacer name="spacerLicenses">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
          <widget class="QLabel" name="lblCopyright">
           <property name="text">
            <string>Copyright (C) 2018  Dream Chip Technologies GmbH
@@ -961,7 +948,7 @@ You can download the source code of this software from GitLab:</string>
            <cursorShape>PointingHandCursor</cursorShape>
           </property>
           <property name="text">
-           <string>&lt;a href=&quot;https://gitlab.com/dreamchip/provideo-gui&quot;&gt;https://gitlab.com/dreamchip/provideo-gui&lt;/a&gt;</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/KAYA-Instruments/SDI-Camera-GUI&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#bacfff;&quot;&gt;https://github.com/KAYA-Instruments/SDI-Camera-GUI&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="openExternalLinks">
            <bool>true</bool>

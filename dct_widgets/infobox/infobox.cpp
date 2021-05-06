@@ -150,9 +150,6 @@ InfoBox::InfoBox( QWidget * parent ) : DctWidgetBox( parent )
                                         "This is free software, and you are welcome to redistribute it under certain conditions. "
                                         "See above license for more details.\n\n"
                                         "You can download the source code of this software from GitHub:");
-
-    d_data->m_ui->lblLink->setText("<a href=\"https://github.com/KAYA-Instruments/SDI-Camera-GUI/\">https://github.com/KAYA-Instruments/SDI-Camera-GUI</a>");
-
 }
 
 /******************************************************************************

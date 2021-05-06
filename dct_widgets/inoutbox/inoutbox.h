@@ -213,6 +213,8 @@ signals:
 
     void GetAecSetup();
 
+    void ColorConversionMatrixRequested();
+
 public slots:
     void onBayerPatternChange( int value );
 

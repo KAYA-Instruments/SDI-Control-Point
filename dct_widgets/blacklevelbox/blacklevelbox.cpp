@@ -127,6 +127,7 @@ BlackLevelBox::BlackLevelBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->SensorBlackMaster->setMaxAngle( 180 );
     d_data->m_ui->SensorBlackMaster->setMaxRounds( 4 );
     d_data->m_ui->SensorBlackMaster->setFmt( BL_SENSOR_BLACK_DISPLAY_MASK );
+    d_data->m_ui->SensorBlackMaster->setMaxEvent(2);
 
     ////////////////////
     // flare level
@@ -149,6 +150,7 @@ BlackLevelBox::BlackLevelBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->FlareCompensationMaster->setMaxAngle( 180 );
     d_data->m_ui->FlareCompensationMaster->setMaxRounds( 4 );
     d_data->m_ui->FlareCompensationMaster->setFmt( BL_FLARE_LEVEL_DISPLAY_MASK );
+    d_data->m_ui->FlareCompensationMaster->setMaxEvent(2);
     
     ////////////////////
     // master black
@@ -171,6 +173,7 @@ BlackLevelBox::BlackLevelBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->MasterBlackMaster->setMaxAngle( 180 );
     d_data->m_ui->MasterBlackMaster->setMaxRounds( 4 );
     d_data->m_ui->MasterBlackMaster->setFmt( BL_MASTER_BLACK_DISPLAY_MASK );
+    d_data->m_ui->MasterBlackMaster->setMaxEvent(2);
 
     ////////////////////
     // connect signals
@@ -181,17 +184,17 @@ BlackLevelBox::BlackLevelBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->SensorBlack, SIGNAL(Value1Changed(int)), this, SLOT(onSensorBlackGreenChange(int)) );
     connect( d_data->m_ui->SensorBlack, SIGNAL(Value2Changed(int)), this, SLOT(onSensorBlackBlueChange(int)) );
     connect( d_data->m_ui->SensorBlackMaster, SIGNAL(ValueChanged(int)), this, SLOT(onSensorBlackMasterChange(int)) );
-    connect ( d_data->m_ui->btnSensorBlackReset, SIGNAL(clicked()), this, SLOT(onSensorBlackResetClicked()) );
+    connect( d_data->m_ui->btnSensorBlackReset, SIGNAL(clicked()), this, SLOT(onSensorBlackResetClicked()) );
 
     // connect flare compensation signals
     connect( d_data->m_ui->FlareCompensation, SIGNAL(ValuesChanged(int,int,int)), this, SLOT(onFlareCompensationChange(int,int,int)) );
     connect( d_data->m_ui->FlareCompensationMaster, SIGNAL(ValueChanged(int)), this, SLOT(onFlareCompensationMasterChange(int)) );
-    connect ( d_data->m_ui->btnFlareLevelReset, SIGNAL(clicked()), this, SLOT(onFlareLevelResetClicked()) );
+    connect( d_data->m_ui->btnFlareLevelReset, SIGNAL(clicked()), this, SLOT(onFlareLevelResetClicked()) );
 
     // connect master black signals
     connect( d_data->m_ui->MasterBlack, SIGNAL(ValuesChanged(int,int,int)), this, SLOT(onMasterBlackChange(int,int,int)) );
     connect( d_data->m_ui->MasterBlackMaster, SIGNAL(ValueChanged(int)), this, SLOT(onMasterBlackMasterChange(int)) );
-    connect ( d_data->m_ui->btnMasterBlackReset, SIGNAL(clicked()), this, SLOT(onMasterBlackResetClicked()) );
+    connect( d_data->m_ui->btnMasterBlackReset, SIGNAL(clicked()), this, SLOT(onMasterBlackResetClicked()) );
 
     ////////////////////
     // operation mode

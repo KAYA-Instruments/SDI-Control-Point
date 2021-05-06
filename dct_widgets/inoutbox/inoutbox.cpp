@@ -2640,6 +2640,7 @@ void InOutBox::onCbxVideoModeChange( int index )
     show4kGenlockNote( d_data->m_ui->cbxVideoMode->itemData( index ).toInt() );
     emit ROIVideoModeChanged();
     emit GetAecSetup();
+    emit ColorConversionMatrixRequested();
     setNormalCursor();
 }
 
