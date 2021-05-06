@@ -191,6 +191,7 @@ private:
 
     void SampleChanged( LutChannel ch );
     void PlotClicked( QMouseEvent * evt, LutChannel ch );
+    void PlotShowPoint( QMouseEvent * evt, LutChannel ch );
 
 private slots:
     // lut plot tab-widget
@@ -235,6 +236,11 @@ private slots:
     void onRedPlotClicked( QMouseEvent * );
     void onGreenPlotClicked( QMouseEvent * );
     void onBluePlotClicked( QMouseEvent * );
+
+    void onMasterPlotShowPoint( QMouseEvent * );
+    void onRedPlotShowPoint( QMouseEvent * );
+    void onGreenPlotShowPoint( QMouseEvent * );
+    void onBluePlotShowPoint( QMouseEvent * );
 
     void onSelectionChange( const QItemSelection &, const QItemSelection & );
 

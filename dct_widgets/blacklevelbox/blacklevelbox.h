@@ -44,7 +44,7 @@
 #define BL_FLARE_LEVEL_COMMA_POSITION       (       16 )
 #define BL_FLARE_LEVEL_BASE                 (        2 )
 #define BL_FLARE_LEVEL_DISPLAY_MULTIPLIER   (      100 )    // percentage display
-#define BL_FLARE_LEVEL_DISPLAY_MASK         (  "%2.2f" )
+#define BL_FLARE_LEVEL_DISPLAY_MASK         (  "%3.3f" )
 #define BL_FLARE_LEVEL_DEFAULT              (        0 )
 
 /******************************************************************************

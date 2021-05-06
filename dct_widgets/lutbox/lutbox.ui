@@ -422,6 +422,35 @@
              <item row="1" column="1">
               <layout class="QVBoxLayout" name="verticalLayoutTable">
                <item>
+                <widget class="QLabel" name="label_2">
+                 <property name="text">
+                  <string>X-Y Coordinate:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="letPlotAsixPoint">
+                 <property name="maximumSize">
+                  <size>
+                   <width>100</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="layoutDirection">
+                  <enum>Qt::RightToLeft</enum>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
                 <widget class="QPushButton" name="btnRemoveSample">
                  <property name="focusPolicy">
                   <enum>Qt::StrongFocus</enum>
@@ -1038,7 +1067,7 @@
   <customwidget>
    <class>SingleChannelKnobBox</class>
    <extends>QGroupBox</extends>
-   <header location="global">singlechannelknobbox.h</header>
+   <header>singlechannelknobbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
