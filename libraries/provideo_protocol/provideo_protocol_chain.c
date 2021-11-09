@@ -127,9 +127,9 @@
  * @brief command "genlock_crosslock"
  *****************************************************************************/
 #define CMD_GET_GENLOCK_CROSSLOCK           ( "genlock_crosslock\n" )
-#define CMD_SET_GENLOCK_CROSSLOCK           ( "genlock_crosslock %i %i\n" )
+#define CMD_SET_GENLOCK_CROSSLOCK           ( "genlock_crosslock %i\n" )
 #define CMD_SYNC_GENLOCK_CROSSLOCK          ( "genlock_crosslock " )
-#define CMD_GET_GENLOCK_CROSSLOCK_NO_PARMS  ( 2 )
+#define CMD_GET_GENLOCK_CROSSLOCK_NO_PARMS  ( 1 )
 #define CMD_SET_GENLOCK_CROSSLOCK_TMO       ( 15000 )
 
 /******************************************************************************
@@ -137,11 +137,18 @@
  *****************************************************************************/
 #define CMD_GET_GENLOCK_OFFSET              ( "genlock_offset\n" )
 #define CMD_SET_GENLOCK_OFFSET              ( "genlock_offset %i %i\n" )
-#define CMD_SET_GENLOCK_OFFSET_MAX          ( "genlock_offset %i %i %i %i\n" )
 #define CMD_SYNC_GENLOCK_OFFSET             ( "genlock_offset " )
 #define CMD_GET_GENLOCK_OFFSET_NO_PARMS     ( 2 )
-#define CMD_GET_GENLOCK_OFFSET_NO_PARMS_MAX ( 4 )
 #define CMD_SET_GENLOCK_OFFSET_TMO          ( 15000 )
+
+/******************************************************************************
+ * @brief command "genlock_offset_info"
+ *****************************************************************************/
+#define CMD_GET_GENLOCK_OFFSET_INFO         ( "genlock_offset_info\n" )
+#define CMD_SET_GENLOCK_OFFSET_INFO         ( "genlock_offset_info %i %i\n" )
+#define CMD_SYNC_GENLOCK_OFFSET_INFO        ( "genlock_offset_info " )
+#define CMD_GET_GENLOCK_OFFSET_INFO_NO_PARMS ( 2 )
+#define CMD_SET_GENLOCK_OFFSET_INFO_TMO     ( 15000 )
 
 /******************************************************************************
  * @brief command "genlock_term" 
@@ -692,31 +699,24 @@ static int get_genlock_crosslock
 (
     void * const                ctx,
     ctrl_channel_handle_t const channel,
-    int const                   no,
-    uint8_t * const             values
+    uint8_t * const             vmode
 )
 {
     (void) ctx;
 
-    int enable, vmode;
+    int value;
     int res;
 
     // parameter check
-    if ( !values )
+    if ( !vmode )
     {
         return ( -EINVAL );
     }
 
-    if ( no != CMD_GET_GENLOCK_CROSSLOCK_NO_PARMS )
-    {
-        // return -EFAULT if number of parameter not matching
-        return ( -EFAULT );
-    }
-
-    // command call to get 2 parameters from provideo system
+    // command call to get 1 parameters from provideo system
     res = get_param_int_X( channel, 2,
             CMD_GET_GENLOCK_CROSSLOCK, CMD_SYNC_GENLOCK_CROSSLOCK, CMD_SET_GENLOCK_CROSSLOCK,
-            &enable, &vmode );
+            &value );
 
     // return error code
     if ( res < 0 )
@@ -731,8 +731,7 @@ static int get_genlock_crosslock
     }
 
     // type-cast to range
-    values[0] = UINT8( enable );
-    values[1] = UINT8( vmode );
+    *vmode = UINT8( value );
 
     return ( 0 );
 }
@@ -744,21 +743,15 @@ static int set_genlock_crosslock
 (
     void * const                ctx,
     ctrl_channel_handle_t const channel,
-    int const                   no,
-    uint8_t * const             values
+    uint8_t const             vmode
 )
 {
     (void) ctx;
 
-    if ( no != CMD_GET_GENLOCK_CROSSLOCK_NO_PARMS )
-    {
-        // return -EFAULT if number of parameter not matching
-        return ( -EFAULT );
-    }
-
     return ( set_param_int_X_with_tmo( channel, CMD_SET_GENLOCK_CROSSLOCK, CMD_SET_GENLOCK_CROSSLOCK_TMO,
-                                       INT( values[0] ), INT( values[1] ) ) );
+                                       INT( vmode ) ) );
 }
+
 /******************************************************************************
  * get_genlock_offset - gets the genlock offset 
  *****************************************************************************/
@@ -772,7 +765,7 @@ static int get_genlock_offset
 {
     (void) ctx;
 
-    int vertical, horizontal, verticalMax, horizontalMax;
+    int vertical, horizontal;
     int res;
 
     // parameter check
@@ -781,7 +774,7 @@ static int get_genlock_offset
         return ( -EINVAL );
     }
 
-    if ( no != CMD_GET_GENLOCK_OFFSET_NO_PARMS_MAX )
+    if ( no != CMD_GET_GENLOCK_OFFSET_NO_PARMS )
     {
         // return -EFAULT if number of parameter not matching
         return ( -EFAULT );
@@ -789,8 +782,8 @@ static int get_genlock_offset
 
     // command call to get 4 parameters from provideo system
     res = get_param_int_X( channel, 2,
-            CMD_GET_GENLOCK_OFFSET, CMD_SYNC_GENLOCK_OFFSET, CMD_SET_GENLOCK_OFFSET_MAX,
-            &vertical, &horizontal, &verticalMax, &horizontalMax);
+            CMD_GET_GENLOCK_OFFSET, CMD_SYNC_GENLOCK_OFFSET, CMD_SET_GENLOCK_OFFSET,
+            &vertical, &horizontal);
 
     // return error code
     if ( res < 0 )
@@ -799,7 +792,7 @@ static int get_genlock_offset
     }
 
     // return -EFAULT if number of parameter not matching
-    else if ( res != CMD_GET_GENLOCK_OFFSET_NO_PARMS_MAX )
+    else if ( res != CMD_GET_GENLOCK_OFFSET_NO_PARMS )
     {
         return ( -EFAULT );
     }
@@ -807,8 +800,58 @@ static int get_genlock_offset
     // type-cast to range
     values[0] = INT16( vertical );
     values[1] = INT16( horizontal );
-    values[2] = INT16( verticalMax );
-    values[3] = INT16( horizontalMax );
+
+    return ( 0 );
+}
+
+/******************************************************************************
+ * get_genlock_offset_info - gets the genlock offset info
+ *****************************************************************************/
+static int get_genlock_offset_info
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    int const                   no,
+    int16_t * const             values
+)
+{
+    (void) ctx;
+
+    int verticalMax, horizontalMax;
+    int res;
+
+    // parameter check
+    if ( !values )
+    {
+        return ( -EINVAL );
+    }
+
+    if ( no != CMD_GET_GENLOCK_OFFSET_INFO_NO_PARMS )
+    {
+        // return -EFAULT if number of parameter not matching
+        return ( -EFAULT );
+    }
+
+    // command call to get 2 parameters from provideo system
+    res = get_param_int_X( channel, 2,
+            CMD_GET_GENLOCK_OFFSET_INFO, CMD_SYNC_GENLOCK_OFFSET_INFO, CMD_SET_GENLOCK_OFFSET_INFO,
+            &verticalMax, &horizontalMax);
+
+    // return error code
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
+    // return -EFAULT if number of parameter not matching
+    else if ( res != CMD_GET_GENLOCK_OFFSET_INFO_NO_PARMS )
+    {
+        return ( -EFAULT );
+    }
+
+    // type-cast to range
+    values[0] = INT16( verticalMax );
+    values[1] = INT16( horizontalMax );
 
     return ( 0 );
 }
@@ -1406,6 +1449,7 @@ static ctrl_protocol_chain_drv_t provideo_chain_drv =
     .set_genlock_crosslock           = set_genlock_crosslock,
     .get_genlock_offset              = get_genlock_offset,
     .set_genlock_offset              = set_genlock_offset,
+    .get_genlock_offset_info         = get_genlock_offset_info,
     .get_genlock_termination         = get_genlock_termination,
     .set_genlock_termination         = set_genlock_termination,
     .get_genlock_loss_of_link_filter = get_genlock_loss_of_link_filter,

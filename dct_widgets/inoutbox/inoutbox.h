@@ -98,9 +98,8 @@ public:
 
     QString GenLockMode() const;
     void setGenLockMode( const QString mode );
-    QString GenLockCrosslockEnable() const;
     QString GenLockCrosslockVmode() const;
-    void setGenLockCrosslock( const QString enable, const QString vmode );
+    void setGenLockCrosslock( const QString vmode );
     int GenLockOffsetVertical() const;
     void setGenLockOffsetVertical( const int value );
     int GenLockOffsetHorizontal() const;
@@ -115,6 +114,7 @@ public:
     void setLensChadingCorrectionSettingsVisible(const bool value);
     void setApartureVisible(const bool value);
     void setGenLockVisible(const bool value);
+    void setGenLockTermCrosslockOffsetVisible(const bool value);
     void setTimeCodeVisible(const bool groupbox_visible, const bool hold_visible);
     void setSdi2ModeVisible(const bool value);
     void setDownscaleModeVisible(const bool value);
@@ -140,7 +140,6 @@ protected:
 
     void addBayerPattern( QString name, int id );
     void addGenlockMode( QString name, int id );
-    void addGenlockCrosslockEnable( QString name, int id);
     void addSdi2Mode( QString name, int id );
     void addDownscaleMode( QString name, int id );
     void addFlipMode( QString name, int id );
@@ -160,7 +159,7 @@ protected:
     void enableMaxExposureWidgets( bool enable );
     void enableMaxAnalogGainWidgets( bool enable );
 
-    void updateEnableOfGenlockSettings( int genlockMode, int crosslockMode );
+    void updateEnableOfGenlockSettings( bool enable );
 
     QVector<int> createAecVector( void );
     QVector<uint> createLscVector( void );
@@ -189,7 +188,7 @@ signals:
     
     void ChainGenlockModeChanged( int value );
     void ChainGenLockStatusRefresh();
-    void ChainGenlockCrosslockChanged( int enable, int vmode );
+    void ChainGenlockCrosslockChanged( int vmode );
     void ChainGenlockOffsetChanged( int vertical, int horizontal );
     void ChainGenlockTerminationChanged( int value );
     void ChainGenlockLOLFilterChanged( int value );
@@ -215,6 +214,10 @@ signals:
 
     void ColorConversionMatrixRequested();
 
+    void GenlockSyncRequested();
+    void GenlockCrosslockSyncRequested();
+    void GenlockOffsetSyncRequested();
+
 public slots:
     void onBayerPatternChange( int value );
 
@@ -237,7 +240,7 @@ public slots:
 
     void onChainGenlockModeChange( int value );
     void onChainGenlockStatusChange( int value );
-    void onChainGenlockCrosslockChange( int enable, int vmode );
+    void onChainGenlockCrosslockChange( int mode );
     void onChainGenlockOffsetChange( int vertical , int horizontal );
     void onChainGenlockOffsetMaxChange( int verticalMax, int horizontalMax );
     void onChainGenlockTerminationChange( int value );
@@ -294,7 +297,6 @@ private slots:
     
     void onCbxGenlockModeChange( int index );
     void onBtnGenlockStatusRefresh();
-    void onCbxGenlockCrosslockEnableChange( int index );
     void onCbxGenlockCrosslockVmodeChange( int index );
     void onSbxGenlockOffsetVerticalChange( int value );
     void onSbxGenlockOffsetHorizontalChange( int value );

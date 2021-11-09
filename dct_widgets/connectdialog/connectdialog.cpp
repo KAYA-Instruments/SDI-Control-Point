@@ -42,6 +42,8 @@
 #include "connectdialog.h"
 #include "ui_connectdialog.h"
 
+#include "../version.h"
+
 /******************************************************************************
  * local definitions
  *****************************************************************************/
@@ -207,6 +209,10 @@ ConnectDialog::ConnectDialog( QWidget * parent )
 
     //int currentIndexRS485 = m_ui->tabController->indexOf(m_ui->tabRS485);
     //m_ui->tabController->removeTab(currentIndexRS485);
+
+    // Set current softare version
+    QString title = m_ui->lblSoftwareVersion->text() + ' ' + QString(KAYA_COMMERCIAL_VERSION);
+    m_ui->lblSoftwareVersion->setText(title);
 }
 
 /******************************************************************************

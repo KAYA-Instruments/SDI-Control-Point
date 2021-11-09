@@ -369,14 +369,13 @@ int ctrl_protocol_get_genlock_crosslock
 (
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel,
-    int const                    no,
-    uint8_t * const               values
+    uint8_t * const              vmode
 )
 {
     CHECK_HANDLE( protocol );
     CHECK_DRV_FUNC( CHAIN_DRV(protocol->drv), get_genlock_crosslock );
-    CHECK_NOT_NULL( values );
-    return ( CHAIN_DRV(protocol->drv)->get_genlock_crosslock( protocol->ctx, channel, no, values ) );
+    CHECK_NOT_NULL( vmode );
+    return ( CHAIN_DRV(protocol->drv)->get_genlock_crosslock( protocol->ctx, channel, vmode ) );
 }
 
 /******************************************************************************
@@ -386,14 +385,12 @@ int ctrl_protocol_set_genlock_crosslock
 (
     ctrl_protocol_handle_t const protocol,
     ctrl_channel_handle_t const  channel,
-    int const                    no,
-    uint8_t * const               values
+    uint8_t const                vmode
 )
 {
     CHECK_HANDLE( protocol );
     CHECK_DRV_FUNC( CHAIN_DRV(protocol->drv), set_genlock_crosslock );
-    CHECK_NOT_NULL( values );
-    return ( CHAIN_DRV(protocol->drv)->set_genlock_crosslock( protocol->ctx, channel, no, values ) );
+    return ( CHAIN_DRV(protocol->drv)->set_genlock_crosslock( protocol->ctx, channel, vmode ) );
 }
 
 /******************************************************************************
@@ -428,6 +425,23 @@ int ctrl_protocol_set_genlock_offset
     CHECK_DRV_FUNC( CHAIN_DRV(protocol->drv), set_genlock_offset );
     CHECK_NOT_NULL( values );
     return ( CHAIN_DRV(protocol->drv)->set_genlock_offset( protocol->ctx, channel, no, values ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_get_genlock_offset_info
+ *****************************************************************************/
+int ctrl_protocol_get_genlock_offset_info
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    int16_t * const              values
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( CHAIN_DRV(protocol->drv), get_genlock_offset_info );
+    CHECK_NOT_NULL( values );
+    return ( CHAIN_DRV(protocol->drv)->get_genlock_offset_info( protocol->ctx, channel, no, values ) );
 }
 
 /******************************************************************************

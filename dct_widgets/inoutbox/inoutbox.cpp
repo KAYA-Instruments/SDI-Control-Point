@@ -111,7 +111,6 @@ public:
 #define INOUT_SETTINGS_AUDIO_GAIN                   ( "audio_gain" )
 
 #define INOUT_SETTINGS_GENLOCK_MODE                 ( "genlock_mode" )
-#define INOUT_SETTINGS_GENLOCK_CROSSLOCK_ENABLE     ( "genlock_crosslock_enable" )
 #define INOUT_SETTINGS_GENLOCK_CROSSLOCK_VMODE      ( "genlock_crosslock_vmode" )
 #define INOUT_SETTINGS_GENLOCK_OFFSET_VERTICAL      ( "genlock_offset_vertical" )
 #define INOUT_SETTINGS_GENLOCK_OFFSET_HORIZONTAL    ( "genlock_offset_horizontal" )
@@ -326,12 +325,6 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
         addGenlockMode( GetGenlockModeName( static_cast<enum GenLockMode>(i) ), i );
     }
 
-    // fill genlock-crosslock combo boxes
-    for ( int i=GenLockCrosslockEnableFirst; i<GenLockCrosslockEnableMax; i++ )
-    {
-        addGenlockCrosslockEnable( GetGenlockCrosslockEnableName( static_cast<enum GenLockCrosslockEnable>(i) ), i );
-    }
-
     // overrule auto-repeat threshold
     d_data->m_ui->sbxAnalogGain             ->setStyle( d_data->m_sbxStyle );
     d_data->m_ui->sbxExposure               ->setStyle( d_data->m_sbxStyle );
@@ -420,7 +413,6 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
     // genlock
     connect( d_data->m_ui->cbxGenLockMode , SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxGenlockModeChange(int)) );
     connect( d_data->m_ui->btnGenLockRefreshState , SIGNAL(clicked()), this, SLOT(onBtnGenlockStatusRefresh()) );
-    connect( d_data->m_ui->cbxGenlockCrosslockEnable , SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxGenlockCrosslockEnableChange(int)) );
     connect( d_data->m_ui->cbxGenlockCrosslockVmode , SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxGenlockCrosslockVmodeChange(int)) );
     connect( d_data->m_ui->sbxGenLockOffsetVertical, SIGNAL(valueChanged(int)), this, SLOT(onSbxGenlockOffsetVerticalChange(int)) );
     connect( d_data->m_ui->sbxGenlockOffsetHorizontal, SIGNAL(valueChanged(int)), this, SLOT(onSbxGenlockOffsetHorizontalChange(int)) );
@@ -468,19 +460,6 @@ InOutBox::InOutBox( QWidget * parent ) : DctWidgetBox( parent )
 
     d_data->m_ui->lblColorSpace->hide();
     d_data->m_ui->cbxColorSpace->hide();
-
-    // Temporary hide unimplemented GenLock features
-    d_data->m_ui->cbxGenLockTermination->hide();
-    d_data->m_ui->lblGenLockTermination->hide();
-    d_data->m_ui->lblGenlockCrosslock->hide();
-    d_data->m_ui->cbxGenlockCrosslockEnable->hide();
-    d_data->m_ui->cbxGenlockCrosslockVmode->hide();
-    d_data->m_ui->gbxGenLockSettings->layout()->removeItem(d_data->m_ui->horizontalSpacer);
-    d_data->m_ui->sbxGenLockOffsetVertical->hide();
-    d_data->m_ui->lblGenLockOffsetVertical->hide();
-    d_data->m_ui->sbxGenlockOffsetHorizontal->hide();
-    d_data->m_ui->lblGenLockOffsetHorizontal->hide();
-    //*******************************************
 
     // Install event filter on line edit to catch events
     d_data->m_ui->sbxRoiOffsetX->installEventFilter(this);
@@ -1132,14 +1111,6 @@ void InOutBox::setGenLockMode( const QString mode )
 }
 
 /******************************************************************************
- * InOutBox::GenLockCrosslockEnable
- *****************************************************************************/
-QString InOutBox::GenLockCrosslockEnable() const
-{
-    return ( d_data->m_ui->cbxGenlockCrosslockEnable->currentText() );
-}
-
-/******************************************************************************
  * InOutBox::GenLockCrosslockVmode
  *****************************************************************************/
 QString InOutBox::GenLockCrosslockVmode() const
@@ -1150,17 +1121,9 @@ QString InOutBox::GenLockCrosslockVmode() const
 /******************************************************************************
  * InOutBox::setGenLockCrosslock
  *****************************************************************************/
-void InOutBox::setGenLockCrosslock( const QString enable, const QString vmode )
+void InOutBox::setGenLockCrosslock( const QString vmode )
 {
-    int index = d_data->m_ui->cbxGenlockCrosslockEnable->findText( enable );
-    if ( index != -1 )
-    {
-        d_data->m_ui->cbxGenlockCrosslockEnable->blockSignals( true );
-        d_data->m_ui->cbxGenlockCrosslockEnable->setCurrentIndex( index );
-        d_data->m_ui->cbxGenlockCrosslockEnable->blockSignals( false );
-    }
-
-    index = d_data->m_ui->cbxGenlockCrosslockVmode->findText( vmode );
+    int index = d_data->m_ui->cbxGenlockCrosslockVmode->findText( vmode );
     if ( index != -1 )
     {
         d_data->m_ui->cbxGenlockCrosslockVmode->blockSignals( true );
@@ -1168,8 +1131,7 @@ void InOutBox::setGenLockCrosslock( const QString enable, const QString vmode )
         d_data->m_ui->cbxGenlockCrosslockVmode->blockSignals( false );
     }
 
-    emit ChainGenlockCrosslockChanged( d_data->m_ui->cbxGenlockCrosslockEnable->currentData().toInt(),
-                                       d_data->m_ui->cbxGenlockCrosslockVmode->currentData().toInt() );
+    emit ChainGenlockCrosslockChanged( d_data->m_ui->cbxGenlockCrosslockVmode->currentData().toInt() );
 }
 
 /******************************************************************************
@@ -1307,8 +1269,7 @@ void InOutBox::loadSettings( QSettings & s )
     setGenLockOffsetHorizontal( s.value( INOUT_SETTINGS_GENLOCK_OFFSET_HORIZONTAL ).toInt() );
     setGenLockTermination( s.value( INOUT_SETTINGS_GENLOCK_TERMINATION ).toBool() );
     setGenLockLOLFilter(s.value(INOUT_SETTINGS_GENLOCK_LOL_FILTER).toInt());
-    setGenLockCrosslock( s.value( INOUT_SETTINGS_GENLOCK_CROSSLOCK_ENABLE ).toString(),
-                         s.value( INOUT_SETTINGS_GENLOCK_CROSSLOCK_VMODE ).toString() );
+    setGenLockCrosslock( s.value( INOUT_SETTINGS_GENLOCK_CROSSLOCK_VMODE ).toString() );
     setGenLockMode( s.value( INOUT_SETTINGS_GENLOCK_MODE ).toString() );
 
     s.endGroup();
@@ -1352,7 +1313,6 @@ void InOutBox::saveSettings( QSettings & s )
     s.setValue( INOUT_SETTINGS_AUDIO_GAIN                   , AudioGain() );
 
     s.setValue( INOUT_SETTINGS_GENLOCK_MODE                 , GenLockMode() );
-    s.setValue( INOUT_SETTINGS_GENLOCK_CROSSLOCK_ENABLE     , GenLockCrosslockEnable() );
     s.setValue( INOUT_SETTINGS_GENLOCK_CROSSLOCK_VMODE      , GenLockCrosslockVmode() );
     s.setValue( INOUT_SETTINGS_GENLOCK_OFFSET_VERTICAL      , GenLockOffsetVertical() );
     s.setValue( INOUT_SETTINGS_GENLOCK_OFFSET_HORIZONTAL    , GenLockOffsetHorizontal() );
@@ -1392,8 +1352,7 @@ void InOutBox::applySettings( void )
 
     emit ChainGenlockOffsetChanged( GenLockOffsetVertical(), GenLockOffsetHorizontal() );
     emit ChainGenlockTerminationChanged( GenLockTermination() );
-    emit ChainGenlockCrosslockChanged( d_data->m_ui->cbxGenlockCrosslockEnable->currentData().toInt(),
-                                       d_data->m_ui->cbxGenlockCrosslockVmode->currentData().toInt() );
+    emit ChainGenlockCrosslockChanged( d_data->m_ui->cbxGenlockCrosslockVmode->currentData().toInt() );
     emit ChainGenlockModeChanged( d_data->m_ui->cbxGenLockMode->currentData().toInt() );
     emit ChainGenlockLOLFilterChanged(d_data->m_ui->sbxGenLockLOLFilter->value());
 }
@@ -1456,16 +1415,6 @@ void InOutBox::addGenlockMode( QString name, int id )
     d_data->m_ui->cbxGenLockMode->blockSignals( true );
     d_data->m_ui->cbxGenLockMode->addItem( name, id );
     d_data->m_ui->cbxGenLockMode->blockSignals( false );
-}
-
-/******************************************************************************
- * InOutBox::addGenlockCrosslockEnable
- *****************************************************************************/
-void InOutBox::addGenlockCrosslockEnable( QString name, int id )
-{
-    d_data->m_ui->cbxGenlockCrosslockEnable->blockSignals( true );
-    d_data->m_ui->cbxGenlockCrosslockEnable->addItem( name, id );
-    d_data->m_ui->cbxGenlockCrosslockEnable->blockSignals( false );
 }
 
 /******************************************************************************
@@ -1563,6 +1512,21 @@ void InOutBox::setApartureVisible(const bool value)
 void InOutBox::setGenLockVisible(const bool value)
 {
     d_data->m_ui->gbxGenLockSettings->setVisible(value);
+}
+
+/******************************************************************************
+ * InOutBox::setGenLockTermCrosslockVisible
+ *****************************************************************************/
+void InOutBox::setGenLockTermCrosslockOffsetVisible(const bool value)
+{
+    d_data->m_ui->cbxGenLockTermination->setVisible(value);
+    d_data->m_ui->lblGenLockTermination->setVisible(value);
+    d_data->m_ui->lblGenlockCrosslock->setVisible(value);
+    d_data->m_ui->cbxGenlockCrosslockVmode->setVisible(value);
+    d_data->m_ui->sbxGenLockOffsetVertical->setVisible(value);
+    d_data->m_ui->lblGenLockOffsetVertical->setVisible(value);
+    d_data->m_ui->sbxGenlockOffsetHorizontal->setVisible(value);
+    d_data->m_ui->lblGenLockOffsetHorizontal->setVisible(value);
 }
 
 /******************************************************************************
@@ -2061,9 +2025,8 @@ void InOutBox::onChainGenlockModeChange( int value )
         d_data->m_ui->cbxGenLockMode->setCurrentIndex( index );
         d_data->m_ui->cbxGenLockMode->blockSignals( false );
 
-        updateEnableOfGenlockSettings( value, d_data->m_ui->cbxGenlockCrosslockEnable->currentIndex() );
+        updateEnableOfGenlockSettings( index > 0 );
     }
-
 }
 
 /******************************************************************************
@@ -2079,26 +2042,15 @@ void InOutBox::onChainGenlockStatusChange( int index )
 /******************************************************************************
  * InOutBox::onChainGenlockCrosslockChange
  *****************************************************************************/
-void InOutBox::onChainGenlockCrosslockChange( int enable, int vmode )
+void InOutBox::onChainGenlockCrosslockChange( int mode )
 {
-    int index = d_data->m_ui->cbxGenlockCrosslockEnable->findData( enable );
-    if ( index != -1 )
-    {
-        d_data->m_ui->cbxGenlockCrosslockEnable->blockSignals( true );
-        d_data->m_ui->cbxGenlockCrosslockEnable->setCurrentIndex( index );
-        d_data->m_ui->cbxGenlockCrosslockEnable->blockSignals( false );
-
-        updateEnableOfGenlockSettings( d_data->m_ui->cbxGenLockMode->currentIndex(), index);
-    }
-
-    index = d_data->m_ui->cbxGenlockCrosslockVmode->findData( vmode );
-    if ( index != -1 )
+    int m_mode = d_data->m_ui->cbxGenlockCrosslockVmode->findData( mode );
+    if ( m_mode != -1 )
     {
         d_data->m_ui->cbxGenlockCrosslockVmode->blockSignals( true );
-        d_data->m_ui->cbxGenlockCrosslockVmode->setCurrentIndex( index );
+        d_data->m_ui->cbxGenlockCrosslockVmode->setCurrentIndex( m_mode );
         d_data->m_ui->cbxGenlockCrosslockVmode->blockSignals( false );
     }
-
 }
 
 /******************************************************************************
@@ -2641,6 +2593,7 @@ void InOutBox::onCbxVideoModeChange( int index )
     emit ROIVideoModeChanged();
     emit GetAecSetup();
     emit ColorConversionMatrixRequested();
+    emit GenlockSyncRequested();
     setNormalCursor();
 }
 
@@ -2777,7 +2730,9 @@ void InOutBox::onCbxGenlockModeChange( int index )
 {
     setWaitCursor();
     emit ChainGenlockModeChanged( d_data->m_ui->cbxGenLockMode->itemData( index ).toInt() );
-    updateEnableOfGenlockSettings( index, d_data->m_ui->cbxGenlockCrosslockEnable->currentIndex() );
+    updateEnableOfGenlockSettings( index > 0 );
+    GenlockCrosslockSyncRequested();
+    GenlockOffsetSyncRequested();
     setNormalCursor();
 
 }
@@ -2794,25 +2749,13 @@ void InOutBox::onBtnGenlockStatusRefresh()
 }
 
 /******************************************************************************
- * InOutBox::onCbxGenlockCrosslockEnableChange
- *****************************************************************************/
-void InOutBox::onCbxGenlockCrosslockEnableChange( int index )
-{
-    setWaitCursor();
-    emit ChainGenlockCrosslockChanged( d_data->m_ui->cbxGenlockCrosslockEnable->itemData( index ).toInt(),
-                                       d_data->m_ui->cbxGenlockCrosslockVmode->currentData().toInt() );
-    updateEnableOfGenlockSettings( d_data->m_ui->cbxGenLockMode->currentIndex(), index );
-    setNormalCursor();
-}
-
-/******************************************************************************
  * InOutBox::onCbxGenlockCrosslockVmodeChange
  *****************************************************************************/
 void InOutBox::onCbxGenlockCrosslockVmodeChange( int index )
 {
     setWaitCursor();
-    emit ChainGenlockCrosslockChanged( d_data->m_ui->cbxGenlockCrosslockEnable->currentData().toInt(),
-                                       d_data->m_ui->cbxGenlockCrosslockVmode->itemData( index ).toInt() );
+    emit ChainGenlockCrosslockChanged( d_data->m_ui->cbxGenlockCrosslockVmode->itemData( index ).toInt() );
+    GenlockOffsetSyncRequested();
     setNormalCursor();
 }
 
@@ -2863,21 +2806,14 @@ void InOutBox::onSbxGenlockOffsetHorizontalChange( int value )
  *****************************************************************************/
 void InOutBox::onCbxGenlockTerminationChange( int value )
 {
-    if ( GenLockMode() == GetGenlockModeName( GenLockModeMaster ) && value )
-    {
-        QMessageBox msgBox;
-        msgBox.setWindowTitle("Termination enabled in Master Mode");
-        msgBox.setText("You have enabled Genlock Termination while the device is in Genlock Master Mode.\n\n"
-                       "In Master Mode the Termination is always disabled, regardless of the Genlock "
-                       "Termination setting. It will get enabled as soon as you switch to Slave Mode.");
-        msgBox.exec();
-    }
-
     setWaitCursor();
     emit ChainGenlockTerminationChanged( (value == Qt::Checked) ? 1 : 0 );
     setNormalCursor();
 }
 
+/******************************************************************************
+ * InOutBox::onSbxGenlockLOLFilterValueChange
+ *****************************************************************************/
 void InOutBox::onSbxGenlockLOLFilterValueChange(int value)
 {
     setWaitCursor();
@@ -3638,33 +3574,15 @@ void InOutBox::enableMaxExposureWidgets( bool enable )
 /******************************************************************************
  * InOutBox::updateEnableOfGenlockSettings
  *****************************************************************************/
-void InOutBox::updateEnableOfGenlockSettings( int genlockMode, int crosslockMode )
+void InOutBox::updateEnableOfGenlockSettings( bool enable )
 {
-    if ( genlockMode == GenLockModeMaster )
-    {
-        d_data->m_ui->cbxGenlockCrosslockEnable->setEnabled( false );
-        d_data->m_ui->cbxGenlockCrosslockVmode->setEnabled( false );
-        //d_data->m_ui->sbxGenLockOffsetVertical->setEnabled( false );
-        //d_data->m_ui->sbxGenlockOffsetHorizontal->setEnabled( false );
-        d_data->m_ui->cbxGenLockTermination->setEnabled( false );
-    }
-    else
-    {
-        d_data->m_ui->cbxGenlockCrosslockEnable->setEnabled( true );
-
-        if ( crosslockMode == GenLockCrosslockEnableOtherHDMode )
-        {
-            d_data->m_ui->cbxGenlockCrosslockVmode->setEnabled( true );
-        }
-        else
-        {
-            d_data->m_ui->cbxGenlockCrosslockVmode->setEnabled( false );
-        }
-
-        d_data->m_ui->sbxGenLockOffsetVertical->setEnabled( true );
-        d_data->m_ui->sbxGenlockOffsetHorizontal->setEnabled( true );
-        d_data->m_ui->cbxGenLockTermination->setEnabled( true );
-    }
+    d_data->m_ui->letGenLockStatus->setEnabled( enable );
+    d_data->m_ui->btnGenLockRefreshState->setEnabled( enable );
+    d_data->m_ui->cbxGenlockCrosslockVmode->setEnabled( enable );
+    d_data->m_ui->sbxGenLockOffsetVertical->setEnabled( enable );
+    d_data->m_ui->sbxGenlockOffsetHorizontal->setEnabled( enable );
+    d_data->m_ui->sbxGenLockLOLFilter->setEnabled( enable );
+    d_data->m_ui->cbxGenLockTermination->setEnabled( enable );
 }
 
 /******************************************************************************
