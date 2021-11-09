@@ -104,6 +104,7 @@
 /******************************************************************************
  * genlock crosslock video mode names
  *****************************************************************************/
+#define GENLOCK_CROSSLOCK_VMODE_NAME_DISABLED        ("Disable")
 #define GENLOCK_CROSSLOCK_VMODE_NAME_720p60          ( "720p60" )
 #define GENLOCK_CROSSLOCK_VMODE_NAME_720p50          ( "720p50" )
 #define GENLOCK_CROSSLOCK_VMODE_NAME_720p59_94       ( "720p59.94" )
@@ -197,14 +198,6 @@
  *****************************************************************************/
 #define GENLOCK_STATUS_LOCKED           ( "Locked" )
 #define GENLOCK_STATUS_NOT_LOCKED       ( "Not locked" )
-
-/******************************************************************************
- * gen-lock crosslock enable names
- *****************************************************************************/
-#define GENLOCK_CROSSLOCK_ENABLE_DISABLE       ( "Disable" )
-#define GENLOCK_CROSSLOCK_ENABLE_PAL           ( "PAL B&B" )
-#define GENLOCK_CROSSLOCK_ENABLE_NTSC          ( "NTSC B&B" )
-#define GENLOCK_CROSSLOCK_ENABLE_OTHER_HD_MODE ("Other HD Mode")
 
 /******************************************************************************
  * gen-lock state names
@@ -360,6 +353,27 @@ enum VideoMode
 };
 
 /******************************************************************************
+ * Genlock Crosslock video modes
+ *****************************************************************************/
+enum GenlockCrosslockVmode
+{
+    GenlockCrosslockVideoModeFirst        = 0,
+    GenlockCrosslockVideoModeDisabled     = 0,  /**< Disabled           */
+    GenlockCrosslockVideoMode1080p30      = 4,  /**< 1080p, 30 fps      */
+    GenlockCrosslockVideoMode1080p25      = 5,  /**< 1080p, 25 fps      */
+    GenlockCrosslockVideoMode1080p24      = 6,  /**< 1080p, 24 fps      */
+    GenlockCrosslockVideoMode1080p23_98   = 7,  /**< 1080p, 23.98 fps   */
+    GenlockCrosslockVideoMode1080p29_97   = 8,  /**< 1080p, 29.97 fps   */
+    GenlockCrosslockVideoMode1080p50      = 9,  /**< 1080p, 50 fps      */
+    GenlockCrosslockVideoMode1080p60      = 10, /**< 1080p, 60 fps      */
+    GenlockCrosslockVideoMode1080i60      = 11, /**< 1080i, 60 fps      */
+    GenlockCrosslockVideoMode1080i50      = 12, /**< 1080i, 50 fps      */
+    GenlockCrosslockVideoMode1080i59_94   = 13, /**< 1080i, 59.94 fps   */
+    GenlockCrosslockVideoMode1080p59_94   = 14, /**< 1080p, 59.94 fps   */
+    GenlockCrosslockVideoModeMax                /**< number of normally supported modes (end marker) */
+};
+
+/******************************************************************************
  * Fixed exposure times
  *****************************************************************************/
 enum ExposureTime
@@ -488,8 +502,8 @@ enum GenLockMode
 {
     GenLockModeFirst    = 0,
     GenLockModeDisabled = 0,
-    GenLockModeSlave    = 1,
-    GenLockModeMaster   = 2,
+    GenLockModeSlaveAuto    = 1,
+    GenLockModeSlaveForce   = 2,
     GenLockModeMax
 };
 
@@ -500,19 +514,6 @@ enum GenLockStatus
 {
     GenLockStatusDisabledOrLocked   = 0,
     GenLockStatusErrorNotLocked     = 1,
-};
-
-/******************************************************************************
- * camera genlock crosslock enable
- *****************************************************************************/
-enum GenLockCrosslockEnable
-{
-    GenLockCrosslockEnableFirst       = 0,
-    GenLockCrosslockEnableDisable     = 0,
-    GenLockCrosslockEnablePAL         = 1,
-    GenLockCrosslockEnableNTSC        = 2,
-    GenLockCrosslockEnableOtherHDMode = 3,
-    GenLockCrosslockEnableMax
 };
 
 /******************************************************************************
@@ -587,7 +588,7 @@ QString GetBayerPatternName( BayerPattern pattern );
 QString GetVideoModeName( VideoMode mode );
 
 // return corresponding genlock crosslock vmode name
-QString GetGenlockCrosslockVmodeName( VideoMode mode );
+QString GetGenlockCrosslockVmodeName( GenlockCrosslockVmode mode );
 
 // return corresponding playout speed in [ms]
 int GetVideoModeSpeed( VideoMode mode );
@@ -621,9 +622,6 @@ QString GetGenlockModeName( GenLockMode mode );
 
 // return corresponding genlock status name
 QString GetGenlockStatusName( GenLockStatus mode );
-
-// return corresponding genlock crosslock enable name
-QString GetGenlockCrosslockEnableName( GenLockCrosslockEnable enable );
 
 // return corresponding sdi2 mode name 
 QString GetSdi2ModeName( Sdi2Mode mode );

@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>393</width>
-    <height>504</height>
+    <height>530</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -40,12 +40,32 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
+    <widget class="QLabel" name="lblSoftwareVersion">
+     <property name="text">
+      <string>Software Version:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
     <widget class="QTabWidget" name="tabController">
      <property name="focusPolicy">
       <enum>Qt::WheelFocus</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabRS485">
       <property name="enabled">

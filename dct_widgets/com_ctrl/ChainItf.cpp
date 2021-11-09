@@ -78,9 +78,10 @@ void ChainItf::resync()
     GetChainSdiWhiteLevel();
     GetChainGenlockMode();
     GetChainGenlockStatus();
-    //GetChainGenlockCrosslock();
-    //GetChainGenlockOffset();
-    //GetChainGenlockTermination();
+    GetChainGenlockCrosslock();
+    GetChainGenlockOffsetInfo();
+    GetChainGenlockOffset();
+    GetChainGenlockTermination();
     GetChainGenlockLOLFilter();
     GetChainTimecode();
     GetChainTimecodeHold();
@@ -314,17 +315,17 @@ void ChainItf::GetChainGenlockStatus()
 void ChainItf::GetChainGenlockCrosslock()
 {
     // Is there a signal listener
-    if ( receivers(SIGNAL(ChainGenlockCrosslockChanged(int, int))) > 0 )
+    if ( receivers(SIGNAL(ChainGenlockCrosslockChanged(int))) > 0 )
     {
-        uint8_t values[2];
+        uint8_t value;
 
         // read genlock crosslock settings from device
         int res = ctrl_protocol_get_genlock_crosslock( GET_PROTOCOL_INSTANCE(this),
-            GET_CHANNEL_INSTANCE(this), 2, values );
+            GET_CHANNEL_INSTANCE(this), &value );
         HANDLE_ERROR( res );
 
         // emit a ChainGenlockCrosslockChanged signal
-        emit ChainGenlockCrosslockChanged( (int)values[0], (int)values[1] );
+        emit ChainGenlockCrosslockChanged( (int)value );
     }
 }
 
@@ -336,17 +337,35 @@ void ChainItf::GetChainGenlockOffset()
     // Is there a signal listener
     if ( receivers(SIGNAL(ChainGenlockOffsetChanged(int, int))) > 0 )
     {
-        int16_t values[4];
+        int16_t values[2];
     
         // read genlock offset from device
         int res = ctrl_protocol_get_genlock_offset( GET_PROTOCOL_INSTANCE(this),
-            GET_CHANNEL_INSTANCE(this), 4, values );
+            GET_CHANNEL_INSTANCE(this), 2, values );
         HANDLE_ERROR( res );
-        
+
         // emit a ChainGenlockOffsetChanged signal
         emit ChainGenlockOffsetChanged( (int)values[0], (int)values[1] );
+    }
+}
+
+/******************************************************************************
+ * ChainItf::GetChainGenlockOffsetInfo
+ *****************************************************************************/
+void ChainItf::GetChainGenlockOffsetInfo()
+{
+    // Is there a signal listener
+    if ( receivers(SIGNAL(ChainGenlockOffsetMaxChanged(int, int))) > 0 )
+    {
+        int16_t values[2];
+
+        // read genlock offset from device
+        int res = ctrl_protocol_get_genlock_offset_info( GET_PROTOCOL_INSTANCE(this),
+            GET_CHANNEL_INSTANCE(this), 2, values );
+        HANDLE_ERROR( res );
+
         // emit a ChainGenlockOffsetMaxChanged signal
-        emit ChainGenlockOffsetMaxChanged( (int)values[2], (int)values[3] );
+        emit ChainGenlockOffsetMaxChanged( (int)values[0], (int)values[1] );
     }
 }
 
@@ -626,16 +645,16 @@ void ChainItf::onChainGenlockStatusRefresh()
 /******************************************************************************
  * ChainItf::onChainGenlockCrosslockChange
  *****************************************************************************/
-void ChainItf::onChainGenlockCrosslockChange( int enable, int vmode )
+void ChainItf::onChainGenlockCrosslockChange( int value )
 {
-    // convert to array
-    uint8_t values[2];
-    values[0] = (uint8_t)enable;
-    values[1] = (uint8_t)vmode;
-
     // set genlock crosslock on device
     int res = ctrl_protocol_set_genlock_crosslock( GET_PROTOCOL_INSTANCE(this),
-            GET_CHANNEL_INSTANCE(this), 2, values );
+            GET_CHANNEL_INSTANCE(this), (uint8_t)value );
+
+    if(0 > res)
+    {
+        GetChainGenlockCrosslock();
+    }
 
     // Check for genlock error
     CheckGenlockError( res );
@@ -744,4 +763,35 @@ void ChainItf::onChainAudioGainChange( double gain )
     int res = ctrl_protocol_set_audio_gain( GET_PROTOCOL_INSTANCE(this),
             GET_CHANNEL_INSTANCE(this), gain_fixed );
     HANDLE_ERROR( res );
+}
+
+/******************************************************************************
+ * ChainItf::onChainGenlockSyncRequested
+ *****************************************************************************/
+void ChainItf::onChainGenlockSyncRequested()
+{
+    GetChainGenlockMode();
+    GetChainGenlockStatus();
+    GetChainGenlockCrosslock();
+    GetChainGenlockOffsetInfo();
+    GetChainGenlockOffset();
+    GetChainGenlockTermination();
+    GetChainGenlockLOLFilter();
+}
+
+/******************************************************************************
+ * ChainItf::onChainGenlockOffsetSyncRequested
+ *****************************************************************************/
+void ChainItf::onChainGenlockOffsetSyncRequested()
+{
+    GetChainGenlockOffsetInfo();
+    GetChainGenlockOffset();
+}
+
+/******************************************************************************
+ * ChainItf::onChainGenlockCrosslockSyncRequested
+ *****************************************************************************/
+void ChainItf::onChainGenlockCrosslockSyncRequested()
+{
+    GetChainGenlockCrosslock();
 }

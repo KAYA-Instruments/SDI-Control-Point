@@ -57,6 +57,7 @@ public:
         bool hasChainSdi2Mode;
         bool hasChainDownscale;
         bool hasChainGenLock;
+        bool hasChainGenLockTermCrosslockOffset;
         bool hasChainTimeCode;
         bool hasChainTimeCodeHold;
         bool hasChainSdiSettings;

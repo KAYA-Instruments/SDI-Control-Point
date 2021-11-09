@@ -14,19 +14,21 @@
 /******************************************************************************
  * hardware mask
  *****************************************************************************/
-#define IRON_SDI_FEATURE_HW_GENLOCK_MASK     ( 0x00000001u ) /**< GENLOCK available */
-#define IRON_SDI_FEATURE_MULTI_USERSET_MASK  ( 0x00000002u ) /**< MULTI USERSET available */
-#define IRON_SDI_FEATURE_HW_12BIT            ( 0x00000004u ) /**< 12BIT available */
-#define IRON_SDI_FEATURE_AWB_AEC_AEG_EX_MASK ( 0x00000008u ) /**< AWB AEC AEG EX MASK available */
-#define IRON_SDI_FEATURE_RS485_MASK          ( 0x00000010u ) /**< RS485 available */
-#define IRON_SDI_FEATURE_TIMECODE_MASK       ( 0x00000020u ) /**< TIMECODE available */
+#define IRON_SDI_FEATURE_HW_GENLOCK_MASK              ( 0x00000001u ) /**< GENLOCK available */
+#define IRON_SDI_FEATURE_MULTI_USERSET_MASK           ( 0x00000002u ) /**< MULTI USERSET available */
+#define IRON_SDI_FEATURE_HW_12BIT                     ( 0x00000004u ) /**< 12BIT available */
+#define IRON_SDI_FEATURE_AWB_AEC_AEG_EX_MASK          ( 0x00000008u ) /**< AWB AEC AEG EX MASK available */
+#define IRON_SDI_FEATURE_RS485_MASK                   ( 0x00000010u ) /**< RS485 available */
+#define IRON_SDI_FEATURE_TIMECODE_MASK                ( 0x00000020u ) /**< TIMECODE available */
+#define IRON_SDI_FEATURE_GENLOCK_TERM_CROSSLOCK_MASK  ( 0x00000040u ) /**< GENLOCK CROSSLOCK available */
 
-#define IS_IRON_SDI_FEATURE_HW_GENLOCK_MASK(x)     ( x & IRON_SDI_FEATURE_HW_GENLOCK_MASK  )
-#define IS_IRON_SDI_FEATURE_MULTI_USERSET_MASK(x)  ( x & IRON_SDI_FEATURE_MULTI_USERSET_MASK )
-#define IS_IRON_SDI_FEATURE_HW_12BIT(x)            ( x & IRON_SDI_FEATURE_HW_12BIT )
-#define IS_IRON_SDI_FEATURE_AWB_AEC_AEG_EX_MASK(x) ( x & IRON_SDI_FEATURE_AWB_AEC_AEG_EX_MASK )
-#define IS_IRON_SDI_FEATURE_RS485_MASK(x)          ( x & IRON_SDI_FEATURE_RS485_MASK )
-#define IS_IRON_SDI_FEATURE_TIMECODE_MASK(x)       ( x & IRON_SDI_FEATURE_TIMECODE_MASK )
+#define IS_IRON_SDI_FEATURE_HW_GENLOCK_MASK(x)              ( x & IRON_SDI_FEATURE_HW_GENLOCK_MASK  )
+#define IS_IRON_SDI_FEATURE_MULTI_USERSET_MASK(x)           ( x & IRON_SDI_FEATURE_MULTI_USERSET_MASK )
+#define IS_IRON_SDI_FEATURE_HW_12BIT(x)                     ( x & IRON_SDI_FEATURE_HW_12BIT )
+#define IS_IRON_SDI_FEATURE_AWB_AEC_AEG_EX_MASK(x)          ( x & IRON_SDI_FEATURE_AWB_AEC_AEG_EX_MASK )
+#define IS_IRON_SDI_FEATURE_RS485_MASK(x)                   ( x & IRON_SDI_FEATURE_RS485_MASK )
+#define IS_IRON_SDI_FEATURE_TIMECODE_MASK(x)                ( x & IRON_SDI_FEATURE_TIMECODE_MASK )
+#define IS_IRON_SDI_FEATURE_GENLOCK_TERM_CROSSLOCK_OFFSET_MASK(x)  ( x & IRON_SDI_FEATURE_GENLOCK_TERM_CROSSLOCK_MASK )
 
 /******************************************************************************
  * hardware mask interpreter
@@ -47,6 +49,11 @@ public:
         if ( IS_IRON_SDI_FEATURE_HW_GENLOCK_MASK( mask ) )
         {
             features << "- Genlock";
+        }
+
+        if ( IS_IRON_SDI_FEATURE_GENLOCK_TERM_CROSSLOCK_OFFSET_MASK( mask ) )
+        {
+            features << "- Genlock Termination and Crosslock";
         }
 
         if ( IS_IRON_SDI_FEATURE_MULTI_USERSET_MASK( mask ) )
@@ -222,55 +229,57 @@ void IronSDI_Device::setSupportedFeatures(const uint32_t HwMask, const uint32_t 
     features * deviceFeatures = &d_data->m_deviceFeatures;
 
     // Set all available features
-    deviceFeatures->hasCamItf                = true;
-    deviceFeatures->hasChainItf              = true;
-    deviceFeatures->hasChainSdi2Mode         = false;
-    deviceFeatures->hasChainAudio            = false;
-    deviceFeatures->hasChainDownscale        = true;
-    deviceFeatures->hasChainGenLock          = false;
-    deviceFeatures->hasChainTimeCode         = false;
-    deviceFeatures->hasChainTimeCodeHold     = false;
-    deviceFeatures->hasChainSdiSettings      = true;
-    deviceFeatures->hasChainSelection        = false;
-    deviceFeatures->hasChainFlipVertical     = true;
-    deviceFeatures->hasChainFlipHorizontal   = true;
-    deviceFeatures->hasAutoItf               = true;
-    deviceFeatures->hasLensItf               = false;
-    deviceFeatures->hasIspItf                = true;
-    deviceFeatures->hasIspLsc                = false;
-    deviceFeatures->hasIspMasterBlackLevel   = true;
-    deviceFeatures->hasIspFlare              = true;
-    deviceFeatures->hasIspFilter             = false;
-    deviceFeatures->hasIspAutoWhiteBalance   = true;
-    deviceFeatures->hasIspGain               = true;
-    deviceFeatures->hasIspGreenGain          = true;
-    deviceFeatures->hasIspConversion         = true;
-    deviceFeatures->hasCprocItf              = true;
-    deviceFeatures->hasCprocItfHue           = true;
-    deviceFeatures->hasMccItf                = false;
-    deviceFeatures->hasKneeItf               = true;
-    deviceFeatures->hasLutItf                = true;
-    deviceFeatures->hasDpccItf               = true;
-    deviceFeatures->hasDpccFullFeautureSet   = true;
-    deviceFeatures->hasSystemSaveLoad        = true;
-    deviceFeatures->hasSystemUpdate          = true;
-    deviceFeatures->hasSystemRuntime         = false;
-    deviceFeatures->hasSystemFan             = false;
-    deviceFeatures->hasSystemBroadcast       = false;
-    deviceFeatures->hasRS232Interface        = true;
-    deviceFeatures->hasROIItf                = false;
-    deviceFeatures->lutBitWidth              = 10;
-    deviceFeatures->numTempSensors           = 2;
+    deviceFeatures->hasCamItf                           = true;
+    deviceFeatures->hasChainItf                         = true;
+    deviceFeatures->hasChainSdi2Mode                    = false;
+    deviceFeatures->hasChainAudio                       = false;
+    deviceFeatures->hasChainDownscale                   = true;
+    deviceFeatures->hasChainGenLock                     = false;
+    deviceFeatures->hasChainGenLockTermCrosslockOffset  = false;
+    deviceFeatures->hasChainTimeCode                    = false;
+    deviceFeatures->hasChainTimeCodeHold                = false;
+    deviceFeatures->hasChainSdiSettings                 = true;
+    deviceFeatures->hasChainSelection                   = false;
+    deviceFeatures->hasChainFlipVertical                = true;
+    deviceFeatures->hasChainFlipHorizontal              = true;
+    deviceFeatures->hasAutoItf                          = true;
+    deviceFeatures->hasLensItf                          = false;
+    deviceFeatures->hasIspItf                           = true;
+    deviceFeatures->hasIspLsc                           = false;
+    deviceFeatures->hasIspMasterBlackLevel              = true;
+    deviceFeatures->hasIspFlare                         = true;
+    deviceFeatures->hasIspFilter                        = false;
+    deviceFeatures->hasIspAutoWhiteBalance              = true;
+    deviceFeatures->hasIspGain                          = true;
+    deviceFeatures->hasIspGreenGain                     = true;
+    deviceFeatures->hasIspConversion                    = true;
+    deviceFeatures->hasCprocItf                         = true;
+    deviceFeatures->hasCprocItfHue                      = true;
+    deviceFeatures->hasMccItf                           = false;
+    deviceFeatures->hasKneeItf                          = true;
+    deviceFeatures->hasLutItf                           = true;
+    deviceFeatures->hasDpccItf                          = true;
+    deviceFeatures->hasDpccFullFeautureSet              = true;
+    deviceFeatures->hasSystemSaveLoad                   = true;
+    deviceFeatures->hasSystemUpdate                     = true;
+    deviceFeatures->hasSystemRuntime                    = false;
+    deviceFeatures->hasSystemFan                        = false;
+    deviceFeatures->hasSystemBroadcast                  = false;
+    deviceFeatures->hasRS232Interface                   = true;
+    deviceFeatures->hasROIItf                           = false;
+    deviceFeatures->lutBitWidth                         = 10;
+    deviceFeatures->numTempSensors                      = 2;
 
     if((0xFFFFFFFF != SwMask) && HwMask)
     {
-        deviceFeatures->hasChainGenLock      = IS_IRON_SDI_FEATURE_HW_GENLOCK_MASK( HwMask );
-        deviceFeatures->hasChainTimeCode     = IS_IRON_SDI_FEATURE_TIMECODE_MASK( HwMask );
-        deviceFeatures->hasChainTimeCodeHold = IS_IRON_SDI_FEATURE_TIMECODE_MASK( HwMask );
-        deviceFeatures->hasROIItf            = IS_IRON_SDI_FEATURE_AWB_AEC_AEG_EX_MASK( HwMask );
-        deviceFeatures->hasSystemBroadcast   = IS_IRON_SDI_FEATURE_RS485_MASK(HwMask); // TODO: only if RS485 is enabled
-        deviceFeatures->hasSystemSaveLoad    = IS_IRON_SDI_FEATURE_MULTI_USERSET_MASK( HwMask );
-        deviceFeatures->lutBitWidth          = IS_IRON_SDI_FEATURE_HW_12BIT( HwMask ) ? 12 : 10;
+        deviceFeatures->hasChainGenLock                    = IS_IRON_SDI_FEATURE_HW_GENLOCK_MASK( HwMask );
+        deviceFeatures->hasChainTimeCode                   = IS_IRON_SDI_FEATURE_TIMECODE_MASK( HwMask );
+        deviceFeatures->hasChainTimeCodeHold               = IS_IRON_SDI_FEATURE_TIMECODE_MASK( HwMask );
+        deviceFeatures->hasROIItf                          = IS_IRON_SDI_FEATURE_AWB_AEC_AEG_EX_MASK( HwMask );
+        deviceFeatures->hasSystemBroadcast                 = IS_IRON_SDI_FEATURE_RS485_MASK(HwMask); // TODO: only if RS485 is enabled
+        deviceFeatures->hasSystemSaveLoad                  = IS_IRON_SDI_FEATURE_MULTI_USERSET_MASK( HwMask );
+        deviceFeatures->lutBitWidth                        = IS_IRON_SDI_FEATURE_HW_12BIT( HwMask ) ? 12 : 10;
+        deviceFeatures->hasChainGenLockTermCrosslockOffset = IS_IRON_SDI_FEATURE_GENLOCK_TERM_CROSSLOCK_OFFSET_MASK( HwMask );
     }
 
 }

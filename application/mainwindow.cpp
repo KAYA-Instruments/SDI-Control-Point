@@ -98,7 +98,7 @@ MainWindow::MainWindow( ConnectDialog * connectDialog, QWidget * parent )
     connect( m_ui->updBox, SIGNAL(LockCurrentTabPage(bool)), this, SLOT(onLockCurrentTabPage(bool)) );
     connect( m_ui->updBox, SIGNAL(BootIntoUpdateMode()), this, SLOT(onBootIntoUpdateMode()) );
     connect( m_ui->updBox, SIGNAL(ReopenSerialConnection()), this, SLOT(onReopenSerialConnection()) );
-    
+
     // Connect toolbar actions
     connect( m_ui->actionConnect         , SIGNAL( triggered() ), this, SLOT( onConnectClicked() ) );
     connect( m_ui->actionSettings        , SIGNAL( triggered() ), this, SLOT( onSettingsClicked() ) );
@@ -364,6 +364,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
     m_ui->inoutBox->setSdi2ModeVisible(deviceFeatures.hasChainSdi2Mode);
     m_ui->inoutBox->setDownscaleModeVisible(deviceFeatures.hasChainDownscale);
     m_ui->inoutBox->setGenLockVisible(deviceFeatures.hasChainGenLock);
+    m_ui->inoutBox->setGenLockTermCrosslockOffsetVisible(deviceFeatures.hasChainGenLock && deviceFeatures.hasChainGenLockTermCrosslockOffset);
     m_ui->inoutBox->setTimeCodeVisible(deviceFeatures.hasChainTimeCode, deviceFeatures.hasChainTimeCodeHold);
     m_ui->inoutBox->setFlipModeVisible(deviceFeatures.hasChainFlipVertical, deviceFeatures.hasChainFlipHorizontal);
     //    m_ui->inoutBox->setLogModeVisible(deviceFeatures.hasLutItf);
@@ -615,18 +616,27 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
             connect( dev->GetChainItf(), SIGNAL(ChainGenlockStatusChanged(int)), m_ui->inoutBox, SLOT(onChainGenlockStatusChange(int)) );
             connect( m_ui->inoutBox, SIGNAL(ChainGenLockStatusRefresh()), dev->GetChainItf(), SLOT(onChainGenlockStatusRefresh()) );
 
-            connect( dev->GetChainItf(), SIGNAL(ChainGenlockCrosslockChanged(int, int)), m_ui->inoutBox, SLOT(onChainGenlockCrosslockChange(int, int)) );
-            connect( m_ui->inoutBox, SIGNAL(ChainGenlockCrosslockChanged(int, int)), dev->GetChainItf(), SLOT(onChainGenlockCrosslockChange(int, int)) );
-
-            connect( dev->GetChainItf(), SIGNAL(ChainGenlockOffsetChanged(int, int)), m_ui->inoutBox, SLOT(onChainGenlockOffsetChange(int, int)) );
-            connect( m_ui->inoutBox, SIGNAL(ChainGenlockOffsetChanged(int, int)), dev->GetChainItf(), SLOT(onChainGenlockOffsetChange(int, int)) );
-            connect( dev->GetChainItf(), SIGNAL(ChainGenlockOffsetMaxChanged(int, int)), m_ui->inoutBox, SLOT(onChainGenlockOffsetMaxChange(int, int)) );
-
-            connect( dev->GetChainItf(), SIGNAL(ChainGenlockTerminationChanged(int)), m_ui->inoutBox, SLOT(onChainGenlockTerminationChange(int)) );
-            connect( m_ui->inoutBox, SIGNAL(ChainGenlockTerminationChanged(int)), dev->GetChainItf(), SLOT(onChainGenlockTerminationChange(int)) );
-
             connect( dev->GetChainItf(), SIGNAL(ChainGenlockLOLFilterChanged(int)), m_ui->inoutBox, SLOT(onChainGenlockLOLFilterChange(int)) );
             connect( m_ui->inoutBox, SIGNAL(ChainGenlockLOLFilterChanged(int)), dev->GetChainItf(), SLOT(onChainGenlockLOLFilterChange(int)) );
+
+            if (deviceFeatures.hasChainGenLockTermCrosslockOffset)
+            {
+                connect( dev->GetChainItf(), SIGNAL(ChainGenlockCrosslockChanged(int)), m_ui->inoutBox, SLOT(onChainGenlockCrosslockChange(int)) );
+                connect( m_ui->inoutBox, SIGNAL(ChainGenlockCrosslockChanged(int)), dev->GetChainItf(), SLOT(onChainGenlockCrosslockChange(int)) );
+
+                connect( dev->GetChainItf(), SIGNAL(ChainGenlockTerminationChanged(int)), m_ui->inoutBox, SLOT(onChainGenlockTerminationChange(int)) );
+                connect( m_ui->inoutBox, SIGNAL(ChainGenlockTerminationChanged(int)), dev->GetChainItf(), SLOT(onChainGenlockTerminationChange(int)) );
+
+                connect( dev->GetChainItf(), SIGNAL(ChainGenlockOffsetChanged(int, int)), m_ui->inoutBox, SLOT(onChainGenlockOffsetChange(int, int)) );
+                connect( m_ui->inoutBox, SIGNAL(ChainGenlockOffsetChanged(int, int)), dev->GetChainItf(), SLOT(onChainGenlockOffsetChange(int, int)) );
+                connect( dev->GetChainItf(), SIGNAL(ChainGenlockOffsetMaxChanged(int, int)), m_ui->inoutBox, SLOT(onChainGenlockOffsetMaxChange(int, int)) );
+
+                // if video mode changed
+                connect( m_ui->inoutBox, SIGNAL(GenlockSyncRequested()), dev->GetChainItf(), SLOT(onChainGenlockSyncRequested()) );
+                // if Genlock mode changed
+                connect( m_ui->inoutBox, SIGNAL(GenlockCrosslockSyncRequested()), dev->GetChainItf(), SLOT(onChainGenlockCrosslockSyncRequested()) );
+                connect( m_ui->inoutBox, SIGNAL(GenlockOffsetSyncRequested()), dev->GetChainItf(), SLOT(onChainGenlockOffsetSyncRequested()) );
+            }
         }
         if (deviceFeatures.hasChainTimeCode)
         {
@@ -1255,8 +1265,15 @@ void MainWindow::onResolutionMaskChange( uint32_t id0, uint32_t id1, uint32_t id
         if ( supported )
         {
             m_ui->inoutBox->addVideoMode( GetVideoModeName( static_cast<VideoMode>(i) ), i );
-            m_ui->inoutBox->addGenlockCrosslockVideoMode( GetGenlockCrosslockVmodeName( static_cast<VideoMode>(i) ), i);
+
+
         }
+    }
+    for ( int i=GenlockCrosslockVideoModeFirst; i<GenlockCrosslockVideoModeMax; i++ )
+    {
+        QString name = GetGenlockCrosslockVmodeName( static_cast<GenlockCrosslockVmode>(i) );
+        if(!name.isEmpty())
+            m_ui->inoutBox->addGenlockCrosslockVideoMode( GetGenlockCrosslockVmodeName( static_cast<GenlockCrosslockVmode>(i) ), i);
     }
 }
 

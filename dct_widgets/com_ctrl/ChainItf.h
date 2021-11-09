@@ -87,6 +87,9 @@ public:
     
     // genlock offset
     void GetChainGenlockOffset();
+
+    // genlock offset info
+    void GetChainGenlockOffsetInfo();
     
     // genlock termination
     void GetChainGenlockTermination();
@@ -137,7 +140,7 @@ signals:
     void ChainGenlockStatusChanged( int value );
 
     // genlock crosslock
-    void ChainGenlockCrosslockChanged( int enable, int vmode );
+    void ChainGenlockCrosslockChanged( int vmode );
     
     // genlock offset
     void ChainGenlockOffsetChanged( int vertical, int horzontal );
@@ -175,7 +178,7 @@ public slots:
     void onChainSdiWhiteLevelChange( int value );
     void onChainGenlockModeChange( int value );
     void onChainGenlockStatusRefresh();
-    void onChainGenlockCrosslockChange( int enable, int vmode );
+    void onChainGenlockCrosslockChange( int value );
     void onChainGenlockOffsetChange( int vertical, int horizontal );
     void onChainGenlockTerminationChange( int value );
     void onChainGenlockLOLFilterChange( int value );
@@ -184,6 +187,9 @@ public slots:
     void onChainTimecodeHoldChange( bool enable );
     void onChainAudioEnableChange( bool enable );
     void onChainAudioGainChange( double gain );
+    void onChainGenlockSyncRequested();
+    void onChainGenlockOffsetSyncRequested();
+    void onChainGenlockCrosslockSyncRequested();
 };
 
 #endif // _CHAIN_INTERFACE_H_

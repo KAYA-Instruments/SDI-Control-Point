@@ -209,141 +209,45 @@ QString GetVideoModeName( VideoMode mode )
 /******************************************************************************
  * GetGenlockCrosslockVmodeName()
  *****************************************************************************/
-QString GetGenlockCrosslockVmodeName( VideoMode mode )
+QString GetGenlockCrosslockVmodeName( GenlockCrosslockVmode mode )
 {
     switch ( mode )
     {
-        case VideoMode720p60:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_720p60) );
+        case GenlockCrosslockVideoModeDisabled:
+            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_DISABLED) );
 
-        case VideoMode720p50:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_720p50) );
-
-        case VideoMode720p59_94:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_720p59_94) );
-
-        case VideoMode1080p30:
+        case GenlockCrosslockVideoMode1080p30:
             return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_1080p30) );
 
-        case VideoMode1080p25:
+        case GenlockCrosslockVideoMode1080p25:
             return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_1080p25) );
 
-        case VideoMode1080p24:
+        case GenlockCrosslockVideoMode1080p24:
             return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_1080p24) );
 
-        case VideoMode1080p23_98:
+        case GenlockCrosslockVideoMode1080p23_98:
             return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_1080p23_98) );
 
-        case VideoMode1080p29_97:
+        case GenlockCrosslockVideoMode1080p29_97:
             return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_1080p29_97) );
 
-        case VideoMode1080p50:
+        case GenlockCrosslockVideoMode1080p50:
             return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_1080p50) );
 
-        case VideoMode1080p60:
+        case GenlockCrosslockVideoMode1080p60:
             return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_1080p60) );
 
-        case VideoMode1080i60:
+        case GenlockCrosslockVideoMode1080i60:
             return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_1080i60) );
 
-        case VideoMode1080i50:
+        case GenlockCrosslockVideoMode1080i50:
             return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_1080i50) );
 
-        case VideoMode1080i59_94:
+        case GenlockCrosslockVideoMode1080i59_94:
             return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_1080i59_94) );
 
-        case VideoMode1080p59_94:
+        case GenlockCrosslockVideoMode1080p59_94:
             return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_1080p59_94) );
-
-        case VideoMode2kp30:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_2kp30) );
-
-        case VideoMode2kp25:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_2kp25) );
-
-        case VideoMode2kp24:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_2kp24) );
-
-        case VideoMode2kp23_98:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_2kp23_98) );
-
-        case VideoMode2kp29_97:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_2kp29_97) );
-
-        case VideoMode2kp50:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_2kp50) );
-
-        case VideoMode2kp60:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_2kp60) );
-
-        case VideoMode2kp59_94:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_2kp59_94) );
-
-        case VideoMode2kp48:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_2kp48) );
-
-        case VideoMode2kp47_96:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_2kp47_96) );
-
-        case VideoModeUHDp30:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_UHDp30) );
-
-        case VideoModeUHDp25:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_UHDp25) );
-
-        case VideoModeUHDp24:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_UHDp24) );
-
-        case VideoModeUHDp23_98:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_UHDp23_98) );
-
-        case VideoModeUHDp29_97:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_UHDp29_97) );
-
-        case VideoModeUHDp50:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_UHDp50) );
-
-        case VideoModeUHDp60:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_UHDp60) );
-
-        case VideoModeUHDp59_94:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_UHDp59_94) );
-
-        case VideoModeUHDp48:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_UHDp48) );
-
-        case VideoModeUHDp47_96:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_UHDp47_96) );
-
-        case VideoMode4Kp30:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_4Kp30) );
-
-        case VideoMode4Kp25:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_4Kp25) );
-
-        case VideoMode4Kp24:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_4Kp24) );
-
-        case VideoMode4Kp23_98:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_4Kp23_98) );
-
-        case VideoMode4Kp29_97:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_4Kp29_97) );
-
-        case VideoMode4Kp50:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_4Kp50) );
-
-        case VideoMode4Kp60:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_4Kp60) );
-
-        case VideoMode4Kp59_94:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_4Kp59_94) );
-
-        case VideoMode4Kp48:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_4Kp48) );
-
-        case VideoMode4Kp47_96:
-            return ( QString(GENLOCK_CROSSLOCK_VMODE_NAME_4Kp47_96) );
 
         default:
             return ( QString() );
@@ -647,9 +551,9 @@ QString GetGenlockModeName( GenLockMode mode )
     {
         case GenLockModeDisabled:
             return ( QString(GENLOCK_MODE_DISABLE) );
-        case GenLockModeSlave:
+        case GenLockModeSlaveAuto:
             return ( QString(GENLOCK_MODE_SLAVE_AUTO) );
-        case GenLockModeMaster:
+        case GenLockModeSlaveForce:
             return ( QString(GENLOCK_MODE_SLAVE_FORCE) );
         default:
             return ( QString() );
@@ -667,26 +571,6 @@ QString GetGenlockStatusName( GenLockStatus mode )
             return ( QString(GENLOCK_STATUS_LOCKED) );
         case GenLockStatusErrorNotLocked:
             return ( QString(GENLOCK_STATUS_NOT_LOCKED) );
-        default:
-            return ( QString() );
-    }
-}
-
-/******************************************************************************
- * GetGenlockCrosslockEnableName()
- *****************************************************************************/
-QString GetGenlockCrosslockEnableName( GenLockCrosslockEnable enable )
-{
-    switch ( enable )
-    {
-        case GenLockCrosslockEnableDisable:
-            return ( QString(GENLOCK_CROSSLOCK_ENABLE_DISABLE) );
-        case GenLockCrosslockEnablePAL:
-            return ( QString(GENLOCK_CROSSLOCK_ENABLE_PAL) );
-        case GenLockCrosslockEnableNTSC:
-            return ( QString(GENLOCK_CROSSLOCK_ENABLE_NTSC) );
-        case GenLockCrosslockEnableOtherHDMode:
-        return ( QString(GENLOCK_CROSSLOCK_ENABLE_OTHER_HD_MODE) );
         default:
             return ( QString() );
     }

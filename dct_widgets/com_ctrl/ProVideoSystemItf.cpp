@@ -75,7 +75,7 @@ void ProVideoSystemItf::GetSystemInfo(bool bEmitUpdate)
     // read current system info
     if(!m_bSysInfoInit)
     {
-        m_bSysInfoInit = true;
+        //m_bSysInfoInit = true; // allow get new sys_info after firmware update
 
         int res = ctrl_protocol_get_system_info( GET_PROTOCOL_INSTANCE(this),
                     GET_CHANNEL_INSTANCE(this),
