@@ -494,6 +494,16 @@
                 </spacer>
                </item>
                <item>
+                <widget class="QLabel" name="lblPlotName">
+                 <property name="text">
+                  <string>Master Table:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item>
                 <widget class="QPushButton" name="btnImport">
                  <property name="focusPolicy">
                   <enum>Qt::StrongFocus</enum>

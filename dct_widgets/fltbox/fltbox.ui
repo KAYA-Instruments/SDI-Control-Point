@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>727</width>
-    <height>736</height>
+    <height>770</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,101 +18,20 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QGroupBox" name="gpb2dDenoising">
+    <widget class="QGroupBox" name="gpb1Antialiasing">
      <property name="title">
-      <string>2D Denoising</string>
+      <string>Antialiasing Filter</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="SingleChannelKnobBox" name="kbxDenoiseLevel2d">
-        <property name="minimumSize">
-         <size>
-          <width>280</width>
-          <height>240</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>280</width>
-          <height>240</height>
-         </size>
-        </property>
-        <property name="focusPolicy">
-         <enum>Qt::TabFocus</enum>
-        </property>
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="whatsThis">
-         <string/>
-        </property>
-        <property name="title">
-         <string>Denoise Level</string>
-        </property>
-        <property name="value">
-         <number>0</number>
-        </property>
-        <property name="minimum" stdset="0">
-         <number>0</number>
-        </property>
-        <property name="maximum" stdset="0">
-         <number>63</number>
-        </property>
-        <property name="base">
-         <number>10</number>
-        </property>
-        <property name="comma" stdset="0">
-         <number>0</number>
-        </property>
-        <property name="fmt">
-         <string>%2.0f</string>
-        </property>
-        <property name="maxAngle">
-         <number>150</number>
-        </property>
-        <property name="needleImage">
-         <pixmap resource="../../resource/resource.qrc">:/images/needle/dial-pointer.png</pixmap>
-        </property>
-        <property name="backgroundImage">
-         <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-gray.png</pixmap>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QGroupBox" name="gpbEnable2d">
+       <widget class="QGroupBox" name="gpbEnable2d_2">
         <property name="minimumSize">
          <size>
           <width>0</width>
-          <height>240</height>
+          <height>50</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -124,7 +43,269 @@
         <property name="title">
          <string/>
         </property>
-        <layout class="QGridLayout" name="gridLayout_2">
+        <layout class="QGridLayout" name="gridLayout_3">
+         <item row="0" column="1">
+          <widget class="QCheckBox" name="cbxAntialiasingEnable">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <spacer name="horizontalSpacer_11">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="lblEnable_2">
+           <property name="minimumSize">
+            <size>
+             <width>45</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>45</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Enable</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="gpb2Unsharpen">
+     <property name="title">
+      <string>Unsharpen Filter</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="1" column="0">
+       <widget class="QGroupBox" name="gpbEnableUnsh_2">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>280</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>300</height>
+         </size>
+        </property>
+        <property name="title">
+         <string/>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <spacer name="horizontalSpacer_9">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="SingleChannelKnobBox" name="kbxDenoiseLevel2d">
+           <property name="minimumSize">
+            <size>
+             <width>280</width>
+             <height>240</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>280</width>
+             <height>240</height>
+            </size>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::TabFocus</enum>
+           </property>
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="whatsThis">
+            <string/>
+           </property>
+           <property name="title">
+            <string>Denoise Level</string>
+           </property>
+           <property name="value" stdset="0">
+            <number>0</number>
+           </property>
+           <property name="minimum" stdset="0">
+            <number>0</number>
+           </property>
+           <property name="maximum" stdset="0">
+            <number>65</number>
+           </property>
+           <property name="base" stdset="0">
+            <number>10</number>
+           </property>
+           <property name="comma" stdset="0">
+            <number>0</number>
+           </property>
+           <property name="fmt" stdset="0">
+            <string>%2.0f</string>
+           </property>
+           <property name="maxAngle" stdset="0">
+            <number>150</number>
+           </property>
+           <property name="needleImage" stdset="0">
+            <pixmap resource="../../resource/resource.qrc">:/images/needle/dial-pointer.png</pixmap>
+           </property>
+           <property name="backgroundImage" stdset="0">
+            <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-gray.png</pixmap>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="SingleChannelKnobBox" name="kbxDetailLevel2d">
+           <property name="minimumSize">
+            <size>
+             <width>280</width>
+             <height>240</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>280</width>
+             <height>240</height>
+            </size>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::TabFocus</enum>
+           </property>
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="whatsThis">
+            <string/>
+           </property>
+           <property name="title">
+            <string>Detail Level</string>
+           </property>
+           <property name="value" stdset="0">
+            <number>0</number>
+           </property>
+           <property name="minimum" stdset="0">
+            <number>0</number>
+           </property>
+           <property name="maximum" stdset="0">
+            <number>65</number>
+           </property>
+           <property name="base" stdset="0">
+            <number>10</number>
+           </property>
+           <property name="comma" stdset="0">
+            <number>0</number>
+           </property>
+           <property name="fmt" stdset="0">
+            <string>%2.0f</string>
+           </property>
+           <property name="maxAngle" stdset="0">
+            <number>150</number>
+           </property>
+           <property name="needleImage" stdset="0">
+            <pixmap resource="../../resource/resource.qrc">:/images/needle/dial-pointer.png</pixmap>
+           </property>
+           <property name="backgroundImage" stdset="0">
+            <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-gray.png</pixmap>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QGroupBox" name="gpbEnableUnsh">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>50</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>300</height>
+         </size>
+        </property>
+        <property name="title">
+         <string/>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_5">
+         <item row="0" column="1">
+          <widget class="QCheckBox" name="cbxEnable">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <spacer name="horizontalSpacer_12">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
          <item row="0" column="0">
           <widget class="QLabel" name="lblEnable">
            <property name="minimumSize">
@@ -144,112 +325,8 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="1">
-          <widget class="QCheckBox" name="cbxEnable">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <spacer name="verticalSpacer">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Minimum</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>200</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
         </layout>
        </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_3">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="SingleChannelKnobBox" name="kbxDetailLevel2d">
-        <property name="minimumSize">
-         <size>
-          <width>280</width>
-          <height>240</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>280</width>
-          <height>240</height>
-         </size>
-        </property>
-        <property name="focusPolicy">
-         <enum>Qt::TabFocus</enum>
-        </property>
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="whatsThis">
-         <string/>
-        </property>
-        <property name="title">
-         <string>Detail Level</string>
-        </property>
-        <property name="value">
-         <number>0</number>
-        </property>
-        <property name="minimum" stdset="0">
-         <number>0</number>
-        </property>
-        <property name="maximum" stdset="0">
-         <number>63</number>
-        </property>
-        <property name="base">
-         <number>10</number>
-        </property>
-        <property name="comma" stdset="0">
-         <number>0</number>
-        </property>
-        <property name="fmt">
-         <string>%2.0f</string>
-        </property>
-        <property name="maxAngle">
-         <number>150</number>
-        </property>
-        <property name="needleImage">
-         <pixmap resource="../../resource/resource.qrc">:/images/needle/dial-pointer.png</pixmap>
-        </property>
-        <property name="backgroundImage">
-         <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-gray.png</pixmap>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_4">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
       </item>
      </layout>
     </widget>
@@ -299,28 +376,28 @@
         <property name="title">
          <string>Denoise Level</string>
         </property>
-        <property name="value">
+        <property name="value" stdset="0">
          <number>0</number>
         </property>
         <property name="maximum" stdset="0">
          <number>19</number>
         </property>
-        <property name="base">
+        <property name="base" stdset="0">
          <number>10</number>
         </property>
         <property name="comma" stdset="0">
          <number>0</number>
         </property>
-        <property name="fmt">
+        <property name="fmt" stdset="0">
          <string>%2.0f</string>
         </property>
-        <property name="maxAngle">
+        <property name="maxAngle" stdset="0">
          <number>150</number>
         </property>
-        <property name="needleImage">
+        <property name="needleImage" stdset="0">
          <pixmap resource="../../resource/resource.qrc">:/images/needle/dial-pointer.png</pixmap>
         </property>
-        <property name="backgroundImage">
+        <property name="backgroundImage" stdset="0">
          <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-gray.png</pixmap>
         </property>
        </widget>
@@ -443,22 +520,22 @@
         <property name="maximum" stdset="0">
          <number>15</number>
         </property>
-        <property name="base">
+        <property name="base" stdset="0">
          <number>10</number>
         </property>
         <property name="comma" stdset="0">
          <number>0</number>
         </property>
-        <property name="fmt">
+        <property name="fmt" stdset="0">
          <string>%2.0f</string>
         </property>
-        <property name="maxAngle">
+        <property name="maxAngle" stdset="0">
          <number>150</number>
         </property>
-        <property name="needleImage">
+        <property name="needleImage" stdset="0">
          <pixmap resource="../../resource/resource.qrc">:/images/needle/dial-pointer.png</pixmap>
         </property>
-        <property name="backgroundImage">
+        <property name="backgroundImage" stdset="0">
          <pixmap resource="../../resource/resource.qrc">:/images/back/dial-back-gray.png</pixmap>
         </property>
        </widget>
@@ -503,9 +580,6 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>cbxEnable</tabstop>
-  <tabstop>kbxDenoiseLevel2d</tabstop>
-  <tabstop>kbxDetailLevel2d</tabstop>
   <tabstop>cbxTfltEnable</tabstop>
   <tabstop>kbxDenoiseLevel3d</tabstop>
   <tabstop>kbxDetailLevel3d</tabstop>

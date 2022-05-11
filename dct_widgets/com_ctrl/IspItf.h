@@ -69,6 +69,7 @@ public:
     void GetFilterEnable();
     void GetFilterDetailLevel();
     void GetFilterDenoiseLevel();
+    void GetFilterAntialiasing();
     void GetFilter();
 
     // color correction
@@ -114,6 +115,7 @@ signals:
     void FilterEnableChanged( int value );
     void FilterDetailLevelChanged( int value );
     void FilterDenoiseLevelChanged( int value );
+    void FilterAntialiasingChanged( int value );
     void FilterChanged( int enable, int detail, int denoise );
 
     // color correction
@@ -166,6 +168,7 @@ public slots:
     void onFilterEnableChange( int value );
     void onFilterDetailLevelChange( int value );
     void onFilterDenoiseLevelChange( int value );
+    void onFilterAntialiasingChange( int value );
     void onFilterChange( int enable, int detail, int denoise );
 
     // color correction

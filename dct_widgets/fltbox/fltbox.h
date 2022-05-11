@@ -29,7 +29,7 @@
  * 2D Denoise Level Definitions
  *****************************************************************************/
 #define FLT_2D_DENOISE_LEVEL_MIN                (        0 )
-#define FLT_2D_DENOISE_LEVEL_MAX                (       63 )
+#define FLT_2D_DENOISE_LEVEL_MAX                (       65 )
 #define FLT_2D_DENOISE_LEVEL_COMMA_POSITION     (        0 )
 #define FLT_2D_DENOISE_LEVEL_BASE               (       10 )
 #define FLT_2D_DENOISE_LEVEL_DISPLAY_MULTIPLIER (        1 )
@@ -39,7 +39,7 @@
  * 2D Detail Level Definitions
  *****************************************************************************/
 #define FLT_2D_DETAIL_LEVEL_MIN                 (        0 )
-#define FLT_2D_DETAIL_LEVEL_MAX                 (       63 )
+#define FLT_2D_DETAIL_LEVEL_MAX                 (       65 )
 #define FLT_2D_DETAIL_LEVEL_COMMA_POSITION      (        0 )
 #define FLT_2D_DETAIL_LEVEL_BASE                (       10 )
 #define FLT_2D_DETAIL_LEVEL_DISPLAY_MULTIPLIER  (        1 )
@@ -76,6 +76,10 @@ public:
     explicit FltBox( QWidget * parent = 0 );
     ~FltBox();
 
+    // Set visibility
+    void setUnsharpenFilterVisible(const bool value);
+    void setAntialiasingFilterVisible(const bool value);
+
     bool Enable2d() const;
     void setEnable2d( const bool enable );
     int DetailLevel2d() const;
@@ -104,6 +108,9 @@ signals:
     void FilterDenoiseLevelChanged( int value );
     void FilterChanged( int enable, int detail, int denoise );
 
+    // Antialiasing
+    void FilterAntialiasingChanged( int value );
+
     // TFLT stage
     void TfltEnableChanged( int value );
     void TfltDenoiseLevelChanged( int value );
@@ -121,10 +128,16 @@ public slots:
     void onTfltDenoiseLevelChange( int value );
     void onTfltMinMaxChange( int min, int max );
 
+    // Antialiasing
+    void onFilterAntialiasingChange( int value );
+
 private slots:
     void on2dEnableChange( int value );
     void on3dEnableChange( int value );
     void onObjectSpeedChange( int value );
+
+    // Antialiasing
+    void onCbxAntialiasingChange( int value );
 
 private:
     class PrivateData;

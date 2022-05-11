@@ -1,7 +1,7 @@
 # This version number is shown in the Application, it should be
 # updated before each release!
-VERSION = 2021.3
-#DEFINES += VERSION #= \\\"2021.3\\\"
+VERSION = 2022.1
+#DEFINES += VERSION #= \\\"2022.1\\\"
 
 QMAKE_TARGET_COMPANY = "KAYA Instruments"
 QMAKE_TARGET_PRODUCT = "SDI Control Point"

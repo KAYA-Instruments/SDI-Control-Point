@@ -517,6 +517,39 @@ int set_param_string
 }
 
 /******************************************************************************
+ * set_param_string_with_tmo - Sends a given set-command to provideo device and
+ *                             transmitts a string and use timeout
+ *****************************************************************************/
+int set_param_string_with_tmo
+(
+    ctrl_channel_handle_t const channel,
+    char * const                cmd_set,
+    char * const                string,
+    int const                   cmd_timeout_ms
+)
+{
+    char command[CMD_SINGLE_LINE_COMMAND_SIZE];
+
+    // clear command buffer
+    memset( command, 0, sizeof(command) );
+
+    // create command to send
+    int res = sprintf( command, cmd_set, string );
+
+    // check for errors or cmd too long
+    if ( res < 0 || res > (int)CMD_SINGLE_LINE_COMMAND_SIZE - 1)
+    {
+        return ( -EFAULT );
+    }
+
+    // send command to COM port
+    ctrl_channel_send_request( channel, (uint8_t *)command, strlen(command) );
+
+    // wait for response and evaluate
+    return ( evaluate_set_response_with_tmo( channel,  cmd_timeout_ms) );
+}
+
+/******************************************************************************
  * get_param_int_X - Sends a given get-command to provideo device and parses
  *                   device response for a variable number of integer values
  *****************************************************************************/

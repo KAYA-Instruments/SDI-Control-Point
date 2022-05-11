@@ -498,6 +498,38 @@ int ctrl_protocol_set_filter_denoise
 );
 
 /**************************************************************************//**
+ * @brief Gets enable status of antialiasing filter stage.
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[out]  flag     current enable status of filter stage
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_get_filter_antialiasing
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t * const              flag
+);
+
+/**************************************************************************//**
+ * @brief Enables/disables the antialiasing filter stage.
+ *
+ * @param[in]   channel  control channel instance
+ * @param[in]   protocol control protocol instance
+ * @param[in]   flag     flag to set (0: disable / 1: enable )
+ *
+ * @return      0 on success, error-code otherwise
+ *****************************************************************************/
+int ctrl_protocol_set_filter_antialiasing
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t const                flag
+);
+
+/**************************************************************************//**
  * @brief Get the 3-by-3 color conversion (RGB->YUV) matrix.
  *
  *        The following formula is used for the conversion.
@@ -721,6 +753,8 @@ typedef struct ctrl_protocol_isp_drv_s
     ctrl_protocol_set_uint8_t           set_filter_detail;
     ctrl_protocol_get_uint8_t           get_filter_denoise;
     ctrl_protocol_set_uint8_t           set_filter_denoise;
+    ctrl_protocol_get_uint8_t           get_filter_antialiasing;
+    ctrl_protocol_set_uint8_t           set_filter_antialiasing;
     ctrl_protocol_int16_array_t         get_color_conv;
     ctrl_protocol_int16_array_t         set_color_conv;
     ctrl_protocol_int32_array_t         get_color_cross;

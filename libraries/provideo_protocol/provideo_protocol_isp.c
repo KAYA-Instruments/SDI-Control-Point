@@ -151,6 +151,16 @@
 #define CMD_FILTER_DENOISE_NO_PARMS             ( 1 )
 
 /******************************************************************************
+ * @brief command "filter_enable"
+ *****************************************************************************/
+#define CMD_GET_FILTER_ANTIALIASING                ( "antialiasing \n" )
+#define CMD_SET_FILTER_ANTIALIASING                ( "antialiasing  %i\n" )
+#define CMD_SET_FILTER_ANTIALIASING_WITH_COPY_FLAG ( "antialiasing  %i %i\n" )
+#define CMD_SYNC_FILTER_ANTIALIASING               ( "antialiasing  " )
+#define CMD_FILTER_ANTIALIASING_NO_PARMS           ( 1 )
+#define CMD_GET_FILTER_ANTIALIASING_TMO            ( 120 ) // Default 100ms timeout is to short when using slower 57600 baudrate
+
+/******************************************************************************
  * @brief command "color_conv" 
  *****************************************************************************/
 #define CMD_GET_COLOR_CONV                  ( "color_conv\n" )
@@ -1158,6 +1168,70 @@ static int set_filter_denoise
 }
 
 /******************************************************************************
+ * get_filter_antialiasing - Gets the filter antialiasing functions flag
+ *****************************************************************************/
+static int get_filter_antialiasing
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    uint8_t * const             flag
+)
+{
+    (void) ctx;
+
+    int value;
+    int res;
+
+    // parameter check
+    if ( !flag )
+    {
+        return ( -EINVAL );
+    }
+
+    // command call to get 1 parameter from provideo system
+    res = get_param_int_X_with_tmo( channel, 2, CMD_GET_FILTER_ANTIALIASING,
+            CMD_SYNC_FILTER_ANTIALIASING, CMD_SET_FILTER_ANTIALIASING, CMD_GET_FILTER_ANTIALIASING_TMO, &value );
+
+    // return error code
+    if ( res < 0 )
+    {
+        return ( res );
+    }
+
+    // return -EFAULT if number of parameter not matching
+    else if ( res != CMD_FILTER_ANTIALIASING_NO_PARMS )
+    {
+        return ( -EFAULT );
+    }
+
+    // type-cast to range
+    *flag = UINT8( value );
+
+    return ( 0 );
+}
+
+/*********************************************************************************
+ * set_filter_antialiasing - Enable function for the filter antialiasing functions
+ *********************************************************************************/
+static int set_filter_antialiasing
+(
+    void * const                ctx,
+    ctrl_channel_handle_t const channel,
+    uint8_t const               flag
+)
+{
+    provideo_protocol_user_ctx_t * user = (provideo_protocol_user_ctx_t *)ctx;
+
+    if ( user  && user->use_copy_flag )
+    {
+        return ( set_param_int_X( channel, CMD_SET_FILTER_ANTIALIASING_WITH_COPY_FLAG,
+                                    INT( flag ), INT( user->use_copy_flag ) ) );
+    }
+
+    return ( set_param_int_X( channel, CMD_SET_FILTER_ANTIALIASING, INT( flag ) ) );
+}
+
+/******************************************************************************
  * get_color_conv - Gets the color conversion matrix
  *****************************************************************************/
 static int get_color_conv
@@ -1554,42 +1628,44 @@ static int set_split_screen
  *****************************************************************************/
 static ctrl_protocol_isp_drv_t provideo_isp_drv = 
 {
-    .get_lsc                = get_lsc,
-    .set_lsc                = set_lsc,
-    .get_bayer              = get_bayer,
-    .set_bayer              = set_bayer,
-    .get_gain_red           = get_gain_red,
-    .set_gain_red           = set_gain_red,
-    .get_gain_green         = get_gain_green,
-    .set_gain_green         = set_gain_green,
-    .get_gain_blue          = get_gain_blue,
-    .set_gain_blue          = set_gain_blue,
-    .get_black_red          = get_black_red,
-    .set_black_red          = set_black_red,
-    .get_black_green        = get_black_green,
-    .set_black_green        = set_black_green,
-    .get_black_blue         = get_black_blue,
-    .set_black_blue         = set_black_blue,
-    .get_flare              = get_flare,
-    .set_flare              = set_flare,
-    .get_black_master       = get_black_master,
-    .set_black_master       = set_black_master,
-    .get_filter_enable      = get_filter_enable,
-    .set_filter_enable      = set_filter_enable,
-    .get_filter_detail      = get_filter_detail,
-    .set_filter_detail      = set_filter_detail,
-    .get_filter_denoise     = get_filter_denoise,
-    .set_filter_denoise     = set_filter_denoise,
-    .get_color_conv         = get_color_conv,
-    .set_color_conv         = set_color_conv,
-    .get_color_cross        = get_color_cross,
-    .set_color_cross        = set_color_cross,
-    .get_color_cross_offset = get_color_cross_offset,
-    .set_color_cross_offset = set_color_cross_offset,
-    .get_color_space        = get_color_space,
-    .set_color_space        = set_color_space,
-    .get_split_screen       = get_split_screen,
-    .set_split_screen       = set_split_screen,
+    .get_lsc                 = get_lsc,
+    .set_lsc                 = set_lsc,
+    .get_bayer               = get_bayer,
+    .set_bayer               = set_bayer,
+    .get_gain_red            = get_gain_red,
+    .set_gain_red            = set_gain_red,
+    .get_gain_green          = get_gain_green,
+    .set_gain_green          = set_gain_green,
+    .get_gain_blue           = get_gain_blue,
+    .set_gain_blue           = set_gain_blue,
+    .get_black_red           = get_black_red,
+    .set_black_red           = set_black_red,
+    .get_black_green         = get_black_green,
+    .set_black_green         = set_black_green,
+    .get_black_blue          = get_black_blue,
+    .set_black_blue          = set_black_blue,
+    .get_flare               = get_flare,
+    .set_flare               = set_flare,
+    .get_black_master        = get_black_master,
+    .set_black_master        = set_black_master,
+    .get_filter_enable       = get_filter_enable,
+    .set_filter_enable       = set_filter_enable,
+    .get_filter_detail       = get_filter_detail,
+    .set_filter_detail       = set_filter_detail,
+    .get_filter_denoise      = get_filter_denoise,
+    .set_filter_denoise      = set_filter_denoise,
+    .get_filter_antialiasing = get_filter_antialiasing,
+    .set_filter_antialiasing = set_filter_antialiasing,
+    .get_color_conv          = get_color_conv,
+    .set_color_conv          = set_color_conv,
+    .get_color_cross         = get_color_cross,
+    .set_color_cross         = set_color_cross,
+    .get_color_cross_offset  = get_color_cross_offset,
+    .set_color_cross_offset  = set_color_cross_offset,
+    .get_color_space         = get_color_space,
+    .set_color_space         = set_color_space,
+    .get_split_screen        = get_split_screen,
+    .set_split_screen        = set_split_screen,
 };
 
 /******************************************************************************

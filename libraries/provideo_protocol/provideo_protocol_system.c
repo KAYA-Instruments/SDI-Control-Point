@@ -284,6 +284,8 @@
 
 #define CMD_SET_SETTINGS                        ( "%s\n" )
 
+#define CMD_GET_DEVICE_SETTINGS_TMO             ( 10000 )
+
 /******************************************************************************
  * get_system_info
  *****************************************************************************/
@@ -2184,7 +2186,7 @@ static int set_device_settings
     }
 
     // command call to send a string to provideo system
-    res = set_param_string( channel, CMD_SET_SETTINGS, (char *)settings );
+    res = set_param_string_with_tmo( channel, CMD_SET_SETTINGS, (char *)settings , CMD_GET_DEVICE_SETTINGS_TMO);
 
     // return error code
     if ( res < 0 )

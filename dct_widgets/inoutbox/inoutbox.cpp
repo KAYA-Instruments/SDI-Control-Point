@@ -511,7 +511,7 @@ void InOutBox::show4kGenlockNote( int mode )
     /* If this is a 4K / UHD video mode, show the note on genlock and 4k */
     if ( mode >= VideoModeFirstUHD  && mode <= VideoModeLast4K )
     {
-        d_data->m_ui->lblGenlock4kNote->setVisible( true );
+        d_data->m_ui->lblGenlock4kNote->setVisible( false ); // Currently this note is not required
     }
     else
     {

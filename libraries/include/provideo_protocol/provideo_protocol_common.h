@@ -342,6 +342,23 @@ int set_param_string
 );
 
 /******************************************************************************
+ * @brief Sends a given set-command to provideo device and transmitts a string
+ *        with a specified timeout in ms
+ *
+ * @param[in]   channel         control channel to use
+ * @param[in]   cmd_set         formatted command string
+ * @param[in]   string          string that shall be send after cmd
+ * @param[in]   cmd_timeout_ms  time in ms that is waited until timeout (command failed)
+ *****************************************************************************/
+int set_param_string_with_tmo
+(
+    ctrl_channel_handle_t const channel,
+    char * const                cmd_set,
+    char * const                string,
+    int const                   cmd_timeout_ms
+);
+
+/******************************************************************************
  * @brief Sends a given get-command to provideo device and parses device 
  *        response for a variable number of integer values
  *

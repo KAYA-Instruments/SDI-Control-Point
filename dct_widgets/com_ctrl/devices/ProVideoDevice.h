@@ -75,6 +75,7 @@ public:
         bool hasIspMasterBlackLevel;
         bool hasIspFlare;
         bool hasIspFilter;
+        bool hasAntialiasingFilter;
         bool hasIspAutoWhiteBalance;
         bool hasIspGain;
         bool hasIspGreenGain;
