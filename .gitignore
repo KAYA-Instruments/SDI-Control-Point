@@ -7,6 +7,7 @@
 # Dependency Makefiles #
 ########################
 depends.mk
+.svn
 
 # Qt user project files #
 #########################

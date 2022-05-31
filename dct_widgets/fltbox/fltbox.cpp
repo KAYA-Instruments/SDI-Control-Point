@@ -87,6 +87,7 @@ FltBox::FltBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->kbxDenoiseLevel2d->setMaxAngle( 150 );
     d_data->m_ui->kbxDenoiseLevel2d->setMaxRounds( 1 );
     d_data->m_ui->kbxDenoiseLevel2d->setFmt( FLT_2D_DENOISE_LEVEL_DISPLAY_MASK );
+    d_data->m_ui->kbxDenoiseLevel2d->setMaxEvent(1);
 
     ////////////////////
     // 2d detail level
@@ -100,6 +101,7 @@ FltBox::FltBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->kbxDetailLevel2d->setMaxAngle( 150 );
     d_data->m_ui->kbxDetailLevel2d->setMaxRounds( 1 );
     d_data->m_ui->kbxDetailLevel2d->setFmt( FLT_2D_DETAIL_LEVEL_DISPLAY_MASK );
+    d_data->m_ui->kbxDetailLevel2d->setMaxEvent(1);
 
     ////////////////////
     // 3d denoise level

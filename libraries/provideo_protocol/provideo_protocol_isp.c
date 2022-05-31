@@ -154,9 +154,9 @@
  * @brief command "filter_enable"
  *****************************************************************************/
 #define CMD_GET_FILTER_ANTIALIASING                ( "antialiasing \n" )
-#define CMD_SET_FILTER_ANTIALIASING                ( "antialiasing  %i\n" )
-#define CMD_SET_FILTER_ANTIALIASING_WITH_COPY_FLAG ( "antialiasing  %i %i\n" )
-#define CMD_SYNC_FILTER_ANTIALIASING               ( "antialiasing  " )
+#define CMD_SET_FILTER_ANTIALIASING                ( "antialiasing %i\n" )
+#define CMD_SET_FILTER_ANTIALIASING_WITH_COPY_FLAG ( "antialiasing %i %i\n" )
+#define CMD_SYNC_FILTER_ANTIALIASING               ( "antialiasing " )
 #define CMD_FILTER_ANTIALIASING_NO_PARMS           ( 1 )
 #define CMD_GET_FILTER_ANTIALIASING_TMO            ( 120 ) // Default 100ms timeout is to short when using slower 57600 baudrate
 
