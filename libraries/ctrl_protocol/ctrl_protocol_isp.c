@@ -449,6 +449,37 @@ int ctrl_protocol_set_filter_denoise
 }
 
 /******************************************************************************
+ * ctrl_protocol_get_filter_antialiasing
+ *****************************************************************************/
+int ctrl_protocol_get_filter_antialiasing
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t * const              flag
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( ISP_DRV(protocol->drv), get_filter_antialiasing );
+    CHECK_NOT_NULL( flag );
+    return ( ISP_DRV(protocol->drv)->get_filter_antialiasing( protocol->ctx, channel, flag ) );
+}
+
+/******************************************************************************
+ * ctrl_protocol_set_filter_antialiasing
+ *****************************************************************************/
+int ctrl_protocol_set_filter_antialiasing
+(
+    ctrl_protocol_handle_t const protocol,
+    ctrl_channel_handle_t const  channel,
+    uint8_t const                flag
+)
+{
+    CHECK_HANDLE( protocol );
+    CHECK_DRV_FUNC( ISP_DRV(protocol->drv), set_filter_antialiasing );
+    return ( ISP_DRV(protocol->drv)->set_filter_antialiasing( protocol->ctx, channel, flag ) );
+}
+
+/******************************************************************************
  * ctrl_protocol_get_color_conv
  *****************************************************************************/
 int ctrl_protocol_get_color_conv

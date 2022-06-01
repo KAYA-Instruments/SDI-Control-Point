@@ -80,9 +80,6 @@ namespace Ui {
  *****************************************************************************/
 enum updateType
 {
-    xbow,
-    condor4k_fw, condor4k_bs,
-    cooper_fw, cooper_bs,
     invalid
 };
 
@@ -97,83 +94,6 @@ typedef struct update_config_s
     QString    file;           // binary file that is flashed during update
     QString    description;    // description of the update type
 } update_config_t;
-
-// NOTE: xbow, bitstream contains firmware (2in1 update)
-#define PLATFORM_XBOW     ( "xbow" )    // platform-name
-const update_config_t xbow_update =
-{
-    /* .type        = */ xbow,
-    /* .baudrate    = */ 0u,        // use automatic baudrate detection of flashloader
-    /* .sector      = */ 128u,
-    /* .extension   = */ "rpd",
-    /* .content     = */ false,     // not needed it's clear
-    /* .reversal    = */ true,
-    /* .file        = */ "",
-    /* .description = */ "Combined Bitstream and Software Update File"
-};
-
-// NOTE: condor4k and condor4k_mini, bitstream and firmware are seperate
-#define PLATFORM_CONDOR_4K          ( "condor4k" )      // platform-name
-#define PLATFORM_CONDOR_4K_MINI     ( "condor4k_mini" ) // platform-name
-#define PLATFORM_CONDOR_4K_SP       ( 0x2001C000u )     // stack-pointer
-#define PLATFORM_CONDOR_4K_PC       ( 0x08010000u )     // minimum program counter
-
-// firmware update
-const update_config_t condor4k_fw_update =
-{
-    /* .type        = */ condor4k_fw,
-    /* .baudrate    = */ 0u,        // use automatic baudrate detection of flashloader
-    /* .sector      = */ 1u,
-    /* .extension   = */ "bin",
-    /* .content     = */ true,      // needed to distinguish between firmware and bitstream
-    /* .reversal    = */ false,
-    /* .file        = */ QString(),
-    /* .description = */ "Software Update File"
-};
-
-// bitstream update
-const update_config_t condor4k_bs_update =
-{
-    /* .type        = */ condor4k_bs,
-    /* .baudrate    = */ 0u,        // use automatic baudrate detection of flashloader
-    /* .sector      = */ 144u,
-    /* .extension   = */ "bin",
-    /* .content     = */ true,      // needed to distinguish between firmware and bitstream
-    /* .reversal    = */ false,
-    /* .file        = */ QString(),
-    /* .description = */ "Bitstream Update File"
-};
-
-// NOTE: cooper, bitstream and firmware are seperate
-#define PLATFORM_COOPER     ( "cooper" )        // platform-name
-#define PLATFORM_COOPER_SP  ( 0x2001C000u )     // stack-pointer
-#define PLATFORM_COOPER_PC  ( 0x08010000u )     // minimum program counter
-
-// firmware update
-const update_config_t cooper_fw_update =
-{
-    /* .type        = */ cooper_fw,
-    /* .baudrate    = */ 0u,        // use automatic baudrate detection of flashloader
-    /* .sector      = */ 1u,
-    /* .extension   = */ "bin",
-    /* .content     = */ true,      // needed to distinguish between firmware and bitstream
-    /* .reversal    = */ false,
-    /* .file        = */ QString(),
-    /* .description = */ "Software Update File"
-};
-
-// bitstream update
-const update_config_t cooper_bs_update =
-{
-    /* .type        = */ cooper_bs,
-    /* .baudrate    = */ 0u,        // use automatic baudrate detection of flashloader
-    /* .sector      = */ 4u,
-    /* .extension   = */ "bin",
-    /* .content     = */ true,      // needed to distinguish between firmware and bitstream
-    /* .reversal    = */ false,
-    /* .file        = */ QString(),
-    /* .description = */ "Bitstream Update File"
-};
 
 /******************************************************************************
  * fileExists
@@ -201,36 +121,6 @@ static bool fileTypeMatches( const updateType type, const QString & fn )
     quint32 d[2];
     f.read( reinterpret_cast<char *>(d), sizeof(quint32) * 2 );
     f.close();
-
-    // Condor 4k
-    if ( type == condor4k_fw || type == condor4k_bs )
-    {
-        // if stack-pointer matches and program-pointer is bigger than min, this is a firmware binary
-        if ( type == condor4k_fw && ((d[0] == PLATFORM_CONDOR_4K_SP) && (d[1] >= PLATFORM_CONDOR_4K_PC)) )
-        {
-            return true;
-        }
-        // else this is a bitstream binary
-        else if ( type == condor4k_bs && !((d[0] == PLATFORM_CONDOR_4K_SP) && (d[1] >= PLATFORM_CONDOR_4K_PC)) )
-        {
-            return true;
-        }
-    }
-
-    // Cooper
-    if ( type == cooper_fw || type == cooper_bs )
-    {
-        // if stack-pointer matches and program-pointer is bigger than min, this is a firmware binary
-        if ( type == cooper_fw && ((d[0] == PLATFORM_COOPER_SP) && (d[1] >= PLATFORM_COOPER_PC)) )
-        {
-            return true;
-        }
-        // else this is a bitstream binary
-        else if ( type == cooper_bs && !((d[0] == PLATFORM_COOPER_SP) && (d[1] >= PLATFORM_COOPER_PC)) )
-        {
-            return true;
-        }
-    }
 
     return false;
 }
@@ -1698,29 +1588,6 @@ void UpdateBox::onSystemPlatformChange( QString name )
 
         // Clear list of update configs
         d_data->m_upd_config.clear();
-
-        if ( name == PLATFORM_XBOW )
-        {
-            d_data->m_upd_config.append( xbow_update );
-        }
-
-        else if ( name == PLATFORM_CONDOR_4K || name.contains(QString(PLATFORM_CONDOR_4K_MINI)) )
-        {
-            // first file is firmware update
-            d_data->m_upd_config.append( condor4k_fw_update );
-
-            // second file is bitstream update
-            d_data->m_upd_config.append( condor4k_bs_update );
-        }
-
-        else if ( name == PLATFORM_COOPER )
-        {
-            // first file is firmware update
-            d_data->m_upd_config.append( cooper_fw_update );
-
-            // second file is bitstream update
-            d_data->m_upd_config.append( cooper_bs_update );
-        }
     }
 
     // Save platform name

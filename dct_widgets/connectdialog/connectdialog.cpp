@@ -33,9 +33,6 @@
 #include <defines.h>
 #include <ProVideoProtocol.h>
 #include <ProVideoDevice.h>
-#include <XbowDevice.h>
-#include <Condor4kDevice.h>
-#include <CooperDevice.h>
 #include <IronSDI_Device.h>
 #include <infodialog.h>
 
@@ -401,19 +398,7 @@ bool ConnectDialog::connectWithDevice()
         uint32_t SwMask = genericDevice.GetProVideoSystemItf()->GetSwMask();
 
         ProVideoDevice * connectedDevice = nullptr;
-        if ( systemPlatform == KNOWN_DEVICE_XBOW )
-        {
-            connectedDevice = new XbowDevice( pActiveChannel, new ProVideoProtocol() );
-        }
-        else if ( systemPlatform == KNOWN_DEVICE_CONDOR4K || systemPlatform.contains(QString(KNOWN_DEVICE_CONDOR4K_MINI)) )
-        {
-            connectedDevice = new Condor4kDevice( pActiveChannel, new ProVideoProtocol() );
-        }
-        else if ( systemPlatform == KNOWN_DEVICE_COOPER )
-        {
-            connectedDevice = new CooperDevice( pActiveChannel, new ProVideoProtocol() );
-        }
-        else if ( systemPlatform == KNOWN_DEVICE_IRON_SDI )
+        if ( systemPlatform == KNOWN_DEVICE_IRON_SDI )
         {
             connectedDevice = new IronSDI_Device( pActiveChannel, new ProVideoProtocol(), HwMask , SwMask);
         }

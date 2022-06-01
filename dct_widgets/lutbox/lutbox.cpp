@@ -1809,16 +1809,19 @@ void LutBox::onImportClicked()
 
         if ( fileExists(d_data->m_filename) )
         {
-            // Read CSV file
-            QVector<QVector<int>> table(2);
-            QVector<QPair<int, int>> boundaries( { QPair<int, int>(0, ((1 << LutBitWidth()) - 1)),
-                                                   QPair<int, int>(0, ((1 << LutBitWidth()) - 1)) });
-
-            // If no error occurred, paste the data into the table
-            if ( loadTableCsv( d_data->m_filename, LUT_TABLE_NO_ROWS, boundaries, table) == 0)
+            for(int i=0; i<LutChannelMax; ++i)
             {
-                LutChannel ch = (LutChannel)d_data->m_ui->tabColorSelect->currentIndex();
-                d_data->setSamples( ch, table[0], table[1] );
+                // Read CSV file
+                QVector<QVector<int>> table(2);
+                QVector<QPair<int, int>> boundaries( { QPair<int, int>(0, ((1 << LutBitWidth()) - 1)),
+                                                       QPair<int, int>(0, ((1 << LutBitWidth()) - 1)) });
+
+                // If no error occurred, paste the data into the table
+                if ( loadTableCsv( d_data->m_filename, LUT_TABLE_NO_ROWS, boundaries, table) == 0)
+                {
+                    LutChannel ch = (LutChannel)d_data->m_ui->tabColorSelect->currentIndex();
+                    d_data->setSamples( LutChannel(i), table[0], table[1] );
+                }
             }
         }
     }
@@ -2222,6 +2225,8 @@ void LutBox::onColorSelectChange( int value )
         //         this, SLOT(onSelectionChange(const QItemSelection &, const QItemSelection &)) );
 
         //d_data->m_ch = (LutChannel)value ;
+
+        lblPlotNameSet( (LutChannel)value );
     }
 }
 
@@ -2575,5 +2580,34 @@ void LutBox::onSelectionChange( const QItemSelection &, const QItemSelection & )
         
         d_data->highlightSamples( (LutChannel)d_data->m_ui->tabColorSelect->currentIndex(), xv, yv );
     }
+}
+
+/******************************************************************************
+ * LutBox::lblPlotNameSet
+ *****************************************************************************/
+void LutBox::lblPlotNameSet( LutChannel ch )
+{
+    QString lblText;
+
+    switch ( ch )
+    {
+        case Master:
+            lblText = "Master Table:";
+            break;
+        case Red:
+            lblText = "Red Table:";
+            break;
+        case Green:
+            lblText = "Green Table:";
+            break;
+        case Blue:
+            lblText = "Blue Table:";
+            break;
+        default:
+            //lblText = "<img src=:/images/tab/gray.png align=middle> Master ";
+            lblText = "Master Table:";
+            break;
+    }
+    d_data->m_ui->lblPlotName->setText(lblText);
 }
 

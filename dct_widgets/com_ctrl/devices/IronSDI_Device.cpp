@@ -21,14 +21,22 @@
 #define IRON_SDI_FEATURE_RS485_MASK                   ( 0x00000010u ) /**< RS485 available */
 #define IRON_SDI_FEATURE_TIMECODE_MASK                ( 0x00000020u ) /**< TIMECODE available */
 #define IRON_SDI_FEATURE_GENLOCK_TERM_CROSSLOCK_MASK  ( 0x00000040u ) /**< GENLOCK CROSSLOCK available */
+#define IRON_SDI_FEATURE_UNSHARPEN_FILTER_MASK        ( 0x00000080u ) /**< UNSHARPEN FILTER available */
+#define IRON_SDI_FEATURE_ANTIALIASING_FILTER_MASK     ( 0x00000100u ) /**< ANTIALIASING FILTER available */
+#define IRON_SDI_FEATURE_COLOR_PHASE_EQUALIZER_MASK   ( 0x00000200u ) /**< COLOR PHASE EQUALIZER available */
 
-#define IS_IRON_SDI_FEATURE_HW_GENLOCK_MASK(x)              ( x & IRON_SDI_FEATURE_HW_GENLOCK_MASK  )
-#define IS_IRON_SDI_FEATURE_MULTI_USERSET_MASK(x)           ( x & IRON_SDI_FEATURE_MULTI_USERSET_MASK )
-#define IS_IRON_SDI_FEATURE_HW_12BIT(x)                     ( x & IRON_SDI_FEATURE_HW_12BIT )
-#define IS_IRON_SDI_FEATURE_AWB_AEC_AEG_EX_MASK(x)          ( x & IRON_SDI_FEATURE_AWB_AEC_AEG_EX_MASK )
-#define IS_IRON_SDI_FEATURE_RS485_MASK(x)                   ( x & IRON_SDI_FEATURE_RS485_MASK )
-#define IS_IRON_SDI_FEATURE_TIMECODE_MASK(x)                ( x & IRON_SDI_FEATURE_TIMECODE_MASK )
-#define IS_IRON_SDI_FEATURE_GENLOCK_TERM_CROSSLOCK_OFFSET_MASK(x)  ( x & IRON_SDI_FEATURE_GENLOCK_TERM_CROSSLOCK_MASK )
+
+#define IS_IRON_SDI_FEATURE_HW_GENLOCK_MASK(x)                    ( x & IRON_SDI_FEATURE_HW_GENLOCK_MASK  )
+#define IS_IRON_SDI_FEATURE_MULTI_USERSET_MASK(x)                 ( x & IRON_SDI_FEATURE_MULTI_USERSET_MASK )
+#define IS_IRON_SDI_FEATURE_HW_12BIT(x)                           ( x & IRON_SDI_FEATURE_HW_12BIT )
+#define IS_IRON_SDI_FEATURE_AWB_AEC_AEG_EX_MASK(x)                ( x & IRON_SDI_FEATURE_AWB_AEC_AEG_EX_MASK )
+#define IS_IRON_SDI_FEATURE_RS485_MASK(x)                         ( x & IRON_SDI_FEATURE_RS485_MASK )
+#define IS_IRON_SDI_FEATURE_TIMECODE_MASK(x)                      ( x & IRON_SDI_FEATURE_TIMECODE_MASK )
+#define IS_IRON_SDI_FEATURE_GENLOCK_TERM_CROSSLOCK_OFFSET_MASK(x) ( x & IRON_SDI_FEATURE_GENLOCK_TERM_CROSSLOCK_MASK )
+#define IS_IRON_SDI_FEATURE_UNSHARPEN_FILTER_MASK(x)              ( x & IRON_SDI_FEATURE_UNSHARPEN_FILTER_MASK )
+#define IS_IRON_SDI_FEATURE_ANTIALIASING_FILTER_MASK(x)           ( x & IRON_SDI_FEATURE_ANTIALIASING_FILTER_MASK )
+#define IS_IRON_SDI_FEATURE_COLOR_PHASE_EQUALIZER_MASK(x)         ( x & IRON_SDI_FEATURE_COLOR_PHASE_EQUALIZER_MASK )
+
 
 /******************************************************************************
  * hardware mask interpreter
@@ -249,6 +257,7 @@ void IronSDI_Device::setSupportedFeatures(const uint32_t HwMask, const uint32_t 
     deviceFeatures->hasIspMasterBlackLevel              = true;
     deviceFeatures->hasIspFlare                         = true;
     deviceFeatures->hasIspFilter                        = false;
+    deviceFeatures->hasAntialiasingFilter               = false;
     deviceFeatures->hasIspAutoWhiteBalance              = true;
     deviceFeatures->hasIspGain                          = true;
     deviceFeatures->hasIspGreenGain                     = true;
@@ -260,7 +269,7 @@ void IronSDI_Device::setSupportedFeatures(const uint32_t HwMask, const uint32_t 
     deviceFeatures->hasLutItf                           = true;
     deviceFeatures->hasDpccItf                          = true;
     deviceFeatures->hasDpccFullFeautureSet              = true;
-    deviceFeatures->hasSystemSaveLoad                   = true;
+    deviceFeatures->hasSystemSaveLoad                   = false;
     deviceFeatures->hasSystemUpdate                     = true;
     deviceFeatures->hasSystemRuntime                    = false;
     deviceFeatures->hasSystemFan                        = false;
@@ -280,6 +289,9 @@ void IronSDI_Device::setSupportedFeatures(const uint32_t HwMask, const uint32_t 
         deviceFeatures->hasSystemSaveLoad                  = IS_IRON_SDI_FEATURE_MULTI_USERSET_MASK( HwMask );
         deviceFeatures->lutBitWidth                        = IS_IRON_SDI_FEATURE_HW_12BIT( HwMask ) ? 12 : 10;
         deviceFeatures->hasChainGenLockTermCrosslockOffset = IS_IRON_SDI_FEATURE_GENLOCK_TERM_CROSSLOCK_OFFSET_MASK( HwMask );
+        deviceFeatures->hasIspFilter                       = IS_IRON_SDI_FEATURE_UNSHARPEN_FILTER_MASK( HwMask );
+        deviceFeatures->hasAntialiasingFilter              = IS_IRON_SDI_FEATURE_ANTIALIASING_FILTER_MASK( HwMask );
+        deviceFeatures->hasMccItf                          = IS_IRON_SDI_FEATURE_COLOR_PHASE_EQUALIZER_MASK( HwMask );
     }
 
 }

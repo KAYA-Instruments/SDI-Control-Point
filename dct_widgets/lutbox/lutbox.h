@@ -193,6 +193,8 @@ private:
     void PlotClicked( QMouseEvent * evt, LutChannel ch );
     void PlotShowPoint( QMouseEvent * evt, LutChannel ch );
 
+    void lblPlotNameSet( LutChannel ch );
+
 private slots:
     // lut plot tab-widget
     void onColorSelectChange( int );

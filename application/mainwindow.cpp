@@ -302,7 +302,7 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
         m_activeWidgets.append(m_ui->wbBox);
         m_ui->tabWidget->addTab(m_ui->tabWb, QIcon(":/images/tab/thermometer.png"), "");
     }
-    if (deviceFeatures.hasIspFilter)
+    if (deviceFeatures.hasIspFilter || deviceFeatures.hasAntialiasingFilter)
     {
         m_activeWidgets.append(m_ui->fltBox);
         m_ui->tabWidget->addTab(m_ui->tabFlt, QIcon(":/images/tab/filter.png"), "");
@@ -400,6 +400,11 @@ void MainWindow::setupUI(ProVideoDevice::features deviceFeatures)
     // Settings Dialog
     m_SettingsDlg->setBroadcastSettingsVisible(deviceFeatures.hasRS232Interface);
     m_SettingsDlg->setRS232SettingsVisible(deviceFeatures.hasRS232Interface);
+
+    // Filter dialog
+    m_ui->fltBox->setUnsharpenFilterVisible(deviceFeatures.hasIspFilter);
+    m_ui->fltBox->setAntialiasingFilterVisible(deviceFeatures.hasAntialiasingFilter);
+
 
     if ( !m_ScrollbarsNeeded )
     {
@@ -807,15 +812,26 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
     //////////////////////////
     if (deviceFeatures.hasIspFilter)
     {
+        // Filter enable
         connect( dev->GetIspItf(), SIGNAL(FilterEnableChanged(int)), m_ui->fltBox, SLOT(onFilterEnableChange(int)) );
         connect( m_ui->fltBox, SIGNAL(FilterEnableChanged(int)), dev->GetIspItf(), SLOT(onFilterEnableChange(int)) );
+
+        // Filter detail level
         connect( dev->GetIspItf(), SIGNAL(FilterDetailLevelChanged(int)), m_ui->fltBox, SLOT(onFilterDetailLevelChange(int)) );
         connect( m_ui->fltBox, SIGNAL(FilterDetailLevelChanged(int)), dev->GetIspItf(), SLOT(onFilterDetailLevelChange(int)) );
 
+        // Filter denoise level
         connect( dev->GetIspItf(), SIGNAL(FilterDenoiseLevelChanged(int)), m_ui->fltBox, SLOT(onFilterDenoiseLevelChange(int)) );
         connect( m_ui->fltBox, SIGNAL(FilterDenoiseLevelChanged(int)), dev->GetIspItf(), SLOT(onFilterDenoiseLevelChange(int)) );
 
         connect( dev->GetIspItf(), SIGNAL(FilterChanged(int,int,int)), m_ui->fltBox, SLOT(onFilterChange(int,int,int)) );
+    }
+
+    if (deviceFeatures.hasAntialiasingFilter)
+    {
+        // Filter antialiasing
+        connect( dev->GetIspItf(), SIGNAL(FilterAntialiasingChanged(int)), m_ui->fltBox, SLOT(onFilterAntialiasingChange(int)) );
+        connect( m_ui->fltBox, SIGNAL(FilterAntialiasingChanged(int)), dev->GetIspItf(), SLOT(onFilterAntialiasingChange(int)) );
     }
 
     //////////////////////////
@@ -1220,7 +1236,7 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
     connect( dev->GetProVideoSystemItf(), SIGNAL(ResolutionMaskChanged(uint32_t,uint32_t,uint32_t)), this, SLOT(onResolutionMaskChange(uint32_t,uint32_t,uint32_t)) );
 
     //////////////////////////
-    // Synchronise with the new device
+    // Synchronize with the new device
     //////////////////////////
     m_dev->resync();
 

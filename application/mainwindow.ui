@@ -527,7 +527,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Synchronise</string>
+    <string>Synchronize</string>
    </property>
    <property name="toolTip">
     <string>Applies the Settings of the currently selected Camera to all Cameras in the current Broadcast-Group</string>

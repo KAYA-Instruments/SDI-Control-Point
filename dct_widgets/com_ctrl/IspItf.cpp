@@ -409,6 +409,26 @@ void IspItf::GetFilterDenoiseLevel()
 }
 
 /******************************************************************************
+ * IspItf::GetFilterAntialiasing
+ *****************************************************************************/
+void IspItf::GetFilterAntialiasing()
+{
+    // Is there a signal listener
+    if ( receivers(SIGNAL(FilterAntialiasingChanged(int))) > 0 )
+    {
+        uint8_t enable;
+
+        // get filter enable status
+        int res = ctrl_protocol_get_filter_antialiasing( GET_PROTOCOL_INSTANCE(this),
+            GET_CHANNEL_INSTANCE(this), &enable );
+        HANDLE_ERROR( res );
+
+        // emit a BlueGainChanged signal
+        emit FilterAntialiasingChanged( (int)enable );
+    }
+}
+
+/******************************************************************************
  * IspItf::GetFilter
  *****************************************************************************/
 void IspItf::GetFilter()
@@ -782,6 +802,17 @@ void IspItf::onFilterDenoiseLevelChange( int value )
 {
     // set filter de-noise level on device
     int res = ctrl_protocol_set_filter_denoise( GET_PROTOCOL_INSTANCE(this),
+        GET_CHANNEL_INSTANCE(this), (uint8_t)value );
+    HANDLE_ERROR( res );
+}
+
+/******************************************************************************
+ * IspItf::onFilterAntialiasingChange
+ *****************************************************************************/
+void IspItf::onFilterAntialiasingChange( int value )
+{
+    // set filter enable status on device
+    int res = ctrl_protocol_set_filter_antialiasing( GET_PROTOCOL_INSTANCE(this),
         GET_CHANNEL_INSTANCE(this), (uint8_t)value );
     HANDLE_ERROR( res );
 }

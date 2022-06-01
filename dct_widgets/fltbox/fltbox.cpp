@@ -87,6 +87,7 @@ FltBox::FltBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->kbxDenoiseLevel2d->setMaxAngle( 150 );
     d_data->m_ui->kbxDenoiseLevel2d->setMaxRounds( 1 );
     d_data->m_ui->kbxDenoiseLevel2d->setFmt( FLT_2D_DENOISE_LEVEL_DISPLAY_MASK );
+    d_data->m_ui->kbxDenoiseLevel2d->setMaxEvent(1);
 
     ////////////////////
     // 2d detail level
@@ -100,6 +101,7 @@ FltBox::FltBox( QWidget * parent ) : DctWidgetBox( parent )
     d_data->m_ui->kbxDetailLevel2d->setMaxAngle( 150 );
     d_data->m_ui->kbxDetailLevel2d->setMaxRounds( 1 );
     d_data->m_ui->kbxDetailLevel2d->setFmt( FLT_2D_DETAIL_LEVEL_DISPLAY_MASK );
+    d_data->m_ui->kbxDetailLevel2d->setMaxEvent(1);
 
     ////////////////////
     // 3d denoise level
@@ -138,6 +140,9 @@ FltBox::FltBox( QWidget * parent ) : DctWidgetBox( parent )
     connect( d_data->m_ui->kbxDenoiseLevel3d, SIGNAL(ValueChanged(int)), this, SIGNAL(TfltDenoiseLevelChanged(int)) );
     connect( d_data->m_ui->kbxDetailLevel3d, SIGNAL(ValueChanged(int)), this, SLOT(onObjectSpeedChange(int)) );
 
+    // Antialiasing filter
+    connect( d_data->m_ui->cbxAntialiasingEnable, SIGNAL(stateChanged(int)), this, SLOT(onCbxAntialiasingChange(int)) );
+
     d_data->m_ui->gpb3dDenoising->hide();
 }
 
@@ -147,6 +152,22 @@ FltBox::FltBox( QWidget * parent ) : DctWidgetBox( parent )
 FltBox::~FltBox()
 {
     delete d_data;
+}
+
+/******************************************************************************
+ * FltBox::setUnsharpenFilterVisible
+ *****************************************************************************/
+void FltBox::setUnsharpenFilterVisible(const bool value)
+{
+    d_data->m_ui->gpb2Unsharpen->setVisible(value);
+}
+
+/******************************************************************************
+ * FltBox::setAntialiasingFilterVisible
+ *****************************************************************************/
+void FltBox::setAntialiasingFilterVisible(const bool value)
+{
+    d_data->m_ui->gpb1Antialiasing->setVisible(value);
 }
 
 /******************************************************************************
@@ -365,6 +386,16 @@ void FltBox::onFilterDenoiseLevelChange( int value )
 }
 
 /******************************************************************************
+ * FltBox::onFilterAntialiasingChange
+ *****************************************************************************/
+void FltBox::onFilterAntialiasingChange( int value )
+{
+    d_data->m_ui->cbxAntialiasingEnable->blockSignals( true );
+    d_data->m_ui->cbxAntialiasingEnable->setCheckState( value ? Qt::Checked : Qt::Unchecked );
+    d_data->m_ui->cbxAntialiasingEnable->blockSignals( false );
+}
+
+/******************************************************************************
  * FltBox::onFilterChange
  *****************************************************************************/
 void FltBox::onFilterChange( int enable, int detail, int denoise )
@@ -412,6 +443,16 @@ void FltBox::on2dEnableChange( int value )
 {
     setWaitCursor();
     emit FilterEnableChanged( (Qt::Unchecked == value) ? 0 : 1 );
+    setNormalCursor();
+}
+
+/******************************************************************************
+ * FltBox::onCbxAntialiasingChange
+ *****************************************************************************/
+void FltBox::onCbxAntialiasingChange( int value )
+{
+    setWaitCursor();
+    emit FilterAntialiasingChanged( (Qt::Unchecked == value) ? 0 : 1 );
     setNormalCursor();
 }
 
