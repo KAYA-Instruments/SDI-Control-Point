@@ -181,9 +181,6 @@ SOURCES += ../dct_widgets/mcceqbox/mcceqbox.cpp                             \
            ../dct_widgets/com_ctrl/OsdItf.cpp                               \
            ../dct_widgets/com_ctrl/LensItf.cpp                              \
            ../dct_widgets/com_ctrl/devices/ProVideoDevice.cpp               \
-           ../dct_widgets/com_ctrl/devices/XbowDevice.cpp                   \
-           ../dct_widgets/com_ctrl/devices/Condor4kDevice.cpp               \
-           ../dct_widgets/com_ctrl/devices/CooperDevice.cpp                 \
            ../dct_widgets/csvwrapper/csvwrapper.cpp                         \
            ../dct_widgets/textviewer/textviewer.cpp                         \
            ../dct_widgets/debugterminal/debugterminal.cpp                   \
@@ -272,9 +269,6 @@ HEADERS  += ../libraries/include                                                
             ../dct_widgets/infodialog/infodialog.h                              \
             ../dct_widgets/aecweightsdialog/aecweightsdialog.h                  \
             ../dct_widgets/com_ctrl/devices/ProVideoDevice.h                    \
-            ../dct_widgets/com_ctrl/devices/XbowDevice.h                        \
-            ../dct_widgets/com_ctrl/devices/Condor4kDevice.h                    \
-            ../dct_widgets/com_ctrl/devices/CooperDevice.h                      \
             ../dct_widgets/com_ctrl/ProVideoItf.h                               \
             ../dct_widgets/com_ctrl/ProVideoSystemItf.h                         \
             ../dct_widgets/com_ctrl/IspItf.h                                    \

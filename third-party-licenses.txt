@@ -1,8 +1,13 @@
 THIRD-PARTY SOFTWARE LICENSES
 
+
+-------- Dream Chips ProVideo --------
+This software development is based on the ProVideo GUI open source:
+https://gitlab.com/dreamchip/provideo-gui
+
 -------- Qt Framework --------
 
-Qt is licensed under GPLv3, for more information view :
+Qt is licensed under GPLv3, for more information view:
 https://www.qt.io/qt-licensing-terms/
 
 -------- QCustomPlot --------

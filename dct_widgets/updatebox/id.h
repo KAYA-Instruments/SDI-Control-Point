@@ -27,8 +27,6 @@ enum SystemId
 {
     SYSTEM_ID_INVALID       = -1,   // unknown system
     SYSTEM_ID_ATOM_ONE      = 0,    // ATOM ONE (X-BOW)
-    SYSTEM_ID_ATOM_ONE_4K   = 1,    // ATOM ONE 4K / 4K MINI (CONDOR)
-    SYSTEM_ID_ATOM_ONE_MINI = 2,    // ATOM ONE MINI (COOPER)
     SYSTEM_ID_MAX
 };
 
