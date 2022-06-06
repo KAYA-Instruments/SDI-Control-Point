@@ -17,7 +17,7 @@ This software development is based on the Dream Chips ProVideo GUI open source. 
 You can download the SDI Control Point compiled binaries for Windows [here](https://cloud.kayainstruments.com/s/SDI).
 
 # Documentation
-A user manual is provided [here] (https://cloud.kayainstruments.com/s/SDI?path=%2FDocumentation) and also in the doc repository. The user manual thoroughly covers the different screens and menus of SDI Control Point, includes screenshots of each window of the GUI with detailed descriptions on its usage.
+A user manual is provided [here](https://cloud.kayainstruments.com/s/SDI?path=%2FDocumentation) and also in the doc repository. The user manual thoroughly covers the different screens and menus of SDI Control Point, includes screenshots of each window of the GUI with detailed descriptions on its usage.
 
 # Project Structure
 The project contains four folders with multiple sub-directories:
