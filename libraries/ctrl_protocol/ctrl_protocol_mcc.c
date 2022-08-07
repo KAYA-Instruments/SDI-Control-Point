@@ -137,14 +137,15 @@ int ctrl_protocol_set_mcc_opmode
 int ctrl_protocol_get_mcc_blink
 (
     ctrl_protocol_handle_t const protocol,
-    ctrl_channel_handle_t const  channel, 
-    uint32_t * const             mode
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint32_t * const             values
 )
 {
     CHECK_HANDLE( protocol );
     CHECK_DRV_FUNC( MCC_DRV(protocol->drv), get_mcc_blink );
-    CHECK_NOT_NULL( mode );
-    return ( MCC_DRV(protocol->drv)->get_mcc_blink( protocol->ctx, channel, mode ) );
+    CHECK_NOT_NULL( values );
+    return ( MCC_DRV(protocol->drv)->get_mcc_blink( protocol->ctx, channel, no, values ) );
 }
 
 /******************************************************************************
@@ -153,13 +154,14 @@ int ctrl_protocol_get_mcc_blink
 int ctrl_protocol_set_mcc_blink
 (
     ctrl_protocol_handle_t const protocol,
-    ctrl_channel_handle_t const  channel, 
-    uint32_t const               mode
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint32_t * const             values
 )
 {
     CHECK_HANDLE( protocol );
     CHECK_DRV_FUNC( MCC_DRV(protocol->drv), set_mcc_blink );
-    return ( MCC_DRV(protocol->drv)->set_mcc_blink( protocol->ctx, channel, mode ) );
+    return ( MCC_DRV(protocol->drv)->set_mcc_blink( protocol->ctx, channel, no, values ) );
 }
 
 /******************************************************************************

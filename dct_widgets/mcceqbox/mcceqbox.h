@@ -48,8 +48,15 @@
 #define MCC_HUE_MIN                             ( -32768 )
 #define MCC_HUE_MAX                             (  32767 )
 #define MCC_HUE_DEFAULT                         (      0 )
-#define MCC_HUE_DIVISOR                         (  32768 ) // defines the value that equals "1"
+#define MCC_HUE_DIVISOR                         (  32767 ) // defines the value that equals "1"
 #define MCC_HUE_DEFAULT_RANGE                   (    100 )
+
+/******************************************************************************
+ * Blink Definitions
+ *****************************************************************************/
+#define MCC_BLINK_MIN                            (      0 )
+#define MCC_BLINK_DEFAULT                        (   2000 )
+#define MCC_BLINK_DEFAULT_RANGE                  (    100 )
 
 /******************************************************************************
  * Multi Color Controller Widget
@@ -97,7 +104,7 @@ signals:
     void MccEnableChanged( int flag );
     void MccOperationModeChanged( int mode, int no_phases );
 
-    void MccPhaseIndexChanged( int id );
+    void MccPhaseIndexChanged( int id , int blink);
     void MccPhaseChanged( int id, int saturation, int hue );
 
     // internal signals
@@ -131,6 +138,8 @@ private slots:
     // phase settings
     void onHueSpinBoxChange( double value );
     void onSatSpinBoxChange( double value );
+    void onBlinkPeriodSpinBoxChange( int value );
+    void onMccPhaseSelectionBlinkChanged( int id, int period );
     void onResetPhaseClick();
 
 private:
@@ -144,4 +153,3 @@ private:
 };
 
 #endif // __MCC_EQ_BOX_H__
-

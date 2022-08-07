@@ -148,7 +148,6 @@
             </property>
             <property name="font">
              <font>
-              <weight>75</weight>
               <italic>false</italic>
               <bold>true</bold>
               <strikeout>false</strikeout>
@@ -240,7 +239,6 @@
             </property>
             <property name="font">
              <font>
-              <weight>75</weight>
               <italic>false</italic>
               <bold>true</bold>
               <strikeout>false</strikeout>
@@ -313,7 +311,6 @@ ration</string>
             </property>
             <property name="font">
              <font>
-              <weight>75</weight>
               <italic>false</italic>
               <bold>true</bold>
               <strikeout>false</strikeout>
@@ -574,6 +571,30 @@ ration</string>
               <widget class="QDoubleSpinBox" name="sbxSaturation">
                <property name="singleStep">
                 <double>0.010000000000000</double>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_6">
+             <item>
+              <widget class="QLabel" name="lblBlinkPeriod">
+               <property name="text">
+                <string>Blinking Period</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="sbxBlinkPeriod">
+               <property name="suffix">
+                <string> ms</string>
+               </property>
+               <property name="maximum">
+                <number>100000</number>
+               </property>
+               <property name="singleStep">
+                <number>100</number>
                </property>
               </widget>
              </item>

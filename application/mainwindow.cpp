@@ -919,7 +919,8 @@ void MainWindow::connectToDevice( ProVideoDevice * dev )
         // connect phase changes
         connect( dev->GetMccItf(), SIGNAL(MccPhaseChanged(int,int,int)), m_ui->mccEqBox, SLOT(onMccPhaseChange(int,int,int)) );
         connect( m_ui->mccEqBox, SIGNAL(MccPhaseChanged(int,int,int)), dev->GetMccItf(), SLOT(onMccPhaseChange(int,int,int)) );
-        connect( m_ui->mccEqBox, SIGNAL(MccPhaseIndexChanged(int)), dev->GetMccItf(), SLOT(onMccPhaseSelectionChange(int)) );
+        connect( m_ui->mccEqBox, SIGNAL(MccPhaseIndexChanged(int, int)), dev->GetMccItf(), SLOT(onMccPhaseSelectionChange(int, int)) );
+        connect( dev->GetMccItf(), SIGNAL(MccPhaseSelectionBlinkChanged(int,int)), m_ui->mccEqBox, SLOT(onMccPhaseSelectionBlinkChanged(int,int)) );
     }
 
     //////////////////////////

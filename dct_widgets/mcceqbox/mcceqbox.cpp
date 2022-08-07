@@ -83,6 +83,7 @@ public:
         , m_active_segment( MCC_DEFAULT_ACTIVE_SEGMENT )
         , m_phase_hue( MCC_MAX_COLOR_PHASES )
         , m_phase_saturation( MCC_MAX_COLOR_PHASES )
+        , m_blink_period( MCC_BLINK_DEFAULT )
         , m_hue_range( 100 )
         , m_sat_range( 100 )
     {
@@ -112,6 +113,7 @@ public:
     int              m_active_segment;      /**< index of the currently selected segment */
     QVector<int>     m_phase_hue;           /**< hue settings */
     QVector<int>     m_phase_saturation;    /**< saturation settings */
+    int              m_blink_period;        /**< blinking */
     int              m_hue_range;           /**< range of the hue equalizer sliders in % */
     int              m_sat_range;           /**< range of the saturation equalizer sliders in % */
 
@@ -158,6 +160,7 @@ MccEqBox::MccEqBox( QWidget * parent ) : DctWidgetBox( parent )
     // selected phase settings
     connect( d_data->m_ui->sbxHue, SIGNAL(valueChanged(double)), this, SLOT(onHueSpinBoxChange(double)) );
     connect( d_data->m_ui->sbxSaturation, SIGNAL(valueChanged(double)), this, SLOT(onSatSpinBoxChange(double)) );
+    connect( d_data->m_ui->sbxBlinkPeriod, SIGNAL(valueChanged(int)), this, SLOT(onBlinkPeriodSpinBoxChange(int)) );
     connect( d_data->m_ui->btnResetPhase, SIGNAL(clicked()), this, SLOT(onResetPhaseClick()) );
 }
 
@@ -167,7 +170,7 @@ MccEqBox::MccEqBox( QWidget * parent ) : DctWidgetBox( parent )
 MccEqBox::~MccEqBox()
 {
     // Stop blinking when widget is closed
-    emit MccPhaseIndexChanged( -1 );
+    emit MccPhaseIndexChanged( -1, 0 );
 
     delete d_data;
 }
@@ -430,9 +433,14 @@ void MccEqBox::deselectActiveSegment()
     d_data->m_ui->sbxSaturation->setValue( 0.0 );
     d_data->m_ui->sbxSaturation->blockSignals( false );
 
+    d_data->m_ui->sbxBlinkPeriod->blockSignals( true );
+    d_data->m_ui->sbxBlinkPeriod->setValue( 0 );
+    d_data->m_ui->sbxBlinkPeriod->blockSignals( false );
+
     // deactivate the spin boxes (will be reactivated when user adjusts a slider)
     d_data->m_ui->sbxHue->setEnabled( false );
     d_data->m_ui->sbxSaturation->setEnabled( false );
+    d_data->m_ui->sbxBlinkPeriod->setEnabled( false );
 }
 
 /******************************************************************************
@@ -593,7 +601,7 @@ void MccEqBox::onOpModeChange( int index )
     if ( no_phases !=  d_data->m_no_segments )
     {
         // stop blinking
-        emit MccPhaseIndexChanged( -1 );
+        emit MccPhaseIndexChanged( -1, 0 );
 
         // emit operation mode changed signal
         emit MccOperationModeChanged( mode, no_phases );
@@ -622,13 +630,20 @@ void MccEqBox::onHueChange( int id, int hue )
         // enable the spin boxes (they are disabled when no phase is selected)
         d_data->m_ui->sbxHue->setEnabled( true );
         d_data->m_ui->sbxSaturation->setEnabled( true );
+        d_data->m_ui->sbxBlinkPeriod->setEnabled( true );
+
+        d_data->m_ui->sbxBlinkPeriod->setEnabled( true );
+        d_data->m_ui->sbxBlinkPeriod->setValue(d_data->m_blink_period);
+        d_data->m_ui->sbxBlinkPeriod->blockSignals(false);
 
         // setup saturation value in saturation spin box from stored values
         d_data->m_ui->sbxSaturation->setValue( (float)d_data->m_phase_saturation[id] / MCC_SATURATION_DIVISOR );
     }
 
     // setup hue value in hue spin box with new value
+    d_data->m_ui->sbxHue->blockSignals( true );
     d_data->m_ui->sbxHue->setValue( (float)hue / MCC_HUE_DIVISOR );
+    d_data->m_ui->sbxHue->blockSignals( false );
 
     // emit phase changed signal to transmit new values to the device
     emit MccPhaseChanged( id, d_data->m_phase_saturation[id], hue );
@@ -650,13 +665,20 @@ void MccEqBox::onSatChange( int id, int sat )
         // enable the spin boxes (they are disabled when no phase is selected)
         d_data->m_ui->sbxHue->setEnabled( true );
         d_data->m_ui->sbxSaturation->setEnabled( true );
+        d_data->m_ui->sbxBlinkPeriod->setEnabled( true );
+
+        d_data->m_ui->sbxBlinkPeriod->setEnabled( true );
+        d_data->m_ui->sbxBlinkPeriod->setValue(d_data->m_blink_period);
+        d_data->m_ui->sbxBlinkPeriod->blockSignals(false);
 
         // setup hue value in hue spin box from stored values
         d_data->m_ui->sbxHue->setValue( (float)d_data->m_phase_hue[id] / MCC_HUE_DIVISOR );
     }
 
     // setup saturation value in sat spin box with new value
+    d_data->m_ui->sbxSaturation->blockSignals( true );
     d_data->m_ui->sbxSaturation->setValue( (float)sat / MCC_SATURATION_DIVISOR );
+    d_data->m_ui->sbxSaturation->blockSignals( false );
 
     // emit phase changed signal transmit new values to the device
     emit MccPhaseChanged( id, sat, d_data->m_phase_hue[id] );
@@ -674,8 +696,18 @@ void MccEqBox::onBlinkChange( int id, bool blink)
         emit SegmentSelected( id );
 
         // enable the spin boxes (they are disabled when no phase is selected)
+        d_data->m_ui->sbxHue->blockSignals(true);
         d_data->m_ui->sbxHue->setEnabled( true );
+        d_data->m_ui->sbxHue->setValue((float)d_data->m_phase_hue[id] / MCC_HUE_DIVISOR);
+        d_data->m_ui->sbxHue->blockSignals(false);
+        d_data->m_ui->sbxSaturation->blockSignals(true);
         d_data->m_ui->sbxSaturation->setEnabled( true );
+        d_data->m_ui->sbxSaturation->setValue((float)d_data->m_phase_saturation[id]/ MCC_SATURATION_DIVISOR);
+        d_data->m_ui->sbxSaturation->blockSignals(false);
+        d_data->m_ui->sbxBlinkPeriod->blockSignals(true);
+        d_data->m_ui->sbxBlinkPeriod->setEnabled( true );
+        d_data->m_ui->sbxBlinkPeriod->setValue(d_data->m_blink_period);
+        d_data->m_ui->sbxBlinkPeriod->blockSignals(false);
     }
 
     if ( blink )
@@ -684,12 +716,12 @@ void MccEqBox::onBlinkChange( int id, bool blink)
         emit BlinkChanged( id , blink );
 
         // emit signal to enable blinking of this phase on the device
-        emit MccPhaseIndexChanged( id );
+        emit MccPhaseIndexChanged( id , d_data->m_blink_period);
     }
     else
     {
         // emit signal to stop blinking on the device
-        emit MccPhaseIndexChanged( -1 );
+        emit MccPhaseIndexChanged( -1 , 0);
     }
 }
 
@@ -769,7 +801,7 @@ void MccEqBox::onSatRangeChange( int range )
 void MccEqBox::onResetEqualizerClick()
 {
     // Stop blinking
-    emit MccPhaseIndexChanged( -1 );
+    emit MccPhaseIndexChanged( -1, 0 );
     // Reset all sliders
     emit ResetPhase( - 1 );
     // deselect current segment
@@ -794,6 +826,8 @@ void MccEqBox::onHueSpinBoxChange( double value )
     // calculate integer hue value
     int hue = value * MCC_HUE_DIVISOR;
 
+    d_data->m_phase_hue[activeSegment] = hue;
+
     // emit hue changed signal to adjust the slider
     emit HueChanged( activeSegment, hue );
 
@@ -814,14 +848,54 @@ void MccEqBox::onSatSpinBoxChange( double value )
         return;
     }
 
-    // calculate integer hue value
-    int sat = value * MCC_SATURATION_DIVISOR;
+    // calculate integer sat value
+    int sat = (value * MCC_SATURATION_DIVISOR) < 65536 ? (value * MCC_SATURATION_DIVISOR) : 65535;
+
+    d_data->m_phase_saturation[activeSegment] = sat;
 
     // emit hue changed signal to adjust the slider
     emit SatChanged( activeSegment, sat );
 
     // emit phase changed signal to adjust MCC on the device
     emit MccPhaseChanged( activeSegment, sat, d_data->m_phase_hue[activeSegment] );
+}
+
+/******************************************************************************
+ * MccEqBox::onBlinkPeriodSpinBoxChange
+ *****************************************************************************/
+void MccEqBox::onBlinkPeriodSpinBoxChange( int value )
+{
+    int activeSegment = d_data->m_active_segment;
+
+    // Check if a segment is currently selected
+    if ( activeSegment < 0 )
+    {
+        return;
+    }
+
+    d_data->m_blink_period = value;
+
+    // emit signal to enable blinking of this phase on the device
+    emit MccPhaseIndexChanged( activeSegment , d_data->m_blink_period);
+}
+
+/******************************************************************************
+ * MccEqBox::onMccPhaseSelectionBlinkChanged
+ *****************************************************************************/
+void MccEqBox::onMccPhaseSelectionBlinkChanged( int id, int period )
+{
+    int activeSegment = d_data->m_active_segment;
+    // Check if a segment is currently selected
+    if ( activeSegment < 0 )
+    {
+        return;
+    }
+
+    //d_data->m_blink_period = period;
+
+    //d_data->m_ui->sbxBlinkPeriod->blockSignals( true );
+    //d_data->m_ui->sbxBlinkPeriod->setValue( period );
+    //d_data->m_ui->sbxBlinkPeriod->blockSignals( false );
 }
 
 /******************************************************************************

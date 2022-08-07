@@ -40,6 +40,9 @@ void MccItf::resync()
 
     // operation mode 
     GetMccOperationMode();
+
+    // blink period
+    GetMccPhaseSelectionBlink();
 }
 
 /******************************************************************************
@@ -192,14 +195,39 @@ void MccItf::onMccOperationModeChange( int mode, int no_phases )
 /******************************************************************************
  * MccItf::onMccPhaseSelectionChange
  *****************************************************************************/
-void MccItf::onMccPhaseSelectionChange( int id )
+void MccItf::onMccPhaseSelectionChange( int id, int period )
 {
     uint32_t value = ((id >= 0) && (id<32)) ? ((uint32_t)(1 << id)) : 0u;
 
+    // convert to array
+    uint32_t values[2];
+    values[0] = (uint32_t)value;
+    values[1] = (uint32_t)period;
+
     // set mcc saturation blink mode on device
     int res = ctrl_protocol_set_mcc_blink( GET_PROTOCOL_INSTANCE(this),
-            GET_CHANNEL_INSTANCE(this), value );
+            GET_CHANNEL_INSTANCE(this), 2, values );
     HANDLE_ERROR( res );
+}
+
+/******************************************************************************
+ * MccItf::GetMccPhaseSelectionBlink
+ *****************************************************************************/
+void MccItf::GetMccPhaseSelectionBlink()
+{
+    // Is there a signal listener
+    if ( receivers(SIGNAL(MccPhaseSelectionBlinkChanged(int, int))) > 0 )
+    {
+        uint32_t values[2];
+
+        // read mcc saturation blink mode on device
+        int res = ctrl_protocol_get_mcc_blink( GET_PROTOCOL_INSTANCE(this),
+            GET_CHANNEL_INSTANCE(this), 2, (uint32_t *)values );
+        HANDLE_ERROR( res );
+
+        // emit a ChainGenlockOffsetChanged signal
+        emit MccPhaseSelectionBlinkChanged( (int)values[0], (int)values[1] );
+    }
 }
 
 /******************************************************************************
@@ -209,7 +237,7 @@ void MccItf::onMccPhaseChange( int id, int saturation, int hue )
 {
     ctrl_protocol_mcc_phase_t phase 
         //= { .id = (uint8_t)id, .saturation = (uint16_t)saturation, .hue = (int16_t)hue };struct designators fix:
-        = { (uint8_t)id, (uint16_t)saturation, (int16_t)hue };
+        = { (uint8_t)id, (uint32_t)saturation, (int32_t)hue };
 
     // set mcc phase configuration on device
     int res = ctrl_protocol_set_mcc_phase( GET_PROTOCOL_INSTANCE(this),

@@ -56,6 +56,9 @@ public:
     // color phase setting
     void GetMccPhases( int mode );
 
+    // color phase blink
+    void GetMccPhaseSelectionBlink();
+
 signals:
     // enable status
     void MccEnableChanged( int value );
@@ -69,6 +72,9 @@ signals:
     // number of color phases
     void MccPhaseChanged( int id, int saturation, int hue );
 
+    // number of color phases
+    void MccPhaseSelectionBlinkChanged( int id, int period );
+
 public slots:
     // enable status
     void onMccEnableChange( int value );
@@ -77,7 +83,7 @@ public slots:
     void onMccOperationModeChange( int mode, int no_phases );
     
     // enable saturation blink for seletced phase
-    void onMccPhaseSelectionChange( int id );
+    void onMccPhaseSelectionChange( int id, int period );
     
     // number of color phases
     void onMccPhaseChange( int id, int saturation, int hue );

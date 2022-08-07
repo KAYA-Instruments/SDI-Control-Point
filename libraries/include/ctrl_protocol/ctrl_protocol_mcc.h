@@ -133,7 +133,7 @@ int ctrl_protocol_get_mcc_opmode
 int ctrl_protocol_set_mcc_opmode
 (
     ctrl_protocol_handle_t const    protocol,
-    ctrl_channel_handle_t const     channel, 
+    ctrl_channel_handle_t const     channel,
     uint8_t const                   mode
 );
 
@@ -149,8 +149,9 @@ int ctrl_protocol_set_mcc_opmode
 int ctrl_protocol_get_mcc_blink
 (
     ctrl_protocol_handle_t const protocol,
-    ctrl_channel_handle_t const  channel, 
-    uint32_t * const             mask
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint32_t * const             values
 );
 
 /**************************************************************************//**
@@ -168,8 +169,9 @@ int ctrl_protocol_get_mcc_blink
 int ctrl_protocol_set_mcc_blink
 (
     ctrl_protocol_handle_t const protocol,
-    ctrl_channel_handle_t const  channel, 
-    uint32_t const               mask
+    ctrl_channel_handle_t const  channel,
+    int const                    no,
+    uint32_t * const             values
 );
 
 /**************************************************************************//**
@@ -178,8 +180,8 @@ int ctrl_protocol_set_mcc_blink
 typedef struct ctrl_protocol_mcc_phase_s
 {
     uint8_t     id;             /**< color phase identifier */
-    uint16_t    saturation;     /**< saturation of this color phase */
-    int16_t     hue;            /**< hue of this color phase */
+    uint32_t    saturation;     /**< saturation of this color phase */
+    int32_t     hue;            /**< hue of this color phase */
 } ctrl_protocol_mcc_phase_t;
 
 /**************************************************************************//**
@@ -228,8 +230,8 @@ typedef struct ctrl_protocol_mcc_drv_s
     ctrl_protocol_set_uint8_t   set_mcc_enable;
     ctrl_protocol_get_uint8_t   get_mcc_opmode;
     ctrl_protocol_set_uint8_t   set_mcc_opmode;
-    ctrl_protocol_get_uint32_t  get_mcc_blink;
-    ctrl_protocol_set_uint32_t  set_mcc_blink;
+    ctrl_protocol_uint32_array_t  get_mcc_blink;
+    ctrl_protocol_uint32_array_t set_mcc_blink;
     ctrl_protocol_uint8_array_t get_mcc_phase;
     ctrl_protocol_uint8_array_t set_mcc_phase;
 } ctrl_protocol_mcc_drv_t;

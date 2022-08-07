@@ -63,10 +63,10 @@
  * @brief command "mcc_blink" 
  *****************************************************************************/
 #define CMD_GET_MCC_BLINK                   ( "mcc_blink\n" )
-#define CMD_SET_MCC_BLINK                   ( "mcc_blink %i\n" )
-#define CMD_SET_MCC_BLINK_WITH_COPY_FLAG    ( "mcc_blink %i %i\n" )
+#define CMD_SET_MCC_BLINK                   ( "mcc_blink %i %i\n" )
+#define CMD_SET_MCC_BLINK_WITH_COPY_FLAG    ( "mcc_blink %i %i %i\n" )
 #define CMD_SYNC_MCC_BLINK                  ( "mcc_blink " )
-#define CMD_GET_MCC_BLINK_NO_PARMS          ( 1 )
+#define CMD_GET_MCC_BLINK_NO_PARMS          ( 2 )
 
 /******************************************************************************
  * get_mcc_enable - Get enable status of multi color controller
@@ -245,8 +245,8 @@ static int get_mcc_phase
             res = sscanf( s, CMD_SET_MCC_SET, &v0, &v1, &v2 );
             if ( (res == CMD_GET_MCC_SET_NO_PARMS) && (UINT8(v0) == phase->id) )
             {
-                phase->saturation = UINT16( v1 );
-                phase->hue        = INT16( v2 );
+                phase->saturation = UINT32( v1 );
+                phase->hue        = INT32( v2 );
                 return ( 0 );
             }
             else
@@ -308,23 +308,30 @@ static int get_mcc_blink
 (
     void * const                ctx,
     ctrl_channel_handle_t const channel,
-    uint32_t * const            mode
+    int const                   no,
+    uint32_t * const            values
 )
 {
     (void) ctx;
 
-    int value;
+    int mask, period;
     int res;
 
     // parameter check
-    if ( !mode )
+    if ( !values )
     {
         return ( -EINVAL );
     }
 
+    if ( no != CMD_GET_MCC_BLINK_NO_PARMS )
+    {
+        // return -EFAULT if number of parameter not matching
+        return ( -EFAULT );
+    }
+
     // command call to get 1 parameter from provideo system
     res = get_param_int_X( channel, 2,
-            CMD_GET_MCC_BLINK, CMD_SYNC_MCC_BLINK, CMD_SET_MCC_BLINK, &value );
+            CMD_GET_MCC_BLINK, CMD_SYNC_MCC_BLINK, CMD_SET_MCC_BLINK, &mask, &period );
 
     // return error code
     if ( res < 0 )
@@ -339,7 +346,8 @@ static int get_mcc_blink
     }
 
     // type-cast to range
-    *mode = UINT32( value );
+    values[0] = UINT32( mask );
+    values[1] = UINT32( period );
 
     return ( 0 );
 }
@@ -351,18 +359,31 @@ static int set_mcc_blink
 (
     void * const                ctx,
     ctrl_channel_handle_t const channel,
-    uint32_t const              mode
+    int const                   no,
+    uint32_t * const            values
 )
 {
+    (void) ctx;
+
+    if ( no != CMD_GET_MCC_BLINK_NO_PARMS )
+    {
+        // return -EFAULT if number of parameter not matching
+        return ( -EFAULT );
+    }
+
     provideo_protocol_user_ctx_t * user = (provideo_protocol_user_ctx_t *)ctx;
 
     if ( user  && user->use_copy_flag )
     {
         return ( set_param_int_X( channel, CMD_SET_MCC_BLINK_WITH_COPY_FLAG,
-                                    INT( mode ), INT( user->use_copy_flag ) ) );
+                                    INT( values[0] ), INT( values[1] ), INT( user->use_copy_flag ) ) );
     }
 
-    return ( set_param_int_X( channel, CMD_SET_MCC_BLINK, INT( mode ) ) );
+    // type-cast to range
+    uint32_t temp1 = values[0];
+    uint32_t temp2 = values[1];
+
+    return ( set_param_int_X( channel, CMD_SET_MCC_BLINK,  values[0] , values[1]  ) );
 }
 
 /******************************************************************************
